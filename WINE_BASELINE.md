@@ -80,6 +80,18 @@ hash. A failed configure/build invalidates that record. Preparation and launch
 require a valid record rather than associating a stale binary with newer sources.
 Do not edit sources during a build if you need an unambiguous provenance record.
 
+Open-source dependencies managed through CMake `FetchContent` are pinned to
+immutable Git commits in `cmake/dependencies/`. The default configure clones a
+missing dependency into `build/wine-baseline/_deps`; later builds reuse it.
+For an existing checkout or offline build, set CMake's standard
+`FETCHCONTENT_SOURCE_DIR_<NAME>` cache variable to the dependency root (for
+example, `FETCHCONTENT_SOURCE_DIR_EXPAT`) and use the standard FetchContent
+disconnected options as appropriate. Each adapter owns source selection,
+feature definitions, warning policy, includes, and a namespaced target. Version
+upgrades and changes to this packaging mechanism remain separate commits. Local
+overrides must be Git checkouts at the pinned commit; any tracked modifications
+are explicit developer input and are not validated by this workflow.
+
 For an incremental check without reconfiguring:
 
 ```sh

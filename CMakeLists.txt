@@ -65,7 +65,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<AND:$<CONFIG:Debug>,$<NOT:${_as
 set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
   "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
 
-add_compile_definitions(CINTERFACE XML_STATIC VFS_STATIC VFS_WITH_SLF VFS_WITH_7ZIP)
+add_compile_definitions(CINTERFACE VFS_STATIC VFS_WITH_SLF VFS_WITH_7ZIP)
 include_directories(
   "${CMAKE_SOURCE_DIR}/Ja2"
   "${CMAKE_SOURCE_DIR}/ext/VFS/include"
@@ -87,6 +87,7 @@ include_directories(
 )
 
 # external libraries
+include(cmake/dependencies/Expat.cmake)
 add_subdirectory("ext/libpng")
 add_subdirectory("ext/libsmacker")
 add_subdirectory("ext/lua-5.1.5")
@@ -175,7 +176,6 @@ if(NOT ADDRESS_SANITIZER AND NOT binkw32_lib)
 endif()
 
 set(Ja2_Libraries
-"${CMAKE_SOURCE_DIR}/libexpatMT.lib"
 "winmm.lib"
 "ws2_32.lib"
 "winhttp.lib"
@@ -217,6 +217,8 @@ include(cmake/ValidateOptions.cmake)
 set(ValidApplications JA2 JA2MAPEDITOR JA2UB JA2UBMAPEDITOR)
 ValidateOptions("${ValidApplications}" "Applications" "${Applications}" "ApplicationTargets")
 
+set(ExpatConsumers Editor Ja2 Laptop ModularizedTacticalAI sgp Strategic Tactical TacticalAI TileEngine Utils)
+
 
 # preprocessor definitions for Debug build, per the legacy MSBuild
 # WINDOWED_MODE was keyed off _DEBUG in Ja2/local.h, which an asan Debug build
@@ -239,6 +241,9 @@ foreach(app IN LISTS ApplicationTargets)
     add_library(${game_library})
     target_sources(${game_library} PRIVATE ${${lib}Src})
     target_compile_definitions(${game_library} PRIVATE ${compilationFlags} ${debugFlags})
+    if(lib IN_LIST ExpatConsumers)
+      target_link_libraries(${game_library} PRIVATE EXPAT::EXPAT)
+    endif()
   endforeach()
 
   # executable for the application, e.g. JA2.exe

@@ -8,5 +8,6 @@ ${CMAKE_CURRENT_SOURCE_DIR}
 "raknet"
 )
 target_link_libraries(Multiplayer PRIVATE
+EXPAT::EXPAT
 "${CMAKE_CURRENT_SOURCE_DIR}/raknet/RakNetLibStatic.lib"
 )
