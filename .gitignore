@@ -12,3 +12,9 @@
 
 # AddressSanitizer reports (see SANITIZERS.md)
 /gamedir/asan.report.*
+
+# Local Wine baseline: proprietary tools, prefixes, manifests, and game data.
+/.local/wine-baseline/
+
+# User-supplied Steam retail installation, never source or redistributable data.
+/JA2Classic/
