@@ -86,8 +86,9 @@ in `cmake/dependencies/`. The default configure populates a missing dependency
 in `build/wine-baseline/_deps`; later builds reuse it.
 For an existing checkout or offline build, set CMake's standard
 `FETCHCONTENT_SOURCE_DIR_<NAME>` cache variable to the dependency root (for
-example, `FETCHCONTENT_SOURCE_DIR_EXPAT`) and use the standard FetchContent
-disconnected options as appropriate. Each adapter owns source selection,
+example, `FETCHCONTENT_SOURCE_DIR_EXPAT` or
+`FETCHCONTENT_SOURCE_DIR_UTF8CPP`) and use the standard FetchContent disconnected
+options as appropriate. Each adapter owns source selection,
 feature definitions, warning policy, includes, and a namespaced target. Version
 upgrades and changes to this packaging mechanism remain separate commits. Local
 Git-backed overrides must be checkouts at the pinned commit; any tracked

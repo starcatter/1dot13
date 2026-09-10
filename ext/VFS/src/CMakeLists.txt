@@ -49,6 +49,7 @@ endif()
 
 set(BFVFS_TARGET "bfVFS" CACHE INTERNAL "")
 add_library( ${BFVFS_TARGET} ${BFVFS_files} )
+target_link_libraries(${BFVFS_TARGET} PRIVATE JA2::utf8cpp)
 
 if(BFVFS_WITH_7ZIP)
   target_link_libraries(${BFVFS_TARGET} PRIVATE LZMA::SDK)

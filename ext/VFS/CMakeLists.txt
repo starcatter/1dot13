@@ -55,9 +55,7 @@ endif()
 ##
 ## set include directories for projects
 ##
-include_directories(${BFVFS_INCLUDE_DIRS}
-  ${BFVFS_SOURCE_DIR}/ext/utfcpp/source
-)
+include_directories(${BFVFS_INCLUDE_DIRS})
 
 ##
 ## Build bfVFS

@@ -92,6 +92,7 @@ include(cmake/dependencies/Libsmacker.cmake)
 include(cmake/dependencies/Lua.cmake)
 include_directories("${lua_SOURCE_DIR}/src")
 include(cmake/dependencies/LzmaSdk.cmake)
+include(cmake/dependencies/Utf8cpp.cmake)
 add_subdirectory("ext/VFS")
 
 # turn on asan for everything defined below; 3rd party libs above keep defaults
