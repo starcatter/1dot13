@@ -17,4 +17,4 @@ add_library(libpng
 "pngwutil.c"
 )
 target_include_directories(libpng PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(libpng PUBLIC zlib)
+target_link_libraries(libpng PUBLIC ZLIB::ZLIB)

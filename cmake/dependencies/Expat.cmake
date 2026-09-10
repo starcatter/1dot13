@@ -25,6 +25,17 @@ execute_process(
 if(NOT expat_revision_result EQUAL 0 OR NOT expat_actual_revision STREQUAL expat_revision)
   message(FATAL_ERROR "${expat_SOURCE_DIR} is not the pinned Expat commit ${expat_revision}")
 endif()
+if(NOT FETCHCONTENT_SOURCE_DIR_EXPAT)
+  execute_process(
+    COMMAND "${GIT_EXECUTABLE}" status --porcelain --untracked-files=no
+    WORKING_DIRECTORY "${expat_SOURCE_DIR}"
+    OUTPUT_VARIABLE expat_source_changes
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  if(expat_source_changes)
+    message(FATAL_ERROR "Fetched Expat sources contain local changes: ${expat_source_changes}")
+  endif()
+endif()
 
 set(expat_include_dir "${expat_SOURCE_DIR}/expat/lib")
 if(NOT EXISTS "${expat_include_dir}/expat.h")

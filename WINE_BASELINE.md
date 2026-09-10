@@ -90,7 +90,8 @@ disconnected options as appropriate. Each adapter owns source selection,
 feature definitions, warning policy, includes, and a namespaced target. Version
 upgrades and changes to this packaging mechanism remain separate commits. Local
 overrides must be Git checkouts at the pinned commit; any tracked modifications
-are explicit developer input and are not validated by this workflow.
+are explicit developer input and are not validated by this workflow. Automatically
+fetched checkouts must remain clean.
 
 For an incremental check without reconfiguring:
 
