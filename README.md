@@ -70,6 +70,11 @@ Visit the [releases page](https://github.com/1dot13/source/releases) to download
 5. Use `Build -> Build All` to build.
 
 
+### Wine baseline
+
+See [Windows/x86 Baseline Under Wine](WINE_BASELINE.md) for the pinned MSVC
+toolchain, upstream CMake/Ninja build, isolated runtime, and validation status.
+
 ### Reports
 
 For more information and reports, visit [Bug reports at Bear's Pit Forum](http://thepit.ja-galaxy-forum.com/index.php?t=thread&frm_id=216&) or join the [Bear's Pit Discord](https://discord.gg/GqrVZUM "Bear's Pit Discord")
@@ -78,5 +83,4 @@ For more information and reports, visit [Bug reports at Bear's Pit Forum](http:/
 ### Participation 
 
 Feel free to participate on GitHub. If you want to know how, or simply wanna share your thoughts on a topic join the [Bear's Pit Discord](https://discord.gg/GqrVZUM "Bear's Pit Discord")
-
 
