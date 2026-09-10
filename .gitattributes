@@ -1,0 +1,1 @@
+cmake/dependencies/patches/*.patch -whitespace

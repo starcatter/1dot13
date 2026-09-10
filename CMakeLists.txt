@@ -89,7 +89,7 @@ include_directories(
 # external libraries
 include(cmake/dependencies/Expat.cmake)
 include(cmake/dependencies/Zlib.cmake)
-add_subdirectory("ext/libpng")
+include(cmake/dependencies/Libpng.cmake)
 add_subdirectory("ext/libsmacker")
 add_subdirectory("ext/lua-5.1.5")
 add_subdirectory("ext/VFS")
@@ -278,6 +278,6 @@ foreach(app IN LISTS ApplicationTargets)
 
   # for SGP only
   target_link_libraries(${app}_sgp PRIVATE "ddraw.lib" "${PROJECT_SOURCE_DIR}/fmodvc.lib")
-  target_link_libraries(${app}_sgp PRIVATE libpng ZLIB::ZLIB)
+  target_link_libraries(${app}_sgp PRIVATE PNG::PNG ZLIB::ZLIB)
   target_compile_definitions(${app}_sgp PRIVATE ${compilationFlags} ${debugFlags} NO_ZLIB_COMPRESSION)
 endforeach()

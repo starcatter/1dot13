@@ -20,7 +20,7 @@ if(BUILD_JA2EXPORT)
 	target_include_directories(Ja2Export PUBLIC
 		"${CMAKE_CURRENT_SOURCE_DIR}"
 	)
-	target_link_libraries(Ja2Export PUBLIC bfVFS libpng)
+	target_link_libraries(Ja2Export PUBLIC bfVFS PNG::PNG)
 	set_target_properties(Ja2Export PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 	)
