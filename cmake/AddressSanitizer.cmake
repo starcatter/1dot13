@@ -13,6 +13,10 @@ set(_asan "$<AND:$<BOOL:${ADDRESS_SANITIZER}>,$<OR:$<CONFIG:Debug>,$<CONFIG:RelW
 if(ADDRESS_SANITIZER)
   message(STATUS "AddressSanitizer ENABLED for Debug and RelWithDebInfo (first-party code only)")
   message(STATUS "  Bink stubbed into the exe; no binkw32.dll import, so the asan exe runs from gamedir untouched")
+  # Third-party C++ targets are not instrumented, so disable MSVC STL container
+  # annotations globally to keep their annotate_vector setting consistent with
+  # first-party objects. Re-enable annotations when all C++ targets use ASan.
+  add_compile_definitions("$<${_asan}:_DISABLE_STL_ANNOTATION>")
   # retail binkw32.dll cannot load in an asan process (image base 0x30000000 is
   # the 32-bit shadow). __RADINEXE__ makes bink.h declare the Bink functions as
   # in-exe calls instead of dllimports (sgp/RAD.H), so ja2_asan_link_binkw32_stub

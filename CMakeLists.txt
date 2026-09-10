@@ -57,6 +57,8 @@ endif()
 # whether we are using MSBuild as a generator
 set(usingMsBuild $<STREQUAL:${CMAKE_VS_PLATFORM_NAME},Win32>)
 
+# Standard MSVC presets use the toolchain's default dynamic CRT. The Wine
+# baseline explicitly selects the static CRT for portable runtime validation.
 # make Debug builds /Z7 instead of /Zi so they can be sccache'd
 set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
   "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
@@ -216,8 +218,7 @@ set(ExpatConsumers Editor Ja2 Laptop ModularizedTacticalAI sgp Strategic Tactica
 
 
 # preprocessor definitions for Debug build, per the legacy MSBuild
-# WINDOWED_MODE was keyed off _DEBUG in Ja2/local.h, which an asan Debug build
-# does not get: it links the release CRT (see CMAKE_MSVC_RUNTIME_LIBRARY above).
+# Define WINDOWED_MODE explicitly instead of relying on a toolchain CRT macro.
 set(debugFlags $<IF:$<CONFIG:Debug>,JA2BETAVERSION;JA2TESTVERSION;DEBUG_ATTACKBUSY;WINDOWED_MODE,>)
 
 foreach(app IN LISTS ApplicationTargets)

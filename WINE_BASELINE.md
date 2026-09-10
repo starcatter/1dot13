@@ -119,6 +119,9 @@ main-menu entry and all startup paths explicitly treat the backend as
 unavailable. The stub creates no sockets or threads and accepts no transfers.
 Any future runtime implementation will define a new JA2 protocol rather than
 preserve compatibility with the unsafe native-structure RakNet protocol.
+Standard MSVC presets now use the toolchain's default dynamic CRT. The Wine
+baseline continues to select `MultiThreaded` explicitly so its executable does
+not depend on a separately installed Visual C++ runtime.
 
 For an incremental check without reconfiguring:
 
