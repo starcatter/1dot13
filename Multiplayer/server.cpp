@@ -1,16 +1,4 @@
-#include "MessageIdentifiers.h"
-#include "RakNetworkFactory.h"
-#include "RakPeerInterface.h"
-#include "RakNetStatistics.h"
-#include "RakNetTypes.h"
-#include "FileListTransfer.h"
-#include "FileListTransferCBInterface.h"
-#include "FileOperations.h"
-#include "SuperFastHash.h"
-#include "RakAssert.h"
-#include "IncrementalReadInterface.h"
-#include "BitStream.h"
-#include "RakSleep.h"
+#include "network_stub.h"
 #include <assert.h>
 #include <cstdio>
 #include <cstring>
@@ -102,7 +90,7 @@ int mercs_ready[255];
 unsigned char SGetPacketIdentifier(Packet *p);
 unsigned char SpacketIdentifier;
 
-RakPeerInterface *server;
+RakPeerInterface *server = RakNetworkFactory::GetRakPeerInterface();
 
 // WANNE: FILE TRANSFER
 FileListTransfer fltServer;	// flt1
@@ -870,6 +858,14 @@ void AddFilesToSendList()
 
 void start_server (void)
 {
+	if (!IsMultiplayerAvailable())
+	{
+		is_networked = false;
+		is_host = false;
+		is_server = false;
+		return;
+	}
+
 	if(!is_server)
 	{	
 		f_rec_num(1,blank);//wipe clean

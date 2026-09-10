@@ -307,6 +307,8 @@ BOOLEAN InitMainMenu( )
 	#ifdef JA113DEMO
 		DisableButton( iMenuButtons[ NEW_MP_GAME ] );
 	#endif
+	if( !IsMultiplayerAvailable() )
+		DisableButton( iMenuButtons[ NEW_MP_GAME ] );
 
 	gbHandledMainMenu = 0;
 	fInitialRender		= TRUE;
@@ -505,6 +507,9 @@ void HandleMainMenuInput()
 			break;
 
 		case NEW_MP_GAME:
+			if( !IsMultiplayerAvailable() )
+				break;
+
 			is_networked = TRUE;
 
 			// WANNE - MP: Only reset this here, because otherwise after a MP game ends and a new starts, we would receive the files again.

@@ -69,21 +69,7 @@
 #include "MPChatScreen.h"
 #include "sgp_logger.h"
 
-#include "MessageIdentifiers.h"
-#include "RakNetworkFactory.h"
-#include "RakPeerInterface.h"
-#include "RakNetStatistics.h"
-#include "RakNetTypes.h"
-#include "RakSleep.h"
-
-#include "FileListTransfer.h"
-#include "FileListTransferCBInterface.h"
-#include "FileOperations.h"
-#include "SuperFastHash.h"
-#include "RakAssert.h"
-#include "IncrementalReadInterface.h"
-
-#include "BitStream.h"
+#include "network_stub.h"
 #include <assert.h>
 #include <cstdio>
 #include <cstring>
@@ -151,7 +137,7 @@ INT32		gTotalTransferBytes = 0;
 extern BOOLEAN gfTemporaryDisablingOfLoadPendingFlag;
 
 extern INT8 SquadMovementGroups[ ];
-RakPeerInterface *client;
+RakPeerInterface *client = RakNetworkFactory::GetRakPeerInterface();
 // WANNE: FILE TRANSFER
 FileListTransfer fltClient;	// flt2
 
@@ -668,6 +654,14 @@ CHAR16			gszDisconnectReason[255]; // the reason we were disconnected from the s
 // <TODO> - add retry timer and notification
 void NetworkAutoStart()
 {
+	if (!IsMultiplayerAvailable())
+	{
+		is_networked = false;
+		is_host = false;
+		auto_retry = false;
+		return;
+	}
+
 	if (!is_networked)
 		return; // not networked, bad call
 
@@ -4810,6 +4804,14 @@ void recieveGAMEOVER(RPCParameters *rpcParameters)
 
 void connect_client ( void )
 {
+	if (!IsMultiplayerAvailable())
+	{
+		is_networked = false;
+		is_client = false;
+		is_connecting = false;
+		return;
+	}
+
 	if(!is_client)
 	{
 		ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, MPClientMessage[0] );

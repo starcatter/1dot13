@@ -16,6 +16,8 @@ extern bool is_server;
 extern bool is_networked;
 extern bool is_host; // OJW - added 20081129
 
+bool IsMultiplayerAvailable();
+
 // OJW - 20040922
 extern bool recieved_settings;
 extern bool recieved_transfer_settings;

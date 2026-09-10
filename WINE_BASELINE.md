@@ -112,6 +112,14 @@ later parser, string, and compiler-portability changes are retained in
 `cmake/dependencies/patches/bfvfs-ja2.patch`; the adapter verifies the complete
 patched production-source manifest before compiling it.
 
+The unmaintained prebuilt RakNet 3.401 library and headers have been removed.
+Multiplayer client, server, RPC, and file-transfer translation units remain in
+the default build against a project-owned inert compatibility surface, but the
+main-menu entry and all startup paths explicitly treat the backend as
+unavailable. The stub creates no sockets or threads and accepts no transfers.
+Any future runtime implementation will define a new JA2 protocol rather than
+preserve compatibility with the unsafe native-structure RakNet protocol.
+
 For an incremental check without reconfiguring:
 
 ```sh

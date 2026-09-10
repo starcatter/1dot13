@@ -57,10 +57,6 @@ endif()
 # whether we are using MSBuild as a generator
 set(usingMsBuild $<STREQUAL:${CMAKE_VS_PLATFORM_NAME},Win32>)
 
-# RakNetLibStatic.lib carries /DEFAULTLIB:LIBCMT and /DEFAULTLIB:libcpmt, so the
-# static runtime is forced on us until RakNet too is built from source. Debug
-# keeps its /MTd only when asan is off: asan needs the release CRT (see below).
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<AND:$<CONFIG:Debug>,$<NOT:${_asan}>>:Debug>")
 # make Debug builds /Z7 instead of /Zi so they can be sccache'd
 set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
   "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
@@ -177,7 +173,6 @@ endif()
 
 set(Ja2_Libraries
 "winmm.lib"
-"ws2_32.lib"
 "winhttp.lib"
 JA2::bfVFS
 Lua
@@ -252,9 +247,7 @@ foreach(app IN LISTS ApplicationTargets)
     sgp/sgp.cpp
     Ja2/Res/ja2.rc
   )
-  # RakNetLibStatic.lib was built against an older CRT and still calls
-  # _vsnprintf, which the UCRT only exports through this compatibility library.
-  target_link_libraries(${exe} PRIVATE ${Ja2_Libraries} legacy_stdio_definitions.lib)
+  target_link_libraries(${exe} PRIVATE ${Ja2_Libraries})
   target_compile_definitions(${exe} PRIVATE ${compilationFlags} ${debugFlags})
 
   ja2_asan_link_binkw32_stub(${exe})
