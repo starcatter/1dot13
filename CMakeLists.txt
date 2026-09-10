@@ -69,7 +69,6 @@ add_compile_definitions(CINTERFACE VFS_STATIC VFS_WITH_SLF VFS_WITH_7ZIP)
 include_directories(
   "${CMAKE_SOURCE_DIR}/Ja2"
   "${CMAKE_SOURCE_DIR}/ext/VFS/include"
-  "${CMAKE_SOURCE_DIR}/ext/lua-5.1.5/src"
   "${CMAKE_SOURCE_DIR}/Utils"
   "${CMAKE_SOURCE_DIR}/TileEngine"
   "${CMAKE_SOURCE_DIR}/TacticalAI"
@@ -90,8 +89,9 @@ include(cmake/dependencies/Expat.cmake)
 include(cmake/dependencies/Zlib.cmake)
 include(cmake/dependencies/Libpng.cmake)
 include(cmake/dependencies/Libsmacker.cmake)
+include(cmake/dependencies/Lua.cmake)
+include_directories("${lua_SOURCE_DIR}/src")
 include(cmake/dependencies/LzmaSdk.cmake)
-add_subdirectory("ext/lua-5.1.5")
 add_subdirectory("ext/VFS")
 
 # turn on asan for everything defined below; 3rd party libs above keep defaults
