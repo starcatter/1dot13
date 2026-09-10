@@ -175,12 +175,13 @@ As of 2026-09-10:
 - **Ran:** the compiled executable launched with the supplied Classic archives
   and matching 1.13 data. A window capture showed the in-game A.I.M. laptop and
   hiring dialog. The user confirmed menus/input, working audio, and tactical play.
-- **Not verified:** save/reload, long sessions, full rendering fidelity, all
+- **Save/reload:** the user subsequently confirmed saving and loading works.
+- **Not verified:** long sessions, full rendering fidelity, all
   resolutions, multiplayer, editors/UB, clean native modern-Windows execution,
   and behavioral equivalence beyond the smoke test. Wine emitted EGL/driver
   warnings during initialization, but the game reached interactive gameplay.
 
-Next, validate save/reload and native Windows before treating this as broad
+Next, validate native Windows before treating this as broad
 regression coverage. Future platform work should extract narrow, behavior-neutral
 boundaries, retain this backend, and add selectable SDL implementations one at a
 time. This successful Wine smoke test does not establish an SDL or Linux-native
