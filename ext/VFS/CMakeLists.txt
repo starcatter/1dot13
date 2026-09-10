@@ -48,12 +48,8 @@ option(BUILD_BFVFS_SHARED "Build shared libraries" OFF)
 option(BFVFS_WITH_SLF     "Enable SLF support"     ON)
 option(BFVFS_WITH_7ZIP    "Enable 7-zip support"   ON)
 
-if(BFVFS_WITH_7ZIP)
-  set(BFVFS_7ZIP_DIR ${BFVFS_SOURCE_DIR}/ext/7z)
-  
-  if(BUILD_BFVFS_SHARED)
-    set(BUILD_BFVFS_7ZIP_SHARED ON)
-  endif()
+if(BFVFS_WITH_7ZIP AND NOT TARGET LZMA::SDK)
+  message(FATAL_ERROR "BFVFS_WITH_7ZIP requires the LZMA::SDK target")
 endif()
 
 ##
@@ -62,13 +58,6 @@ endif()
 include_directories(${BFVFS_INCLUDE_DIRS}
   ${BFVFS_SOURCE_DIR}/ext/utfcpp/source
 )
-
-##
-## Build 7zip (if selected)
-##
-if(BFVFS_WITH_7ZIP)
-  add_subdirectory(${BFVFS_7ZIP_DIR})
-endif()
 
 ##
 ## Build bfVFS
@@ -80,9 +69,9 @@ add_subdirectory(src)
 ##
 set(BFVFS_LIBRARIES ${BFVFS_TARGET})
 if(BFVFS_WITH_7ZIP)
-  set(BFVFS_LIBRARIES ${BFVFS_LIBRARIES} ${BFVFS_7ZIP_TARGET})
+  set(BFVFS_LIBRARIES ${BFVFS_LIBRARIES} LZMA::SDK)
 endif()
-set(BFVFS_DEFINITIONS ${BFVFS_VFS_DEFINITIONS} ${BFVFS_7ZIP_DEFINITIONS})
+set(BFVFS_DEFINITIONS ${BFVFS_VFS_DEFINITIONS})
 
 ##
 ## make bfVFS easier to use in other applications

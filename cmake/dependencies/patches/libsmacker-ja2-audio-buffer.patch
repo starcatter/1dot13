@@ -1,0 +1,107 @@
+diff --git a/smacker.c b/smacker.c
+index 724b0fe..96b8493 100644
+--- a/smacker.c
++++ b/smacker.c
+@@ -1467,6 +1467,30 @@ static char smk_render_video(struct smk_video_t * s, unsigned char * p, unsigned
+ 	return 0;
+ }
+ 
++/* Some fan-localized JA2 intro SMKs understate the header's maximum decoded
++	audio size. Grow for the per-frame size, bounded by a decoded-chunk policy. */
++static char smk_audio_fit_buffer(struct smk_audio_t * s, unsigned long required_size)
++{
++	void * grown;
++
++	if (required_size > 0x1000000UL) {
++		fputs("libsmacker::smk_audio_fit_buffer() - ERROR: implausibly large audio chunk.\n", stderr);
++		return -1;
++	}
++
++	if (required_size <= (unsigned long)s->max_buffer)
++		return 0;
++
++	if ((grown = realloc(s->buffer, required_size)) == NULL) {
++		perror("libsmacker::smk_audio_fit_buffer() - ERROR: failed to grow audio buffer");
++		return -1;
++	}
++
++	s->buffer = grown;
++	s->max_buffer = required_size;
++	return 0;
++}
++
+ /* Decompress audio track i. */
+ static char smk_render_audio(struct smk_audio_t * s, unsigned char * p, unsigned long size)
+ {
+@@ -1474,6 +1498,8 @@ static char smk_render_audio(struct smk_audio_t * s, unsigned char * p, unsigned
+ 	unsigned int j, k;
+ 	unsigned char * t = s->buffer;
+ 	struct smk_bit_t bs;
++	unsigned long output_size;
++	unsigned long sample_size;
+ 	char bit;
+ 	short unpack, unpack2;
+ 	/* used for audio decoding */
+@@ -1483,7 +1509,11 @@ static char smk_render_audio(struct smk_audio_t * s, unsigned char * p, unsigned
+ 
+ 	if (!s->compress) {
+ 		/* Raw PCM data, update buffer size and perform copy */
++		if (smk_audio_fit_buffer(s, size) < 0)
++			goto error;
++
+ 		s->buffer_size = size;
++		t = s->buffer;
+ 		memcpy(t, p, size);
+ 	} else if (s->compress == 1) {
+ 		/* SMACKER DPCM compression */
+@@ -1495,10 +1525,21 @@ static char smk_render_audio(struct smk_audio_t * s, unsigned char * p, unsigned
+ 		}
+ 
+ 		/* chunk is compressed (huff-compressed dpcm), retrieve unpacked buffer size */
+-		s->buffer_size = ((unsigned int) p[3] << 24) |
++		output_size = ((unsigned int) p[3] << 24) |
+ 			((unsigned int) p[2] << 16) |
+ 			((unsigned int) p[1] << 8) |
+ 			((unsigned int) p[0]);
++		sample_size = s->channels * (s->bitdepth / 8);
++
++		if (!sample_size || output_size < sample_size || output_size % sample_size) {
++			fputs("libsmacker::smk_render_audio() - ERROR: invalid decoded audio size.\n", stderr);
++			goto error;
++		}
++		if (smk_audio_fit_buffer(s, output_size) < 0)
++			goto error;
++
++		s->buffer_size = output_size;
++		t = s->buffer;
+ 		p += 4;
+ 		size -= 4;
+ 		/* Compressed audio: must unpack here */
+@@ -1599,6 +1639,7 @@ static char smk_render_audio(struct smk_audio_t * s, unsigned char * p, unsigned
+ 
+ 	return 0;
+ error:
++	s->buffer_size = 0;
+ 	return -1;
+ }
+ 
+@@ -1685,9 +1727,17 @@ static char smk_render(smk s)
+ 					((unsigned int) p[1] << 8) |
+ 					((unsigned int) p[0]));
+ 
++			if (size < 4 || size > i) {
++				fprintf(stderr, "libsmacker::smk_render(s) - ERROR: invalid audio[%u] block size.\n", track);
++				goto error;
++			}
++
+ 			/* If audio rendering enabled, kick this off for decode. */
+-			if (s->audio[track].enable)
+-				smk_render_audio(&s->audio[track], p + 4, size - 4);
++			if (s->audio[track].enable &&
++				smk_render_audio(&s->audio[track], p + 4, size - 4) < 0) {
++				fprintf(stderr, "libsmacker::smk_render(s) - ERROR: failed to render audio[%u].\n", track);
++				goto error;
++			}
+ 
+ 			p += size;
+ 			i -= size;

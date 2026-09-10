@@ -69,7 +69,6 @@ add_compile_definitions(CINTERFACE VFS_STATIC VFS_WITH_SLF VFS_WITH_7ZIP)
 include_directories(
   "${CMAKE_SOURCE_DIR}/Ja2"
   "${CMAKE_SOURCE_DIR}/ext/VFS/include"
-  "${CMAKE_SOURCE_DIR}/ext/libsmacker"
   "${CMAKE_SOURCE_DIR}/ext/lua-5.1.5/src"
   "${CMAKE_SOURCE_DIR}/Utils"
   "${CMAKE_SOURCE_DIR}/TileEngine"
@@ -90,10 +89,10 @@ include_directories(
 include(cmake/dependencies/Expat.cmake)
 include(cmake/dependencies/Zlib.cmake)
 include(cmake/dependencies/Libpng.cmake)
-add_subdirectory("ext/libsmacker")
+include(cmake/dependencies/Libsmacker.cmake)
+include(cmake/dependencies/LzmaSdk.cmake)
 add_subdirectory("ext/lua-5.1.5")
 add_subdirectory("ext/VFS")
-target_link_libraries(bfVFS PRIVATE 7z)
 
 # turn on asan for everything defined below; 3rd party libs above keep defaults
 ja2_asan_instrument_first_party()
@@ -182,7 +181,7 @@ set(Ja2_Libraries
 bfVFS
 Lua
 Multiplayer
-smacker
+libsmacker::libsmacker
 wine
 )
 # empty under asan (stubs compiled into the exe instead, see above)
@@ -274,7 +273,7 @@ foreach(app IN LISTS ApplicationTargets)
   endforeach()
 
   # for Utils only
-  target_link_libraries(${app}_Utils PRIVATE smacker)
+  target_link_libraries(${app}_Utils PRIVATE libsmacker::libsmacker)
 
   # for SGP only
   target_link_libraries(${app}_sgp PRIVATE "ddraw.lib" "${PROJECT_SOURCE_DIR}/fmodvc.lib")

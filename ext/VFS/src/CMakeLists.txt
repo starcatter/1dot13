@@ -23,8 +23,7 @@ endforeach()
 
 if(BFVFS_WITH_7ZIP)
   set(DEFINITIONS ${DEFINITIONS} "-DVFS_WITH_7ZIP")
-  add_definitions(-DVFS_WITH_7ZIP ${BFVFS_7ZIP_DEFINITIONS})
-  include_directories(${BFVFS_7ZIP_DIR}/src)
+  add_definitions(-DVFS_WITH_7ZIP)
 endif()
 
 if(BFVFS_WITH_SLF)
@@ -51,6 +50,10 @@ endif()
 set(BFVFS_TARGET "bfVFS" CACHE INTERNAL "")
 add_library( ${BFVFS_TARGET} ${BFVFS_files} )
 
+if(BFVFS_WITH_7ZIP)
+  target_link_libraries(${BFVFS_TARGET} PRIVATE LZMA::SDK)
+endif()
+
 set_property(
   TARGET ${BFVFS_TARGET}
   PROPERTY ARCHIVE_OUTPUT_DIRECTORY ${BFVFS_LIBRARY_DIRS}
@@ -69,9 +72,6 @@ if(BUILD_BFVFS_SHARED)
     set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "-enable-auto-import")
   endif()
   
-  if(BFVFS_WITH_7ZIP)
-    target_link_libraries(${BFVFS_TARGET} ${BFVFS_7ZIP_TARGET})
-  endif()
 endif()
 
 set(BFVFS_VFS_DEFINITIONS ${DEFINITIONS} CACHE INTERNAL "")

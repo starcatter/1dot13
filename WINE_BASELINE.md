@@ -81,18 +81,29 @@ require a valid record rather than associating a stale binary with newer sources
 Do not edit sources during a build if you need an unambiguous provenance record.
 
 Open-source dependencies managed through CMake `FetchContent` are pinned to
-immutable Git commits in `cmake/dependencies/`. The default configure clones a
-missing dependency into `build/wine-baseline/_deps`; later builds reuse it.
+immutable Git commits or content hashes in `cmake/dependencies/`. The default
+configure populates a missing dependency in `build/wine-baseline/_deps`; later
+builds reuse it.
 For an existing checkout or offline build, set CMake's standard
 `FETCHCONTENT_SOURCE_DIR_<NAME>` cache variable to the dependency root (for
 example, `FETCHCONTENT_SOURCE_DIR_EXPAT`) and use the standard FetchContent
 disconnected options as appropriate. Each adapter owns source selection,
 feature definitions, warning policy, includes, and a namespaced target. Version
 upgrades and changes to this packaging mechanism remain separate commits. Local
-overrides must be Git checkouts at the pinned commit; any tracked modifications
-are explicit developer input and are not validated by this workflow. Unpatched,
-automatically fetched dependencies must remain clean. Patched dependencies keep
-their patches in-tree and verify the resulting production inputs by SHA-256.
+Git-backed overrides must be checkouts at the pinned commit; any tracked
+modifications are explicit developer input. Archive-backed dependencies verify
+all production source inputs by SHA-256, including local overrides. Unpatched,
+automatically fetched Git dependencies must remain clean. Patched dependencies
+keep their patches in-tree and verify the resulting production inputs by SHA-256.
+Libsmacker is pinned to upstream commit `76094fb9c8e98bd5fac982c504e8d9aeff3ece01`
+and carries a downstream decoder patch for localized intro videos whose headers
+understate per-frame audio sizes. The patch permits bounded buffer growth and
+rejects malformed block and decoded-sample sizes instead of exposing an invalid
+audio range to the game.
+The bfVFS 7-Zip backend uses the upstream LZMA SDK 9.22 archive preserved by a
+timestamped Debian snapshot. Only its ANSI-C decoder closure is built; bfVFS
+still owns the writer and still supports its existing non-solid, Copy-method
+archive layout rather than arbitrary compressed 7-Zip archives.
 
 For an incremental check without reconfiguring:
 
