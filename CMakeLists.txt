@@ -68,7 +68,6 @@ set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
 add_compile_definitions(CINTERFACE VFS_STATIC VFS_WITH_SLF VFS_WITH_7ZIP)
 include_directories(
   "${CMAKE_SOURCE_DIR}/Ja2"
-  "${CMAKE_SOURCE_DIR}/ext/VFS/include"
   "${CMAKE_SOURCE_DIR}/Utils"
   "${CMAKE_SOURCE_DIR}/TileEngine"
   "${CMAKE_SOURCE_DIR}/TacticalAI"
@@ -93,7 +92,8 @@ include(cmake/dependencies/Lua.cmake)
 include_directories("${lua_SOURCE_DIR}/src")
 include(cmake/dependencies/LzmaSdk.cmake)
 include(cmake/dependencies/Utf8cpp.cmake)
-add_subdirectory("ext/VFS")
+include(cmake/dependencies/BfVfs.cmake)
+include_directories("${bfvfs_SOURCE_DIR}/include")
 
 # turn on asan for everything defined below; 3rd party libs above keep defaults
 ja2_asan_instrument_first_party()
@@ -179,7 +179,7 @@ set(Ja2_Libraries
 "winmm.lib"
 "ws2_32.lib"
 "winhttp.lib"
-bfVFS
+JA2::bfVFS
 Lua
 Multiplayer
 libsmacker::libsmacker

@@ -106,6 +106,11 @@ The bfVFS 7-Zip backend uses the upstream LZMA SDK 9.22 archive preserved by a
 timestamped Debian snapshot. Only its ANSI-C decoder closure is built; bfVFS
 still owns the writer and still supports its existing non-solid, Copy-method
 archive layout rather than arbitrary compressed 7-Zip archives.
+bfVFS itself is fetched from canonical SourceForge Mercurial tag `1.0.1`, node
+`45979f389886d9d9e6ac9fc097e8fdff536ddd47`, under LGPL-2.1-or-later. JA2's
+later parser, string, and compiler-portability changes are retained in
+`cmake/dependencies/patches/bfvfs-ja2.patch`; the adapter verifies the complete
+patched production-source manifest before compiling it.
 
 For an incremental check without reconfiguring:
 
