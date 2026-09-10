@@ -3966,7 +3966,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 			}
 
 			// Flugente: heat displays
-			if ( OVERHEATING_MAX_TEMPERATURE > 0 )
+			if constexpr ( OVERHEATING_MAX_TEMPERATURE > 0 )
 			{
 				// Flugente: display condition of food if it can decay
 				if ( UsingFoodSystem() && Item[pObject->usItem].foodtype > 0 )
@@ -7321,7 +7321,7 @@ void RenderItemDescriptionBox( )
 					// Flugente: display condition of food if it can decay
 					else if ( UsingFoodSystem() && Item[gpItemDescObject->usItem].foodtype > 0 )
 					{
-						if ( OVERHEATING_MAX_TEMPERATURE > 0 )
+						if constexpr ( OVERHEATING_MAX_TEMPERATURE > 0 )
 						{
 							FLOAT condition = (*gpItemDescObject)[0]->data.bTemperature / OVERHEATING_MAX_TEMPERATURE;
 

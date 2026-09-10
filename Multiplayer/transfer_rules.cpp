@@ -73,7 +73,15 @@ bool CTransferRules::initFromTxtFile(vfs::tReadableFile* pFile)
 						else
 						{
 							std::wstring trybuffer = L"Invalid UTF-8 character in string";
+							// The VFS macro tests the constant log argument as a pointer.
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4127)
+#endif
 							VFS_IGNOREEXCEPTION( trybuffer = vfs::String(sBuffer).c_wcs(), "" ); /* just make sure we don't break off when string conversion fails */
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 							std::wstringstream wss;
 							wss << L"Unknown action in file \"" << pFile->getPath().c_wcs()
 								<< L", line " << line_counter << " : " << vfs::String(sBuffer).c_wcs();
