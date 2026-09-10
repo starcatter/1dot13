@@ -10,6 +10,7 @@
 	#include "renderworld.h"
 	#include "Interface Control.h"
 	#include "KeyMap.h"
+	#include "platform/Sleep.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 	#define WIN32_LEAN_AND_MEAN
@@ -341,7 +342,7 @@ DWORD WINAPI JA2ClockThread( LPVOID lpParam )
 					giSleepTime = 250;
 				}
 
-				Sleep(giSleepTime);
+				Platform::Sleep(giSleepTime);
 			}
 		} 
 	}

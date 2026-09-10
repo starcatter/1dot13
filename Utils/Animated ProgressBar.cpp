@@ -15,6 +15,7 @@
 	#include "message.h"
 	#include "Text.h"
 	#include "Loading Screen.h"
+	#include "platform/Sleep.h"
 
 double rStart, rEnd;
 double rActual;
@@ -98,7 +99,7 @@ void RemoveLoadingScreenProgressBar()
 	// WANNE: Sleep for a while, so we have time to read the load screen hint
 	if (gGameExternalOptions.gfUseLoadScreenHints && gGameExternalOptions.ubAdditionalDelayUntilLoadScreenDisposal > 0 && usCurrentLoadScreenHint )
 	{
-		Sleep(gGameExternalOptions.ubAdditionalDelayUntilLoadScreenDisposal * 1000);
+		Platform::Sleep(gGameExternalOptions.ubAdditionalDelayUntilLoadScreenDisposal * 1000);
 	}
 
 	RemoveProgressBar( 0 );

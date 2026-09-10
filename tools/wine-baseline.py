@@ -119,6 +119,7 @@ def build(jobs):
                "-DCMAKE_SYSTEM_NAME=Windows", "-DCMAKE_SYSTEM_PROCESSOR=x86",
                f"-DCMAKE_C_COMPILER={BIN / 'cl'}", f"-DCMAKE_CXX_COMPILER={BIN / 'cl'}",
                "-DApplications=JA2", "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+               "-DJA2_PLATFORM_BACKEND=WINDOWS",
                "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded",
                "-DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded",
                "-DUSE_SCCACHE=OFF", "-DADDRESS_SANITIZER=OFF", "-DLTO_OPTION=OFF",

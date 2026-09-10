@@ -32,6 +32,7 @@
 #include "Sound Control.h"
 #include "Text.h"
 #include "INIReader.h"
+#include "platform/Sleep.h"
 
 #include "sgp_logger.h"
 #include <language.hpp>
@@ -285,7 +286,7 @@ UINT32 ErrorScreenHandle(void)
 			}
 	}
 	// there is no need to create 100 % cpu load in this stage of the game
-	Sleep(50);
+	Platform::Sleep(50);
 
 	return( ERROR_SCREEN );
 }

@@ -8,6 +8,17 @@ endif()
 
 project(ja2)
 
+set(JA2_PLATFORM_BACKEND "WINDOWS" CACHE STRING "Platform backend implementation")
+set_property(CACHE JA2_PLATFORM_BACKEND PROPERTY STRINGS WINDOWS)
+if(NOT JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
+  message(FATAL_ERROR
+    "JA2_PLATFORM_BACKEND=\"${JA2_PLATFORM_BACKEND}\" is not supported. Valid options are: WINDOWS.")
+endif()
+if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS" AND NOT WIN32)
+  message(FATAL_ERROR "The WINDOWS platform backend requires a Windows target.")
+endif()
+message(STATUS "Configuring JA2_PLATFORM_BACKEND=\"${JA2_PLATFORM_BACKEND}\"")
+
 option(USE_SCCACHE "Cache compiled objects with sccache if installed" ON)
 if(USE_SCCACHE)
   find_program(SCCACHE_PROGRAM sccache)

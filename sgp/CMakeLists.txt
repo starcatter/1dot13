@@ -31,4 +31,10 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/vobject_blitters.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/vsurface.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/WinFont.cpp"
-PARENT_SCOPE)
+)
+
+if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
+	list(APPEND sgpSrc "${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp")
+endif()
+
+set(sgpSrc ${sgpSrc} PARENT_SCOPE)
