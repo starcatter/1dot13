@@ -138,41 +138,6 @@ add_subdirectory(lua)
 add_subdirectory(Multiplayer)
 add_subdirectory(wine)
 
-# Rebuild the Bink import library rather than link the one the game ships: that one
-# is a 2002 long-format ordinal library, and only link.exe still binds it. lld-link
-# takes it without complaint but emits an import descriptor with an empty thunk
-# table, so every Bink call reaches a stale address and BinkInitialize faults the
-# process during the intro. mingw/GNU ar cannot do this at all, see mingw.cmake
-#
-# asan builds skip this entirely: they compile no-op Bink stubs into the exe
-# (ja2_asan_link_binkw32_stub) so no binkw32.dll is imported at all.
-if(NOT ADDRESS_SANITIZER AND NOT binkw32_lib)
-  # Only the name shape differs by toolchain: lib.exe prepends the x86 leading
-  # underscore to every name in the .def, llvm-lib and llvm-dlltool take the name as
-  # written. The checked-in file carries the underscore for the llvm tools, so strip
-  # it back off for lib.exe -- get this backwards either way and the Bink symbols
-  # come out undefined at link time.
-  # The test is on the compiler because it is what CMAKE_AR follows: clang-cl reports
-  # COMPILER_ID Clang and brings llvm-lib, cl.exe reports MSVC and brings lib.exe. Do
-  # not reach for the MSVC variable or COMPILER_FRONTEND_VARIANT here -- both are set
-  # for clang-cl too, and either would strip the underscore for the wrong archiver.
-  set(binkw32Def "${CMAKE_SOURCE_DIR}/binkw32.def")
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    file(READ "${binkw32Def}" binkw32DefText)
-    string(REPLACE "\n_" "\n" binkw32DefText "${binkw32DefText}")
-    set(binkw32Def "${CMAKE_BINARY_DIR}/binkw32.msvc.def")
-    file(WRITE "${binkw32Def}" "${binkw32DefText}")
-  endif()
-  execute_process(
-    COMMAND "${CMAKE_AR}" /nologo /machine:X86
-            "/def:${binkw32Def}" "/out:${CMAKE_BINARY_DIR}/binkw32.lib"
-    RESULT_VARIABLE binkw32LibResult)
-  if(NOT binkw32LibResult EQUAL 0)
-    message(FATAL_ERROR "${CMAKE_AR} failed to build the binkw32 import library")
-  endif()
-  set(binkw32_lib "${CMAKE_BINARY_DIR}/binkw32.lib")
-endif()
-
 set(Ja2_Libraries
 "winmm.lib"
 "winhttp.lib"
@@ -182,10 +147,6 @@ Multiplayer
 libsmacker::libsmacker
 wine
 )
-# empty under asan (stubs compiled into the exe instead, see above)
-if(binkw32_lib)
-  list(APPEND Ja2_Libraries "${binkw32_lib}")
-endif()
 
 # static libraries whose translation units rely on Application preprocessor definitions.
 set(Ja2_Libs
@@ -250,8 +211,6 @@ foreach(app IN LISTS ApplicationTargets)
   )
   target_link_libraries(${exe} PRIVATE ${Ja2_Libraries})
   target_compile_definitions(${exe} PRIVATE ${compilationFlags} ${debugFlags})
-
-  ja2_asan_link_binkw32_stub(${exe})
 
   # language library for the application, e.g. JA2MAPEDITOR_i18n — one per app, all 8
   # languages compiled in, selected at runtime by BindLanguageStrings

@@ -224,7 +224,7 @@ void writeExceptionBacktrace(_EXCEPTION_POINTERS* ep) {
 		DWORD ret  = *(DWORD*)(ebp + 4);
 		DWORD next = *(DWORD*)ebp;
 		// Print every return address, not just our own module's: a fault inside
-		// ddraw/fmod/bink is exactly the case worth seeing, and the module table
+		// ddraw/fmod is exactly the case worth seeing, and the module table
 		// above already tells the reader which addresses land in real code.
 		emit(wsprintfA(line, "  [%d] %08lX\r\n", i, ret));
 		if (next <= ebp) break; // frames must climb the stack

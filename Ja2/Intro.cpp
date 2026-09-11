@@ -5,7 +5,6 @@
 #include	"Utilities.h"
 #include "Intro.h"
 #include "Cinematics.h"
-#include "Cinematics Bink.h"
 #include "mainmenuscreen.h"
 #include "Music Control.h"
 #include "english.h"
@@ -25,78 +24,36 @@ UINT32 iStringToUseLua = -1;
 class VideoPlayer
 {
 public:
-	enum VideoType
-	{
-		VT_NONE = 0,
-		VT_SMK  = 1,
-		VT_BINK = 2,
-	};
-	VideoPlayer(UINT32 type) : _type(type), _smk(NULL), _bink(NULL), _current(VT_NONE)
+	VideoPlayer() : _smk(NULL)
 	{
 	}
 	void Initialize()
 	{
-		if(_type & VT_SMK)
-		{
-			SmkInitialize();
-		}
-		if(_type & VT_BINK)
-		{
-			BinkInitialize(ghWindow, SCREEN_WIDTH, SCREEN_HEIGHT);
-		}
+		SmkInitialize();
 	}
 	void Shutdown()
 	{
 		stopVideo(); // if one is still "running"
-		if(_type & VT_SMK)
-		{
-			SmkShutdown();
-		}
-		if(_type & VT_BINK)
-		{
-			BinkShutdownVideo();
-		}
+		SmkShutdown();
 	}
 
 	bool isValid()
 	{
-		if(	(_current == VT_SMK && _smk && !_bink) || (_current == VT_BINK && !_smk && _bink) )
-		{
-			return true;
-		}
-		return false;
+		return _smk != NULL;
 	}
 
 	bool isPlaying()
 	{
-		if(	_current == VT_SMK && _smk && !_bink )
-		{
-			return SmkPollFlics() != 0;
-		}
-		else if(_current == VT_BINK && !_smk && _bink) 
-		{
-			return BinkPollFlics() != 0;
-		}
-		else if(_current == VT_NONE && !_smk && !_bink)
-		{
-			return false;
-		}
-		SGP_THROW(L"Invalid Video Player state : last video was not properly stopped ");
+		return _smk && SmkPollFlics() != 0;
 	}
 	
 	void stopVideo()
 	{
-		if(_current == VT_SMK && _smk && !_bink)
+		if(_smk)
 		{
 			SmkCloseFlic(_smk);
 			_smk = NULL;
 		}
-		else if(_current == VT_BINK && !_smk && _bink)
-		{
-			BinkCloseFlic(_bink);
-			_bink = NULL;
-		}
-		_current = VT_NONE;
 	}
 
 	bool startVideo(std::string const& filename)
@@ -125,18 +82,9 @@ public:
 		{
 			return startSmkVideo(filename);
 		}
-		else if(vfs::StrCmp::Equal(ext, ".bik"))
-		{
-			return startBinkVideo(filename);
-		}
 		else if(ext.empty())
 		{
-			// try .bik first
-			if(!startBinkVideo(filename + ".bik"))
-			{
-				return startSmkVideo(filename + ".smk");
-			}
-			return true;
+			return startSmkVideo(filename + ".smk");
 		}
 		else
 		{
@@ -148,31 +96,13 @@ private:
 	bool startSmkVideo(std::string const& filename)
 	{
 		_smk = SmkPlayFlic( filename.c_str(), (SCREEN_WIDTH-640)/2, (SCREEN_HEIGHT-480)/2, TRUE );
-		if(_smk)
-		{
-			_current = VT_SMK;
-			return true;
-		}
-		return false;
-	}
-	bool startBinkVideo(std::string const& filename)
-	{
-		_bink = BinkPlayFlic( filename.c_str(), (SCREEN_WIDTH-640)/2, (SCREEN_HEIGHT-480)/2, BINK_FLIC_AUTOCLOSE | BINK_FLIC_CENTER_VERTICAL);
-		if(_bink)
-		{
-			_current = VT_BINK;
-			return true;
-		}
-		return false;
+		return _smk != NULL;
 	}
 private:
-	UINT32		_type;
 	SMKFLIC*	_smk;
-	BINKFLIC*	_bink;
-	VideoType	_current;
 };
 
-static VideoPlayer s_VP(VideoPlayer::VT_SMK | VideoPlayer::VT_BINK);
+static VideoPlayer s_VP;
 
 extern STR16* gzIntroScreen;
 extern HVSURFACE ghFrameBuffer;

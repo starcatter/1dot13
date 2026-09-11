@@ -1,6 +1,5 @@
 set(UtilsSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/Animated ProgressBar.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/Cinematics Bink.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Cinematics.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Cursors.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Debug Control.cpp"

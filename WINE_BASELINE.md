@@ -129,9 +129,8 @@ For an incremental check without reconfiguring:
 ninja -C build/wine-baseline -n JA2
 ```
 
-CMake regenerates the Bink import library during configuration, so invoking the
-build script again may relink JA2 even if no source changed. Do not use this
-build directory for a different architecture, compiler, or configuration.
+Do not use this build directory for a different architecture, compiler, or
+configuration.
 
 ## Runtime
 
@@ -173,7 +172,7 @@ save compatibility. Do not run setup/build/prepare/run concurrently.
 `prefix-game`, not the compiler prefix or `~/.wine`. It preinstalls upstream's
 per-executable `ddraw=native,builtin` registry override to avoid upstream's
 first-launch restart. It keeps the bundled `ddraw.dll`, `ddraw.ini`, shaders,
-`binkw32.dll`, and `fmod.dll`. Do not substitute compiler DLL overrides or copy
+and `fmod.dll`. Do not substitute compiler DLL overrides or copy
 SDK DLLs beside the game. The game directly imports no dynamic MSVC runtime;
 FMOD imports Wine's normal `MSVCRT.dll`.
 
@@ -203,7 +202,7 @@ As of 2026-09-10:
 
 - **Compiled:** actual Microsoft x86 JA2 completed compilation and linking.
   `file` identified an Intel i386 PE32 Windows GUI executable. Microsoft PE
-  dependency inspection confirmed Bink/FMOD/DirectDraw and normal Windows imports.
+  dependency inspection confirmed FMOD/DirectDraw and normal Windows imports.
 - **Build fixes:** three constant guards became `if constexpr`; C4127 is
   suppressed only around one existing VFS macro invocation. `/W4 /WX` remains
   enabled. No gameplay formulas, feature stubs, or vendor code changed.
