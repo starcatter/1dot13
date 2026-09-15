@@ -1,7 +1,7 @@
 	#include "types.h"
 	#include <stdio.h>
 	#include <windows.h>
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "time.h"
 	#include "vobject.h"
 	#include "FileMan.h"

@@ -2,7 +2,7 @@
 #define __AMBIENT_CONTROL
 
 
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "Ambient Types.h"
 
 BOOLEAN LoadAmbientControlFile( UINT8 ubAmbientID );

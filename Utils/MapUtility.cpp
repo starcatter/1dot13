@@ -1,4 +1,4 @@
-#include "sgp.h"
+#include "LegacySGP.h"
 
 #ifdef JA2EDITOR
 #include "Screens.h"

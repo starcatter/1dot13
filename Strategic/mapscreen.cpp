@@ -2,7 +2,7 @@
 	#include <stdio.h>
 	#include <stdarg.h>
 	#include "gameloop.h"
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "vobject.h"
 	#include "WCheck.h"
 	#include "worlddef.h"

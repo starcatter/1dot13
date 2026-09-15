@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Meanwhile.h"
 	#include "PreBattle Interface.h"
 	#include "MessageBoxScreen.h"

@@ -31,7 +31,7 @@
 	#include "strategic.h"
 	#include "Strategic Status.h"
 	#include "Soldier macros.h"
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "MessageBoxScreen.h"
 	#include "screenids.h"
 	#include "Queen Command.h"

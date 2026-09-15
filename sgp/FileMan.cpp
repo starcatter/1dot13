@@ -31,7 +31,9 @@
 #include "fileio/FileServices.h"
 #include "fileio/PlatformPaths.h"
 #include "fileio/StoreRouter.h"
+#ifdef _WIN32
 #include "sgp_logger.h"
+#endif
 
 #include <algorithm>
 #include <cstdarg>
@@ -58,6 +60,15 @@ struct SOperation
 
 namespace
 {
+	void LogFileManagerError(const char* message)
+	{
+#ifdef _WIN32
+		SGP_ERROR(message);
+#else
+		std::fprintf(stderr, "FileMan: %s\n", message);
+#endif
+	}
+
 	constexpr UINT32 FILE_HANDLE_INDEX_MASK = 0xffff;
 	constexpr UINT32 FILE_HANDLE_GENERATION_SHIFT = 16;
 
@@ -318,6 +329,7 @@ namespace
 //**************************************************************************
 BOOLEAN	InitializeFileManager(	STR strIndexFilename )
 {
+	(void)strIndexFilename;
 	RegisterDebugTopic( TOPIC_FILE_MANAGER, "File Manager" );
 	return( TRUE );
 }
@@ -494,6 +506,7 @@ BOOLEAN	FileDelete( STR strFilename )
 //**************************************************************************
 HWFILE FileOpen( STR strFilename, UINT32 uiOptions, BOOLEAN fDeleteOnClose, STR strProfilename )//dnl ch81 021213
 {
+	(void)fDeleteOnClose;
 	if (strFilename == nullptr || !ja2::fileio::fileServicesInitialized())
 	{
 		return 0;
@@ -521,10 +534,10 @@ HWFILE FileOpen( STR strFilename, UINT32 uiOptions, BOOLEAN fDeleteOnClose, STR 
 	// sometimes a file is supposed to opened that does not exist (not tested with FileExists())
 	// this operation can fail with an exception that the calling code doesn't catch
 	// instead we catch it (any exception, not just CBasicException) here and return 0
-	catch(const std::exception& ex) { SGP_ERROR(ex.what()); }
+	catch(const std::exception& ex) { LogFileManagerError(ex.what()); }
 	catch(...)
-	{ 
-		SGP_ERROR( "Caught undefined exception" );
+	{
+		LogFileManagerError("Caught undefined exception");
 	}
 	return 0;
 }
@@ -832,14 +845,14 @@ BOOLEAN FileLoad( STR strFilename, PTR pDest, UINT32 uiBytesToRead, UINT32 *puiB
 #endif
 
 
-BOOLEAN _cdecl FilePrintf( HWFILE hFile, STR8	strFormatted, ... )
+BOOLEAN JA2_CDECL FilePrintf( HWFILE hFile, STR8	strFormatted, ... )
 {
 	CHAR8		strToSend[160]; /* itemdescription of item 0 will NOT fit if only 80 Chars per Line!, Sergeant_Kolja, 2007-06-10 */
 	va_list	argptr;
 	BOOLEAN fRetVal = FALSE;
 
 	va_start(argptr, strFormatted);
-	_vsnprintf( strToSend, DIM(strToSend), strFormatted, argptr ); /* made StringLen Save, Sergeant_Kolja, 2007-06-10 */
+	vsnprintf( strToSend, DIM(strToSend), strFormatted, argptr ); /* made StringLen Save, Sergeant_Kolja, 2007-06-10 */
 	strToSend[ DIM(strToSend)-1 ] = 0;
 	va_end(argptr);
 	
@@ -1018,7 +1031,7 @@ BOOLEAN GetFileManCurrentDirectory( STRING512 pcDirectory )
 	}
 	catch(const std::exception& ex)
 	{
-		SGP_ERROR(ex.what());
+		LogFileManagerError(ex.what());
 		return FALSE;
 	}
 	return TRUE;

@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "WCheck.h"
 	#include "sysutil.h"
 

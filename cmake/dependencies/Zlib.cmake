@@ -71,8 +71,13 @@ target_compile_definitions(ja2_zlib PRIVATE
   _CRT_NONSTDC_NO_DEPRECATE
   _CRT_SECURE_NO_DEPRECATE
 )
+if(UNIX)
+  target_compile_definitions(ja2_zlib PRIVATE HAVE_UNISTD_H)
+endif()
 
 # Keep third-party diagnostics separate from the project's /W4 /WX policy.
 if(MSVC)
   target_compile_options(ja2_zlib PRIVATE /W3 /WX-)
+else()
+  target_compile_options(ja2_zlib PRIVATE -w)
 endif()

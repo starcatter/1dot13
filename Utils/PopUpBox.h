@@ -1,7 +1,7 @@
 #ifndef __POPUP_BOX
 #define __POPUP_BOX
 
-#include "sgp.h"
+#include "LegacySGP.h"
 //#include "local.h"
 #include "vobject_blitters.h"
 #include "WCheck.h"

@@ -3,7 +3,7 @@
 #include "types.h"
 #include <windows.h>
 #include <string.h>
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "vobject.h"
 #include "Font.h"
 #include "local.h"

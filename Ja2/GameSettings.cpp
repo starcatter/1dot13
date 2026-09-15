@@ -14,7 +14,7 @@
 	#include "Shade Table Util.h"
 	#include "random.h"
 	#include "SaveLoadGame.h"
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "screenids.h"
 	#include "Font Control.h"
 	#include "message.h"

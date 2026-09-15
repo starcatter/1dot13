@@ -1,4 +1,4 @@
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "screenids.h"
 #include "Timer Control.h"
 #include "Fade Screen.h"

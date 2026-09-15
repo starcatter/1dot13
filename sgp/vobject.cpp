@@ -6,7 +6,7 @@
 #include "vobject.h"
 #include "WCheck.h"
 #include "vobject_blitters.h"
-#include "sgp.h"
+#include "LegacySGP.h"
 
 #include <unordered_map>
 

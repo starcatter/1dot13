@@ -1,5 +1,5 @@
 //zilpin: pellet spread patterns externalized in XML
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "FileMan.h"
 #include "math.h"
 	#include "LOS.h"

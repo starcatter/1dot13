@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "FileMan.h"
 	#include "Arms Dealer Init.h"
 	#include "Debug Control.h"

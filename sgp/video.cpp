@@ -1,7 +1,7 @@
 #include "types.h"
 #include "video.h"
 #include "vobject_blitters.h"
-#include "sgp.h"
+#include "LegacySGP.h"
 #include <stdio.h>
 #include <io.h>
 #include "renderworld.h"

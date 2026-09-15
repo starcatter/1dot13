@@ -26,9 +26,9 @@ int giClipYMin=0;
 int giClipYMax=0;
 
 void DrawHorizontalRun(UINT8 **ScreenPtr, int XAdvance, int RunLength,
-						int Color, int ScreenWidth);
+						int Color);
 void DrawVerticalRun(UINT8 **ScreenPtr, int XAdvance, int RunLength,
-						int Color, int ScreenWidth);
+						int Color);
 
 
 void SetClippingRegionAndImageWidth(
@@ -46,10 +46,10 @@ void SetClippingRegionAndImageWidth(
 	giClipYMax = iClipStartY + iClipHeight-1;
 }
 
-BOOL Clipt( FLOAT denom, FLOAT num, FLOAT *tE, FLOAT *tL )
+static BOOLEAN Clipt( FLOAT denom, FLOAT num, FLOAT *tE, FLOAT *tL )
 {
 	FLOAT	t;
-	BOOL	accept;
+	BOOLEAN	accept;
 
 	accept = TRUE;
 
@@ -75,15 +75,15 @@ BOOL Clipt( FLOAT denom, FLOAT num, FLOAT *tE, FLOAT *tL )
 	return(accept);
 }
 
-BOOL ClipPoint( int x, int y )
+static BOOLEAN ClipPoint( int x, int y )
 {
 	return( x <= giClipXMax && x >= giClipXMin &&
 			y <= giClipYMax && y >= giClipYMin );
 }
 
-BOOL Clip2D( int *ix0, int *iy0, int *ix1, int *iy1 )
+static BOOLEAN Clip2D( int *ix0, int *iy0, int *ix1, int *iy1 )
 {
-	BOOL	visible;
+	BOOLEAN	visible;
 	FLOAT	te, tl;
 	FLOAT	dx, dy;
 	FLOAT	x0, y0, x1, y1;
@@ -136,11 +136,10 @@ BOOL Clip2D( int *ix0, int *iy0, int *ix1, int *iy1 )
 	return( visible );
 }
 
-void LineDraw( BOOL fClip, int XStart, int YStart, int XEnd, int YEnd, short Color, UINT8 *ScreenPtr)
+void LineDraw( BOOLEAN fClip, int XStart, int YStart, int XEnd, int YEnd, short Color, UINT8 *ScreenPtr)
 {
 	int Temp, AdjUp, AdjDown, ErrorTerm, XAdvance, XDelta, YDelta;
 	int WholeStep, InitialPixelCount, FinalPixelCount, i, RunLength;
-	int ScreenWidth=giImageWidth/2;
 	char col2 = Color>>8;
 	char col1 = Color & 0x00FF;
 
@@ -256,7 +255,7 @@ void LineDraw( BOOL fClip, int XStart, int YStart, int XEnd, int YEnd, short Col
 		 ErrorTerm += YDelta;
 		}
 		/* Draw the first, partial run of pixels */
-		DrawHorizontalRun(&ScreenPtr, XAdvance, InitialPixelCount, Color, ScreenWidth);
+		DrawHorizontalRun(&ScreenPtr, XAdvance, InitialPixelCount, Color);
 		/* Draw all full runs */
 		for (i=0; i<(YDelta-1); i++)
 		{
@@ -269,10 +268,10 @@ void LineDraw( BOOL fClip, int XStart, int YStart, int XEnd, int YEnd, short Col
 			ErrorTerm -= AdjDown;	/* reset the error term */
 		 }
 		 /* Draw this scan line's run */
-		 DrawHorizontalRun(&ScreenPtr, XAdvance, RunLength, Color, ScreenWidth);
+		 DrawHorizontalRun(&ScreenPtr, XAdvance, RunLength, Color);
 		}
 		/* Draw the final run of pixels */
-		DrawHorizontalRun(&ScreenPtr, XAdvance, FinalPixelCount, Color, ScreenWidth);
+		DrawHorizontalRun(&ScreenPtr, XAdvance, FinalPixelCount, Color);
 		return;
 	}
 	else
@@ -316,7 +315,7 @@ void LineDraw( BOOL fClip, int XStart, int YStart, int XEnd, int YEnd, short Col
 		 ErrorTerm += XDelta;
 		}
 		/* Draw the first, partial run of pixels */
-		DrawVerticalRun(&ScreenPtr, XAdvance, InitialPixelCount, Color, ScreenWidth);
+		DrawVerticalRun(&ScreenPtr, XAdvance, InitialPixelCount, Color);
 
 		/* Draw all full runs */
 		for (i=0; i<(XDelta-1); i++)
@@ -330,10 +329,10 @@ void LineDraw( BOOL fClip, int XStart, int YStart, int XEnd, int YEnd, short Col
 			ErrorTerm -= AdjDown;	/* reset the error term */
 		 }
 		 /* Draw this scan line's run */
-		 DrawVerticalRun(&ScreenPtr, XAdvance, RunLength, Color, ScreenWidth);
+		 DrawVerticalRun(&ScreenPtr, XAdvance, RunLength, Color);
 		}
 		/* Draw the final run of pixels */
-		DrawVerticalRun(&ScreenPtr, XAdvance, FinalPixelCount, Color, ScreenWidth);
+		DrawVerticalRun(&ScreenPtr, XAdvance, FinalPixelCount, Color);
 		return;
 	}
 }
@@ -373,7 +372,7 @@ void PixelAlterColour(BOOLEAN fClip, INT32 xp, INT32 yp, INT16 sColor, UINT8 *pS
 /* Draws a horizontal run of pixels, then advances the bitmap pointer to
 	the first pixel of the next run. */
 void DrawHorizontalRun(UINT8 **ScreenPtr, int XAdvance,
-	int RunLength, int Color, int ScreenWidth)
+	int RunLength, int Color)
 {
 	int i;
 	UINT8 *WorkingScreenPtr = *ScreenPtr;
@@ -394,7 +393,7 @@ void DrawHorizontalRun(UINT8 **ScreenPtr, int XAdvance,
 /* Draws a vertical run of pixels, then advances the bitmap pointer to
 	the first pixel of the next run. */
 void DrawVerticalRun(UINT8 **ScreenPtr, int XAdvance,
-	int RunLength, int Color, int ScreenWidth)
+	int RunLength, int Color)
 {
 	int i;
 	UINT8 *WorkingScreenPtr = *ScreenPtr;
@@ -414,7 +413,7 @@ void DrawVerticalRun(UINT8 **ScreenPtr, int XAdvance,
 
 
 /* Draws a rectangle between the specified endpoints in color Color. */
-void RectangleDraw( BOOL fClip, int XStart, int YStart, int XEnd, int YEnd, short Color, UINT8 *ScreenPtr)
+void RectangleDraw( BOOLEAN fClip, int XStart, int YStart, int XEnd, int YEnd, short Color, UINT8 *ScreenPtr)
 {
 	LineDraw( fClip, XStart, YStart, XEnd,	YStart, Color, ScreenPtr);
 	LineDraw( fClip, XStart, YEnd,	XEnd,	YEnd,	Color, ScreenPtr);

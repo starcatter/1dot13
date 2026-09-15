@@ -1,7 +1,7 @@
 #ifndef POPUP_DEFINITION
 	#define POPUP_DEFINITION
 
-#include "sgp.h"	
+#include "LegacySGP.h"
 #include "popup_class.h"
 #include "popup_callback.h"
 

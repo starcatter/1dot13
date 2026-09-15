@@ -1,5 +1,5 @@
 ﻿	#include "WordWrap.h"
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Render Dirty.h"
 	#include "Font Control.h"
 	#include "stdio.h"

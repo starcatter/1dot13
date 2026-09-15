@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Encrypted File.h"
 	#include "faces.h"
 	#include "WCheck.h"

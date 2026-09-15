@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Isometric Utils.h"
 	#include "worlddef.h"
 	#include "Render Fun.h"

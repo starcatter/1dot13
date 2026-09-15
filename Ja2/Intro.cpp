@@ -1,4 +1,4 @@
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "sysutil.h"
 #include "Cursor Control.h"
 #include "Render Dirty.h"

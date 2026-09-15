@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "worlddef.h"
 	#include "Points.h"
 	#include "Overhead.h"

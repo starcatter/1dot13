@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "jascreens.h"
 	#include "laptop.h"
 	#include "worlddef.h"

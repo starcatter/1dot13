@@ -1,5 +1,5 @@
 #include <string.h>
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "Sound Control.h"
 #include "Debug Control.h"
 #include "expat.h"

@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "mousesystem.h"
 	#include "Handle UI.h"
 	#include "Cursors.h"

@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Utilities.h"
 	#include "WCheck.h"
 	#include "Render Dirty.h"

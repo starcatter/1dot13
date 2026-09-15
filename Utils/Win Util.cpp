@@ -6,7 +6,7 @@
 #include "dsutil.h"    
 #include "DEBUG.H"
 
-#include "sgp.h"
+#include "LegacySGP.h"
 
 #include "Sound Control.h"
 

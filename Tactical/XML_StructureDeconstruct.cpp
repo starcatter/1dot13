@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Overhead.h"
 	#include "Handle Items.h"
 	#include "Debug Control.h"

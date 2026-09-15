@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Font.h"
 	#include "types.h"
 	#include "Font Control.h"

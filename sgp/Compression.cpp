@@ -7,11 +7,13 @@
 
 voidpf ZAlloc( voidpf opaque, uInt items, uInt size )
 {
+	(void)opaque;
 	return( MemAlloc( items * size ) );
 }
 
 void ZFree( voidpf opaque, voidpf address )
 {
+	(void)opaque;
 	MemFree( address );
 }
 
@@ -67,6 +69,7 @@ UINT32 Decompress( PTR pDecompPtr, BYTE * pBuffer, UINT32 uiBufferLen )
 	// decompress!
 	iZRetCode = inflate( pZStream, Z_PARTIAL_FLUSH );
 	Assert( iZRetCode == Z_OK || iZRetCode == Z_STREAM_END );
+	(void)iZRetCode;
 
 	return( uiBufferLen - pZStream->avail_out );
 }
@@ -142,6 +145,7 @@ UINT32 Compress( PTR pCompPtr, BYTE * pBuffer, UINT32 uiBufferLen )
 	// decompress!
 	iZRetCode = deflate( pZStream, Z_FINISH );
 	Assert( iZRetCode == Z_STREAM_END );
+	(void)iZRetCode;
 
 	return( uiBufferLen - pZStream->avail_out );
 }

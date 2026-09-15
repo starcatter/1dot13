@@ -19,6 +19,7 @@
 
 
 
+#include <cstdint>
 #include <wchar.h>			// for wide-character strings
 #include "FileHandle.h"
 
@@ -29,37 +30,51 @@
 
 // HEY WIZARDRY DUDES, JA2 ISN'T THE ONLY PROGRAM WE COMPILE! :-)
 
-typedef unsigned int		UINT32;
-typedef signed __int64		INT64;		// WANNE - BMP: Used for Big Maps
-typedef signed int			INT32;
-typedef unsigned __int64	UINT64;
+typedef std::uint32_t		UINT32;
+typedef std::int64_t		INT64;		// WANNE - BMP: Used for Big Maps
+typedef std::int32_t		INT32;
+typedef std::uint64_t		UINT64;
 //typedef unsigned long long	UINT128;  //Madd:  Doing away with this redundant type
 
 // integers
-typedef unsigned char	UINT8;
-typedef signed char		INT8;
-typedef unsigned short	UINT16;
-typedef signed short	INT16;
+typedef std::uint8_t	UINT8;
+typedef std::int8_t		INT8;
+typedef std::uint16_t	UINT16;
+typedef std::int16_t	INT16;
 // floats
 typedef float			FLOAT;
 typedef double			DOUBLE;
 // strings
 typedef char			CHAR8;
+#ifdef _WIN32
 typedef wchar_t			CHAR16;
+#else
+// Engine text and serialized strings use Windows-width UTF-16 code units.
+// Do not use Linux wchar_t here: it is normally 32 bits wide.
+typedef char16_t		CHAR16;
+#endif
 typedef CHAR8 * 		STR;
 typedef CHAR8 *			STR8;
 typedef CHAR16 *		STR16;
 // flags (individual bits used)
-typedef unsigned char	FLAGS8;
-typedef unsigned short	FLAGS16;
-typedef unsigned long	FLAGS32;
+typedef std::uint8_t	FLAGS8;
+typedef std::uint16_t	FLAGS16;
+typedef std::uint32_t	FLAGS32;
 typedef UINT64			FLAGS64;
 // other
-typedef unsigned char	BOOLEAN;
+typedef std::uint8_t	BOOLEAN;
 typedef void *			PTR;
-typedef unsigned short	HNDL;
-typedef UINT8			BYTE;
+typedef std::uint16_t	HNDL;
+typedef std::uint8_t	BYTE;
 typedef CHAR8			STRING512[512];
+
+static_assert(sizeof(INT8) == 1 && sizeof(UINT8) == 1, "8-bit engine types changed width");
+static_assert(sizeof(INT16) == 2 && sizeof(UINT16) == 2, "16-bit engine types changed width");
+static_assert(sizeof(INT32) == 4 && sizeof(UINT32) == 4, "32-bit engine types changed width");
+static_assert(sizeof(INT64) == 8 && sizeof(UINT64) == 8, "64-bit engine types changed width");
+static_assert(sizeof(FLAGS32) == 4, "FLAGS32 must remain serialized as 32 bits");
+static_assert(sizeof(BOOLEAN) == 1, "BOOLEAN must remain an 8-bit engine value");
+static_assert(sizeof(CHAR16) == 2, "CHAR16 must remain a UTF-16 code unit");
 
 #define SGPFILENAME_LEN 100
 typedef CHAR8 SGPFILENAME[SGPFILENAME_LEN];	

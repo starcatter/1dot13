@@ -1,6 +1,6 @@
 	#include "popup_class.h"
 	#include "popup_callback.h"
-	#include "sgp.h"
+	#include "LegacySGP.h"
 
 	#include "popup_definition.h"
 	#include "Interface Items.h"

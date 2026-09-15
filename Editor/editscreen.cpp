@@ -1,7 +1,7 @@
 
 #ifdef JA2EDITOR
 
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "vobject.h"
 	#include "worlddef.h"
 	#include "renderworld.h"

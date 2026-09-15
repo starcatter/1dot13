@@ -1,5 +1,5 @@
 #include <cstdio>
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "gameloop.h"
 #include "himage.h"
 #include "vobject.h"

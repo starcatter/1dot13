@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Weapons.h"
 	#include "Debug Control.h"
 	#include "expat.h"

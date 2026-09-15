@@ -1,5 +1,5 @@
 #include "MPXmlTeams.hpp"
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "FileMan.h"
 #include "expat.h"
 #include "XML.h"

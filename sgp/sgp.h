@@ -1,13 +1,9 @@
 #ifndef __SGP_
 #define __SGP_
 
-#include "local.h"
 #include "types.h"
 #include "timer.h"
 #include "DEBUG.H"
-
-#include "video.h"
-
 
 #ifdef __cplusplus
 extern "C" {

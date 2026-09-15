@@ -1,6 +1,6 @@
 	#include <stdio.h>
 	#include <math.h>
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "himage.h"
 	#include "vobject.h"
 	#include "sysutil.h"

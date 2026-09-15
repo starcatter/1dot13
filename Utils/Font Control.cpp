@@ -1,6 +1,6 @@
 	#include <stdio.h>
 	#include <time.h>
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "himage.h"
 	#include "vsurface.h"
 	#include "WCheck.h"

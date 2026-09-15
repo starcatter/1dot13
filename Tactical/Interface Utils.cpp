@@ -1,5 +1,5 @@
 	#include <string.h>
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "himage.h"
 	#include "vobject.h"
 	#include "Interface Utils.h"

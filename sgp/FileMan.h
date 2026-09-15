@@ -23,6 +23,12 @@
 #include "types.h"
 #include <string>
 
+#if defined(_MSC_VER)
+#define JA2_CDECL __cdecl
+#else
+#define JA2_CDECL
+#endif
+
 namespace ja2
 {
 	namespace fileio
@@ -117,7 +123,7 @@ extern BOOLEAN	FileReadLine( HWFILE hFile, std::string* pDest );
 extern BOOLEAN	FileWrite( HWFILE hFile, const void* pDest, UINT32 uiBytesToWrite, UINT32 *puiBytesWritten );
 extern BOOLEAN	FileLoad( STR filename, PTR pDest, UINT32 uiBytesToRead, UINT32 *puiBytesRead );
 
-extern BOOLEAN _cdecl FilePrintf( HWFILE hFile, STR8	strFormatted, ... );
+extern BOOLEAN JA2_CDECL FilePrintf( HWFILE hFile, STR8	strFormatted, ... );
 
 extern BOOLEAN	FileSeek( HWFILE, UINT32 uiDistance, UINT8 uiHow );
 extern INT32	FileGetPos( HWFILE );

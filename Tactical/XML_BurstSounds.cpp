@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Sound Control.h"
 	#include "Weapons.h"
 	#include "FileMan.h"

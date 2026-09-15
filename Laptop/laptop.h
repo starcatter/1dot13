@@ -2,7 +2,7 @@
 #define __LAPTOP_H
 
 #include "types.h"
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "Font Control.h"
 #include "MessageBoxScreen.h"
 

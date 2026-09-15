@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "Screens.h"
 #include "vobject_blitters.h"
 #include "sysutil.h"

@@ -1,6 +1,6 @@
 // MODULE FOR SOUND SYSTEM
 
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Sound Control.h"
 	#include "soundman.h"
 	#include "Overhead.h"

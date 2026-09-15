@@ -9,7 +9,7 @@
 #include <stdarg.h>
 #include <wchar.h>
 #include <string.h>
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "MemMan.h"
 #include "FileMan.h"
 #include "Font.h"

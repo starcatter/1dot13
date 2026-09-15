@@ -1,5 +1,5 @@
 	#include <stdio.h>
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "vobject.h"
 	#include "sysutil.h"
 	#include "mousesystem.h"

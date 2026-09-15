@@ -1,6 +1,6 @@
 # JA2 1.13 Porting Plan Update
 
-Date: 2026-09-15
+Date: 2026-09-16
 
 ## Executive Status
 
@@ -30,11 +30,13 @@ Native tests cover detached execution, captured-state ownership, empty-task reje
 
 ## Native-Build Progress: Shared Core
 
-The root build now selects `JA2_PLATFORM_BACKEND=LINUX` by default on a Linux host and produces `ja2_shared_core` instead of entering the Windows application, renderer, input, audio, tools, and resource-file source groups. The target contains 16 first-party translation units: the complete file/resource service boundary, POSIX durable operations and paths, monotonic clocks, fixed-step scheduling, portable sleep, detached tasks, the legacy clock facade, and a platform-neutral string utility. It also builds the pinned patched bfVFS and LZMA SDK dependencies natively from the same sources used by the Windows baseline.
+The root build now selects `JA2_PLATFORM_BACKEND=LINUX` by default on a Linux host and produces `ja2_shared_core` instead of entering the Windows application, renderer, input, audio, tools, and resource-file source groups. The target contains 20 first-party translation units: the complete file/resource service boundary, POSIX durable operations and paths, the legacy `FileMan` compatibility facade, monotonic clocks, fixed-step scheduling, portable sleep, detached tasks, zlib compression, CPU line rendering, key translation, the legacy clock facade, and a platform-neutral string utility. It also builds the pinned patched bfVFS, LZMA SDK, and zlib dependencies natively from the same sources used by the Windows baseline.
 
-An integrated `ja2_shared_core_smoke` executable links and exercises the combined target: monotonic time and sleeping, scheduler construction, detached execution, physical writable storage, durable file sync, metadata, and executable-path discovery. The existing three timing/thread and six file-I/O characterization tests are registered alongside it, giving the root Linux build one ten-test CTest gate. GCC 16 and Clang 22 builds pass with strict first-party warnings; a GCC AddressSanitizer build also passes when leak detection is disabled under the ptrace-based test container.
+An integrated `ja2_shared_core_smoke` executable links and exercises the combined target: monotonic time and sleeping, scheduler construction, detached execution, physical writable storage, durable file sync, metadata, and executable-path discovery. The existing timing/thread and file-I/O suites are registered alongside fixed-width type, legacy `FileMan`, compression, and CPU rendering/key-translation tests, giving the root Linux build one 14-test CTest gate. GCC 16 and Clang 22 builds pass with strict first-party warnings; a GCC AddressSanitizer build also passes when leak detection is disabled under the ptrace-based test container.
 
-The next compiler boundary is now explicit. Including `sgp/types.h` fails on its MSVC-only `__int64` aliases. Correcting that alone is insufficient: `CHAR16` is Windows-width `wchar_t`, `FLAGS32` is platform-width `unsigned long`, and `sgp.h` fans out through `video.h` into Windows and DirectDraw declarations. These are the next shared-core extraction tasks. No native game executable is claimed yet.
+The former fundamental-type and umbrella-header boundary is resolved. Integer and flag aliases use fixed-width standard types; `CHAR16` remains `wchar_t` on Windows for source and ABI compatibility but is an explicit 16-bit `char16_t` on native targets. `sgp.h` no longer includes `local.h`, `video.h`, Windows, DirectDraw, or FMOD. Existing sources that still require the historical fan-out include the explicitly named `LegacySGP.h` compatibility umbrella, making that debt visible and allowing new shared code to use the neutral header.
+
+The next compiler boundary is now the image pipeline. A native compile attempt reaches `himage.cpp` and stops on legacy anonymous-layout extensions, MSVC `__min`, and assert-only or unimplemented paths that strict compilers diagnose. Separately, broad gameplay compilation still requires migration from `wchar_t`, `L"..."`, and `wcs*` assumptions to the fixed-width engine text type and a central UTF conversion service. No native game executable is claimed yet.
 
 The native checkpoint is built with:
 
@@ -183,8 +185,8 @@ The terms below are used deliberately:
 | Windows x86 compilation | Supported with MSVC; Wine-hosted toolchain documented | Working regression reference |
 | Windows x86 runtime | Smoke-tested under Wine before the final commit boundary | Useful behavioral oracle, but exact-commit and native-Windows validation remain |
 | Portable file contracts | Implemented | Callers no longer require Win32 file handles or writable bfVFS access |
-| Native core build | Root `ja2_shared_core` builds with GCC and Clang; all ten registered tests pass | Storage, resource, timing, sleep, and threading form a proven host-native island |
-| Linux game executable | Not defined yet | Fundamental types and shared-header Win32/DirectDraw fan-out are the next blockers |
+| Native core build | Root `ja2_shared_core` builds 20 first-party units with GCC and Clang; all 14 registered tests pass | Storage, resources, legacy file handles, compression, CPU line rendering, timing, sleep, and threading form a proven host-native island |
+| Linux game executable | Not defined yet | UTF-16 call-site migration, the image pipeline, and remaining subsystem backends are the next blockers |
 | Window/event backend | Win32 only | Hard Linux blocker |
 | Rendering/presentation | DirectDraw 2 plus cnc-ddraw | Works as a legacy compatibility path; no native Linux renderer |
 | Input backend | Win32 mouse hook/messages and direct cursor polling | Hard Linux blocker, although the engine event queue is reusable |
@@ -250,25 +252,24 @@ The original root-build blockers have been removed for the bounded Linux target:
 - `CMakeLists.txt` selects `WINDOWS` or `LINUX` according to the target platform and enters backend-specific source groups.
 - The Linux path returns after defining `ja2_shared_core` and its smoke test, so it does not create the Windows GUI executable, compile `Ja2/Res/ja2.rc`, or link WinMM, WinHTTP, DirectDraw, and `fmodvc.lib`.
 - Frame-pointer, warning, and AddressSanitizer options distinguish MSVC/clang-cl from native GCC and Clang.
-- Pinned LZMA, utf8cpp, and patched bfVFS dependencies build on both backends.
+- Pinned LZMA, zlib, utf8cpp, and patched bfVFS dependencies build on both backends.
 - The Windows application graph remains intact and continues to provide the behavioral baseline.
 
-The controlled target deliberately stops before legacy `types.h` and the application/header fan-out. It exposes the next errors without conflating fundamental-type, text, application-host, rendering, input, and audio work.
+The controlled target now includes legacy `FileMan`, compression, key translation, and CPU line drawing while deliberately stopping before the image-loader/rendering graph. This exposes the next errors without conflating text, application-host, full rendering, input, and audio work.
 
 ### Fundamental Types and Header Fan-Out
 
-The most consequential type problems are concentrated in `sgp/types.h`:
+The most consequential fundamental type problems in `sgp/types.h` are now resolved:
 
-- `sgp/types.h:33-35` uses MSVC-specific `__int64`.
-- `sgp/types.h:48` defines `CHAR16` as `wchar_t`. Windows `wchar_t` is 16-bit; normal Linux `wchar_t` is 32-bit. This affects memory layout, text behavior, Lua string storage (`lua/lwstring.h:22-25`), and serialized data such as `Ja2/SaveLoadGame.cpp:1231`.
-- `sgp/types.h:55` defines `FLAGS32` as `unsigned long`, which is 32-bit on Windows LLP64 and normally 64-bit on Linux LP64.
-- `sgp/FileMan.h:120` exposes `_cdecl`.
+- `INT8` through `UINT64` and `FLAGS32` use standard fixed-width integer types and have native compile-time size checks.
+- `CHAR16` is guaranteed to remain two bytes: Windows retains its 16-bit `wchar_t`, while non-Windows builds use `char16_t` instead of changing the platform wide-character ABI.
+- `FileMan` exposes a project calling-convention macro that maps to `__cdecl` only where required, and the complete legacy facade now compiles and runs native tests over the portable file backend.
 
 `-fshort-wchar` would be a poor shortcut because it makes the program disagree with the platform C/C++ wide-character ABI. The durable solution is an explicit 16-bit engine/serialized character type plus conversion at OS, library, and UI boundaries.
 
-Windows headers still spread through the engine. `sgp/video.h:4-6` includes `windows.h`, DirectDraw, and `process.h`, then `sgp/sgp.h:9` includes `video.h`. `sgp.h` is included at roughly 163 sites, so one presentation header acts as broad Windows contamination. Representative public leaks include `HWND`/`HINSTANCE` in `sgp/video.h:24-35`, `LOGFONT` in `sgp/WinFont.h:3-11`, `POINT` in `Strategic/Map Screen Interface Map.h:423`, and `BOOL` in `sgp/line.h:64-66`.
+Windows headers still spread through subsystem-specific interfaces, but no longer through neutral `sgp.h`. The 161 existing consumers of its historical fan-out now include `LegacySGP.h`, which deliberately pulls in `local.h` and `video.h`; new and migrated code can include `sgp.h` without Windows, DirectDraw, or FMOD declarations. The CPU line interface now uses the engine `BOOLEAN` type rather than Win32 `BOOL`. Representative remaining public leaks include `HWND`/`HINSTANCE` in `sgp/video.h:24-35`, `LOGFONT` in `sgp/WinFont.h:3-11`, and `POINT` in `Strategic/Map Screen Interface Map.h:423`.
 
-The next header cleanup should split common engine declarations from platform/window/video implementation declarations. Existing project types such as `SGPPoint`, `SGPRect`, `BOOLEAN`, and fixed-width integer aliases provide replacement vocabulary.
+The next header cleanup should migrate individual `LegacySGP.h` consumers to specific subsystem headers while replacing the remaining platform types. Existing project types such as `SGPPoint`, `SGPRect`, `BOOLEAN`, and fixed-width integer aliases provide replacement vocabulary.
 
 ### Application Host and Event Loop
 
@@ -492,7 +493,7 @@ Deliverables:
 - Save corpus and deterministic format hashes.
 - Resource/profile/archive fixtures.
 - Renderer screenshots/framebuffer hashes, input traces, and audio callback traces.
-- Completed root integration of the ten native shared-core, timing/thread, and file-I/O tests; CI wiring remains.
+- Completed root integration of the 14 native shared-core, type, compression, CPU-rendering, timing/thread, and file-I/O tests; CI wiring remains.
 
 Exit gate: the current backend is measurable enough to identify whether later differences are intentional.
 
@@ -501,8 +502,8 @@ Exit gate: the current backend is measurable enough to identify whether later di
 Deliverables:
 
 - Completed: backend-conditioned CMake structure and a `LINUX` shared-core target.
-- Fixed-width fundamental types, especially `FLAGS32`, plus a deliberate `CHAR16` design.
-- Common headers separated from `windows.h`/DirectDraw declarations.
+- Completed: fixed-width fundamental types, especially `FLAGS32`, plus a deliberate two-byte `CHAR16` design.
+- Completed first boundary: neutral `sgp.h` is separated from `windows.h`/DirectDraw declarations; remaining consumers are explicitly marked through `LegacySGP.h` for incremental migration.
 - Central UTF-8/UTF-16 conversion service.
 - Pointer-safe callback/userdata payload designs for interfaces touched by platform work.
 

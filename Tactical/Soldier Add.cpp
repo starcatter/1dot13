@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 
 	#include "Overhead.h"
 	#include "Overhead Types.h"

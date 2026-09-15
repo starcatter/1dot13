@@ -3,7 +3,7 @@
 
 #include "DirectX Common.h"
 #include <ddraw.h>
-#include "sgp.h"
+#include "LegacySGP.h"
 
 // Direct Draw Functions
 

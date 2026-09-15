@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "FileMan.h"
 	#include "Drugs And Alcohol.h"
 	#include "Debug Control.h"

@@ -3,7 +3,7 @@
 	#include "vsurface.h"
 	#include "mousesystem.h"
 	#include "Button System.h"
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "WCheck.h"
 	#include "Utilities.h"
 	#include "message.h"

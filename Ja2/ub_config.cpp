@@ -11,7 +11,7 @@
 	#include "XML.h"
 	#include "INIReader.h"
 	#include "Game Event Hook.h"
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "jascreens.h"
 	#include "laptop.h"
 	#include "worlddef.h"

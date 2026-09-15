@@ -1,7 +1,7 @@
 #ifndef POPUP_CALLBACK_CLASS
 	#define POPUP_CALLBACK_CLASS
 
-	#include "sgp.h"	
+	#include "LegacySGP.h"
 
 	class popupCallback;
 

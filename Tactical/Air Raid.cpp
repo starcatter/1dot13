@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Air Raid.h"
 	#include "Game Event Hook.h"
 	#include "Game Clock.h"

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <time.h>
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "WCheck.h"
 #include "Event Pump.h"
 #include "timer.h"

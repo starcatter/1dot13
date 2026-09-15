@@ -1,5 +1,5 @@
 	#include <stdio.h>
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "faces.h"
 	#include "WCheck.h"
 	#include "Soldier Profile.h"

@@ -1,4 +1,4 @@
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "Game Clock.h"
 #include "Font.h"
 #include "Render Dirty.h"

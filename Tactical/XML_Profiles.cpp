@@ -10,7 +10,7 @@
 // in this file, following my example.
 ///////////////////////////////////////////////////////////////////////////////
 
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "GameSettings.h"

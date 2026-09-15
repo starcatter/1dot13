@@ -2,7 +2,7 @@
 #define _UTILITIES_H_
 
 #include "Overhead Types.h"
-#include "sgp.h"
+#include "LegacySGP.h"
 
 
 // WANNE: Maximum number of characters in german description (German xml files)

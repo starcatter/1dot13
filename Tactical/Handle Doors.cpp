@@ -1,5 +1,5 @@
 	#include <wchar.h>
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "worlddef.h"
 	#include "worldman.h"
 	#include "renderworld.h"

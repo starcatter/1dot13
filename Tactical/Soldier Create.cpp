@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Soldier Create.h"
 	#include "Overhead.h"
 	#include "WCheck.h"

@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "FileMan.h"
 #include "Strategic Status.h"
 #include "Soldier Control.h"

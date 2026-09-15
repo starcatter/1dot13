@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Overhead Types.h"
 	#include "Soldier Control.h"
 	#include "Overhead.h"

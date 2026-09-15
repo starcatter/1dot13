@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "message.h"
 	#include "Quests.h"
 	#include "Game Clock.h"

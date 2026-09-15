@@ -1,7 +1,7 @@
 #ifndef __JASCREENS_H_
 #define __JASCREENS_H_
 
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "screenids.h"
 #include "mousesystem.h"
 #include "Button System.h"

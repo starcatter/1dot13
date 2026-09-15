@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "gameloop.h"
 #include <Overhead Types.h>
 #include <Soldier Control.h>

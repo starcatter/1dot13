@@ -14,7 +14,9 @@
 #ifndef __DEBUG_MANAGER_
 #define __DEBUG_MANAGER_
 
+#ifdef _MSC_VER
 #include <crtdbg.h>
+#endif
 
 #include "types.h"
 #include "TopicOps.h"
@@ -117,8 +119,8 @@ extern CHAR8			gubAssertString[512];//for long filenames
 
 #else 
 
-#define Assert(a)		((void *)0)
-#define AssertMsg(a,b)	((void *)0)					
+#define Assert(a)		((void)0)
+#define AssertMsg(a,b)	((void)0)
 
 //*******************************************************************************************
 #endif
@@ -161,7 +163,7 @@ extern bool	gfDebugTopics[MAX_TOPICS_ALLOTED];
 #define ErrorMsg(a)					_DebugMessage( (a), __LINE__, __FILE__)
 
 #define RegisterJA2DebugTopic(a, b)		DbgTopicRegistration( TOPIC_REGISTER, (a), (b) )
-#define RegisterDebugTopic(a, b)		((void *)0)
+#define RegisterDebugTopic(a, b)		((void)0)
 #define DebugMsg(a, b, c)				DbgMessageReal( (a), TOPIC_MESSAGE, (b), (c) )
 
 // public interface to debug methods:
@@ -179,20 +181,20 @@ extern	void	_DebugMessage(const char *pSourceFile, unsigned uiLineNum, const cha
 //*******************************************************************************************
 // Release Mode
 //*******************************************************************************************
-#define DebugBreakpoint()						((void *)0)
+#define DebugBreakpoint()						((void)0)
 
-#define RegisterDebugTopic(a, b)				((void *)0)
-#define UnRegisterDebugTopic(a, b)				((void *)0)
-#define ClearAllDebugTopics( )					((void *)0)
+#define RegisterDebugTopic(a, b)				((void)0)
+#define UnRegisterDebugTopic(a, b)				((void)0)
+#define ClearAllDebugTopics( )					((void)0)
 
-#define FastDebugMsg(a)							((void *)0)
-#define ErrorMsg(a)								((void *)0)
+#define FastDebugMsg(a)							((void)0)
+#define ErrorMsg(a)								((void)0)
 
-#define DbgTopicRegistration(a, b, c);			((void *)0)
-#define DbgMessage(a, b, c)						((void *)0)
+#define DbgTopicRegistration(a, b, c);			((void)0)
+#define DbgMessage(a, b, c)						((void)0)
 
-#define RegisterJA2DebugTopic(a, b)				((void *)0)
-#define DebugMsg(a, b, c)						((void *)0)
+#define RegisterJA2DebugTopic(a, b)				((void)0)
+#define DebugMsg(a, b, c)						((void)0)
 
 //*******************************************************************************************
 #endif

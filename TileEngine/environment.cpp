@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "environment.h"
 	#include "renderworld.h"
 	#include "Sound Control.h"

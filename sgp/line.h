@@ -17,7 +17,6 @@
 //
 // *****************************************************************************
 
-#include "sgp.h"
 #include "types.h"
 
 //**************************************************************************
@@ -61,9 +60,8 @@ void PixelDraw( BOOLEAN fClip, INT32 xp, INT32 yp, INT16 sColor, UINT8 *pScreen 
 // Flugente: alter the colour of existing pixels instead of fully replacing the colour
 void PixelAlterColour( BOOLEAN fClip, INT32 xp, INT32 yp, INT16 sColor, UINT8 *pScreen );
 
-void LineDraw( BOOL fClip, int XStart, int YStart, int XEnd, int YEnd, short Color, UINT8 *ScreenPtr);
-void LineDraw( BOOL fClip, int XStart, int YStart, int XEnd, int YEnd, short Color, UINT8 *ScreenPtr);
-void RectangleDraw( BOOL fClip, int XStart, int YStart, int XEnd, int YEnd, short Color, UINT8 *ScreenPtr);
+void LineDraw( BOOLEAN fClip, int XStart, int YStart, int XEnd, int YEnd, short Color, UINT8 *ScreenPtr);
+void RectangleDraw( BOOLEAN fClip, int XStart, int YStart, int XEnd, int YEnd, short Color, UINT8 *ScreenPtr);
 
 // *****************************************************************************
 

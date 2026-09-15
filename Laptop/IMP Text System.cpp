@@ -1,5 +1,5 @@
 	#include "WordWrap.h"
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Encrypted File.h"
 	#include "IMP Text System.h"
 	#include "CharProfile.h"

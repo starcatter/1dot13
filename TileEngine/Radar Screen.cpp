@@ -1,5 +1,5 @@
 
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Radar Screen.h"
 	#include "sysutil.h"
 	#include "line.h"

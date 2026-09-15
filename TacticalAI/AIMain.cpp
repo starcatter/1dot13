@@ -1,4 +1,4 @@
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "ai.h"
 #include "Isometric Utils.h"
 #include "Overhead.h"

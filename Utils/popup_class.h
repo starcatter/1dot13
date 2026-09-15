@@ -3,7 +3,7 @@
 
 	#include "popup_callback.h"
 	#include "types.h"
-	#include "sgp.h"
+	#include "LegacySGP.h"
 
 	#define MAX_POPUPS 32
 	#define POPUP_MAX_SUB_POPUPS  24

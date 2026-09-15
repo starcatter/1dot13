@@ -13,7 +13,7 @@
 #include "Render Dirty.h"
 #include "Music Control.h"
 #include <wchar.h>
-#include "sgp.h"
+#include "LegacySGP.h"
 #include "Cursors.h"
 #include "Timer Control.h"
 #include "jascreens.h"

@@ -1,4 +1,4 @@
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "Soldier Control.h"
 	#include "Soldier Profile.h"
 	#include "Drugs And Alcohol.h"

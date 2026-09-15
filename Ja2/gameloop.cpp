@@ -1,5 +1,5 @@
 	#include <time.h>
-	#include "sgp.h"
+	#include "LegacySGP.h"
 	#include "gameloop.h"
 	#include "Screens.h"
 	#include "Cursors.h"
