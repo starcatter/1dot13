@@ -115,9 +115,6 @@ add_compile_definitions(
   # which only ever yields 2^15 distinct values -- it breaks big maps and
   # invalidates saves.
   BMP_RANDOM
-  # Utils/Timer Control.h
-  CALLBACKTIMER
-
   # Multiplayer (WANNE), formerly Multiplayer/connect.h.
   # Interrupts stay off in COOP: AI interrupts computed on a pure client are
   # still wrong. This also drops the server-side ALT+E "override turn" dialog,

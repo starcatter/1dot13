@@ -1,6 +1,7 @@
 	#include "Cursor Control.h"
 
 	#include "video.h"
+	#include "platform/Clock.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -407,7 +408,7 @@ BOOLEAN SetCurrentCursorFromDatabase( UINT32 uiCursorIndex	)
 					// OK, check if we are a delay cursor...
 					if ( pCurData->bFlags & DELAY_START_CURSOR )
 					{
-						guiDelayTimer = GetTickCount( );
+						guiDelayTimer = Platform::GetClockMilliseconds( );
 					}
 				}
 
@@ -416,7 +417,7 @@ BOOLEAN SetCurrentCursorFromDatabase( UINT32 uiCursorIndex	)
 				// Olny update if delay timer has elapsed...
 				if ( pCurData->bFlags & DELAY_START_CURSOR )
 				{
-					if ( ( GetTickCount( ) - guiDelayTimer ) < 1000 )
+					if ( ( Platform::GetClockMilliseconds( ) - guiDelayTimer ) < 1000 )
 					{
 						EraseMouseCursor( );
 

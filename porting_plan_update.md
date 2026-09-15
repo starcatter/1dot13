@@ -10,6 +10,16 @@ This is an important architectural milestone, but it is not yet a native Linux p
 
 In roadmap terms, the update moves the project from "stabilize and reproduce the legacy Windows program" into "extract replaceable platform backends." File and resource access is now sufficiently isolated that subsequent work does not need to solve storage portability at the same time as windowing, rendering, input, or audio. That substantially reduces the risk and scope of each later migration.
 
+## Platform-Core Progress: Monotonic Timing
+
+The engine clock-source migration is now implemented as the first platform-core extraction. A project-owned C++17 monotonic clock wraps `std::chrono::steady_clock` and supplies process-relative microsecond, 64-bit millisecond, and legacy wrapping 32-bit millisecond readings. Runtime users of `GetTickCount`, QueryPerformanceCounter, the window `SetTimer` clock manager, and the dormant WinMM callback-timer path now use that clock. The fixed-step synthetic JA2 clocks, pause behavior, configurable clock speed, fast-forward cadence, and notification behavior remain engine policy rather than properties of the host clock.
+
+Native timing tests cover monotonicity, unit coherence, elapsed-time accuracy, 32-bit deadline wraparound, and the legacy clock-manager/countdown contract. The same tests build for Windows x86 and compare the replacement directly with QueryPerformanceCounter and GetTickCount64. The Windows executable also builds with the replacement wired in.
+
+Thread creation, events, waits, and critical sections in `Utils/Timer Control.cpp` deliberately remain for the next platform-core step. They are the delivery mechanism for timer ticks, not a clock source. Windows' short-sleep resolution hint is isolated behind a platform service so the current executable retains its pacing while the thread/wait loop is replaced.
+
+Stracciatella provides a useful independent design check. Its current timer control also uses `std::chrono::steady_clock`; after first replacing decrementing counters with steady-clock deadlines, it removed its SDL timer as inaccurate overhead and advances the JA2 clock from the main loop. That validates the selected clock source and argues against mechanically translating the current Win32 timer and notify threads to `std::thread`. The next synchronization step should instead move tick delivery onto a portable main-loop scheduler, then delete those threads, events, callback lists, game-loop critical section, and the temporary Windows sleep-resolution hint together. This branch must retain the 1.13-specific fixed-step, clock-speed, fast-forward, pause, and notification semantics while doing so; Stracciatella's simpler elapsed-millisecond policy is not a drop-in replacement for them.
+
 ## Position Against the Portable-I/O Plan
 
 ### Completed Migration Boundary

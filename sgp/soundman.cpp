@@ -15,13 +15,12 @@
 	#include "random.h"
 	#include "fmod.h"
 	#include "sgp_logger.h"
+	#include "platform/Clock.h"
 	// sevenfm
 	#include "message.h"
 	#include "Sound Control.h"
 	//#include "english.h"
 	//#include "input.h"
-	#include <ctime>
-	#include <chrono>
 
 namespace {
 STR8 FMOD_ErrorString(int errcode)
@@ -315,12 +314,6 @@ void ShutdownSoundManager(void)
 
 std::map<std::string, uint64_t, std::less<>> gSoundMap;
 
-uint64_t TimeMS()
-{
-	using namespace std::chrono;
-	return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-}
-
 UINT32 SoundPlay(STR pFilename, SOUNDPARMS *pParms)
 {
 	UINT32 uiSample, uiChannel;
@@ -333,7 +326,7 @@ UINT32 SoundPlay(STR pFilename, SOUNDPARMS *pParms)
 			if (gGameExternalOptions.fLimitSimultaneousSound)
 				//!_KeyDown(SHIFT))
 			{
-				uint64_t curtime = TimeMS();
+				const std::uint64_t curtime = Platform::GetClockMilliseconds64();
 				std::string filename(pFilename);
 
 				if (gSoundMap[filename] > curtime)
@@ -529,7 +522,7 @@ UINT32 SoundPlayRandom(STR pFilename, RANDOMPARMS *pParms)
 			pSampleList[uiSample].uiInstances=0;
 
 			// Time stamp
-			pSampleList[uiSample].uiTimeNext=GetTickCount()+pSampleList[uiSample].uiTimeMin+Random(pSampleList[uiSample].uiTimeMax-pSampleList[uiSample].uiTimeMin);
+			pSampleList[uiSample].uiTimeNext=Platform::GetClockMilliseconds()+pSampleList[uiSample].uiTimeMin+Random(pSampleList[uiSample].uiTimeMax-pSampleList[uiSample].uiTimeMin);
 
 			return(uiSample);
 		}
@@ -874,7 +867,7 @@ BOOLEAN fRandomSoundWasCreated=FALSE;
 BOOLEAN SoundRandomShouldPlay(UINT32 uiSample)
 {
 	if(pSampleList[uiSample].uiFlags&SAMPLE_RANDOM)
-		if(pSampleList[uiSample].uiTimeNext <= GetTickCount())
+		if(pSampleList[uiSample].uiTimeNext <= Platform::GetClockMilliseconds())
 			if(pSampleList[uiSample].uiInstances < pSampleList[uiSample].uiMaxInstances)
 			{
 				return(TRUE);
@@ -907,7 +900,7 @@ SOUNDPARMS spParms;
 
 		if((uiSoundID=SoundStartSample(uiSample, uiChannel, &spParms))!=SOUND_ERROR)
 		{
-			pSampleList[uiSample].uiTimeNext=GetTickCount()+pSampleList[uiSample].uiTimeMin+Random(pSampleList[uiSample].uiTimeMax-pSampleList[uiSample].uiTimeMin);
+			pSampleList[uiSample].uiTimeNext=Platform::GetClockMilliseconds()+pSampleList[uiSample].uiTimeMin+Random(pSampleList[uiSample].uiTimeMax-pSampleList[uiSample].uiTimeMin);
 			pSampleList[uiSample].uiInstances++;
 			//SoundLog((CHAR8 *)String("	SoundPlayRandom():	Sample #%d = '%s'", uiSample, pFilename ) );
 			return(TRUE);
@@ -994,7 +987,7 @@ UINT32 uiCount;
 				else
 				{ // Check the volume fades on currently playing sounds
 					UINT32 uiVolume = SoundGetVolumeIndex(uiCount);
-					UINT32 uiTime = GetTickCount();
+					UINT32 uiTime = Platform::GetClockMilliseconds();
 
 					if((uiVolume != pSoundList[uiCount].uiFadeVolume) && (uiTime >= (pSoundList[uiCount].uiFadeTime + pSoundList[uiCount].uiFadeRate)) )
 					{
@@ -1042,7 +1035,7 @@ UINT32 uiSound, uiTime, uiPosition;
 	{
 		if((uiSound=SoundGetIndexByID(uiSoundID))!=NO_SAMPLE)
 		{
-			uiTime=GetTickCount();
+			uiTime=Platform::GetClockMilliseconds();
 			// check for rollover
 			if(uiTime < pSoundList[uiSound].uiTimeStamp)
 				uiPosition=(0-pSoundList[uiSound].uiTimeStamp)+uiTime;
@@ -1638,7 +1631,7 @@ UINT32 uiSoundID;
 	uiSoundID=SoundGetUniqueID();
 	pSoundList[uiChannel].uiSoundID=uiSoundID;
 	pSoundList[uiChannel].uiSample=uiSample;
-	pSoundList[uiChannel].uiTimeStamp=GetTickCount();
+	pSoundList[uiChannel].uiTimeStamp=Platform::GetClockMilliseconds();
 	pSoundList[uiChannel].uiFadeVolume = SoundGetVolumeIndex(uiChannel);
 
 	pSampleList[uiSample].uiCacheHits++;
@@ -1772,7 +1765,7 @@ UINT32 uiSoundID;
 	}
 
 	// Other stuff
-	pSoundList[uiChannel].uiTimeStamp=GetTickCount();
+	pSoundList[uiChannel].uiTimeStamp=Platform::GetClockMilliseconds();
 	pSoundList[uiChannel].uiFadeVolume = SoundGetVolumeIndex(uiChannel);
 	pSoundList[uiChannel].uiSample = -1;	// it's streaming directly from file !!!!
 

@@ -20,6 +20,7 @@
 #include "soldier profile type.h"
 #include "Interface Cursors.h"	// added by Flugente for UICursorDefines
 #include "Rebel Command.h"
+#include "platform/Clock.h"
 
 
 //*******	Local Defines **************************************************
@@ -501,7 +502,7 @@ void DisplayCover( BOOLEAN forceUpdate )
 	if ( gGameExternalOptions.ubCoverDisplayUpdateWait == (UINT16)-1 )
 		return;
 
-	if ( forceUpdate || ( !gfScrollPending && !gfScrollInertia && GetTickCount() > guiCoverNextUpdateTime ) )
+	if ( forceUpdate || ( !gfScrollPending && !gfScrollInertia && Platform::GetClockMilliseconds() > guiCoverNextUpdateTime ) )
 	{
 		// remove old cover objects
 		RemoveCoverObjectsFromViewArea();
@@ -544,7 +545,7 @@ void DisplayCover( BOOLEAN forceUpdate )
 			break;
 		}
 
-		guiCoverNextUpdateTime = GetTickCount() + gGameExternalOptions.ubCoverDisplayUpdateWait;
+		guiCoverNextUpdateTime = Platform::GetClockMilliseconds() + gGameExternalOptions.ubCoverDisplayUpdateWait;
 	}
 }
 

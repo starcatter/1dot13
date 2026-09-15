@@ -1,5 +1,6 @@
 #include "random.h"
 #include "Debug Control.h"
+#include "platform/Clock.h"
 
 extern bool is_client;
 extern bool is_server;
@@ -72,7 +73,7 @@ UINT32 GetRndNum(UINT32 maxnum)
 	if(!(cnt++%RAND_MAX))
 	{
 		GetCursorPos(&pt);// Get cursor location
-		srand(maxnum ^ rnd ^ pt.x ^ pt.y ^ GetTickCount());
+		srand(maxnum ^ rnd ^ pt.x ^ pt.y ^ Platform::GetClockMilliseconds());
 	}
 	if(maxnum == 0)
 		return(0);

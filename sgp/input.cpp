@@ -17,6 +17,7 @@
 	#include "english.h"
 		#include "video.h"
 	#include "local.h"
+	#include "platform/Clock.h"
 
 
 // Make sure to refer to the translation table which is within one of the following files (depending
@@ -288,7 +289,7 @@ void QueuePureEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam)
 	UINT32 uiTimer;
 	UINT16 usKeyState;
 
-	uiTimer = GetTickCount();
+	uiTimer = Platform::GetClockMilliseconds();
 	usKeyState = gfShiftState | gfCtrlState | gfAltState;
 
 	// Can we queue up one more event, if not, the event is lost forever
@@ -326,7 +327,7 @@ void InternalQueueEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam)
 	UINT32 uiTimer;
 	UINT16 usKeyState;
 
-	uiTimer = GetTickCount();
+	uiTimer = Platform::GetClockMilliseconds();
 	usKeyState = gfShiftState | gfCtrlState | gfAltState;
 
 	// Can we queue up one more event, if not, the event is lost forever
@@ -1647,7 +1648,7 @@ void HandleSingleClicksAndButtonRepeats( void )
 {
 	UINT32 uiTimer;
 
-	uiTimer = GetTickCount();
+	uiTimer = Platform::GetClockMilliseconds();
 
 	// Is there a LEFT mouse button repeat
 	if (gfLeftButtonState)

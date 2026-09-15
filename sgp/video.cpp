@@ -16,6 +16,7 @@
 #include "fileio/FileIO.h"
 #include "fileio/FileServices.h"
 #include "fileio/StoreRouter.h"
+#include "platform/Clock.h"
 
 #include "resource.h"
 #include <vfs/Core/vfs_string.h>
@@ -1872,7 +1873,7 @@ void RefreshScreen(void *DummyVariable)
 
 	if( gfVideoCapture )
 	{
-		uiTime=GetTickCount();
+		uiTime=Platform::GetClockMilliseconds();
 		if((uiTime < guiLastFrame) || (uiTime > (guiLastFrame+guiFramePeriod)))
 		{
 			SnapshotSmall( );
@@ -3255,7 +3256,7 @@ void VideoMovieCapture( BOOLEAN fEnable )
 
 		giNumFrames = 0;
 
-		guiLastFrame=GetTickCount();
+		guiLastFrame=Platform::GetClockMilliseconds();
 	}
 	else
 	{

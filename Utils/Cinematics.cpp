@@ -17,6 +17,7 @@ extern "C"
 #include "fileio/FileServices.h"
 #include "himage.h"
 #include "local.h"
+#include "platform/Clock.h"
 #include "soundman.h"
 #include "vobject.h"
 #include "vsurface.h"
@@ -153,7 +154,7 @@ SMKFLIC *SmkPlayFlic(const CHAR8 *filename, UINT32 left, UINT32 top, BOOLEAN aut
 	}
 	flic->status = smk_first(flic->decoder);
 	flic->frame = 0;
-	flic->startTime = GetTickCount();
+	flic->startTime = Platform::GetClockMilliseconds();
 
 	SmkStartAudio(*flic, filename);
 
@@ -333,7 +334,7 @@ static void SmkWriteWavHeader(UINT8 *wav, UINT32 pcmSize, UINT8 channels, UINT8 
 //	kept the playback clock itself, libsmacker leaves that to the caller.
 static void SmkAdvanceToCurrentFrame(SMKFLIC &flic)
 {
-	UINT32 milliseconds = GetTickCount() - flic.startTime;
+	UINT32 milliseconds = Platform::GetClockMilliseconds() - flic.startTime;
 	UINT32 targetFrame = static_cast<UINT32>(milliseconds / flic.millisecondsPerFrame);
 
 	while (flic.status != SMK_DONE && flic.status != SMK_ERROR && flic.frame != targetFrame)

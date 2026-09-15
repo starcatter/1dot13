@@ -28,6 +28,7 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/mousesystem.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/PCX.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/PngLoader.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/platform/Clock.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Random.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/sgp_logger.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/shading.cpp"
@@ -45,9 +46,12 @@ set(sgpSrc
 if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
 	list(APPEND sgpSrc
 		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/WindowsDurableFileOperations.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp")
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/TimerResolution.cpp")
 elseif(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
-	list(APPEND sgpSrc "${CMAKE_CURRENT_SOURCE_DIR}/fileio/PosixDurableFileOperations.cpp")
+	list(APPEND sgpSrc
+		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/PosixDurableFileOperations.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/TimerResolution.cpp")
 endif()
 
 set(sgpSrc ${sgpSrc} PARENT_SCOPE)

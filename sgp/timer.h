@@ -1,11 +1,9 @@
 #ifndef __TIMER_
 #define __TIMER_
 
-#include "types.h"
+#include <cstdint>
 
-typedef UINT32 TIMER;
-
-#define MAIN_TIMER_ID	1
+typedef std::uint32_t TIMER;
 
 #define MILLISECONDS(a) (a)
 #define SECONDS(a)			((a) / 1000)
@@ -17,11 +15,11 @@ typedef UINT32 TIMER;
 extern "C" {
 #endif
 
-BOOLEAN InitializeClockManager(void);
+bool InitializeClockManager(void);
 void	ShutdownClockManager(void);
 TIMER	GetClock(void);
-TIMER	SetCountdownClock(UINT32 TimeToElapse);
-UINT32	ClockIsTicking(TIMER uiTimer);
+TIMER	SetCountdownClock(std::uint32_t TimeToElapse);
+std::uint32_t ClockIsTicking(TIMER uiTimer);
 
 #ifdef __cplusplus
 }

@@ -10,6 +10,7 @@
 /CMakeSettings.json
 /lib/
 /tests/fileio/build/
+/tests/timing/build*/
 /.kilo/
 
 # AddressSanitizer reports (see SANITIZERS.md)

@@ -551,11 +551,7 @@ static void TimerActivatedCallback(INT32 timer, PTR state)
 void CreateStandardGamingPlatform(HWND hWindow)
 {
 	InitializeJA2Clock();
-
-	if (!IsHiSpeedClockMode())
-		SetTimer( hWindow, 0, 1, NULL);
-	else
-		AddTimerNotifyCallback(TimerActivatedCallback, hWindow);
+	AddTimerNotifyCallback(TimerActivatedCallback, hWindow);
 }
 
 
@@ -1236,10 +1232,6 @@ void GetRuntimeSettings( )
 	iDisableMouseScrolling = (int)oProps.getIntProperty("Ja2 Settings","DISABLE_MOUSE_SCROLLING", iDisableMouseScrolling);
 
 
-	// WANNE: Highspeed Timer always ON (no more optional in the ja2.ini)
-	// get timer/clock initialization state
-	//SetHiSpeedClockMode( oProps.getBoolProperty("Ja2 Settings", "HIGHSPEED_TIMER", false) ? TRUE : FALSE );	
-	SetHiSpeedClockMode( TRUE );
 }
 
 

@@ -1434,17 +1434,6 @@ void HandleOptionToggle( UINT8 Button_UserData_0, UINT8 Button_UserData_1, BOOLE
 				}
 			}
 		}
-		else
-		{
-			switch (Button_UserData_1)
-			{
-				// Disable the automatic FF, when the highspeed timer is not set in the ja2.ini
-				case TOPTION_AUTO_FAST_FORWARD_MODE:
-					if (!IsHiSpeedClockMode())
-						gGameSettings.fOptions[ Button_UserData_1 ] = FALSE;
-					break;
-			}
-		}
 
 		ButtonList[ guiOptionsToggles[ Button_UserData_0 ] ]->uiFlags |= BUTTON_CLICKED_ON;
 
@@ -1499,19 +1488,6 @@ void HandleOptionToggle( UINT8 Button_UserData_0, UINT8 Button_UserData_1, BOOLE
 				}
 			}
 		}
-		else
-		{
-			switch (Button_UserData_1)
-			{
-				// Disable the automatic FF, when the highspeed timer is not set in the ja2.ini
-				case TOPTION_AUTO_FAST_FORWARD_MODE:
-					if (!IsHiSpeedClockMode())
-						gGameSettings.fOptions[ Button_UserData_1 ] = FALSE;
-					break;
-			}
-		}
-
-
 		ButtonList[ guiOptionsToggles[ Button_UserData_0 ] ]->uiFlags &= ~BUTTON_CLICKED_ON;
 
 		if( fDown )

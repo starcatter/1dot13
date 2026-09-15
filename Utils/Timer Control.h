@@ -7,13 +7,6 @@ typedef INT32		TIMECOUNTER;
 
 typedef void (*CUSTOMIZABLE_TIMER_CALLBACK) ( void );
 
-// CALLBACK TIMER DEFINES
-enum
-{
-	ITEM_LOCATOR_CALLBACK,
-	NUM_TIMER_CALLBACKS
-};
-
 #define	TILE_ANIM__NORMAL_SPEED				200
 #define	TILE_ANIM__FAST_SPEED					30
 
@@ -72,9 +65,6 @@ void	ShutdownJA2Clock( void );
 
 UINT32	GetPauseJA2Clock( );
 
-UINT32 InitializeJA2TimerID( UINT32 uiDelay, UINT32 uiCallbackID, UINT32 uiUser );
-void	RemoveJA2TimerCallback( UINT32 uiTimer );
-
 void PauseTime( BOOLEAN fPaused );
 
 void SetCustomizableTimerCallbackAndDelay( INT32 iDelay, CUSTOMIZABLE_TIMER_CALLBACK pCallback, BOOLEAN fReplace );
@@ -93,9 +83,6 @@ void SetClockSpeedPercent(FLOAT value);
 
 BOOLEAN IsTimerActive();
 BOOLEAN IsJA2TimerThread();
-
-BOOLEAN IsHiSpeedClockMode();
-void SetHiSpeedClockMode(BOOLEAN enable);
 
 //Don't modify this value
 extern UINT32	guiBaseJA2Clock;

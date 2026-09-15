@@ -29,6 +29,7 @@
 	#include <string>
 	#include <sstream>
 	#include "DEBUG.H"
+	#include "platform/Clock.h"
 
 	//Kris addition
 		#include "screenids.h"
@@ -344,7 +345,7 @@ void			_DebugMessage(const char *pString, unsigned uiLineNum, const char *pSourc
 	// Build the output string
 	//
 
-	sprintf( ubOutputString, "{ %ld } %s [Line %d in %s]\n", GetTickCount(), pString, uiLineNum, pSourceFile );
+	sprintf( ubOutputString, "{ %ld } %s [Line %d in %s]\n", Platform::GetClockMilliseconds(), pString, uiLineNum, pSourceFile );
 
 	//
 	// Output to debugger
@@ -407,7 +408,7 @@ void _FailMessage(const char* message, unsigned lineNum, const char * functionNa
 	basicInformation << " in file " << sourceFileName << "]";
 
 	std::stringstream outputString;
-	outputString << "{ " << GetTickCount() << " } " << basicInformation.str();
+	outputString << "{ " << Platform::GetClockMilliseconds() << " } " << basicInformation.str();
 
 	//Build the output strings
 	// Never as a format string: AssertMsg call sites build this out of game state,
