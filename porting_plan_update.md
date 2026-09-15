@@ -20,6 +20,14 @@ Tick delivery is now single-threaded. A portable `MainLoopScheduler` calculates 
 
 The two Win32 timer threads, their events and shutdown waits, timer callback list and lock, game-loop critical section, and temporary Windows sleep-resolution hint have therefore been deleted. Stracciatella provided a useful independent design check: it likewise removed timer-thread delivery and advances its clock from the main loop. The 1.13 implementation remains deliberately distinct because it retains the branch's fixed-step, clock-speed, fast-forward, pause, and timer-notification semantics rather than adopting Stracciatella's simpler elapsed-millisecond policy.
 
+## Platform-Core Progress: Portable Threading and Synchronization
+
+The remaining maintained engine uses of Windows thread and synchronization APIs have now been removed. The input queue uses a C++17 recursive mutex with RAII locking, preserving the recursive behavior of a Windows critical section because dequeue processing may synthesize mouse-repeat events and re-enter the queue. Initialization, destruction, and MSVC structured-exception lock cleanup are no longer necessary.
+
+Crash telemetry now starts its best-effort upload through a small project-owned detached-task service implemented with `std::thread`. Thread-creation failures are reported to the caller, exceptions cannot escape a detached task and terminate the process, and each telemetry worker owns its URL, root path, and writable store. This removes `_beginthreadex`, the raw thread handle, `CloseHandle`, and the shared fixed-size URL buffer from the startup path.
+
+Native tests cover detached execution, captured-state ownership, empty-task rejection, and exception containment. The Windows x86 game builds with the same implementation. A source audit finds no remaining active Win32 thread creation, event, critical-section, TLS, or interlocked operations in maintained runtime code. `MsgWaitForMultipleObjectsEx` remains only as the current Windows application host's message/deadline wait; replacing it belongs to application-host extraction, not to engine thread lifecycle.
+
 ## Position Against the Portable-I/O Plan
 
 ### Completed Migration Boundary
@@ -286,7 +294,7 @@ The clock and scheduling layer is now portable:
 - `Utils/Timer Control.cpp` retains only engine timing policy and legacy counter advancement.
 - `sgp/sgp.cpp` is the remaining Windows adapter for waiting on scheduler deadlines and pumping messages.
 
-The game-loop and timer-notification critical sections are gone because all clock and game-loop work now runs on the host thread. The input queue still has its own synchronization (`sgp/input.cpp`), and `Platform::Sleep` still needs a non-Windows implementation before native game code can use it.
+The game-loop and timer-notification critical sections are gone because all clock and game-loop work now runs on the host thread. The input queue retains synchronization through `std::recursive_mutex`, and detached best-effort work runs through `Platform::RunDetached`; neither exposes Windows thread types or lifecycle calls. `Platform::Sleep` still needs a non-Windows implementation before native game code can use it.
 
 Deterministic tests now cover scheduler cadence, delayed catch-up, fast-forward wake behavior, and the legacy countdown edge cases in addition to the clock-source tests. Playtesting remains important because timing affects AI, input repetition, sound callbacks, and animation, but no platform thread abstraction is required for timer delivery.
 
@@ -588,7 +596,7 @@ Then proceed through these independently verifiable seams:
 1. Condition CMake and establish a small native shared-core target.
 2. Extract process services: command-line handling, restart/single-instance behavior, dialogs, and telemetry.
 3. Put an interface in front of FMOD while retaining the existing Windows implementation.
-4. Completed: extracted monotonic time and timer scheduling, then removed the timer threads and their synchronization; continue characterizing the independently used input/threading paths.
+4. Completed: extracted monotonic time and timer scheduling, removed the timer threads, and migrated the remaining active input synchronization and detached worker lifecycle to portable C++17 primitives.
 5. Remove DirectDraw and Win32 presentation/input types from platform-neutral headers.
 6. Introduce the SDL window, input translation, and framebuffer presentation only after those dependencies are isolated.
 

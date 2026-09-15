@@ -43,3 +43,23 @@ else()
 endif()
 
 add_test(NAME scheduler_tests COMMAND scheduler_tests)
+
+add_executable(thread_tests
+	thread_tests.cpp
+	../../sgp/platform/Thread.cpp
+)
+target_include_directories(thread_tests PRIVATE ../../sgp)
+set_target_properties(thread_tests PROPERTIES
+	CXX_STANDARD 17
+	CXX_STANDARD_REQUIRED YES
+	CXX_EXTENSIONS NO
+)
+
+if(MSVC)
+	target_compile_options(thread_tests PRIVATE /W4 /WX)
+else()
+	target_compile_options(thread_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+
+target_link_libraries(thread_tests PRIVATE Threads::Threads)
+add_test(NAME thread_tests COMMAND thread_tests)

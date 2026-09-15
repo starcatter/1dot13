@@ -3,7 +3,6 @@
 
 #include <windows.h>
 #include <ddraw.h>
-#include <process.h> 
 
 #include "local.h"
 #include "DEBUG.H"

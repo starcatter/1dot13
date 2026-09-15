@@ -11,28 +11,26 @@
 #include "crash_report.h"
 #include "fileio/FileIO.h"
 #include "fileio/PhysicalWritableStore.h"
+#include "platform/Thread.h"
 
 #include <windows.h>
 #include <winhttp.h>
-#include <process.h> // _beginthreadex for the detached upload thread
 
 #include <cstring> // strstr
 #include <chrono>
 #include <filesystem>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace {
 
-ja2::fileio::PhysicalWritableStore& telemetryStore() {
-	static ja2::fileio::PhysicalWritableStore store(std::filesystem::current_path());
-	return store;
-}
+using TelemetryStore = ja2::fileio::PhysicalWritableStore;
 
 // Persisted consent: 1 = yes, 0 = no, -1 = not asked yet.
-int readConsent() {
+int readConsent(TelemetryStore& store) {
 	try {
-		std::unique_ptr<ja2::fileio::File> file = telemetryStore().openRead("telemetry.consent");
+		std::unique_ptr<ja2::fileio::File> file = store.openRead("telemetry.consent");
 		char c = 0;
 		return (file->read(&c, 1) == 1 && c == '1') ? 1 : 0;
 	} catch (...) {
@@ -40,9 +38,9 @@ int readConsent() {
 	}
 }
 
-void writeConsent(bool yes) {
+void writeConsent(TelemetryStore& store, bool yes) {
 	try {
-		std::unique_ptr<ja2::fileio::File> file = telemetryStore().create("telemetry.consent");
+		std::unique_ptr<ja2::fileio::File> file = store.create("telemetry.consent");
 		file->writeExact(yes ? "1" : "0", 1);
 	} catch (...) {
 	}
@@ -55,11 +53,11 @@ const DWORD kMaxReportBytes = 32 * 1024;
 
 // POST one report file to url. Returns the HTTP status, or 0 if the request never
 // completed (no connection, DNS failure, timeout) — see reportIsSettled().
-DWORD postReport(const wchar_t* url, const char* path) {
+DWORD postReport(TelemetryStore& store, const wchar_t* url, const char* path) {
 	std::vector<char> body;
 	DWORD size = 0;
 	try {
-		std::unique_ptr<ja2::fileio::File> file = telemetryStore().openRead(path);
+		std::unique_ptr<ja2::fileio::File> file = store.openRead(path);
 		if (file->size() > kMaxReportBytes) return 413;
 		size = static_cast<DWORD>(file->size());
 		body.resize(size ? size : 1);
@@ -115,9 +113,9 @@ bool reportIsSettled(DWORD status) {
 // A report stamped "build local" comes from a developer build with no released
 // PDB: nobody at the receiving end can symbolize it, so it never goes on the
 // wire — and never gets reaped either, it is the developer's to delete.
-bool isFromLocalBuild(const char* path) {
+bool isFromLocalBuild(TelemetryStore& store, const char* path) {
 	try {
-		std::unique_ptr<ja2::fileio::File> file = telemetryStore().openRead(path);
+		std::unique_ptr<ja2::fileio::File> file = store.openRead(path);
 		char head[160] = {};
 		(void)file->read(head, sizeof(head) - 1);
 		return strstr(head, "  build local") != NULL;
@@ -143,30 +141,28 @@ bool olderThan(const ja2::fileio::Metadata& metadata, DWORD days) {
 // into a long upload session. The rest wait for the next launch.
 const int kMaxUploadsPerRun = 20;
 
-wchar_t s_telemetryUrl[512];
-
 // Drains the pending reports. Runs detached: if the player quits first the process
 // exits from under it, which costs nothing — an interrupted upload leaves the file
 // on disk and it goes out next launch.
-unsigned __stdcall telemetryThread(void*) {
+void drainTelemetryReports(const std::filesystem::path& root, const std::wstring& url) {
 	int sent = 0;
 	try {
+		TelemetryStore store(root);
 		const std::vector<ja2::fileio::DirectoryEntry> reports =
-			telemetryStore().list("crash_report_*.txt");
+			store.list("crash_report_*.txt");
 		for (const ja2::fileio::DirectoryEntry& report : reports) {
-			if (isFromLocalBuild(report.name.c_str())) continue;
+			if (isFromLocalBuild(store, report.name.c_str())) continue;
 			if (olderThan(report.metadata, kMaxReportAgeDays)) {
-				telemetryStore().remove(report.name);
+				store.remove(report.name);
 				continue;
 			}
 			if (sent++ >= kMaxUploadsPerRun) break;
-			if (reportIsSettled(postReport(s_telemetryUrl, report.name.c_str())))
-				telemetryStore().remove(report.name);
+			if (reportIsSettled(postReport(store, url.c_str(), report.name.c_str())))
+				store.remove(report.name);
 		}
 	} catch (...) {
 		// Preserve every unsettled report and retry on the next launch.
 	}
-	return 0;
 }
 
 } // anonymous namespace
@@ -175,32 +171,37 @@ namespace sgp {
 void processCrashTelemetry(const wchar_t* url) {
 	if (url == NULL || url[0] == L'\0') return; // no endpoint configured: feature off
 
-	int consent = readConsent();
-	if (consent < 0) { // first run: ask once, remember the answer
-		int r = MessageBoxW(NULL,
-			L"This build can send crash reports to the developers to help fix bugs.\n"
-			L"A report contains where the game crashed, the names of the loaded\n"
-			L"modules, and the HANDLE from your Ja2.ini if you set one. No file\n"
-			L"paths, no save games, nothing else about your machine.\n\n"
-			L"Send crash reports automatically?",
-			L"Jagged Alliance 2 v1.13 \x2014 Crash Reporting",
-			MB_YESNO | MB_ICONQUESTION);
-		writeConsent(r == IDYES);
-		consent = (r == IDYES) ? 1 : 0;
-	}
-	if (consent != 1) return; // declined: leave reports on disk, accumulating
+	try {
+		const std::filesystem::path root = std::filesystem::current_path();
+		TelemetryStore store(root);
+		int consent = readConsent(store);
+		if (consent < 0) { // first run: ask once, remember the answer
+			int r = MessageBoxW(NULL,
+				L"This build can send crash reports to the developers to help fix bugs.\n"
+				L"A report contains where the game crashed, the names of the loaded\n"
+				L"modules, and the HANDLE from your Ja2.ini if you set one. No file\n"
+				L"paths, no save games, nothing else about your machine.\n\n"
+				L"Send crash reports automatically?",
+				L"Jagged Alliance 2 v1.13 \x2014 Crash Reporting",
+				MB_YESNO | MB_ICONQUESTION);
+			writeConsent(store, r == IDYES);
+			consent = (r == IDYES) ? 1 : 0;
+		}
+		if (consent != 1) return; // declined: leave reports on disk, accumulating
 
-	// Hand the draining to a detached thread. The uploads are synchronous WinHttp
-	// calls with seconds-long timeouts, and this runs on the startup path: on the
-	// main thread a slow or unreachable endpoint is a stall the player sees before
-	// the splash screen. Nothing waits on the result, so it can take as long as it
-	// takes. The consent prompt above stays here, on purpose — that one is a
-	// question, and a question has to be asked before anything is sent.
-	lstrcpynW(s_telemetryUrl, url, ARRAYSIZE(s_telemetryUrl));
-	// _beginthreadex, not CreateThread: the upload path uses the CRT (std::vector),
-	// which wants its per-thread state set up and torn down.
-	uintptr_t t = _beginthreadex(NULL, 0, telemetryThread, NULL, 0, NULL);
-	if (t) CloseHandle((HANDLE)t);
+		// Hand the draining to a detached thread. The uploads are synchronous WinHttp
+		// calls with seconds-long timeouts, and this runs on the startup path: on the
+		// main thread a slow or unreachable endpoint is a stall the player sees before
+		// the splash screen. Nothing waits on the result, so it can take as long as it
+		// takes. The consent prompt above stays here, on purpose — that one is a
+		// question, and a question has to be asked before anything is sent.
+		const std::wstring telemetryUrl(url);
+		Platform::RunDetached([root, telemetryUrl]() {
+			drainTelemetryReports(root, telemetryUrl);
+		});
+	} catch (...) {
+		// Telemetry is best-effort and must never prevent game startup.
+	}
 }
 } // namespace sgp
 

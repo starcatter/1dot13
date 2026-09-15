@@ -11,6 +11,7 @@
 	#include <windows.h>
 	#include <stdio.h>
 	#include <memory.h>
+	#include <mutex>
 	#include "DEBUG.H"
 	#include "input.h"
 	#include "MemMan.h"
@@ -94,13 +95,17 @@ HHOOK ghMouseHook;
 BOOLEAN		gfCurrentStringInputState;
 StringInput *gpCurrentStringDescriptor;
 
-// Thread
-static CRITICAL_SECTION gcsInputQueueLock;
+// Input callbacks and consumers currently run on the host thread, but keep the
+// queue synchronized so a future event backend may produce input independently.
+// A recursive mutex preserves CRITICAL_SECTION semantics: dequeue processing can
+// synthesize button-repeat events and re-enter QueueEvent.
+static std::recursive_mutex gInputQueueMutex;
 
 
 // Local function headers
 
 void	QueueEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam);
+BOOLEAN InternalDequeueEvent(InputAtom *Event);
 void	RedirectToString(UINT16 uiInputCharacter);
 void	HandleSingleClicksAndButtonRepeats( void );
 void	AdjustMouseForWindowOrigin(void);
@@ -266,8 +271,6 @@ BOOLEAN InitializeInputManager(void)
 //	ghKeyboardHook = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC) KeyboardHandler, (HINSTANCE) 0, GetCurrentThreadId());
 //	DbgMessage(TOPIC_INPUT, DBG_LEVEL_2, String("Set keyboard hook returned %d", ghKeyboardHook));
 
-	InitializeCriticalSection(&gcsInputQueueLock);
-
 	ghMouseHook = SetWindowsHookEx(WH_MOUSE, (HOOKPROC) MouseHandler, (HINSTANCE) 0, GetCurrentThreadId());
 	DbgMessage(TOPIC_INPUT, DBG_LEVEL_2, String("Set mouse hook returned %d", ghMouseHook));
 	return TRUE;
@@ -280,8 +283,6 @@ void ShutdownInputManager(void)
 	UnRegisterDebugTopic(TOPIC_INPUT, "Input Manager");
 //	UnhookWindowsHookEx(ghKeyboardHook);
 	UnhookWindowsHookEx(ghMouseHook);
-	
-	DeleteCriticalSection(&gcsInputQueueLock);
 }
 
 void QueuePureEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam)
@@ -448,40 +449,25 @@ void InternalQueueEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam)
 
 void QueueEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam)
 {
-	EnterCriticalSection(&gcsInputQueueLock);
-	__try {
-		InternalQueueEvent(ubInputEvent, usParam, uiParam);
-	}__finally {
-		LeaveCriticalSection(&gcsInputQueueLock);
-	}
+	const std::lock_guard<std::recursive_mutex> lock(gInputQueueMutex);
+	InternalQueueEvent(ubInputEvent, usParam, uiParam);
 }
 
 BOOLEAN DequeueSpecificEvent(InputAtom *Event, UINT32 uiMaskFlags )
 {
-	EnterCriticalSection(&gcsInputQueueLock);
+	const std::lock_guard<std::recursive_mutex> lock(gInputQueueMutex);
 
-    BOOLEAN result = FALSE;
-
-	__try
+	// Is there an event to dequeue?
+	if (gusQueueCount > 0)
 	{
-		// Is there an event to dequeue
-		if (gusQueueCount > 0)
-		{
-			memcpy( Event, &( gEventQueue[gusHeadIndex] ), sizeof( InputAtom ) );
+		memcpy(Event, &(gEventQueue[gusHeadIndex]), sizeof(InputAtom));
 
-			// Check if it has the masks!
-			if ( ( Event->usEvent & uiMaskFlags ) )
-			{
-				result = DequeueEvent( Event);
-			}
-		}
-	}
-	__finally
-	{
-		LeaveCriticalSection(&gcsInputQueueLock);
+		// Leave a non-matching head in place, just as the legacy queue did.
+		if (Event->usEvent & uiMaskFlags)
+			return InternalDequeueEvent(Event);
 	}
 
-    return result;
+	return FALSE;
 }
 
 BOOLEAN InternalDequeueEvent(InputAtom *Event)
@@ -518,18 +504,8 @@ BOOLEAN InternalDequeueEvent(InputAtom *Event)
 
 BOOLEAN DequeueEvent(InputAtom *Event)
 {
-    BOOLEAN result = FALSE;
-	__try
-	{
-		EnterCriticalSection(&gcsInputQueueLock);
-        result = InternalDequeueEvent(Event);
-	}
-	__finally
-	{
-		LeaveCriticalSection(&gcsInputQueueLock);
-	}
-
-	return result;
+	const std::lock_guard<std::recursive_mutex> lock(gInputQueueMutex);
+	return InternalDequeueEvent(Event);
 }
 
 
@@ -1702,10 +1678,6 @@ INT16 GetMouseWheelDeltaValue( UINT32 wParam )
 
 BOOLEAN PeekSpecificEvent(UINT32 uiMaskFlags)//dnl ch74 221013
 {
-	BOOLEAN result = FALSE;
-	EnterCriticalSection(&gcsInputQueueLock);
-	if(gusQueueCount > 0 && (gEventQueue[gusHeadIndex].usEvent & uiMaskFlags))
-		result = TRUE;
-	LeaveCriticalSection(&gcsInputQueueLock);
-	return(result);
+	const std::lock_guard<std::recursive_mutex> lock(gInputQueueMutex);
+	return gusQueueCount > 0 && (gEventQueue[gusHeadIndex].usEvent & uiMaskFlags);
 }
