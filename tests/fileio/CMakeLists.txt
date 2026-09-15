@@ -28,7 +28,6 @@ add_executable(save_transaction_tests
 	FakeDurableFileOperations.cpp
 	../../sgp/fileio/PhysicalWritableStore.cpp
 	../../sgp/fileio/SaveTransaction.cpp
-	../../sgp/fileio/WindowsDurableFileOperations.cpp
 )
 target_include_directories(save_transaction_tests PRIVATE ../../sgp .)
 set_target_properties(save_transaction_tests PROPERTIES
@@ -44,6 +43,26 @@ else()
 endif()
 
 add_test(NAME save_transaction_tests COMMAND save_transaction_tests)
+
+if(UNIX)
+	add_executable(posix_durable_file_operations_tests
+		posix_durable_file_operations_tests.cpp
+		../../sgp/fileio/DurableFileOperationsFactory.cpp
+		../../sgp/fileio/PhysicalWritableStore.cpp
+		../../sgp/fileio/PosixDurableFileOperations.cpp
+		../../sgp/fileio/SaveTransaction.cpp
+	)
+	target_include_directories(posix_durable_file_operations_tests PRIVATE ../../sgp)
+	set_target_properties(posix_durable_file_operations_tests PROPERTIES
+		CXX_STANDARD 17
+		CXX_STANDARD_REQUIRED YES
+		CXX_EXTENSIONS NO
+	)
+	target_compile_options(posix_durable_file_operations_tests PRIVATE
+		-Wall -Wextra -Wpedantic -Werror)
+	add_test(NAME posix_durable_file_operations_tests
+		COMMAND posix_durable_file_operations_tests)
+endif()
 
 add_executable(local_time_tests
 	local_time_tests.cpp
@@ -63,6 +82,25 @@ else()
 endif()
 
 add_test(NAME local_time_tests COMMAND local_time_tests)
+
+add_executable(platform_paths_tests
+	platform_paths_tests.cpp
+	../../sgp/fileio/PlatformPaths.cpp
+)
+target_include_directories(platform_paths_tests PRIVATE ../../sgp)
+set_target_properties(platform_paths_tests PROPERTIES
+	CXX_STANDARD 17
+	CXX_STANDARD_REQUIRED YES
+	CXX_EXTENSIONS NO
+)
+
+if(MSVC)
+	target_compile_options(platform_paths_tests PRIVATE /W4 /WX)
+else()
+	target_compile_options(platform_paths_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+
+add_test(NAME platform_paths_tests COMMAND platform_paths_tests)
 
 add_executable(log_store_tests
 	log_store_tests.cpp

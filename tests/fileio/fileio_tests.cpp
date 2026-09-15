@@ -222,16 +222,12 @@ void testEnumerationAndMetadata(PhysicalWritableStore& store)
 		recursive[1].name == "deep/b.dat", "recursive enumeration returns relative files");
 	require(store.metadata("tree/empty").directory, "explicit directory creation");
 	const auto modified = store.metadata(unicodeName).modifiedUnixNanoseconds;
-#ifdef _WIN32
-	require(modified.has_value(), "Windows modification timestamp is available");
+	require(modified.has_value(), "modification timestamp is available");
 	constexpr std::int64_t january2000Nanoseconds = 946684800LL * 1000000000LL;
 	const auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(
 		std::chrono::system_clock::now().time_since_epoch()).count();
 	require(*modified >= january2000Nanoseconds && *modified <= now + 60000000000LL,
-		"Windows modification timestamp uses the Unix epoch");
-#else
-	require(!modified.has_value(), "portable timestamp is explicitly unavailable");
-#endif
+		"modification timestamp uses the Unix epoch");
 }
 
 void testExclusiveAndRemove(PhysicalWritableStore& store)

@@ -11,6 +11,7 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/English.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/FileMan.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/fileio/BfVfsResourceStore.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/fileio/DurableFileOperationsFactory.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/fileio/FileServices.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/fileio/LocalTime.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/fileio/LogStore.cpp"
@@ -18,7 +19,6 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/fileio/PlatformPaths.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/fileio/SaveTransaction.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/fileio/StoreRouter.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/fileio/WindowsDurableFileOperations.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Font.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/himage.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/impTGA.cpp"
@@ -43,7 +43,11 @@ set(sgpSrc
 )
 
 if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
-	list(APPEND sgpSrc "${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp")
+	list(APPEND sgpSrc
+		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/WindowsDurableFileOperations.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp")
+elseif(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
+	list(APPEND sgpSrc "${CMAKE_CURRENT_SOURCE_DIR}/fileio/PosixDurableFileOperations.cpp")
 endif()
 
 set(sgpSrc ${sgpSrc} PARENT_SCOPE)

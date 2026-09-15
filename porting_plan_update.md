@@ -183,13 +183,14 @@ Save transactions are materially stronger than simple temporary-file replacement
 
 This means later platform work should implement `DurableFileOperations`, not redesign save publication or touch save serialization at the same time.
 
-### Linux Implementations Still Needed Inside the I/O Boundary
+### Linux Implementations Inside the I/O Boundary
 
-The abstraction is portable, but several production implementations are not complete for Linux:
+The first three Linux implementations below were completed immediately after the file-I/O
+checkpoint; the remaining compatibility work is still open:
 
-1. `WindowsDurableFileOperations` is instantiated by save code in `Ja2/SaveLoadGame.cpp:3390-3397` and `Ja2/SaveLoadGame.cpp:4478-4486`. Its non-Windows paths report unsupported operations in `sgp/fileio/WindowsDurableFileOperations.cpp:86-146`. Linux requires file `fsync`, same-filesystem rename, containing-directory `fsync`, and backend selection.
-2. `PhysicalWritableStore::metadata` does not return modification timestamps off Windows (`sgp/fileio/PhysicalWritableStore.cpp:197-243`). Linux save-slot dates therefore need a native filesystem-clock conversion.
-3. Non-Windows `executableDirectory()` currently returns the current directory (`sgp/fileio/PlatformPaths.cpp:50-60`). A Linux implementation should use a documented application-base policy and platform discovery such as `/proc/self/exe` with a fallback strategy.
+1. `PosixDurableFileOperations` implements file `fsync`, atomic no-clobber same-directory publication, and containing-directory `fsync`. Save code selects it or the retained Windows backend through `makeDurableFileOperations`.
+2. `PhysicalWritableStore::metadata` returns Unix-nanosecond modification timestamps on POSIX as well as Windows.
+3. Linux `executableDirectory()` resolves `/proc/self/exe` independently of the working directory, retaining the previous current-directory behavior only as a restricted-environment fallback.
 4. Physical writable lookup uses host-native case behavior while wildcard matching is explicitly ASCII case-insensitive (`sgp/fileio/PhysicalWritableStore.cpp:151-195`, `460-474`, and `516-522`). Case collisions and compatibility expectations need fixtures before Linux deployment on case-sensitive filesystems.
 5. No native test currently links the real `BfVfsResourceStore`, SLF provider, or JPC/7z path. The native tests validate the physical/router half, not the complete resource stack.
 6. Equipment-template filename conversion still calls `WideCharToMultiByte` in `Tactical/Handle Items.cpp:124-137`; it belongs in the wider text-encoding migration.
@@ -426,14 +427,16 @@ Crash telemetry remains a separate WinHTTP client and can initially be disabled 
 
 ### Verified During This Assessment
 
-The standalone native suite in `tests/fileio/CMakeLists.txt:1-89` was rebuilt on Linux on 2026-09-15. All four tests passed:
+The standalone native suite in `tests/fileio/CMakeLists.txt` was rebuilt on Linux on 2026-09-15. All six tests passed:
 
 1. `portable_fileio_tests`
 2. `save_transaction_tests`
 3. `local_time_tests`
 4. `log_store_tests`
+5. `posix_durable_file_operations_tests`
+6. `platform_paths_tests`
 
-The suite covers physical modes, traversal/confinement, replacement, routing, writable-root refresh, save transaction publication/recovery/failure injection, local-time boundaries, CRLF log handling, and concurrent log lines. It is deliberately standalone and is not currently added by the root CMake project.
+The suite covers physical modes, traversal/confinement, replacement, routing, writable-root refresh, save transaction publication/recovery/failure injection, real POSIX durability and publication, local-time boundaries, platform paths, CRLF log handling, and concurrent log lines. It is deliberately standalone and is not currently added by the root CMake project.
 
 The Wine/MSVC x86 runtime was also playtested after compatibility fixes on 2026-09-15. Startup completed in roughly two seconds in the isolated runtime, strategic saves loaded, and tactical saves containing embedded `Temp` files loaded successfully. A regression test now covers doubled legacy path separators at the router boundary.
 
@@ -564,10 +567,12 @@ That is a substantially better position than the original tree, but still before
 
 Once the current Windows/Wine file-I/O behavior is again a trustworthy baseline, the next low-risk target is the POSIX/Linux half of the file-platform boundary rather than the SDL window:
 
-1. Add `PosixDurableFileOperations` with file `fsync`, parent-directory `fsync`, and atomic no-clobber rename/replace behavior.
-2. Select durable-file operations through a platform backend factory instead of constructing the Windows implementation directly.
-3. Add Linux file timestamps and executable-directory discovery through `/proc/self/exe`.
-4. Cover durability, replacement, timestamps, and executable-path discovery with native integration tests while keeping the Windows x86 build and runtime green.
+Completed immediately after the file-I/O checkpoint:
+
+1. Added `PosixDurableFileOperations` with file `fsync`, parent-directory `fsync`, and atomic no-clobber rename/replace behavior.
+2. Selected durable-file operations through a platform backend factory instead of constructing the Windows implementation directly.
+3. Added Linux file timestamps and executable-directory discovery through `/proc/self/exe`.
+4. Covered durability, replacement, timestamps, and executable-path discovery with native integration tests while keeping the Windows x86 build green.
 
 Then proceed through these independently verifiable seams:
 

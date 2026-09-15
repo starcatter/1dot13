@@ -28,6 +28,11 @@ playthroughs, save compatibility corpus, native Windows run, and independently c
 per-purpose roots remain follow-up validation and product work. This checkpoint is therefore a
 buildable migration boundary, not a final playtest release.
 
+Post-checkpoint platform work now includes a selected POSIX durability backend with native
+`fsync`, no-clobber publication, and directory synchronization, plus Linux modification timestamps
+and `/proc/self/exe` discovery. These paths have native integration coverage while the Windows
+backend remains the production game target.
+
 ## Goals
 
 - Remove Win32 file, directory, path, enumeration, and timestamp types from public engine interfaces.

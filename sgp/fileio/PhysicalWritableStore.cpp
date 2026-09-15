@@ -13,6 +13,8 @@
 #define NOMINMAX
 #endif
 #include <windows.h>
+#else
+#include <sys/stat.h>
 #endif
 
 namespace ja2::fileio
@@ -210,7 +212,6 @@ Metadata readMetadata(const fs::path& path)
 	}
 	const fs::perms writable = fs::perms::owner_write | fs::perms::group_write | fs::perms::others_write;
 	result.readOnly = (status.permissions() & writable) == fs::perms::none;
-	// C++17 has no portable filesystem-clock to Unix-clock conversion.
 	result.modifiedUnixNanoseconds = std::nullopt;
 #ifdef _WIN32
 	WIN32_FILE_ATTRIBUTE_DATA attributes{};
@@ -240,6 +241,29 @@ Metadata readMetadata(const fs::path& path)
 			throw Error(ErrorCode::unsupported, "modification time is outside the Unix-nanosecond range");
 		result.modifiedUnixNanoseconds = -static_cast<std::int64_t>(ticks * nanosecondsPerTick);
 	}
+#else
+	struct stat nativeStatus{};
+	if (::stat(path.c_str(), &nativeStatus) != 0)
+		throwFilesystemError("read modification time", path,
+			std::error_code(errno, std::generic_category()));
+#ifdef __APPLE__
+	const auto seconds = nativeStatus.st_mtimespec.tv_sec;
+	const auto nanoseconds = nativeStatus.st_mtimespec.tv_nsec;
+#else
+	const auto seconds = nativeStatus.st_mtim.tv_sec;
+	const auto nanoseconds = nativeStatus.st_mtim.tv_nsec;
+#endif
+	constexpr std::int64_t nanosecondsPerSecond = 1000000000LL;
+	constexpr std::int64_t maximum = (std::numeric_limits<std::int64_t>::max)();
+	if (seconds > maximum / nanosecondsPerSecond ||
+		(seconds == maximum / nanosecondsPerSecond && nanoseconds > maximum % nanosecondsPerSecond) ||
+		seconds < (std::numeric_limits<std::int64_t>::min)() / nanosecondsPerSecond)
+	{
+		throw Error(ErrorCode::unsupported, "modification time is outside the Unix-nanosecond range");
+	}
+	result.modifiedUnixNanoseconds =
+		static_cast<std::int64_t>(seconds) * nanosecondsPerSecond +
+		static_cast<std::int64_t>(nanoseconds);
 #endif
 	return result;
 }

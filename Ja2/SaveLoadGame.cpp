@@ -2,11 +2,11 @@
 #include "Soldier Profile.h"
 #include "FileMan.h"
 #include "fileio/FileServices.h"
+#include "fileio/DurableFileOperationsFactory.h"
 #include "fileio/LogStore.h"
 #include "fileio/PhysicalWritableStore.h"
 #include "fileio/SaveTransaction.h"
 #include "fileio/StoreRouter.h"
-#include "fileio/WindowsDurableFileOperations.h"
 #include <exception>
 #include <optional>
 #include <string>
@@ -3392,10 +3392,11 @@ BOOLEAN RecoverSaveTransactions()
 	{
 		std::shared_ptr<ja2::fileio::PhysicalWritableStore> store =
 			ja2::fileio::storeRouter().currentWritableStore();
-		ja2::fileio::WindowsDurableFileOperations durable( *store );
+		std::unique_ptr<ja2::fileio::DurableFileOperations> durable =
+			ja2::fileio::makeDurableFileOperations( *store );
 		const std::string directory =
 			ja2::fileio::StoreRouter::normalizeLogicalPath( gSaveDir );
-		ja2::fileio::SaveTransaction::recoverDirectory( *store, durable, directory );
+		ja2::fileio::SaveTransaction::recoverDirectory( *store, *durable, directory );
 		return TRUE;
 	}
 	catch( const std::exception& ex )
@@ -4480,11 +4481,12 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	{
 		std::shared_ptr<ja2::fileio::PhysicalWritableStore> store =
 			ja2::fileio::storeRouter().currentWritableStore();
-		ja2::fileio::WindowsDurableFileOperations durable( *store );
+		std::unique_ptr<ja2::fileio::DurableFileOperations> durable =
+			ja2::fileio::makeDurableFileOperations( *store );
 		const std::string saveName =
 			ja2::fileio::StoreRouter::normalizeLogicalPath( zSaveGameName );
 		const std::string sidecarName = saveName + ".IPQ";
-		ja2::fileio::SaveTransaction transaction( *store, durable, saveName, sidecarName );
+		ja2::fileio::SaveTransaction transaction( *store, *durable, saveName, sidecarName );
 
 		ja2::fileio::SaveTransaction::StageWriter saveWriter =
 			[&]( ja2::fileio::File& file )
