@@ -30,13 +30,13 @@ Native tests cover detached execution, captured-state ownership, empty-task reje
 
 ## Native-Build Progress: Shared Core
 
-The root build now selects `JA2_PLATFORM_BACKEND=LINUX` by default on a Linux host and produces `ja2_shared_core` instead of entering the Windows application, renderer, input, audio, tools, and resource-file source groups. The target contains 20 first-party translation units: the complete file/resource service boundary, POSIX durable operations and paths, the legacy `FileMan` compatibility facade, monotonic clocks, fixed-step scheduling, portable sleep, detached tasks, zlib compression, CPU line rendering, key translation, the legacy clock facade, and a platform-neutral string utility. It also builds the pinned patched bfVFS, LZMA SDK, and zlib dependencies natively from the same sources used by the Windows baseline.
+The root build now selects `JA2_PLATFORM_BACKEND=LINUX` by default on a Linux host and produces `ja2_shared_core` instead of entering the Windows application, renderer, input, audio, tools, and resource-file source groups. The target contains 21 first-party translation units: the complete file/resource service boundary, POSIX durable operations and paths, the legacy `FileMan` compatibility facade, monotonic clocks, fixed-step scheduling, portable sleep, detached tasks, zlib compression, CPU line rendering, key translation, portable `HIMAGE` layout/palette/copy operations, the legacy clock facade, and a platform-neutral string utility. It also builds the pinned patched bfVFS, LZMA SDK, and zlib dependencies natively from the same sources used by the Windows baseline.
 
-An integrated `ja2_shared_core_smoke` executable links and exercises the combined target: monotonic time and sleeping, scheduler construction, detached execution, physical writable storage, durable file sync, metadata, and executable-path discovery. The existing timing/thread and file-I/O suites are registered alongside fixed-width type, legacy `FileMan`, compression, and CPU rendering/key-translation tests, giving the root Linux build one 14-test CTest gate. GCC 16 and Clang 22 builds pass with strict first-party warnings; a GCC AddressSanitizer build also passes when leak detection is disabled under the ptrace-based test container.
+An integrated `ja2_shared_core_smoke` executable links and exercises the combined target: monotonic time and sleeping, scheduler construction, detached execution, physical writable storage, durable file sync, metadata, and executable-path discovery. The existing timing/thread and file-I/O suites are registered alongside fixed-width type, legacy `FileMan`, compression, CPU rendering/key translation, and image-layout/palette/copy tests, giving the root Linux build one 15-test CTest gate. GCC 16 and Clang 22 builds pass with strict first-party warnings; a GCC AddressSanitizer build also passes when leak detection is disabled under the ptrace-based test container.
 
 The former fundamental-type and umbrella-header boundary is resolved. Integer and flag aliases use fixed-width standard types; `CHAR16` remains `wchar_t` on Windows for source and ABI compatibility but is an explicit 16-bit `char16_t` on native targets. `sgp.h` no longer includes `local.h`, `video.h`, Windows, DirectDraw, or FMOD. Existing sources that still require the historical fan-out include the explicitly named `LegacySGP.h` compatibility umbrella, making that debt visible and allowing new shared code to use the neutral header.
 
-The next compiler boundary is now the image pipeline. A native compile attempt reaches `himage.cpp` and stops on legacy anonymous-layout extensions, MSVC `__min`, and assert-only or unimplemented paths that strict compilers diagnose. Separately, broad gameplay compilation still requires migration from `wchar_t`, `L"..."`, and `wcs*` assumptions to the fixed-width engine text type and a central UTF conversion service. No native game executable is claimed yet.
+The `himage.cpp` compiler boundary is resolved without compiling or refactoring the 14,885-line `vobject_blitters.cpp`: anonymous image/STCI records now use standard layouts with explicit ABI checks, MSVC-only helpers are gone, and the one flat-pixel blitter dependency has a narrow header. The file-format loader implementations and the legacy blitter implementation remain outside the native target; the focused image test supplies dispatch stubs so the portable image operations can be linked and exercised independently. Broad gameplay compilation still requires migration from `wchar_t`, `L"..."`, and `wcs*` assumptions to the fixed-width engine text type and a central UTF conversion service. No native game executable is claimed yet.
 
 The native checkpoint is built with:
 
@@ -185,8 +185,8 @@ The terms below are used deliberately:
 | Windows x86 compilation | Supported with MSVC; Wine-hosted toolchain documented | Working regression reference |
 | Windows x86 runtime | Smoke-tested under Wine before the final commit boundary | Useful behavioral oracle, but exact-commit and native-Windows validation remain |
 | Portable file contracts | Implemented | Callers no longer require Win32 file handles or writable bfVFS access |
-| Native core build | Root `ja2_shared_core` builds 20 first-party units with GCC and Clang; all 14 registered tests pass | Storage, resources, legacy file handles, compression, CPU line rendering, timing, sleep, and threading form a proven host-native island |
-| Linux game executable | Not defined yet | UTF-16 call-site migration, the image pipeline, and remaining subsystem backends are the next blockers |
+| Native core build | Root `ja2_shared_core` builds 21 first-party units with GCC and Clang; all 15 registered tests pass | Storage, resources, legacy file handles, compression, CPU line/image operations, timing, sleep, and threading form a proven host-native island |
+| Linux game executable | Not defined yet | UTF-16 call-site migration, image-format loaders/blitters, and remaining subsystem backends are the next blockers |
 | Window/event backend | Win32 only | Hard Linux blocker |
 | Rendering/presentation | DirectDraw 2 plus cnc-ddraw | Works as a legacy compatibility path; no native Linux renderer |
 | Input backend | Win32 mouse hook/messages and direct cursor polling | Hard Linux blocker, although the engine event queue is reusable |
@@ -255,7 +255,7 @@ The original root-build blockers have been removed for the bounded Linux target:
 - Pinned LZMA, zlib, utf8cpp, and patched bfVFS dependencies build on both backends.
 - The Windows application graph remains intact and continues to provide the behavioral baseline.
 
-The controlled target now includes legacy `FileMan`, compression, key translation, and CPU line drawing while deliberately stopping before the image-loader/rendering graph. This exposes the next errors without conflating text, application-host, full rendering, input, and audio work.
+The controlled target now includes legacy `FileMan`, compression, key translation, CPU line drawing, and the portable portion of `HIMAGE` while deliberately stopping before the image-format loader and full rendering graph. This exposes the next errors without conflating text, application-host, full rendering, input, and audio work.
 
 ### Fundamental Types and Header Fan-Out
 
@@ -493,7 +493,7 @@ Deliverables:
 - Save corpus and deterministic format hashes.
 - Resource/profile/archive fixtures.
 - Renderer screenshots/framebuffer hashes, input traces, and audio callback traces.
-- Completed root integration of the 14 native shared-core, type, compression, CPU-rendering, timing/thread, and file-I/O tests; CI wiring remains.
+- Completed root integration of the 15 native shared-core, type, compression, CPU-rendering/image, timing/thread, and file-I/O tests; CI wiring remains.
 
 Exit gate: the current backend is measurable enough to identify whether later differences are intentional.
 

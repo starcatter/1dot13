@@ -16,6 +16,7 @@ add_library(ja2_shared_core STATIC
   sgp/Compression.cpp
   sgp/English.cpp
   sgp/FileMan.cpp
+  sgp/himage.cpp
   sgp/fileio/BfVfsResourceStore.cpp
   sgp/fileio/DurableFileOperationsFactory.cpp
   sgp/fileio/FileServices.cpp
@@ -67,6 +68,11 @@ add_executable(ja2_compression_tests tests/native/compression_tests.cpp)
 target_link_libraries(ja2_compression_tests PRIVATE ja2_shared_core)
 target_compile_options(ja2_compression_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 add_test(NAME ja2_compression_tests COMMAND ja2_compression_tests)
+
+add_executable(ja2_himage_tests tests/native/himage_tests.cpp)
+target_link_libraries(ja2_himage_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_himage_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_himage_tests COMMAND ja2_himage_tests)
 
 # Keep the focused characterization suites independently linkable while also
 # making the complete native checkpoint available through one root CTest run.

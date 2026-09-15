@@ -4,6 +4,8 @@
 #include "MemMan.h"
 #include "imgfmt.h"
 
+#include <cstddef>
+
 // The HIMAGE module provides a common interface for managing image data. This module
 // includes:
 // - A set of data structures representing image data. Data can be 8 or 16 bpp and/or
@@ -105,23 +107,30 @@ typedef struct
 	UINT32					uiAppDataSize;
 	// This union is used to describe each data type and is flexible to include the
 	// data strucutre of the compresssed format, once developed.
-	union 
+	union
 	{
 		PTR				pImageData;
 		PTR				pCompressedImageData;
 		UINT8*			p8BPPData;
 		UINT16*			p16BPPData;
 		UINT32*			p32BPPData;
-		struct
-		{
-			UINT8*			pPixData8;
-			UINT32			uiSizePixData;
-			ETRLEObject*	pETRLEObject;
-			UINT16			usNumberOfObjects;
-		};
+		UINT8*			pPixData8;
 	};
+	// ETRLE metadata historically followed pPixData8 in an anonymous struct
+	// inside the union. Keeping it directly after the pointer preserves the
+	// layout and direct field access without relying on a compiler extension.
+	UINT32			uiSizePixData;
+	ETRLEObject*	pETRLEObject;
+	UINT16			usNumberOfObjects;
 
 } image_type, *HIMAGE;
+
+static_assert(offsetof(image_type, pImageData) == offsetof(image_type, pPixData8),
+	"HIMAGE pixel pointers must remain union aliases");
+static_assert(offsetof(image_type, uiSizePixData) == offsetof(image_type, pPixData8) + sizeof(UINT8*),
+	"HIMAGE ETRLE metadata layout changed");
+static_assert(sizeof(void*) != 4 || sizeof(image_type) == 144, "32-bit HIMAGE ABI changed");
+static_assert(sizeof(void*) != 8 || sizeof(image_type) == 176, "64-bit HIMAGE ABI changed");
 
 
 #define SGPGetRValue(rgb)   ((BYTE) (rgb))  

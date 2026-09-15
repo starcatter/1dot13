@@ -12,10 +12,11 @@
 	#include "WCheck.h"
 	#include "Compression.h"
 	#include "vobject.h"
-	#include "vobject_blitters.h"
+	#include "PixelBlitters.h"
 
 #include <vfs/Core/vfs_string.h>
 
+#include <algorithm>
 #include <map>
 
 const vfs::String::str_t CONST_DOTJPC(L".jpc.7z");
@@ -40,11 +41,11 @@ INT16	gusGreenShift = 0;
 // this funky union is used for fast 16-bit pixel format conversions
 typedef union
 {
-	struct
+	struct Words
 	{
 		UINT16	usLower;
 		UINT16	usHigher;
-	};
+	} words;
 	UINT32	uiValue;
 } SplitUINT32;
 
@@ -128,8 +129,7 @@ namespace ImageFileType
 
 HIMAGE CreateImage( SGPFILENAME ImageFile, UINT16 fContents, ImageFileType::TestOrder order )
 {
-	HIMAGE			hImage = NULL;	
-	CHAR8			ExtensionSep[] = ".";	
+	HIMAGE			hImage = NULL;
 	UINT32			iFileLoader;
 
 	std::string filename(ImageFile);
@@ -160,7 +160,8 @@ HIMAGE CreateImage( SGPFILENAME ImageFile, UINT16 fContents, ImageFileType::Test
 	//hImage->pui16BPPPalette = NULL;
 
 	// Set filename and loader
-	strncpy( hImage->ImageFile, /*ImageFile*/filename.c_str(), filename.length() );
+	strncpy( hImage->ImageFile, filename.c_str(), SGPFILENAME_LEN - 1 );
+	hImage->ImageFile[SGPFILENAME_LEN - 1] = '\0';
 	hImage->iFileLoader = iFileLoader;
 
 	if ( !LoadImageData( hImage, fContents ) )
@@ -386,6 +387,7 @@ BOOLEAN Copy8BPPCompressedImageTo8BPPBuffer( HIMAGE hImage, BYTE *pDestBuf, UINT
 	uiDestStart = usY * usDestWidth + usX;
 	uiNumLines = srcRect->iBottom - srcRect->iTop;
 	uiLineSize = srcRect->iRight - srcRect->iLeft;
+	(void)uiLineSize;
 
 	Assert( usDestWidth >= uiLineSize );
 	Assert( usDestHeight >= uiNumLines );
@@ -430,8 +432,11 @@ BOOLEAN Copy8BPPCompressedImageTo8BPPBuffer( HIMAGE hImage, BYTE *pDestBuf, UINT
 	// decompress the last scanline and blit
 	uiDecompressed = Decompress( pDecompPtr, pScanLine, hImage->usWidth );
 	Assert( uiDecompressed == hImage->usWidth );
+	(void)uiDecompressed;
 //	memcpy( pDest, pScanLine + srcRect->iLeft, uiLineSize );
 
+	(void)pDest;
+	MemFree( pScanLine );
 	DecompressFini( pDecompPtr );
 	return( TRUE );
 }
@@ -529,11 +534,13 @@ BOOLEAN Copy8BPPCompressedImageTo16BPPBuffer( HIMAGE hImage, BYTE *pDestBuf, UIN
 
 	DbgMessage( TOPIC_HIMAGE, DBG_LEVEL_3, String( "End Copying at %p", pDest ) );
 
+	(void)uiDecompressed;
+	MemFree( pScanLine );
 	DecompressFini( pDecompPtr );
 	return( TRUE );
 }
 
-BOOLEAN Copy16BPPCompressedImageTo16BPPBuffer( HIMAGE hImage, BYTE *pDestBuf, UINT16 usDestWidth, UINT16 usDestHeight, UINT16 usX, UINT16 usY, SGPRect *srcRect )
+BOOLEAN Copy16BPPCompressedImageTo16BPPBuffer( HIMAGE, BYTE *, UINT16, UINT16, UINT16, UINT16, SGPRect * )
 {
 	// 16BPP Compressed image has not been implemented yet
 	DbgMessage( TOPIC_HIMAGE, DBG_LEVEL_2, "16BPP Compressed imagery blitter has not been implemented yet." );
@@ -629,13 +636,13 @@ BOOLEAN Copy16BPPImageTo16BPPBuffer( HIMAGE hImage, BYTE *pDestBuf, UINT16 usDes
 
 }
 
-BOOLEAN Extract8BPPCompressedImageToBuffer( HIMAGE hImage, BYTE *pDestBuf )
+BOOLEAN Extract8BPPCompressedImageToBuffer( HIMAGE, BYTE * )
 {
 
 	return( FALSE );
 }
 
-BOOLEAN Extract16BPPCompressedImageToBuffer( HIMAGE hImage, BYTE *pDestBuf )
+BOOLEAN Extract16BPPCompressedImageToBuffer( HIMAGE, BYTE * )
 {
 
 	return( FALSE );
@@ -804,9 +811,9 @@ UINT16 *Create16BPPPaletteShaded( SGPPaletteEntry *pPalette, UINT32 rscale, UINT
 			bmod = (bscale*pPalette[ cnt ].peBlue/256);
 		}
 
-		r = (UINT8)__min(rmod, 255);
-		g = (UINT8)__min(gmod, 255);
-		b = (UINT8)__min(bmod, 255);
+		r = static_cast<UINT8>(std::min(rmod, UINT32{255}));
+		g = static_cast<UINT8>(std::min(gmod, UINT32{255}));
+		b = static_cast<UINT8>(std::min(bmod, UINT32{255}));
 
 		if(gusRedShift < 0)
 			r16=((UINT16)r>>(-gusRedShift));
@@ -997,7 +1004,7 @@ void ConvertRGBDistribution565To555( UINT16 * p16BPPData, UINT32 uiNumberOfPixel
 	UINT16 *	pPixel;
 	UINT32		uiLoop;
 
-	SplitUINT32		Pixel;
+	SplitUINT32		Pixel{};
 
 	pPixel = p16BPPData;
 	for (uiLoop = 0; uiLoop < uiNumberOfPixels; uiLoop++)
@@ -1007,14 +1014,14 @@ void ConvertRGBDistribution565To555( UINT16 * p16BPPData, UINT32 uiNumberOfPixel
 		{
 			// we put the 16 pixel bits in the UPPER word of uiPixel, so that we can
 			// right shift the blue value (at the bottom) into the LOWER word to protect it
-			Pixel.usHigher = *pPixel;
+			Pixel.words.usHigher = *pPixel;
 			Pixel.uiValue >>= 5;
 			// get rid of the least significant bit of green
-			Pixel.usHigher >>= 1;
+			Pixel.words.usHigher >>= 1;
 			// now shift back into the upper word
 			Pixel.uiValue <<= 5;
 			// and copy back
-			*pPixel = Pixel.usHigher | gusAlphaMask;
+			*pPixel = Pixel.words.usHigher | gusAlphaMask;
 		}
 		pPixel++;
 	}
@@ -1025,24 +1032,24 @@ void ConvertRGBDistribution565To655( UINT16 * p16BPPData, UINT32 uiNumberOfPixel
 	UINT16 *	pPixel;
 	UINT32		uiLoop;
 
-	SplitUINT32		Pixel;
+	SplitUINT32		Pixel{};
 
 	pPixel = p16BPPData;
 	for (uiLoop = 0; uiLoop < uiNumberOfPixels; uiLoop++)
 	{
 		// we put the 16 pixel bits in the UPPER word of uiPixel, so that we can
 		// right shift the blue value (at the bottom) into the LOWER word to protect it
-		Pixel.usHigher = *pPixel;
+		Pixel.words.usHigher = *pPixel;
 		Pixel.uiValue >>= 5;
 		// get rid of the least significant bit of green
-		Pixel.usHigher >>= 1;
+		Pixel.words.usHigher >>= 1;
 		// shift to the right some more...
 		Pixel.uiValue >>= 5;
 		// so we can left-shift the red value alone to give it an extra bit
-		Pixel.usHigher <<= 1;
+		Pixel.words.usHigher <<= 1;
 		// now shift back and copy
 		Pixel.uiValue <<= 10;
-		*pPixel = Pixel.usHigher;
+		*pPixel = Pixel.words.usHigher;
 		pPixel++;
 	}
 }
@@ -1052,23 +1059,23 @@ void ConvertRGBDistribution565To556( UINT16 * p16BPPData, UINT32 uiNumberOfPixel
 	UINT16 *	pPixel;
 	UINT32		uiLoop;
 
-	SplitUINT32		Pixel;
+	SplitUINT32		Pixel{};
 
 	pPixel = p16BPPData;
 	for (uiLoop = 0; uiLoop < uiNumberOfPixels; uiLoop++)
 	{
 		// we put the 16 pixel bits in the UPPER word of uiPixel, so that we can
 		// right shift the blue value (at the bottom) into the LOWER word to protect it
-		Pixel.usHigher = *pPixel;
+		Pixel.words.usHigher = *pPixel;
 		Pixel.uiValue >>= 5;
 		// get rid of the least significant bit of green
-		Pixel.usHigher >>= 1;
+		Pixel.words.usHigher >>= 1;
 		// shift back into the upper word
 		Pixel.uiValue <<= 5;
 		// give blue an extra bit (blank in the least significant spot)
-		Pixel.usHigher <<= 1;
+		Pixel.words.usHigher <<= 1;
 		// copy back
-		*pPixel = Pixel.usHigher;
+		*pPixel = Pixel.words.usHigher;
 		pPixel++;
 	}
 }
