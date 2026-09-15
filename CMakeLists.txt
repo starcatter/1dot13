@@ -8,14 +8,24 @@ endif()
 
 project(ja2)
 
-set(JA2_PLATFORM_BACKEND "WINDOWS" CACHE STRING "Platform backend implementation")
-set_property(CACHE JA2_PLATFORM_BACKEND PROPERTY STRINGS WINDOWS)
-if(NOT JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
+if(WIN32)
+  set(_ja2_default_platform_backend "WINDOWS")
+else()
+  set(_ja2_default_platform_backend "LINUX")
+endif()
+set(JA2_PLATFORM_BACKEND "${_ja2_default_platform_backend}" CACHE STRING
+  "Platform backend implementation")
+set_property(CACHE JA2_PLATFORM_BACKEND PROPERTY STRINGS WINDOWS LINUX)
+set(_ja2_valid_platform_backends WINDOWS LINUX)
+if(NOT JA2_PLATFORM_BACKEND IN_LIST _ja2_valid_platform_backends)
   message(FATAL_ERROR
-    "JA2_PLATFORM_BACKEND=\"${JA2_PLATFORM_BACKEND}\" is not supported. Valid options are: WINDOWS.")
+    "JA2_PLATFORM_BACKEND=\"${JA2_PLATFORM_BACKEND}\" is not supported. Valid options are: WINDOWS, LINUX.")
 endif()
 if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS" AND NOT WIN32)
   message(FATAL_ERROR "The WINDOWS platform backend requires a Windows target.")
+endif()
+if(JA2_PLATFORM_BACKEND STREQUAL "LINUX" AND NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  message(FATAL_ERROR "The LINUX platform backend requires a Linux target.")
 endif()
 message(STATUS "Configuring JA2_PLATFORM_BACKEND=\"${JA2_PLATFORM_BACKEND}\"")
 
@@ -51,8 +61,12 @@ endif()
 # declares the ADDRESS_SANITIZER option and the _asan genexpr used below
 include(cmake/AddressSanitizer.cmake)
 
-# keep frame pointers in both MSVC and clang-cl
-add_compile_options(/Oy-)
+# Keep frame pointers in first-party code on every supported compiler.
+if(MSVC)
+  add_compile_options(/Oy-)
+else()
+  add_compile_options(-fno-omit-frame-pointer)
+endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   add_compile_options(-fno-delete-null-pointer-checks)
@@ -81,6 +95,11 @@ include_directories(
   "${CMAKE_SOURCE_DIR}/Editor"
   "${CMAKE_SOURCE_DIR}/i18n/include"
 )
+
+if(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
+  include(cmake/NativeSharedCore.cmake)
+  return()
+endif()
 
 # external libraries
 include(cmake/dependencies/Expat.cmake)

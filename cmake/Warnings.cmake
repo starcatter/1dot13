@@ -12,8 +12,8 @@
 # The lists are not comparable by length: clang-cl /W3 is clang's own -Wall,
 # which is already broader than MSVC /W4.
 
-# clang-cl also sets MSVC, so it has to be tested first.
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")   # clang-cl
+# clang-cl also sets MSVC, so it has to be tested first without catching native Clang.
+if(MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   # Pinned so the baseline doesn't drift with the clang release.
   add_compile_options(/W3 /WX
     -Wno-writable-strings                          # 292823 string literal to char*

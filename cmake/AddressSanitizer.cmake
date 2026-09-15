@@ -18,16 +18,20 @@ if(ADDRESS_SANITIZER)
 endif()
 
 function(ja2_asan_instrument_first_party)
-  # instrument first-party code; /bigobj for the TUs asan inflates past the COFF
-  # section cap (LanguageStrings.cpp). The ignorelist opts individual functions
-  # with 32-bit inline __asm out of instrumentation (see cmake/asan-ignorelist.txt).
-  # Empty when the option is off.
-  add_compile_options(
-    "$<${_asan}:-fsanitize=address;-fsanitize-ignorelist=${CMAKE_SOURCE_DIR}/cmake/asan-ignorelist.txt;/bigobj>")
+  if(MSVC)
+    # /bigobj for the TUs ASan inflates past the COFF section cap
+    # (LanguageStrings.cpp). The ignorelist opts individual functions with
+    # 32-bit inline __asm out of instrumentation.
+    add_compile_options(
+      "$<${_asan}:-fsanitize=address;-fsanitize-ignorelist=${CMAKE_SOURCE_DIR}/cmake/asan-ignorelist.txt;/bigobj>")
 
-  # clang-cl/lld-link do not infer the asan runtime; /WHOLEARCHIVE is invalid for llvm-lib
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    add_link_options(
-      "$<$<AND:${_asan},$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>>:clang_rt.asan_dynamic-i386.lib;/WHOLEARCHIVE:clang_rt.asan_static_runtime_thunk-i386.lib>")
+    # clang-cl/lld-link do not infer the ASan runtime; /WHOLEARCHIVE is invalid for llvm-lib.
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+      add_link_options(
+        "$<$<AND:${_asan},$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>>:clang_rt.asan_dynamic-i386.lib;/WHOLEARCHIVE:clang_rt.asan_static_runtime_thunk-i386.lib>")
+    endif()
+  else()
+    add_compile_options("$<${_asan}:-fsanitize=address;-fno-omit-frame-pointer>")
+    add_link_options("$<${_asan}:-fsanitize=address>")
   endif()
 endfunction()

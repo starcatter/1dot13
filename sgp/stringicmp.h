@@ -1,7 +1,9 @@
 //
 // Snap: Declaration of case-insensitive string comparison classes
 //
+#ifdef _MSC_VER
 #pragma warning(disable:4786)
+#endif
 #ifndef STRINGICMP_H
 #define STRINGICMP_H
 

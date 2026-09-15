@@ -6,7 +6,7 @@ Date: 2026-09-15
 
 The portable file-I/O update at commit `cf8b80a7a` completes a major prerequisite for both a native Linux port and a maintainable modern-Windows build. It replaces the engine's most pervasive storage coupling with project-owned C++17 interfaces while retaining bfVFS as the compatibility-tested resource backend. It also removes the pointer-to-32-bit-file-handle design, makes writable paths explicit and confined, and gives save publication recoverable transaction semantics.
 
-This is an important architectural milestone, but it is not yet a native Linux port. The production game target still accepts only `JA2_PLATFORM_BACKEND=WINDOWS`, requires a Windows target, uses a Windows GUI entry point, and links DirectDraw, WinMM, WinHTTP, and proprietary FMOD 3.75 components. The currently validated product remains a 32-bit Windows executable built with MSVC and exercised under Wine.
+This is an important architectural milestone, but it is not yet a native Linux port. CMake now accepts a `LINUX` backend and builds a bounded shared-core target, but the production game executable still requires the `WINDOWS` backend, uses a Windows GUI entry point, and links DirectDraw, WinMM, WinHTTP, and proprietary FMOD 3.75 components. The currently playtestable product remains a 32-bit Windows executable built with MSVC and exercised under Wine.
 
 In roadmap terms, the update moves the project from "stabilize and reproduce the legacy Windows program" into "extract replaceable platform backends." File and resource access is now sufficiently isolated that subsequent work does not need to solve storage portability at the same time as windowing, rendering, input, or audio. That substantially reduces the risk and scope of each later migration.
 
@@ -27,6 +27,22 @@ The remaining maintained engine uses of Windows thread and synchronization APIs 
 Crash telemetry now starts its best-effort upload through a small project-owned detached-task service implemented with `std::thread`. Thread-creation failures are reported to the caller, exceptions cannot escape a detached task and terminate the process, and each telemetry worker owns its URL, root path, and writable store. This removes `_beginthreadex`, the raw thread handle, `CloseHandle`, and the shared fixed-size URL buffer from the startup path.
 
 Native tests cover detached execution, captured-state ownership, empty-task rejection, and exception containment. The Windows x86 game builds with the same implementation. A source audit finds no remaining active Win32 thread creation, event, critical-section, TLS, or interlocked operations in maintained runtime code. `MsgWaitForMultipleObjectsEx` remains only as the current Windows application host's message/deadline wait; replacing it belongs to application-host extraction, not to engine thread lifecycle.
+
+## Native-Build Progress: Shared Core
+
+The root build now selects `JA2_PLATFORM_BACKEND=LINUX` by default on a Linux host and produces `ja2_shared_core` instead of entering the Windows application, renderer, input, audio, tools, and resource-file source groups. The target contains 16 first-party translation units: the complete file/resource service boundary, POSIX durable operations and paths, monotonic clocks, fixed-step scheduling, portable sleep, detached tasks, the legacy clock facade, and a platform-neutral string utility. It also builds the pinned patched bfVFS and LZMA SDK dependencies natively from the same sources used by the Windows baseline.
+
+An integrated `ja2_shared_core_smoke` executable links and exercises the combined target: monotonic time and sleeping, scheduler construction, detached execution, physical writable storage, durable file sync, metadata, and executable-path discovery. The existing three timing/thread and six file-I/O characterization tests are registered alongside it, giving the root Linux build one ten-test CTest gate. GCC 16 and Clang 22 builds pass with strict first-party warnings; a GCC AddressSanitizer build also passes when leak detection is disabled under the ptrace-based test container.
+
+The next compiler boundary is now explicit. Including `sgp/types.h` fails on its MSVC-only `__int64` aliases. Correcting that alone is insufficient: `CHAR16` is Windows-width `wchar_t`, `FLAGS32` is platform-width `unsigned long`, and `sgp.h` fans out through `video.h` into Windows and DirectDraw declarations. These are the next shared-core extraction tasks. No native game executable is claimed yet.
+
+The native checkpoint is built with:
+
+```sh
+cmake -S . -B build/native -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build build/native --parallel 16
+ctest --test-dir build/native --output-on-failure
+```
 
 ## Position Against the Portable-I/O Plan
 
@@ -62,7 +78,7 @@ The distinction matters: the architecture is ready to support the next porting s
 
 The new boundary eliminates the need for a Linux port to reproduce Win32 file handles, Win32 directory enumeration, Windows timestamps, or bfVFS writes throughout gameplay code. A Linux backend can implement physical writable files, durable replacement, local-time conversion, and platform paths in a small set of files while resource consumers continue to use the same project interfaces.
 
-It also provides a useful native-build foothold. File-I/O tests already compile and run as host-native C++17 programs even though the game cannot yet configure as a Linux target. This proves that part of the engine has escaped the global Windows build assumptions and establishes a pattern for extracting and testing the next platform-neutral layers.
+It also provides a useful native-build foothold. File I/O now compiles both in standalone host-native tests and as part of the root `ja2_shared_core` Linux target. This proves that the storage, timing, and basic platform layers have escaped the global Windows build assumptions and establishes a compiler-enforced boundary for extracting the next platform-neutral layers.
 
 ### Modern Windows
 
@@ -112,7 +128,7 @@ This should be separated from rendering work. A temporary no-audio backend may h
 
 ### Native Build Enablement
 
-Once enough platform interfaces exist, CMake can add a `LINUX` backend instead of rejecting every non-Windows target. That step includes:
+CMake now has a bounded `LINUX` backend for the shared core. Expanding it into a native game target includes:
 
 - Replacing unconditional MSVC flags and Windows libraries with compiler- and backend-specific target settings.
 - Splitting Windows resource compilation and `WIN32` executable behavior from shared engine sources.
@@ -167,14 +183,14 @@ The terms below are used deliberately:
 | Windows x86 compilation | Supported with MSVC; Wine-hosted toolchain documented | Working regression reference |
 | Windows x86 runtime | Smoke-tested under Wine before the final commit boundary | Useful behavioral oracle, but exact-commit and native-Windows validation remain |
 | Portable file contracts | Implemented | Callers no longer require Win32 file handles or writable bfVFS access |
-| Native file tests | Four executables build and pass on Linux | Proven host-native island, not yet integrated into root CI |
-| Linux game configuration | Explicitly rejected | No native game target yet |
+| Native core build | Root `ja2_shared_core` builds with GCC and Clang; all ten registered tests pass | Storage, resource, timing, sleep, and threading form a proven host-native island |
+| Linux game executable | Not defined yet | Fundamental types and shared-header Win32/DirectDraw fan-out are the next blockers |
 | Window/event backend | Win32 only | Hard Linux blocker |
 | Rendering/presentation | DirectDraw 2 plus cnc-ddraw | Works as a legacy compatibility path; no native Linux renderer |
 | Input backend | Win32 mouse hook/messages and direct cursor polling | Hard Linux blocker, although the engine event queue is reusable |
 | Audio backend | FMOD 3.75, 32-bit proprietary DLL | Hard Linux and Windows-x64 blocker |
 | Cinematic decoder | Source-built libsmacker | Decoder is portable; final video/audio backends are not |
-| Linux durable save backend | Not implemented | Save transactions cannot yet run correctly in a native game |
+| Linux durable save backend | Implemented and natively tested | Save publication no longer blocks a future native game |
 | Windows x64 | Unsupported | Assembly, pointers, serialization, and binary dependencies block it |
 | Multiplayer | Deliberately disabled | Not a compile blocker; feature restoration is later work |
 
@@ -210,7 +226,7 @@ checkpoint; the remaining compatibility work is still open:
 2. `PhysicalWritableStore::metadata` returns Unix-nanosecond modification timestamps on POSIX as well as Windows.
 3. Linux `executableDirectory()` resolves `/proc/self/exe` independently of the working directory, retaining the previous current-directory behavior only as a restricted-environment fallback.
 4. Physical writable lookup uses host-native case behavior while wildcard matching is explicitly ASCII case-insensitive (`sgp/fileio/PhysicalWritableStore.cpp:151-195`, `460-474`, and `516-522`). Case collisions and compatibility expectations need fixtures before Linux deployment on case-sensitive filesystems.
-5. No native test currently links the real `BfVfsResourceStore`, SLF provider, or JPC/7z path. The native tests validate the physical/router half, not the complete resource stack.
+5. The root native target now compiles and links the real `BfVfsResourceStore` and bfVFS archive providers. The integrated smoke test does not yet mount retail SLF/JPC fixtures, so resource precedence and archive behavior still rely on the Windows baseline and future native fixtures.
 6. Equipment-template filename conversion still calls `WideCharToMultiByte` in `Tactical/Handle Items.cpp:124-137`; it belongs in the wider text-encoding migration.
 
 ### Intentional Compatibility Debt
@@ -229,17 +245,15 @@ The following limitations are acceptable at this checkpoint but should remain vi
 
 ### Build System
 
-The root build stops native work before compilation:
+The original root-build blockers have been removed for the bounded Linux target:
 
-- `CMakeLists.txt:11-19` accepts only `JA2_PLATFORM_BACKEND=WINDOWS` and requires `WIN32`.
-- `CMakeLists.txt:208-213` creates a Windows GUI executable and compiles `Ja2/Res/ja2.rc` unconditionally.
-- `CMakeLists.txt:142-149` links WinMM and WinHTTP unconditionally.
-- `CMakeLists.txt:232-234` links DirectDraw and `fmodvc.lib` unconditionally.
-- `/Oy-` at `CMakeLists.txt:54-55` and `/w14062` at `CMakeLists.txt:221` are not conditioned as generic compiler-independent settings.
-- `cmake/Warnings.cmake:15-19` and `cmake/AddressSanitizer.cmake:28-32` treat generic Clang as though it were always clang-cl and select Windows-style options/libraries.
-- `CMakePresets.json:14-78` contains Windows x86 MSVC/clang-cl configurations only.
+- `CMakeLists.txt` selects `WINDOWS` or `LINUX` according to the target platform and enters backend-specific source groups.
+- The Linux path returns after defining `ja2_shared_core` and its smoke test, so it does not create the Windows GUI executable, compile `Ja2/Res/ja2.rc`, or link WinMM, WinHTTP, DirectDraw, and `fmodvc.lib`.
+- Frame-pointer, warning, and AddressSanitizer options distinguish MSVC/clang-cl from native GCC and Clang.
+- Pinned LZMA, utf8cpp, and patched bfVFS dependencies build on both backends.
+- The Windows application graph remains intact and continues to provide the behavioral baseline.
 
-The first native-build patch should not try to make all engine sources compile. It should introduce backend-specific source groups, libraries, flags, executable resources, and tools, then create a controlled Linux target that can expose the next class of errors.
+The controlled target deliberately stops before legacy `types.h` and the application/header fan-out. It exposes the next errors without conflating fundamental-type, text, application-host, rendering, input, and audio work.
 
 ### Fundamental Types and Header Fan-Out
 
@@ -478,7 +492,7 @@ Deliverables:
 - Save corpus and deterministic format hashes.
 - Resource/profile/archive fixtures.
 - Renderer screenshots/framebuffer hashes, input traces, and audio callback traces.
-- Root/CI integration of the four native I/O tests.
+- Completed root integration of the ten native shared-core, timing/thread, and file-I/O tests; CI wiring remains.
 
 Exit gate: the current backend is measurable enough to identify whether later differences are intentional.
 
@@ -486,7 +500,7 @@ Exit gate: the current backend is measurable enough to identify whether later di
 
 Deliverables:
 
-- Backend-conditioned CMake structure and a `LINUX` skeleton.
+- Completed: backend-conditioned CMake structure and a `LINUX` shared-core target.
 - Fixed-width fundamental types, especially `FLAGS32`, plus a deliberate `CHAR16` design.
 - Common headers separated from `windows.h`/DirectDraw declarations.
 - Central UTF-8/UTF-16 conversion service.
@@ -593,7 +607,7 @@ Completed immediately after the file-I/O checkpoint:
 
 Then proceed through these independently verifiable seams:
 
-1. Condition CMake and establish a small native shared-core target.
+1. Completed: conditioned CMake and established the `ja2_shared_core` Linux target with an integrated smoke test.
 2. Extract process services: command-line handling, restart/single-instance behavior, dialogs, and telemetry.
 3. Put an interface in front of FMOD while retaining the existing Windows implementation.
 4. Completed: extracted monotonic time and timer scheduling, removed the timer threads, and migrated the remaining active input synchronization and detached worker lifecycle to portable C++17 primitives.
