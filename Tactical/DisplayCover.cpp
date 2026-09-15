@@ -46,7 +46,7 @@ INT16 gsMinCellX, gsMinCellY, gsMaxCellX, gsMaxCellY = -1;
 
 std::vector<CoverCell> gCoverViewArea;
 
-DWORD guiCoverNextUpdateTime = 0;
+UINT32 guiCoverNextUpdateTime = 0;
 
 COVER_DRAW_MODE gubDrawMode = DRAW_MODE_OFF;
 

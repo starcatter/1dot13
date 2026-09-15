@@ -1101,16 +1101,6 @@ void KeyUp(UINT32 usParam, UINT32 uiParam)
 	}
 }
 
-void EnableDoubleClk(void)
-{
-	// Obsolete
-}
-
-void DisableDoubleClk(void)
-{
-	// Obsolete
-}
-
 void GetMousePos(SGPPoint *Point)
 {
 	POINT MousePos;

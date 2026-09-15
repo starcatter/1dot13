@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <array>
 #include <cstring>
+#include <limits>
 #include <optional>
 #include <vector>
 
@@ -12,13 +13,14 @@ extern "C"
 
 #include "DEBUG.H"
 #include "Cinematics.h"
+#include "fileio/BfVfsResourceStore.h"
+#include "fileio/FileServices.h"
 #include "himage.h"
 #include "local.h"
 #include "soundman.h"
 #include "vobject.h"
 #include "vsurface.h"
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_file_raii.h>
+#include <vfs/Core/vfs_path.h>
 
 static constexpr UINT32 MAX_FLICS        = 4;	// How many flics can be open at once
 static constexpr UINT32 NUM_AUDIO_TRACKS = 7;	// Audio tracks an SMK file can carry
@@ -49,7 +51,7 @@ struct SMKFLIC {
 static std::array<SMKFLIC, MAX_FLICS> flics;
 
 static auto SmkGetFreeFlic() -> SMKFLIC*;
-static auto SmkReadFile(const CHAR8 *filename) -> std::optional<std::vector<vfs::Byte>>;
+static auto SmkReadFile(const CHAR8 *filename) -> std::optional<std::vector<UINT8>>;
 static auto SmkDecodeAudio(SMKFLIC &flic) -> void;
 static auto SmkStartAudio(SMKFLIC &flic, const CHAR8 *filename) -> void;
 static auto SmkWriteWavHeader(UINT8 *wav, UINT32 pcmSize, UINT8 channels, UINT8 bitDepth, UINT32 rate) -> void;
@@ -112,7 +114,7 @@ SMKFLIC *SmkPlayFlic(const CHAR8 *filename, UINT32 left, UINT32 top, BOOLEAN aut
 		return nullptr;
 	}
 
-	std::optional<std::vector<vfs::Byte>> fileData = SmkReadFile(filename);
+	std::optional<std::vector<UINT8>> fileData = SmkReadFile(filename);
 	if (!fileData)
 		return nullptr;
 
@@ -198,23 +200,28 @@ static SMKFLIC *SmkGetFreeFlic()
 
 //	Reads a video file out of the VFS in one go. libsmacker can only read from a
 //	plain file or from memory, and the file may well be sitting inside an archive.
-static std::optional<std::vector<vfs::Byte>> SmkReadFile(const CHAR8 *filename)
+static std::optional<std::vector<UINT8>> SmkReadFile(const CHAR8 *filename)
 {
 	vfs::Path videoName(filename);
-	std::vector<vfs::Byte> data;
+	std::vector<UINT8> data;
 
 	try
 	{
-		if (!getVFS()->fileExists(videoName))
-			return std::nullopt;
-
-		vfs::COpenReadFile file(videoName);
-		vfs::size_t size = file->getSize();
+		std::unique_ptr<ja2::fileio::File> file = ja2::fileio::resourceStore().open(filename);
+		const std::uint64_t size = file->size();
 		if (size == 0)
 			return std::nullopt;
+		if (size > data.max_size())
+			throw std::length_error("Video resource is too large to read into memory");
 
-		data.resize(size);
-		file->read(data.data(), size);
+		data.resize(static_cast<std::size_t>(size));
+		file->readExact(data.data(), data.size());
+	}
+	catch (ja2::fileio::Error &ex)
+	{
+		if (ex.code() == ja2::fileio::ErrorCode::notFound)
+			return std::nullopt;
+		SGP_RETHROW(_BS(L"Video file \"") << videoName << L"\" could not be read" << _BS::wget, ex);
 	}
 	catch (std::exception &ex)
 	{

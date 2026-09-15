@@ -9,6 +9,8 @@
 /CMakeUserPresets.json
 /CMakeSettings.json
 /lib/
+/tests/fileio/build/
+/.kilo/
 
 # AddressSanitizer reports (see SANITIZERS.md)
 /gamedir/asan.report.*

@@ -13,7 +13,13 @@
 #include "message.h"
 #include "FileMan.h"
 #include "INIReader.h"
-#include <vfs/Core/vfs.h>
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/PhysicalWritableStore.h"
+#include "fileio/StoreRouter.h"
+#include <vfs/Core/vfs_path.h>
+#include <limits>
+#include <memory>
 #include "transfer_rules.h"
 #include "MPJoinScreen.h"
 #include "Game Init.h"
@@ -816,41 +822,30 @@ void CheckIncomingConnection(Packet* p)
 
 void AddFilesToSendList()
 {
-	// we cannot just iterate over "*/*" as we would get ALL files and we don't want to send all files
-	// instead we only iterate over the files in the "_MULTIPLAYER" profile
-	vfs::CProfileStack *PS = getVFS()->getProfileStack();
-	vfs::CVirtualProfile *prof = PS->getProfile("_MULTIPLAYER");
-	if(prof != PS->topProfile())
-	{
-		// there is not supposed to be another profile?
-		// output error message
-		return;
-	}
 	CTransferRules transferRules;
 	transferRules.initFromTxtFile("transfer_rules.txt");
-	vfs::IBaseLocation* loc = prof->getLocation("");
-	SGP_THROW_IFFALSE(loc != NULL, "MP profile was successfully created, but the root directory is not included");
-	vfs::IBaseLocation::Iterator it = loc->begin();
-	int i=0;
-	for(; !it.end(); it.next(), i++)
+	std::shared_ptr<ja2::fileio::PhysicalWritableStore> store =
+		ja2::fileio::storeRouter().currentWritableStore();
+	const std::vector<ja2::fileio::DirectoryEntry> entries = store->listRecursive("");
+	for(const ja2::fileio::DirectoryEntry& entry : entries)
 	{
-		vfs::Path const& valid_path = it.value()->getPath();
+		const vfs::Path valid_path(entry.name);
 		if(transferRules.applyRule(valid_path()) == CTransferRules::ACCEPT)
 		{
 			// transfer only those files that are not on the ignore list
-			vfs::tReadableFile* rfile = vfs::tReadableFile::cast(it.value());
-			if(!rfile)
+			SGP_THROW_IFFALSE(entry.metadata.size <=
+				static_cast<std::uint64_t>((std::numeric_limits<std::size_t>::max)()),
+				"Multiplayer transfer file is too large");
+			const std::size_t fsize = static_cast<std::size_t>(entry.metadata.size);
+			fileListTotalBytes += static_cast<long>(fsize);
+			if(fsize > 0)
 			{
-				continue;
-			}
-			vfs::size_t fsize = rfile->getSize();
-			fileListTotalBytes += (long)fsize;
-			if( (fsize>0) && rfile->openRead())
-			{
-				std::vector<vfs::Byte> data(fsize,0);
-				rfile->read(&data[0], fsize);
-				rfile->close();
-				fileList.AddFile(vfs::String::as_utf8(valid_path()).c_str(),&data[0], fsize,fsize,FileListNodeContext(0,0), false);
+				std::vector<unsigned char> data(fsize, 0);
+				std::unique_ptr<ja2::fileio::File> input = store->openRead(entry.name);
+				input->readExact(data.data(), data.size());
+				fileList.AddFile(entry.name.c_str(),
+					reinterpret_cast<const char*>(data.data()), fsize, fsize,
+					FileListNodeContext(0,0), false);
 			}
 		}
 	}	
@@ -874,7 +869,7 @@ void start_server (void)
 		// Read from ja2_mp.ini
 		// ----------------------------
 
-		CIniReader iniReader(JA2MP_INI_FILENAME);	// Wird nur für Strings gebraucht
+		CIniReader iniReader(JA2MP_INI_FILENAME);	// Wird nur fÃ¼r Strings gebraucht
 		strncpy(cServerName, iniReader.ReadString(JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_NAME, "My JA2 Server"), 30 );				
 		strncpy(gKitBag, iniReader.ReadString(JA2MP_INI_INITIAL_SECTION,JA2MP_KIT_BAG, ""), 100);
 		

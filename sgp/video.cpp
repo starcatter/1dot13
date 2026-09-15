@@ -13,10 +13,12 @@
 #include "input.h"
 #include "GameSettings.h"
 #include "sgp_logger.h"
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 
 #include "resource.h"
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_file_raii.h>
+#include <vfs/Core/vfs_string.h>
 
 #include "local.h"
 #include "Text.h"
@@ -1941,9 +1943,10 @@ void RefreshScreen(void *DummyVariable)
 
 		try
 		{
-			vfs::COpenWriteFile wfile(FileName,true,true);
+			std::unique_ptr<ja2::fileio::File> output =
+				ja2::fileio::storeRouter().create(FileName);
 			char head[] = {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, static_cast<char>(LOBYTE(SCREEN_WIDTH)), static_cast<char>(HIBYTE(SCREEN_WIDTH)), static_cast<char>(LOBYTE(SCREEN_HEIGHT)), static_cast<char>(HIBYTE(SCREEN_HEIGHT)), 0x10, 0};
-			SGP_TRYCATCH_RETHROW(wfile->write(head,18), L"");
+			output->writeExact(head, sizeof(head));
 
 			//
 			// Lock temp surface
@@ -1980,11 +1983,12 @@ void RefreshScreen(void *DummyVariable)
 					ConvertRGBDistribution565To555( p16BPPData, SCREEN_WIDTH );
 
 					// Write
-					SGP_TRYCATCH_RETHROW(wfile->write((vfs::Byte*)p16BPPData, SCREEN_WIDTH * 2), L"");
+					output->writeExact(p16BPPData, SCREEN_WIDTH * 2);
 				}
 				else
 				{
-					SGP_TRYCATCH_RETHROW(wfile->write((vfs::Byte*)(((UINT8 *)SurfaceDescription.lpSurface) + (iIndex * SCREEN_WIDTH * 2)), SCREEN_WIDTH * 2), L"");
+					output->writeExact(((UINT8 *)SurfaceDescription.lpSurface) +
+						(iIndex * SCREEN_WIDTH * 2), SCREEN_WIDTH * 2);
 				}
 			}
 
@@ -3282,21 +3286,22 @@ void RefreshMovieCache( )
 	for ( cnt = 0; cnt < giNumFrames; cnt++ )
 	{
 		sprintf( cFilename, "JA%5.5d.TGA", uiPicNum++ );
-		vfs::COpenWriteFile wfile(cFilename, true, true);
+		std::unique_ptr<ja2::fileio::File> output =
+			ja2::fileio::storeRouter().create(cFilename);
 		memset(&Header, 0, sizeof(TARGA_HEADER));
 
 		Header.ubTargaType=2;			// Uncompressed 16/24/32 bit
 		Header.usImageWidth=SCREEN_WIDTH;
 		Header.usImageHeight=SCREEN_HEIGHT;
 		Header.ubBitsPerPixel=16;
-		SGP_TRYCATCH_RETHROW(wfile->write((vfs::Byte*)&Header, sizeof(TARGA_HEADER)), L"");
+		output->writeExact(&Header, sizeof(TARGA_HEADER));
 		pDest = gpFrameData[ cnt ];
 
 		for(iCountY=SCREEN_HEIGHT-1; iCountY >=0 ; iCountY-=1)
 		{
 			for(iCountX=0; iCountX < SCREEN_WIDTH; iCountX ++ )
 			{
-				SGP_TRYCATCH_RETHROW(wfile->write( (vfs::Byte*)( pDest + ( iCountY * SCREEN_WIDTH ) + iCountX ), sizeof(UINT16)), L"");
+				output->writeExact(pDest + (iCountY * SCREEN_WIDTH) + iCountX, sizeof(UINT16));
 			}
 
 		}

@@ -1,8 +1,9 @@
 #include "ImportStrings.h"
 #include "LocalizedStrings.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 
 #include <vfs/Tools/vfs_tools.h>
-#include <vfs/Core/vfs.h>
 
 #include <cmath>
 
@@ -29,7 +30,7 @@ void Loc::ImportStrings()
 		vfs::String s = wss.str() + L".EDT.xml";
 		vfs::Path filename(L"Localization/Dialogue");
 		filename += vfs::Path(s);
-		if(getVFS()->fileExists(filename))
+		if(ja2::fileio::storeRouter().exists(filename.to_string()))
 		{
 			Loc::AssociateWithFile(Loc::DIALOGUE,filename,vfs::toString<wchar_t>(i));
 		}

@@ -57,18 +57,22 @@
 	#include "Morale.h"
 	#include "Drugs And Alcohol.h"
 	#include "Food.h"
+	#include "fileio/FileServices.h"
+	#include "fileio/PhysicalWritableStore.h"
+	#include "fileio/StoreRouter.h"
 	// added by sevenfm - this is needed for _keydown(SHIFT) to work
 	#include "english.h"
 
+	#include <algorithm>
+	#include <cctype>
 	#include <iostream>	// added by Flugente
-	#include <fstream>	// added by Flugente
+	#include <sstream>
 	#include "DisplayCover.h"		// added by Flugente
 	#include "Queen Command.h"		// added by Flugente for FindUnderGroundSector(...)
 	#include "LuaInitNPCs.h"		// added by Flugente
 	#include "finances.h"			// added by Flugente
 	#include "LaptopSave.h"			// added by Flugente
 	#include "Game Clock.h"			// added by Flugente
-	#include <vfs/Core/vfs_file_raii.h>		// added by Flugente for vfs-stuff
 	#include "DynamicDialogue.h" // added by Flugente for SoldierRelation()
 	#include "Map Screen Interface.h"		// added by Flugente
 	#include "Map Screen Interface Map.h"	// added by Flugente
@@ -83,9 +87,65 @@
 #define					MIN_LOB_RANGE					6
 
 // directory for fortification plans (located in Profiles sub-folder)
-#define FORTIFICATIONPLAN_DIRECTORY						"FortificationPlan\\"
+#define FORTIFICATIONPLAN_DIRECTORY						"FortificationPlan/"
 
-#define EQUIPMENTTEMPLATE_DIRECTORY						"GearTemplate\\"
+#define EQUIPMENTTEMPLATE_DIRECTORY						"GearTemplate/"
+
+namespace
+{
+bool ReadProfileFileBytes( const std::string& name, std::string& bytes )
+{
+	try
+	{
+		std::unique_ptr<ja2::fileio::File> file =
+			ja2::fileio::storeRouter().currentWritableStore()->openRead( name );
+		const std::uint64_t size = file->size();
+		if ( size > static_cast<std::uint64_t>( bytes.max_size() ) )
+			throw ja2::fileio::Error( ja2::fileio::ErrorCode::io, "profile file is too large" );
+		bytes.resize( static_cast<std::size_t>( size ) );
+		file->readExact( bytes.data(), bytes.size() );
+		return true;
+	}
+	catch ( const ja2::fileio::Error& error )
+	{
+		if ( error.code() == ja2::fileio::ErrorCode::notFound )
+			return false;
+		throw;
+	}
+}
+
+void WriteProfileFileBytes( const std::string& name, const std::string& bytes )
+{
+	std::unique_ptr<ja2::fileio::File> file =
+		ja2::fileio::storeRouter().currentWritableStore()->create( name );
+	file->writeExact( bytes.data(), bytes.size() );
+}
+
+std::string WideNameToUtf8( STR16 name )
+{
+	if ( !name )
+		return std::string();
+
+	const int size = WideCharToMultiByte( CP_UTF8, 0, name, -1, NULL, 0, NULL, NULL );
+	if ( size <= 0 )
+		throw ja2::fileio::Error( ja2::fileio::ErrorCode::invalidPath, "invalid equipment template name" );
+
+	std::string result( static_cast<std::size_t>( size ), '\0' );
+	if ( !WideCharToMultiByte( CP_UTF8, 0, name, -1, result.data(), size, NULL, NULL ) )
+		throw ja2::fileio::Error( ja2::fileio::ErrorCode::invalidPath, "invalid equipment template name" );
+	result.resize( result.size() - 1 );
+	return result;
+}
+
+std::string FoldAsciiFileName( std::string name )
+{
+	std::transform( name.begin(), name.end(), name.begin(), []( unsigned char character )
+	{
+		return static_cast<char>( std::tolower( character ) );
+	} );
+	return name;
+}
+}
 
 extern BOOL GetBetterObject_InventoryPool( UINT16 usItem, INT16 status, UINT32& arLoop, UINT8& arIndex );
 extern BOOL GetFittingAmmo_InventoryPool( UINT8 usCalibre, UINT8 usAmmoType, UINT32& arLoop );
@@ -8271,17 +8331,6 @@ public:
 	UINT8 usIndex;
 };
 
-std::ostream& operator<<(std::ostream& stream, FORTIFICATION_NODE const& data)
-{
-	stream << data.sGridNo << " "
-		<< (INT32)(data.sLevel) << " "
-		<< (INT32)(data.fBuild) << " "
-		<< (INT32)(data.structurexmlindex) << " "
-		<< (INT32)(data.usIndex) << std::endl;
-
-	return stream;
-}
-
 std::istream& operator>>(std::istream& stream, FORTIFICATION_NODE& data)
 {
 	FORTIFICATION_NODE     tmp;
@@ -8756,24 +8805,16 @@ void LoadSectorFortificationPlan( INT16 sSectorX, INT16 sSectorY, INT8 sSectorZ 
 	else
 		sprintf( filename, "%s%S.txt", FORTIFICATIONPLAN_DIRECTORY, wSectorName );
 	
-	// get full path to save file
-	vfs::Path vfsPath;
-	vfs::COpenWriteFile rfile( filename, true );
-	rfile->_getRealPath( vfsPath );
-	std::string str = vfsPath.to_string( );
-	
-	const char* filenamewithpath = str.c_str( );
-
-	// Read data
-	std::ifstream file;
-	file.open( filenamewithpath, std::ios::in );
 	std::vector<FORTIFICATION_NODE> vec;
-
-	std::copy( std::istream_iterator<FORTIFICATION_NODE>( file ),
-			   std::istream_iterator<FORTIFICATION_NODE>( ),
-			   std::back_inserter( vec )
-			   );
-	file.close( );
+	std::string bytes;
+	if ( ReadProfileFileBytes( filename, bytes ) )
+	{
+		std::istringstream input( bytes );
+		std::copy( std::istream_iterator<FORTIFICATION_NODE>( input ),
+				   std::istream_iterator<FORTIFICATION_NODE>( ),
+				   std::back_inserter( vec )
+				   );
+	}
 
 	gSectorFortificationMap[sector] = vec;
 }
@@ -8802,29 +8843,18 @@ void SaveSectorFortificationPlan( INT16 sSectorX, INT16 sSectorY, INT8 sSectorZ 
 			else
 				sprintf( filename, "%s%S.txt", FORTIFICATIONPLAN_DIRECTORY, wSectorName );
 			
-			// get full path to save file
-			// what we are doing here might seem rather odd. If the file does not exist, we are creating a new file via vfs... and then create a fresh binary file afterwards.
-			// I found this to be the easiest solution for using both vfs pathing and being able to use a std::fstream
-			// If you don't like it, fix it yourself, or make vfs not such a pain to use
-			vfs::Path vfsPath;
-			vfs::COpenWriteFile rfile( filename, true );
-			rfile->_getRealPath( vfsPath );
-			std::string str = vfsPath.to_string( );
-
-			const char* filenamewithpath = str.c_str( );
-			
-			// write
-			std::fstream binary_file( filenamewithpath, std::ios::out );
-
+			std::ostringstream output;
 			SectorFortificationVector::iterator nodeitend = vec.end( );
 			for ( SectorFortificationVector::iterator nodeit = vec.begin( ); nodeit != nodeitend; ++nodeit )
 			{
-				FORTIFICATION_NODE node = (*nodeit);
-
-				binary_file << node;
+				const FORTIFICATION_NODE& node = (*nodeit);
+				output << node.sGridNo << " "
+					<< (INT32)(node.sLevel) << " "
+					<< (INT32)(node.fBuild) << " "
+					<< (INT32)(node.structurexmlindex) << " "
+					<< (INT32)(node.usIndex) << "\r\n";
 			}
-
-			binary_file.close( );
+			WriteProfileFileBytes( filename, output.str() );
 		}
 	}
 }
@@ -9588,42 +9618,18 @@ public:
 	std::vector<UINT16>	attachments;
 };
 
-std::ostream& operator<<(std::ostream& stream, GEAR_NODE const& data)
-{
-	stream << (int)(data.slot) << " " << (UINT16)(data.item) << " " << (UINT16)(data.ammoitem);
-
-	std::vector<UINT16> tmp = data.attachments;
-
-	for ( std::vector<UINT16>::iterator it = tmp.begin( ); it != tmp.end( ); ++it )
-		stream << " " << (*it);
-
-	stream << std::endl;
-
-	return stream;
-}
-
 std::vector<GEAR_NODE> LoadEquipmentTemplate( std::string aName )
 {
-	CHAR8	filename[MAX_PATH];
-
-	sprintf(filename, "%s%s", EQUIPMENTTEMPLATE_DIRECTORY, aName.c_str());
-
-	// get full path to save file
-	vfs::Path vfsPath;
-	vfs::COpenWriteFile rfile( filename, true );
-	rfile->_getRealPath(vfsPath);
-	std::string str = vfsPath.to_string();
-
-	const char* filenamewithpath = str.c_str();
-
-	// Read data
-	std::ifstream file;
-	file.open(filenamewithpath, std::ios::in);
 	std::vector<GEAR_NODE> vec;
+	std::string bytes;
+	if ( !ReadProfileFileBytes( std::string( EQUIPMENTTEMPLATE_DIRECTORY ) + aName, bytes ) )
+		return vec;
+
+	std::istringstream input( bytes );
 
 	std::string line;
 
-	while ( std::getline( file >> std::ws, line ) )
+	while ( std::getline( input >> std::ws, line ) )
 	{
 		if ( line[0] != '#' && line[0] != '/' )
 		{
@@ -9650,39 +9656,28 @@ std::vector<GEAR_NODE> LoadEquipmentTemplate( std::string aName )
 		}
 	}
 	
-	file.close();
-
 	return vec;
 }
 
 void SaveEquipmentTemplate(std::vector<GEAR_NODE> aVec, STR16 aName)
 {
-	CHAR8	filename[MAX_PATH];
-
-	sprintf(filename, "%s%S.txt", EQUIPMENTTEMPLATE_DIRECTORY, aName);
-
-	// get full path to save file
-	// what we are doing here might seem rather odd. If the file does not exist, we are creating a new file via vfs... and then create a fresh binary file afterwards.
-	// I found this to be the easiest solution for using both vfs pathing and being able to use a std::fstream
-	// If you don't like it, fix it yourself, or make vfs not such a pain to use
-	vfs::Path vfsPath;
-	vfs::COpenWriteFile rfile(filename, true);
-	rfile->_getRealPath(vfsPath);
-	std::string str = vfsPath.to_string();
-
-	const char* filenamewithpath = str.c_str();
-
-	// write
-	std::fstream binary_file(filenamewithpath, std::ios::out);
+	const std::string filename = std::string( EQUIPMENTTEMPLATE_DIRECTORY ) +
+		WideNameToUtf8( aName ) + ".txt";
+	std::ostringstream output;
 
 	for (std::vector<GEAR_NODE>::iterator it = aVec.begin(); it != aVec.end(); ++it)
 	{
-		GEAR_NODE node = (*it);
-
-		binary_file << node;
+		const GEAR_NODE& node = (*it);
+		output << (int)(node.slot) << " " << (UINT16)(node.item) << " " << (UINT16)(node.ammoitem);
+		for ( std::vector<UINT16>::const_iterator attachment = node.attachments.begin();
+			attachment != node.attachments.end(); ++attachment )
+		{
+			output << " " << (*attachment);
+		}
+		output << "\r\n";
 	}
 
-	binary_file.close();
+	WriteProfileFileBytes( filename, output.str() );
 }
 
 void WriteEquipmentTemplate(SOLDIERTYPE* pSoldier, STR16 name)
@@ -9720,55 +9715,29 @@ void WriteEquipmentTemplate(SOLDIERTYPE* pSoldier, STR16 name)
 	}
 }
 
-std::vector<std::string> get_all_files_names_within_folder(std::string folder)
-{
-	std::vector<std::string> names;
-	std::string search_path = folder + "/*.*";
-	WIN32_FIND_DATA fd;
-	HANDLE hFind = ::FindFirstFile(search_path.c_str(), &fd);
-	
-	if (hFind != INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			// read all (real) files in current folder
-			// , delete '!' read other 2 default folder . and ..
-			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-			{
-				names.push_back(fd.cFileName);
-			}
-		}
-		while (::FindNextFile(hFind, &fd));
-
-		::FindClose(hFind);
-	}
-	return names;
-}
-
 // get a vector of all tilesets that are allowed to be built in this sector (the above filtered by structure construct/deconstruct basically)
 void GetEquipmentTemplates()
 {
-	CHAR8	filename[MAX_PATH];
+	const std::vector<ja2::fileio::DirectoryEntry> entries =
+		ja2::fileio::storeRouter().currentWritableStore()->list(
+			std::string( EQUIPMENTTEMPLATE_DIRECTORY ) + "*" );
+	std::map<std::string, std::string> templates;
+	for ( std::vector<ja2::fileio::DirectoryEntry>::const_iterator entry = entries.begin();
+		entry != entries.end(); ++entry )
+	{
+		if ( !entry->metadata.directory )
+			templates.emplace( FoldAsciiFileName( entry->name ), entry->name );
+	}
 
-	sprintf(filename, "%sUpdate Gear.txt", EQUIPMENTTEMPLATE_DIRECTORY);
-
-	// get full path to save file
-	// what we are doing here might seem rather odd. If the file does not exist, we are creating a new empty file via vfs
-	// in this case, this is rather useful, as the above file simply updates our gear, which is already neat
-	// I found this to be the easiest solution for using both vfs pathing and being able to use a std::fstream
-	// If you don't like it, fix it yourself, or make vfs not such a pain to use
-	vfs::Path vfsPath;	
-	vfs::COpenWriteFile rfile( filename, true );
-	rfile->_getRealPath(vfsPath);
-
-	vfs::Path dir, file;
-	vfsPath.splitLast(dir, file);
-
-	std::string str = dir.to_string();
-
-	const char* filenamewithpath = str.c_str();
-
-	gTemplateVector = get_all_files_names_within_folder( filenamewithpath );
+	// Preserve the always-visible update action without creating a probe file. The
+	// folded map also deduplicates names and gives the menu deterministic ordering.
+	templates.emplace( FoldAsciiFileName( "Update Gear.txt" ), "Update Gear.txt" );
+	gTemplateVector.clear();
+	for ( std::map<std::string, std::string>::const_iterator entry = templates.begin();
+		entry != templates.end(); ++entry )
+	{
+		gTemplateVector.push_back( entry->second );
+	}
 }
 
 void ReadEquipmentTable( SOLDIERTYPE* pSoldier, std::string name )

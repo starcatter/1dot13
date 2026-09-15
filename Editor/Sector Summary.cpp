@@ -36,9 +36,10 @@
 	#include "GameSettings.h"
 	#include "EditorTerrain.h"//dnl ch78 261113
 	#include "Render Dirty.h"//dnl ch78 271113
+	#include "fileio/FileIO.h"
+	#include "fileio/FileServices.h"
+	#include "fileio/StoreRouter.h"
 
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_file_raii.h>
 
 extern BOOLEAN gfOverheadMapDirty;
 
@@ -1926,10 +1927,11 @@ void CreateGlobalSummary()
 
 	gfGlobalSummaryExists = FALSE;
 	//Set current directory to JA2\DevInfo which contains all of the summary data
-	vfs::COpenWriteFile wfile(L"DevInfo\\readme.txt",true,true);
 	std::string str = "This information is used in conjunction with the editor.\n";
 	str += "This directory or it's contents shouldn't be included with final release.\n";
-	SGP_TRYCATCH_RETHROW( wfile->write(str.c_str(), str.length()), L"" );
+	std::unique_ptr<ja2::fileio::File> output =
+		ja2::fileio::storeRouter().create("DevInfo/readme.txt");
+	output->writeExact(str.data(), str.size());
 
 	// Snap: Restore the data directory once we are finished.
 	//SetFileManCurrentDirectory( DataDir );
@@ -2459,10 +2461,11 @@ void GenerateSummaryList()
 {
 	try
 	{
-		vfs::COpenWriteFile wfile(L"DevInfo/readme.txt",true,true);
 		std::string str = "This information is used in conjunction with the editor.\n";
 		str += "This directory or it's contents shouldn't be included with final release.\n";
-		SGP_TRYCATCH_RETHROW( wfile->write(str.c_str(), str.length()), L"");
+		std::unique_ptr<ja2::fileio::File> output =
+			ja2::fileio::storeRouter().create("DevInfo/readme.txt");
+		output->writeExact(str.data(), str.size());
 	}
 	catch(std::exception &ex)
 	{

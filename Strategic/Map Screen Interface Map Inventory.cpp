@@ -3913,13 +3913,11 @@ BOOLEAN MemFreeInventoryPoolQ(void)
 	return(TRUE);
 }
 
-BOOLEAN SaveInventoryPoolQ(UINT8 ubSaveGameID)
+BOOLEAN SaveInventoryPoolQ(HWFILE hFile)
 {
 	BOOLEAN ret;
 	INT32 i, j;
-	CHAR8 tmpbuf[1024];
 	UINT32 uiNumBytesWritten;
-	HWFILE hFile;
 
 	//if(MAP_INVENTORY_POOL_SLOT_COUNT <= 0)
 	//{
@@ -3937,11 +3935,6 @@ BOOLEAN SaveInventoryPoolQ(UINT8 ubSaveGameID)
 	ResetMapInventoryOffsets();
 
 	ret = FALSE;
-	CreateSavedGameFileNameFromNumber(ubSaveGameID, tmpbuf);
-	strcat(tmpbuf, ".IPQ");
-	if(FileExists(tmpbuf))//dnl ch75 021113
-		FileDelete(tmpbuf);
-	hFile = FileOpen(tmpbuf, FILE_ACCESS_WRITE|FILE_OPEN_ALWAYS, FALSE);
 	if(hFile == 0)
 		goto ERR;
 	FileWrite(hFile, iCurrentInventoryPoolPageQ+1, (INVPOOLLISTNUM-1)*sizeof(INT32), &uiNumBytesWritten);
@@ -3962,7 +3955,6 @@ BOOLEAN SaveInventoryPoolQ(UINT8 ubSaveGameID)
 	}
 	ret = TRUE;
 ERR:
-	FileClose(hFile);
 	return(ret);
 }
 

@@ -9,33 +9,43 @@
 #if defined(_MSC_VER)
 
 #include "crash_report.h"
+#include "fileio/FileIO.h"
+#include "fileio/PhysicalWritableStore.h"
 
 #include <windows.h>
 #include <winhttp.h>
 #include <process.h> // _beginthreadex for the detached upload thread
 
 #include <cstring> // strstr
+#include <chrono>
+#include <filesystem>
+#include <memory>
 #include <vector>
 
 namespace {
 
+ja2::fileio::PhysicalWritableStore& telemetryStore() {
+	static ja2::fileio::PhysicalWritableStore store(std::filesystem::current_path());
+	return store;
+}
+
 // Persisted consent: 1 = yes, 0 = no, -1 = not asked yet.
 int readConsent() {
-	HANDLE h = CreateFileA("telemetry.consent", GENERIC_READ, FILE_SHARE_READ, NULL,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (h == INVALID_HANDLE_VALUE) return -1;
-	char c = 0; DWORD got = 0;
-	ReadFile(h, &c, 1, &got, NULL);
-	CloseHandle(h);
-	return (got == 1 && c == '1') ? 1 : 0;
+	try {
+		std::unique_ptr<ja2::fileio::File> file = telemetryStore().openRead("telemetry.consent");
+		char c = 0;
+		return (file->read(&c, 1) == 1 && c == '1') ? 1 : 0;
+	} catch (...) {
+		return -1;
+	}
 }
 
 void writeConsent(bool yes) {
-	HANDLE h = CreateFileA("telemetry.consent", GENERIC_WRITE, 0, NULL,
-		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (h == INVALID_HANDLE_VALUE) return;
-	DWORD w; WriteFile(h, yes ? "1" : "0", 1, &w, NULL);
-	CloseHandle(h);
+	try {
+		std::unique_ptr<ja2::fileio::File> file = telemetryStore().create("telemetry.consent");
+		file->writeExact(yes ? "1" : "0", 1);
+	} catch (...) {
+	}
 }
 
 // A report bigger than this is not one of ours; never put it on the wire. Kept
@@ -46,16 +56,17 @@ const DWORD kMaxReportBytes = 32 * 1024;
 // POST one report file to url. Returns the HTTP status, or 0 if the request never
 // completed (no connection, DNS failure, timeout) — see reportIsSettled().
 DWORD postReport(const wchar_t* url, const char* path) {
-	HANDLE fh = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (fh == INVALID_HANDLE_VALUE) return 0;
-	DWORD size = GetFileSize(fh, NULL);
-	if (size > kMaxReportBytes) { CloseHandle(fh); return 413; }
-	std::vector<char> body(size ? size : 1);
-	DWORD got = 0;
-	BOOL read_ok = ReadFile(fh, body.data(), size, &got, NULL);
-	CloseHandle(fh);
-	if (!read_ok || got != size) return 0;
+	std::vector<char> body;
+	DWORD size = 0;
+	try {
+		std::unique_ptr<ja2::fileio::File> file = telemetryStore().openRead(path);
+		if (file->size() > kMaxReportBytes) return 413;
+		size = static_cast<DWORD>(file->size());
+		body.resize(size ? size : 1);
+		file->readExact(body.data(), size);
+	} catch (...) {
+		return 0;
+	}
 
 	URL_COMPONENTS uc = {}; uc.dwStructSize = sizeof(uc);
 	wchar_t host[256] = {}, urlpath[1024] = {};
@@ -105,28 +116,27 @@ bool reportIsSettled(DWORD status) {
 // PDB: nobody at the receiving end can symbolize it, so it never goes on the
 // wire — and never gets reaped either, it is the developer's to delete.
 bool isFromLocalBuild(const char* path) {
-	HANDLE h = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (h == INVALID_HANDLE_VALUE) return false;
-	// The build line is within the first few lines of the header.
-	char head[160] = {};
-	DWORD got = 0;
-	ReadFile(h, head, sizeof(head) - 1, &got, NULL);
-	CloseHandle(h);
-	return strstr(head, "  build local") != NULL;
+	try {
+		std::unique_ptr<ja2::fileio::File> file = telemetryStore().openRead(path);
+		char head[160] = {};
+		(void)file->read(head, sizeof(head) - 1);
+		return strstr(head, "  build local") != NULL;
+	} catch (...) {
+		return false;
+	}
 }
 
 // Reports older than this are stale: the crash they describe is long since shipped
 // past, and a player who was offline for a season should not upload a season of them.
 const DWORD kMaxReportAgeDays = 30;
 
-bool olderThan(const FILETIME& ft, DWORD days) {
-	FILETIME now;
-	GetSystemTimeAsFileTime(&now);
-	ULARGE_INTEGER t = { ft.dwLowDateTime, ft.dwHighDateTime };
-	ULARGE_INTEGER n = { now.dwLowDateTime, now.dwHighDateTime };
-	if (n.QuadPart <= t.QuadPart) return false; // clock skew: treat as fresh
-	return (n.QuadPart - t.QuadPart) > days * 24ULL * 60 * 60 * 10000000ULL;
+bool olderThan(const ja2::fileio::Metadata& metadata, DWORD days) {
+	if (!metadata.modifiedUnixNanoseconds) return false;
+	const std::int64_t now = std::chrono::duration_cast<std::chrono::nanoseconds>(
+		std::chrono::system_clock::now().time_since_epoch()).count();
+	if (now <= *metadata.modifiedUnixNanoseconds) return false; // clock skew: treat as fresh
+	const std::int64_t maximumAge = static_cast<std::int64_t>(days) * 24 * 60 * 60 * 1000000000LL;
+	return now - *metadata.modifiedUnixNanoseconds > maximumAge;
 }
 
 // One launch drains at most this many, so a crash-looping build cannot turn startup
@@ -139,21 +149,23 @@ wchar_t s_telemetryUrl[512];
 // exits from under it, which costs nothing — an interrupted upload leaves the file
 // on disk and it goes out next launch.
 unsigned __stdcall telemetryThread(void*) {
-	WIN32_FIND_DATAA fd;
-	HANDLE hFind = FindFirstFileA("crash_report_*.txt", &fd);
-	if (hFind == INVALID_HANDLE_VALUE) return 0;
 	int sent = 0;
-	do {
-		if (isFromLocalBuild(fd.cFileName)) continue;
-		if (olderThan(fd.ftLastWriteTime, kMaxReportAgeDays)) {
-			DeleteFileA(fd.cFileName);
-			continue;
+	try {
+		const std::vector<ja2::fileio::DirectoryEntry> reports =
+			telemetryStore().list("crash_report_*.txt");
+		for (const ja2::fileio::DirectoryEntry& report : reports) {
+			if (isFromLocalBuild(report.name.c_str())) continue;
+			if (olderThan(report.metadata, kMaxReportAgeDays)) {
+				telemetryStore().remove(report.name);
+				continue;
+			}
+			if (sent++ >= kMaxUploadsPerRun) break;
+			if (reportIsSettled(postReport(s_telemetryUrl, report.name.c_str())))
+				telemetryStore().remove(report.name);
 		}
-		if (sent++ >= kMaxUploadsPerRun) break;
-		if (reportIsSettled(postReport(s_telemetryUrl, fd.cFileName)))
-			DeleteFileA(fd.cFileName);
-	} while (FindNextFileA(hFind, &fd));
-	FindClose(hFind);
+	} catch (...) {
+		// Preserve every unsettled report and retry on the next launch.
+	}
 	return 0;
 }
 

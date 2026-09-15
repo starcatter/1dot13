@@ -19,8 +19,21 @@
 //
 //**************************************************************************
 
+#include "FileHandle.h"
 #include "types.h"
-#include "windows.h"
+#include <string>
+
+namespace ja2
+{
+	namespace fileio
+	{
+		class File;
+	}
+}
+
+#ifndef _WINDEF_
+typedef unsigned int UINT;
+#endif
 
 
 
@@ -58,12 +71,6 @@
 #define FILE_IS_OFFLINE					256
 
 
-// Snap, Kaiden: This define duplicates a standard MFC define
-// Added to resolve some intractable issue with MSVC6
-#define INVALID_FILE_ATTRIBUTES ((DWORD)-1)
-
-typedef	FILETIME				SGP_FILETIME;
-
 //**************************************************************************
 //
 // Globals
@@ -85,6 +92,23 @@ BOOLEAN	FileExists( STR strFilename );
 extern BOOLEAN	FileExistsNoDB( STR strFilename );
 extern BOOLEAN	FileDelete( STR strFilename );
 extern HWFILE	FileOpen( STR strFilename, UINT32 uiOptions, BOOLEAN fDeleteOnClose=FALSE, STR strProfilename=NULL );//dnl ch81 021213
+
+// Adapts a transaction-owned portable file to serializers that still accept HWFILE.
+class BorrowedFileHandle
+{
+public:
+	BorrowedFileHandle( ja2::fileio::File& file, UINT32 uiOptions );
+	~BorrowedFileHandle();
+
+	BorrowedFileHandle( const BorrowedFileHandle& ) = delete;
+	BorrowedFileHandle& operator=( const BorrowedFileHandle& ) = delete;
+
+	HWFILE get() const { return handle_; }
+	operator HWFILE() const { return handle_; }
+
+private:
+	HWFILE handle_;
+};
 
 extern void		FileClose( HWFILE );
 

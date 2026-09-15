@@ -3,13 +3,14 @@
 	#include "Sys Globals.h"
 	#include "Tile Surface.h"
 	#include "DEBUG.H"
+	#include "fileio/FileIO.h"
+	#include "fileio/FileServices.h"
+	#include "fileio/StoreRouter.h"
 
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_file_raii.h>
 #include "XML_TileSet.hpp"
 #include "XMLWriter.h"
 
-void ExportTilesets(vfs::Path const& filename);
+void ExportTilesets(const char* filename);
 
 // THIS FILE CONTAINS DEFINITIONS FOR TILESET FILES
 
@@ -28,20 +29,20 @@ void InitEngineTilesets( )
 {
 	if(gGameExternalOptions.fUseXmlTileSets)
 	{
-		const vfs::Path tileset_filename(L"Ja2Set.dat.xml");
-		if(!getVFS()->fileExists(tileset_filename))
+		const char* tileset_filename = "Ja2Set.dat.xml";
+		if(!ja2::fileio::storeRouter().exists(tileset_filename))
 		{
 			SGP_TRYCATCH_RETHROW( ExportTilesets(tileset_filename), L"Could not export tileset XML file");
 		}
-		vfs::tReadableFile* file = getVFS()->getReadFile(tileset_filename);
-		SGP_THROW_IFFALSE(file, 
-			_BS(L"File '") << tileset_filename << L"' does not exist and could not be created" << _BS::wget);
+		std::unique_ptr<ja2::fileio::File> file =
+			ja2::fileio::storeRouter().openRead(tileset_filename);
 
 		CTilesetReader tileset_reader(gTilesets);
 		xml_auto::TGenericXMLParser<CTilesetReader> pars(&tileset_reader,NULL);
-		
-		SGP_TRYCATCH_RETHROW( pars.parseFile(file),
-			_BS(L"Parser Error in file : ") << file->getPath() << _BS::wget );
+		std::vector<char> contents(static_cast<std::size_t>(file->size()) + 1, 0);
+		file->readExact(contents.data(), contents.size() - 1);
+		SGP_TRYCATCH_RETHROW( pars.parseBuffer(contents.data(), contents.size() - 1),
+			L"Parser Error in Ja2Set.dat.xml" );
 	}
 	else
 	{
@@ -137,7 +138,7 @@ void InitEngineTilesets( )
 	#endif
 }
 
-void ExportTilesets(vfs::Path const& filename)
+void ExportTilesets(const char* filename)
 {
 	UINT32	uiNumBytesRead = 0;
 	CHAR8	zName[32];

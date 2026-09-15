@@ -2,9 +2,9 @@
 #define _ITERFACEITEMIMAGES_H_
 
 #include "types.h"
-#include <vfs/Core/vfs_types.h>
-#include <vfs/Core/vfs_path.h>
 #include <map>
+#include <string>
+#include <string_view>
 
 class MDItemVideoObjects
 {
@@ -12,8 +12,8 @@ public:
 	MDItemVideoObjects();
 
 	UINT32	getVObjectForItem(UINT32 key);
-	void	registerItem(UINT32 key, vfs::Path const& sFileName);
-	bool	registerItemsFromFilePattern(vfs::Path const& sFilePattern);
+	void	registerItem(UINT32 key, const std::string& fileName);
+	bool	registerItemsFromFilePattern(std::string_view filePattern);
 	void	unRegisterAllItems();
 private:
 	std::map<UINT32,UINT32> m_mapVObjects;

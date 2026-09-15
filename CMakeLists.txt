@@ -35,13 +35,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(LTO_OPTION "Enable link-time optimization if supported by compiler" OFF)
 
-include(CheckIPOSupported)
-check_ipo_supported(RESULT LinkTimeOptimization OUTPUT IpoError LANGUAGES C CXX)
-if(LinkTimeOptimization AND LTO_OPTION)
-  message(STATUS "Configuring WITH link-time optimization")
-  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+if(LTO_OPTION)
+  include(CheckIPOSupported)
+  check_ipo_supported(RESULT LinkTimeOptimization OUTPUT IpoError LANGUAGES C CXX)
+  if(LinkTimeOptimization)
+    message(STATUS "Configuring WITH link-time optimization")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+  else()
+    message(FATAL_ERROR "LTO was requested but is unavailable: ${IpoError}")
+  endif()
 else()
-  message(STATUS "Configuring WITHOUT link-time optimization ${IpoError}")
+  message(STATUS "Configuring WITHOUT link-time optimization")
 endif()
 
 # declares the ADDRESS_SANITIZER option and the _asan genexpr used below
@@ -53,9 +57,6 @@ add_compile_options(/Oy-)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   add_compile_options(-fno-delete-null-pointer-checks)
 endif()
-
-# whether we are using MSBuild as a generator
-set(usingMsBuild $<STREQUAL:${CMAKE_VS_PLATFORM_NAME},Win32>)
 
 # Standard MSVC presets use the toolchain's default dynamic CRT. The Wine
 # baseline explicitly selects the static CRT for portable runtime validation.
@@ -144,7 +145,6 @@ set(Ja2_Libraries
 JA2::bfVFS
 Lua
 Multiplayer
-libsmacker::libsmacker
 wine
 )
 

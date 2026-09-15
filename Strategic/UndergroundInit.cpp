@@ -230,7 +230,7 @@ void LuaUnderground::GetSectorName(INT16 x, INT16 y, INT16 z, const UNDERGROUND_
 				// Houston, we have a problem...
 				buffer[bufSizeInWChar-1] = L'\0';
 
-				DWORD errorcode = GetLastError();
+				const auto errorcode = GetLastError();
 				if (errorcode == ERROR_INSUFFICIENT_BUFFER)
 				{
 					// quick note on logging:

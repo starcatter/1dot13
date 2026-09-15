@@ -71,6 +71,7 @@ void			CreateSavedGameFileNameFromNumber( UINT8 ubSaveGameID, STR pzNewFileName 
 
 
 BOOLEAN InitSaveDir();
+BOOLEAN RecoverSaveTransactions();
 
 BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc );
 BOOLEAN LoadSavedGame( int ubSavedGameID );

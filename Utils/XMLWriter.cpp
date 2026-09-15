@@ -1,8 +1,8 @@
 #include "XMLWriter.h"
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 #include "sgp_logger.h"
-
-#include <vfs/Core/vfs_file_raii.h>
-#include <vfs/Core/File/vfs_file.h>
 
 void XMLWriter::addValue(vfs::String const& key)
 {
@@ -55,31 +55,13 @@ bool XMLWriter::writeToFile(vfs::Path const& sFileName)
 {
 	try
 	{
-		vfs::COpenWriteFile file(sFileName,true,true);
-		return writeToFile( &file.file() );
-	}
-	catch(vfs::Exception& ex)
-	{
-		SGP_ERROR(ex.what());
-		vfs::CFile file(sFileName);
-		if(file.openWrite(true,true))
-		{
-			return writeToFile(vfs::tWritableFile::cast(&file));
-		}
-	}
-	return false;
-}
-
-bool XMLWriter::writeToFile(vfs::tWritableFile* pFile)
-{
-	try
-	{
-		vfs::COpenWriteFile file(pFile);
+		std::unique_ptr<ja2::fileio::File> file =
+			ja2::fileio::storeRouter().create(sFileName.to_string());
 		const std::string str = m_ssBuffer.str();
-		pFile->write(str.c_str(), str.length() * sizeof(std::string::value_type));
+		file->writeExact(str.data(), str.size());
 		return true;
 	}
-	catch(vfs::Exception& ex)
+	catch(const std::exception& ex)
 	{
 		SGP_ERROR(ex.what());
 		return false;

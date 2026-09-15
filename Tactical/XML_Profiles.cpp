@@ -16,6 +16,9 @@
 	#include "GameSettings.h"
 	#include "XML.h"
 	#include "Soldier Profile.h"
+	#include "fileio/FileIO.h"
+	#include "fileio/FileServices.h"
+	#include "fileio/StoreRouter.h"
 //#define MAX_PROFILE_NAME_LENGTH 30
 
 struct
@@ -1177,7 +1180,6 @@ profileEndElementHandle(void *userData, const XML_Char *name)
 }
 
 // Flugente hack: analyze profiles and print out the result
-#include <vfs/Core/vfs_file_raii.h>		// added by Flugente for vfs-stuff
 #include <iostream>
 
 extern STR16* gzMercSkillTextNew;
@@ -1227,8 +1229,10 @@ void AnalyzeProfiles()
 			settings << j << " " << traitcntr[j] << " " << traitcntr[j] - 2 * experttraitcntr[j] << " " << experttraitcntr[j] << endl;
 		}
 
-		vfs::COpenWriteFile wfile( "MercProfileAnalysis.txt", true, true );
-		wfile->write( settings.str().c_str(), settings.str().length() );
+		const std::string contents = settings.str();
+		std::unique_ptr<ja2::fileio::File> output =
+			ja2::fileio::storeRouter().create("MercProfileAnalysis.txt");
+		output->writeExact(contents.data(), contents.size());
 	}
 }
 

@@ -1,8 +1,8 @@
 #include "transfer_rules.h"
 #include "DEBUG.H"
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_file_raii.h>
-#include <vfs/Core/File/vfs_file.h>
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 #include <vfs/Tools/vfs_parser_tools.h>
 #include <vfs/Tools/vfs_tools.h>
 
@@ -13,41 +13,34 @@ CTransferRules::CTransferRules()
 
 bool CTransferRules::initFromTxtFile(vfs::Path const& sPath)
 {
-	// try to open via VirtualFileSystem
-	if(getVFS()->fileExists(sPath))
+	std::unique_ptr<ja2::fileio::File> file;
+	try
 	{
-		return initFromTxtFile(getVFS()->getReadFile(sPath));
+		file = ja2::fileio::storeRouter().openRead(sPath.to_string());
 	}
-	else
+	catch(const ja2::fileio::Error& error)
 	{
-		// file doesn't exist or VFS not initialized yet
-		vfs::IBaseFile* pFile = new vfs::CFile(sPath);
-		if(pFile)
+		if(error.code() == ja2::fileio::ErrorCode::notFound) return false;
+		throw;
+	}
+	std::string sBuffer;
+	vfs::UInt32 line_counter = 0;
+	while(file->position() < file->size())
+	{
+		sBuffer.clear();
+		char character = 0;
+		while(file->read(&character, 1) == 1)
 		{
-			bool success = initFromTxtFile(vfs::tReadableFile::cast(pFile));
-			delete pFile;
-			return success;
+			if(character == '\n' || character == '\0') break;
+			if(character != '\r') sBuffer.push_back(character);
 		}
-	}
-	return false;
-}
-
-bool CTransferRules::initFromTxtFile(vfs::tReadableFile* pFile)
-{
-	if(pFile && pFile->openRead())
-	{
-		vfs::COpenReadFile rfile(pFile);
-		std::string sBuffer;
-		vfs::UInt32 line_counter = 0;
-		vfs::CReadLine rl(*pFile);
-		while(rl.getLine(sBuffer))
-		{
-			line_counter++;
+		line_counter++;
 			// very simple parsing : key = value
 			if(!sBuffer.empty())
 			{
 				// remove leading white spaces
 				::size_t iStart = sBuffer.find_first_not_of(" \t",0);
+				if(iStart == std::string::npos) continue;
 				char first = sBuffer.at(iStart);
 				switch(first)
 				{
@@ -83,7 +76,7 @@ bool CTransferRules::initFromTxtFile(vfs::tReadableFile* pFile)
 #pragma warning(pop)
 #endif
 							std::wstringstream wss;
-							wss << L"Unknown action in file \"" << pFile->getPath().c_wcs()
+							wss << L"Unknown action in file \"" << sPath.c_wcs()
 								<< L", line " << line_counter << " : " << vfs::String(sBuffer).c_wcs();
 							SGP_THROW(wss.str().c_str());
 						}
@@ -94,7 +87,7 @@ bool CTransferRules::initFromTxtFile(vfs::tReadableFile* pFile)
 						catch(vfs::Exception& ex)
 						{
 							std::wstringstream wss;
-							wss << L"Could not convert string, invalid utf8 encoding in file \"" << pFile->getPath().c_wcs()
+							wss << L"Could not convert string, invalid utf8 encoding in file \"" << sPath.c_wcs()
 								<< L"\", line "  << line_counter;
 							SGP_RETHROW(wss.str().c_str(), ex);
 						}
@@ -104,9 +97,7 @@ bool CTransferRules::initFromTxtFile(vfs::tReadableFile* pFile)
 				}; // end switch
 			} // end if (empty)
 		} // end while(!eof)
-		return true;
-	}
-	return false;
+	return true;
 }
 
 void CTransferRules::setDefaultAction(CTransferRules::EAction act)

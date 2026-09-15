@@ -25,12 +25,6 @@
 
 #include "SaveLoadScreen.h"
 
-//**ddd direct link libraries
-#pragma comment (lib, "user32.lib")
-#pragma comment (lib, "gdi32.lib")
-#pragma comment (lib, "advapi32.lib")
-#pragma comment (lib, "shell32.lib")
-
 #ifdef JA2UB
 #include "ub_config.h"
 #endif

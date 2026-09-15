@@ -16,6 +16,13 @@
 #include "Sys Globals.h"
 #include "english.h"
 #include "MessageBoxScreen.h"
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
+
+#include <sstream>
+#include <string>
+#include <vector>
 
 //forward declarations of common classes to eliminate includes
 class OBJECTTYPE;
@@ -328,45 +335,35 @@ static UINT16 GetAnimStateFromName( STR8 zName )
 
 void BuildListFile( )
 {
-	FILE *infoFile;
-	CHAR8 currFilename[128];
-	int numEntries = 0;
-	int	cnt;
-	UINT16 usState;
-	CHAR16 zError[128];
-
-
-	//Verify the existance of the header text file.
-	infoFile = fopen( "ANITEST.DAT", "rb");
-	if(!infoFile)
+	std::unique_ptr<ja2::fileio::File> infoFile;
+	try
+	{
+		infoFile = ja2::fileio::storeRouter().openRead("ANITEST.DAT");
+	}
+	catch(const ja2::fileio::Error&)
 	{
 		return;
 	}
-	//count STIs inside header and verify each one's existance.
-	while( !feof( infoFile ) )
-	{
-		fgets( currFilename, 128, infoFile );
-		//valid entry in header, continue on...
 
-		numEntries++;
+	std::string contents(static_cast<std::size_t>(infoFile->size()), '\0');
+	infoFile->readExact(contents.data(), contents.size());
+	std::istringstream input(contents);
+	std::vector<std::string> filenames;
+	std::string filename;
+	while(std::getline(input, filename))
+	{
+		if(!filename.empty() && filename.back() == '\r') filename.pop_back();
+		if(!filename.empty()) filenames.push_back(filename);
 	}
-	fseek( infoFile, 0, SEEK_SET ); //reset header file
 
 	// Allocate array
-	pusStates = (UINT16 *) MemAlloc( sizeof( UINT16 ) * numEntries );
+	pusStates = (UINT16 *) MemAlloc( sizeof( UINT16 ) * filenames.size() );
 
 	fOKFiles = TRUE;
-
-	cnt = 0;
-	while( !feof( infoFile ) && cnt < numEntries )
+	int cnt = 0;
+	for(const std::string& current : filenames)
 	{
-		fgets( currFilename, 128, infoFile );
-
-		// Remove newline
-		currFilename[ strlen( currFilename ) -1 ] = '\0';
-		currFilename[ strlen( currFilename ) -1 ] = '\0';
-
-		usState = GetAnimStateFromName( currFilename );
+		const UINT16 usState = GetAnimStateFromName(const_cast<CHAR8*>(current.c_str()));
 
 		if ( usState != 5555 )
 		{
@@ -378,11 +375,10 @@ void BuildListFile( )
 		}
 		else
 		{
-			swprintf( zError, L"Animation str %S is not known: ", currFilename );
+			CHAR16 zError[128];
+			swprintf( zError, L"Animation str %S is not known: ", current.c_str() );
 			DoMessageBox( MSG_BOX_BASIC_STYLE, zError, ANIEDIT_SCREEN, ( UINT8 )MSG_BOX_FLAG_YESNO, NULL, NULL );
-			fclose( infoFile );
 			return;
 		}
 	}
-
 }

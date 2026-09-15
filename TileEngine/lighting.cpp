@@ -178,35 +178,6 @@ UINT16 gusShadeLevels[16][3] =
 	48, 222, 48,
 };
 
-//Set this true if you want the shadetables to be loaded from the text file.
-BOOLEAN gfLoadShadeTablesFromTextFile =		FALSE;
-
-void LoadShadeTablesFromTextFile()
-{
-	FILE *fp;
-	INT32 i, j;
-	INT32 num;
-	CHAR8 str[10];
-	if( gfLoadShadeTablesFromTextFile )
-	{
-		fp = fopen( "ShadeTables.txt", "r" );
-		Assert( fp );
-		if( fp )
-		{
-			for( i = 0; i < 16; i++ )
-			{
-				for( j = 0; j < 3; j++ )
-				{
-					fscanf( fp, "%s", str );
-					sscanf( str, "%d", &num );
-					gusShadeLevels[i][j] = (UINT16)num;
-				}
-			}
-			fclose( fp );
-		}
-	}
-}
-
 // Debug variable
 UINT32	gNodesAdded=0;
 
@@ -219,8 +190,6 @@ UINT32	gNodesAdded=0;
 BOOLEAN InitLightingSystem(void)
 {
 UINT32 uiCount;
-
-	LoadShadeTablesFromTextFile();
 
 	// init all light lists
 	for(uiCount=0; uiCount < MAX_LIGHT_TEMPLATES; uiCount++)

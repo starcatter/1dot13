@@ -37,7 +37,9 @@
 	#include "Item Statistics.h"
 	#include "Scheduling.h"
 	#include "MessageBoxScreen.h"
-	#include <vfs/Core/vfs.h>//dnl ch37 110909
+	#include "fileio/BfVfsResourceStore.h"
+	#include "fileio/FileServices.h"
+	#include "fileio/StoreRouter.h"
 	#include "Exit Grids.h"//dnl ch86 190214
 
 //===========================================================================
@@ -164,47 +166,45 @@ void LoadSaveScreenEntry()
 	iTopFileShown = iTotalFiles = 0;
 	gzProfileName[0] = 0;//dnl ch81 021213
 	FDLG_LIST* TempFileList = NULL;
-	vfs::CProfileStack* st = getVFS()->getProfileStack();
-	vfs::CProfileStack::Iterator it = st->begin();
-	while(!it.end())
+	const std::vector<ja2::fileio::ResourceProfile> profiles =
+		ja2::fileio::resourceStore().profiles();
+	for(const ja2::fileio::ResourceProfile& profile : profiles)
 	{
 		TempFileList = NULL;
-		vfs::CVirtualProfile* prof = it.value();
 		memset(&FileInfo, 0, sizeof(GETFILESTRUCT));
 		strcpy(FileInfo.zFileName, "< ");
 		// Cut filename off if it's too long for the buffer
-		if (strlen(prof->cName.utf8().c_str()) > FILENAME_BUFLEN-4)
+		if (profile.name.length() > FILENAME_BUFLEN-4)
 		{
-			strncpy(FileInfo.zFileName+1, prof->cName.utf8().c_str(), FILENAME_BUFLEN-4);
+			strncpy(FileInfo.zFileName+1, profile.name.c_str(), FILENAME_BUFLEN-4);
 		}
 		else
 		{
-			strcat(FileInfo.zFileName, prof->cName.utf8().c_str());
+			strcat(FileInfo.zFileName, profile.name.c_str());
 		}
 		strcat(FileInfo.zFileName, " >");
 		FileInfo.zFileName[FILENAME_BUFLEN] = 0;
 		FileInfo.uiFileAttribs = FILE_IS_DIRECTORY;
-		if(iCurrentAction == ACTION_SAVE_MAP && prof->cWritable == false)
+		if(iCurrentAction == ACTION_SAVE_MAP && !profile.writable)
 		{
-			it.next();
 			continue;
 		}
 		TempFileList = AddToFDlgList(TempFileList, &FileInfo);
 		iTotalFiles++;
-		vfs::CVirtualProfile::FileIterator fit = prof->files(L"MAPS/*");
-		while(!fit.end())
+		const std::vector<ja2::fileio::DirectoryEntry> files =
+			ja2::fileio::resourceStore().listFromProfile("MAPS/*", profile.name);
+		for(const ja2::fileio::DirectoryEntry& file : files)
 		{
-			vfs::String fname = fit.value()->getName().c_str();
-			memset(&FileInfo, 0, sizeof(GETFILESTRUCT));
-			strcpy(FileInfo.zFileName, fname.utf8().c_str());
-			FileInfo.uiFileSize = fname.length();
-			FileInfo.uiFileAttribs = (fit.value()->implementsWritable() ? FILE_IS_NORMAL : FILE_IS_READONLY);
-			if(strlen(FileInfo.zFileName) < FILENAME_BUFLEN)
+			if(file.name.length() >= FILENAME_BUFLEN)
 			{
-				TempFileList = AddToFDlgList(TempFileList, &FileInfo);
-				iTotalFiles++;
+				continue;
 			}
-			fit.next();
+			memset(&FileInfo, 0, sizeof(GETFILESTRUCT));
+			strcpy(FileInfo.zFileName, file.name.c_str());
+			FileInfo.uiFileSize = static_cast<UINT32>(file.metadata.size);
+			FileInfo.uiFileAttribs = file.metadata.readOnly ? FILE_IS_READONLY : FILE_IS_NORMAL;
+			TempFileList = AddToFDlgList(TempFileList, &FileInfo);
+			iTotalFiles++;
 		}
 		if(TempFileList)
 		{
@@ -220,9 +220,8 @@ void LoadSaveScreenEntry()
 			else
 				FileList = TempFileList;
 		}
-		it.next();
 	}
-	while(FileList->pPrev)
+	while(FileList && FileList->pPrev)
 		FileList = FileList->pPrev;
 	swprintf( zOrigName, L"%s Map (*.dat)", iCurrentAction == ACTION_SAVE_MAP ? L"Save" : L"Load" );
 
@@ -455,25 +454,20 @@ UINT32 LoadSaveScreenHandle(void)
 			sprintf(gszCurrFilename, "MAPS\\%S", gzFilename);
 			gfFileExists = FALSE;
 			gfReadOnly = TRUE;
-			vfs::CProfileStack* st = getVFS()->getProfileStack();
-			vfs::CProfileStack::Iterator it = st->begin();
-			while(!it.end())
+			try
 			{
-				vfs::CVirtualProfile* prof = it.value();
-				if(prof->cWritable == true)
+				ja2::fileio::WritableStore& store =
+					ja2::fileio::storeRouter().currentWritableStore();
+				gfReadOnly = FALSE;
+				gfFileExists = store.exists(gszCurrFilename);
+				if(gfFileExists)
 				{
-					gfReadOnly = FALSE;
-					vfs::Path const& path = gszCurrFilename;
-					vfs::IBaseFile *file = prof->getFile(path);
-					if(file)
-					{
-						gfFileExists = TRUE;
-						if(file->implementsWritable() == false)
-							gfReadOnly = TRUE;
-					}
-					break;
+					gfReadOnly = store.metadata(gszCurrFilename).readOnly;
 				}
-				it.next();
+			}
+			catch(const ja2::fileio::Error&)
+			{
+				gfReadOnly = TRUE;
 			}
 			if(gfReadOnly)
 			{

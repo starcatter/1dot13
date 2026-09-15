@@ -2,10 +2,14 @@
 #define XML_AUTO_PARSE_H
 
 #include <vfs/Core/vfs_debug.h>
-#include <vfs/Core/Interface/vfs_file_interface.h>
+#include <vfs/Core/vfs_path.h>
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 #include "XML_Parser.h"
 #include <stack>
 #include <algorithm>
+#include <limits>
 #include <map>
 
 #if !defined(TRUE)
@@ -160,11 +164,13 @@ namespace xml_auto
 			}
 		};
 
-		void parseBuffer(vfs::Byte* buffer, vfs::size_t length)
+		void parseBuffer(const char* buffer, std::size_t length)
 		{
 			this->grabParser();
 			XML_Parser& _parser = this->getParser();
-			if(!XML_Parse(_parser, buffer, length, TRUE))
+			SGP_THROW_IFFALSE(length <= static_cast<std::size_t>((std::numeric_limits<int>::max)()),
+				L"XML resource is too large");
+			if(!XML_Parse(_parser, buffer, static_cast<int>(length), TRUE))
 			{
 				std::wstringstream wss;
 				wss << L"XML Parser Error : "
@@ -175,30 +181,25 @@ namespace xml_auto
 			}
 		}
 
-		void parseFile(vfs::tReadableFile* pFile)
+		void parseFile(ja2::fileio::File& file, vfs::Path const& path)
 		{
-			if(!pFile)
-			{
-				return;
-			}
-			vfs::COpenReadFile rfile(pFile);
-
-			vfs::size_t size = rfile->getSize();
-			std::vector<vfs::Byte> buffer(size+1);
-
-			SGP_TRYCATCH_RETHROW( rfile->read(&buffer[0],size), L"" );
+			SGP_THROW_IFFALSE(file.size() <=
+				static_cast<std::uint64_t>((std::numeric_limits<std::size_t>::max)()),
+				L"XML resource is too large");
+			const std::size_t size = static_cast<std::size_t>(file.size());
+			std::vector<char> buffer(size + 1);
+			file.readExact(buffer.data(), size);
 			buffer[size] = 0;
-			
-			SGP_TRYCATCH_RETHROW( this->parseBuffer(&buffer[0], size),
-				_BS(L"error in file : ") << pFile->getPath() << _BS::wget);
+
+			SGP_TRYCATCH_RETHROW( this->parseBuffer(buffer.data(), size),
+				_BS(L"error in file : ") << path << _BS::wget);
 		}
 
 		void parseFile(vfs::Path const& sFile)
 		{
-			vfs::tReadableFile* file = getVFS()->getReadFile(sFile);
-			SGP_THROW_IFFALSE(file, _BS(L"Could not find file : ") << sFile << _BS::wget);
-
-			SGP_TRYCATCH_RETHROW( this->parseFile(file),
+			std::unique_ptr<ja2::fileio::File> file =
+				ja2::fileio::storeRouter().openRead(sFile.to_string());
+			SGP_TRYCATCH_RETHROW( this->parseFile(*file, sFile),
 				_BS(L"error in file : ") << sFile << _BS::wget);
 		}
 

@@ -27,6 +27,7 @@
 #include "Strategic Mines.h"
 #include "random.h"
 #include "connect.h"
+#include "fileio/LogStore.h"
 
 // for enemy taunts
 #include "Soldier Profile.h"
@@ -2301,15 +2302,11 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 	// log taunt file names
 	if (gTauntsSettings.fTauntVoiceShowInfo)
 	{
-		FILE	*OutFile;
-		if ((OutFile = fopen("VoiceTauntLog.txt", "a+t")) != NULL)
-		{
-			fprintf(OutFile, "Soldier [%d] TauntType %d %s\n",
-				pCiv->ubID.i,
-				iTauntType,
-				filename);
-			fclose(OutFile);
-		}
+		sprintf(buf, "Soldier [%d] TauntType %d %s",
+			pCiv->ubID.i,
+			iTauntType,
+			filename);
+		(void)ja2::fileio::logStore().appendLine("VoiceTauntLog.txt", buf);
 
 		// show some information about taunts	
 		mbstowcs(noise, filename, strlen(filename) + 1);

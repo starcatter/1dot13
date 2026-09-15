@@ -1,7 +1,10 @@
 #include "lua_state.h"
 #include <DEBUG.H>
+#include "fileio/BfVfsResourceStore.h"
+#include "fileio/FileServices.h"
 #include "sgp_logger.h"
 
+#include <limits>
 #include <vfs/Core/vfs_string.h>
 
 LuaState::LuaState(lua_State* state, bool own) : _L(state), _own(own), _registry(state)
@@ -39,17 +42,21 @@ void LuaState::close()
 	}
 }
 
-#include <vfs/Core/vfs_file_raii.h>
 bool LuaState::EvalFile(const char* filename)
 {
 	try
 	{
-		vfs::COpenReadFile rfile(filename);
-		vfs::UInt32 size = rfile.file().getSize();
-		std::vector<vfs::Byte> buffer(size+1);
-		rfile.file().read(&buffer[0], size);
+		std::unique_ptr<ja2::fileio::File> file = ja2::fileio::resourceStore().open(filename);
+		const std::uint64_t fileSize = file->size();
+		if (fileSize >= (std::numeric_limits<std::size_t>::max)())
+		{
+			throw std::length_error("Lua resource is too large to read into memory");
+		}
+		const std::size_t size = static_cast<std::size_t>(fileSize);
+		std::vector<char> buffer(size + 1);
+		file->readExact(buffer.data(), size);
 		buffer[size] = 0;
-		return this->EvalString((char*)&buffer[0], size, filename);
+		return this->EvalString(buffer.data(), size, filename);
 	}
 	catch(std::exception &ex)
 	{

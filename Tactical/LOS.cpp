@@ -44,6 +44,7 @@
 #include "ai.h"					// sevenfm
 #include "GameInitOptionsScreen.h"
 #include "renderworld.h"		// added by Flugente for SetRenderFlags( RENDER_FLAG_FULL );
+#include "fileio/LogStore.h"
 
 //forward declarations of common classes to eliminate includes
 class OBJECTTYPE;
@@ -348,14 +349,7 @@ FLOAT Distance2D( FLOAT dDeltaX, FLOAT dDeltaY )
 void DebugLOS( STR szOutput )
 {
 	DebugMsg(TOPIC_JA2,DBG_LEVEL_3,szOutput);
-	FILE *		DebugFile;
-
-	if ((DebugFile = fopen( "losdebug.txt", "a+t" )) != NULL)
-	{
-		fputs( szOutput, DebugFile );
-		fputs( "\n", DebugFile );
-		fclose( DebugFile );
-	}
+	(void)ja2::fileio::logStore().appendLine("losdebug.txt", szOutput);
 
 }
 #else
@@ -5100,20 +5094,16 @@ INT8 FireBulletGivenTargetNCTH( SOLDIERTYPE * pFirer, FLOAT dEndX, FLOAT dEndY, 
 				#ifdef JA2TESTVERSION
 				if(!fFake)
 				{
-					FILE      *OutFile;
-					if ((OutFile = fopen("SpreadPatternLog.txt", "a+t")) != NULL)
-					{ 
-						//To easily cut-and-paste these values from the log into a C/C++ source file for later analysis
-						//Lots of reference debug info in a comment.
-						fprintf(OutFile, "{ % 9.8f , % 9.8f , % 9.8f , % 9.8f }, //DEBUG: merc %4d fired pellet %4d of %4d using method %4d %12s with SpreadPattern %4d %s\n",
+					CHAR8 logEntry[1024];
+					snprintf(logEntry, sizeof(logEntry),
+						"{ % 9.8f , % 9.8f , % 9.8f , % 9.8f }, //DEBUG: merc %4d fired pellet %4d of %4d using method %4d %12s with SpreadPattern %4d %s",
 							ddRawHorizAngle, ddRawVerticAngle,
 							ddHorizAngle, ddVerticAngle,
 							pFirer->ubID.i, ubLoop, ubShots,
 							gpSpreadPattern[ubSpreadIndex].method, gSpreadPatternMethodNames[gpSpreadPattern[ubSpreadIndex].method],
 							ubSpreadIndex, gpSpreadPattern[ubSpreadIndex].Name
 						);
-						fclose(OutFile);
-					}
+					(void)ja2::fileio::logStore().appendLine("SpreadPatternLog.txt", logEntry);
 				}
 				#endif
 			}
@@ -5616,26 +5606,6 @@ INT8 FireBulletGivenTarget( SOLDIERTYPE * pFirer, FLOAT dEndX, FLOAT dEndY, FLOA
 				ddHorizAngle  += ddAdjustedHorizAngle;
 				ddVerticAngle += ddAdjustedVerticAngle;
 
-				//Logging for debugging
-				//#ifdef JA2TESTVERSION
-				if(!fFake)
-				{
-					FILE      *OutFile;
-					if ((OutFile = fopen("SpreadPatternLog.txt", "a+t")) != NULL)
-					{ 
-						//To easily cut-and-paste these values from the log into a C/C++ source file for later analysis
-						//Lots of reference debug info in a comment.
-						fprintf(OutFile, "{ % 9.8f , % 9.8f , % 9.8f , % 9.8f }, //DEBUG: merc %4d fired pellet %4d of %4d using method %4d %12s with SpreadPattern %4d %s\n",
-							ddRawHorizAngle, ddRawVerticAngle,
-							ddHorizAngle, ddVerticAngle,
-							pFirer->ubID.i, ubLoop, ubShots,
-							gpSpreadPattern[ubSpreadIndex].method, gSpreadPatternMethodNames[gpSpreadPattern[ubSpreadIndex].method],
-							ubSpreadIndex, gpSpreadPattern[ubSpreadIndex].Name
-						);
-						fclose(OutFile);
-					}
-				}
-				//#endif
 			}
 
 			//Just calculate the increments the bullet will use, not any of the to-hit adjustments, because we already did.
@@ -6261,26 +6231,6 @@ INT8 FireBulletGivenTargetTrapOnly( SOLDIERTYPE* pThrower, OBJECTTYPE* pObj, INT
 				ddHorizAngle  += ddAdjustedHorizAngle;
 				ddVerticAngle += ddAdjustedVerticAngle;
 
-				//Logging for debugging
-				//#ifdef JA2TESTVERSION
-				if( TRUE )
-				{
-					FILE      *OutFile;
-					if ((OutFile = fopen("SpreadPatternLog.txt", "a+t")) != NULL)
-					{ 
-						//To easily cut-and-paste these values from the log into a C/C++ source file for later analysis
-						//Lots of reference debug info in a comment.
-						fprintf(OutFile, "{ % 9.8f , % 9.8f , % 9.8f , % 9.8f }, //DEBUG: merc %4d fired pellet %4d of %4d using method %4d %12s with SpreadPattern %4d %s\n",
-							ddRawHorizAngle, ddRawVerticAngle,
-							ddHorizAngle, ddVerticAngle,
-							NOBODY.i, ubLoop, ubShots,
-							gpSpreadPattern[ubSpreadIndex].method, gSpreadPatternMethodNames[gpSpreadPattern[ubSpreadIndex].method],
-							ubSpreadIndex, gpSpreadPattern[ubSpreadIndex].Name
-						);
-						fclose(OutFile);
-					}
-				}
-				//#endif
 			}
 
 			//Just calculate the increments the bullet will use, not any of the to-hit adjustments, because we already did.
@@ -6813,23 +6763,6 @@ INT8 FireBulletGivenTarget_NoObjectNoSoldier( UINT16 usItem, UINT8 ammotype, UIN
 				ddHorizAngle += ddAdjustedHorizAngle;
 				ddVerticAngle += ddAdjustedVerticAngle;
 
-				if ( TRUE )
-				{
-					FILE      *OutFile;
-					if ( ( OutFile = fopen( "SpreadPatternLog.txt", "a+t" ) ) != NULL )
-					{
-						//To easily cut-and-paste these values from the log into a C/C++ source file for later analysis
-						//Lots of reference debug info in a comment.
-						fprintf( OutFile, "{ % 9.8f , % 9.8f , % 9.8f , % 9.8f }, //DEBUG: merc %4d fired pellet %4d of %4d using method %4d %12s with SpreadPattern %4d %s\n",
-							ddRawHorizAngle, ddRawVerticAngle,
-							ddHorizAngle, ddVerticAngle,
-							NOBODY.i, ubLoop, ubShots,
-							gpSpreadPattern[ubSpreadIndex].method, gSpreadPatternMethodNames[gpSpreadPattern[ubSpreadIndex].method],
-							ubSpreadIndex, gpSpreadPattern[ubSpreadIndex].Name
-						);
-						fclose( OutFile );
-					}
-				}
 			}
 
 			//Just calculate the increments the bullet will use, not any of the to-hit adjustments, because we already did.

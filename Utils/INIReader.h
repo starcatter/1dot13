@@ -6,7 +6,9 @@
 #include <windows.h>
 #include <types.h>
 #include <stack>
+#include <set>
 #include <string>
+#include <string_view>
 
 #include <vfs/Tools/vfs_property_container.h>
 
@@ -57,14 +59,14 @@ public:
 	BOOLEAN Is_CIniReader_File_Found(void) {return (CIniReader_File_Found);}
 	void Clear();
 
-	static void RegisterFileForMerging(vfs::Path const& filename);
+	static void RegisterFileForMerging(std::string_view filename);
 private:
 	vfs::PropertyContainer m_oProps;
 	char m_szFileName[MAX_PATH];
 	BOOLEAN CIniReader_File_Found;
 
 	UINT32 ReadUINT(const CHAR8* szSection, const CHAR8* szKey, UINT32 defaultValue, UINT32 minValue, UINT32 maxValue);
-	static std::set<vfs::Path, vfs::Path::Less> m_merge_files;
+	static std::set<std::string> m_merge_files;
 };
 
 #endif//INIREADER_H

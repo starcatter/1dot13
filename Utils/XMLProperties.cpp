@@ -1,14 +1,16 @@
 #include <vfs/Core/vfs_types.h>
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_file_raii.h>
-#include <vfs/Core/File/vfs_file.h>
 
 #include <vfs/Tools/vfs_tools.h>
 #include <vfs/Tools/vfs_property_container.h>
 
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 #include "XML_Parser.h"
 #include "XMLWriter.h"
 #include "DEBUG.H"
+
+#include <limits>
 
 vfs::PropertyContainer::TagMap::TagMap()
 {
@@ -172,46 +174,33 @@ void CPropertyXMLParser::onTextElement(const XML_Char *str, int len)
 
 bool vfs::PropertyContainer::initFromXMLFile(vfs::Path const& sFileName, vfs::PropertyContainer::TagMap& tagmap)
 {
-	vfs::tReadableFile *file = NULL;
-	bool delete_file = false;
-	if(getVFS()->fileExists(sFileName))
+	std::unique_ptr<ja2::fileio::File> file;
+	try
 	{
-		vfs::COpenReadFile rfile(sFileName);
-		file = &rfile.file();
-		rfile.release();
+		file = ja2::fileio::storeRouter().openRead(sFileName.to_string());
 	}
-	else
+	catch(const ja2::fileio::Error& error)
 	{
-		vfs::CFile* rfile = new vfs::CFile(sFileName);
-		delete_file = true;
-		file = vfs::tReadableFile::cast(rfile);
-		if(!file->openRead())
-		{
-			delete file;
-			return false;
-		}
-	}
-	if(!file)
-	{
-		return false;
+		if(error.code() == ja2::fileio::ErrorCode::notFound) return false;
+		throw;
 	}
 
-	vfs::size_t size = file->getSize();
-
-	std::vector<vfs::Byte> buffer(size+1);
-
-	SGP_TRYCATCH_RETHROW( file->read(&buffer[0],size), L"" );
+	const std::size_t size = static_cast<std::size_t>(file->size());
+	if(size > static_cast<std::size_t>((std::numeric_limits<int>::max)()))
+	{
+		throw ja2::fileio::Error(ja2::fileio::ErrorCode::unsupported,
+			"XML property file is too large: '" + sFileName.to_string() + "'");
+	}
+	std::vector<char> buffer(size + 1);
+	file->readExact(buffer.data(), size);
 	buffer[size] = 0;
-
-	file->close();
-	if(delete_file) delete file;
 
 	XML_Parser parser = XML_ParserCreate(NULL);
 
 	CPropertyXMLParser pp(*this,tagmap,parser,NULL);
 	pp.grabParser();
 
-	if(!XML_Parse(parser, &buffer[0], size, TRUE))
+	if(!XML_Parse(parser, buffer.data(), static_cast<int>(size), TRUE))
 	{
 		std::wstringstream wss;
 		wss << L"XML Parser Error in Groups.xml: "

@@ -4,7 +4,12 @@
 #include "vobject.h"
 #include "Utilities.h"
 #include "GameSettings.h"
-#include <vfs/Core/vfs.h>
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
+
+#include <sstream>
+
+#include <vfs/Core/vfs_string.h>
 
 extern void WriteMessageToFile( const STR16 pString );
 
@@ -34,7 +39,7 @@ UINT32 MDItemVideoObjects::getVObjectForItem(UINT32 key)
 	SGP_THROW(_BS(L"Item key not registered : ") << key << _BS::wget);	
 }
 
-void MDItemVideoObjects::registerItem(UINT32 key, vfs::Path const& sFileName)
+void MDItemVideoObjects::registerItem(UINT32 key, const std::string& fileName)
 {
 	std::map<UINT32,UINT32>::iterator it = m_mapVObjects.find(key);
 	if(it != m_mapVObjects.end())
@@ -45,39 +50,46 @@ void MDItemVideoObjects::registerItem(UINT32 key, vfs::Path const& sFileName)
 	UINT32 uiVObject;
 	VOBJECT_DESC VObjectDesc;
 	VObjectDesc.fCreateFlags = VOBJECT_CREATE_FROMFILE;
-	FilenameForBPP(const_cast<STR>(sFileName.to_string().c_str()), VObjectDesc.ImageFile);
-	if(! AddVideoObject( &VObjectDesc, &uiVObject )) 
+	FilenameForBPP(const_cast<STR>(fileName.c_str()), VObjectDesc.ImageFile);
+	if(! AddVideoObject( &VObjectDesc, &uiVObject ))
 	{
-		SGP_THROW(_BS(L"Could not add video object for file \"") << sFileName << _BS::wget);
+		SGP_THROW(_BS(L"Could not add video object for file \"") <<
+			vfs::String(fileName) << L"\"" << _BS::wget);
 	}
 	m_mapVObjects.insert(std::make_pair(key,uiVObject));
 }
 
-bool MDItemVideoObjects::registerItemsFromFilePattern(vfs::Path const& sFilePattern)
+bool MDItemVideoObjects::registerItemsFromFilePattern(std::string_view filePattern)
 {
-	std::wstringstream wss;
-	int item = 0;
-	vfs::CVirtualFileSystem::Iterator it = getVFS()->begin(sFilePattern);
-	if(it.end())
+	const std::string pattern = ja2::fileio::StoreRouter::normalizeLogicalPath(filePattern);
+	const std::size_t slash = pattern.find_last_of('/');
+	const std::string directory = slash == std::string::npos ? std::string() : pattern.substr(0, slash + 1);
+	const std::vector<ja2::fileio::DirectoryEntry> entries =
+		ja2::fileio::storeRouter().list(pattern);
+	if(entries.empty())
 	{
 		return false;
 	}
-	for(; !it.end(); it.next())
+	for(const ja2::fileio::DirectoryEntry& entry : entries)
 	{
-		wss.str(it.value()->getName().c_wcs());
-		if( !(wss >> item) )
+		int item = 0;
+		std::istringstream name(entry.name);
+		if(!(name >> item))
 		{
-			std::wstring err = _BS(L"Could not extract item number from file \"") << wss.str() << L"\"" << _BS::wget;
+			std::wstring err = _BS(L"Could not extract item number from file \"") <<
+				vfs::String(entry.name) << L"\"" << _BS::wget;
 			WriteMessageToFile( const_cast<STR16>(err.c_str()) );
 			continue;
 		}
+		const std::string fileName = directory + entry.name;
 		try
 		{
-			this->registerItem(item, it.value()->getPath());
+			this->registerItem(item, fileName);
 		}
 		catch(std::exception& ex)
 		{
-			SGP_RETHROW( _BS(L"Registering item from file \"") << wss.str() << L"\" failed" << _BS::wget, ex );
+			SGP_RETHROW( _BS(L"Registering item from file \"") <<
+				vfs::String(fileName) << L"\" failed" << _BS::wget, ex );
 		}
 	}
 	return true;
@@ -107,7 +119,7 @@ bool RegisterItemImages()
 		if( !AddVideoObject( &VObjectDesc, &guiGUNSM ) )
 			AssertMsg(0, "Missing INTERFACE\\mdguns.sti" );
 	}
-	else if(!g_oGUNSM.registerItemsFromFilePattern(L"INTERFACE/mdguns/*.png"))
+	else if(!g_oGUNSM.registerItemsFromFilePattern("INTERFACE/mdguns/*.png"))
 	{
 		return false;
 	}

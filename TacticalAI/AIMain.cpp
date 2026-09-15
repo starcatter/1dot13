@@ -49,6 +49,9 @@
 #include "Soldier Functions.h" // added by SANDRO
 #include "Text.h"	// sevenfm
 #include "english.h" // sevenfm: for ESC key
+#include "fileio/LogStore.h"
+
+#include <string>
 
 #include "connect.h"
 // needed to use the modularized tactical AI:
@@ -118,15 +121,8 @@ void DebugAI( STR szOutput )
 {
 #ifdef DEBUGDECISIONS
 	// Send regular debug msg AND AI debug message
-	FILE *		DebugFile;
-
 	DebugMsg( TOPIC_JA2, DBG_LEVEL_3, szOutput );
-	if ((DebugFile = fopen( "aidebug.txt", "a+t" )) != NULL)
-	{
-		fputs( szOutput, DebugFile );
-		fputs( "\n", DebugFile );
-		fclose( DebugFile );
-	}
+	(void)ja2::fileio::logStore().appendLine("aidebug.txt", szOutput);
 #endif
 }
 
@@ -213,7 +209,6 @@ BOOLEAN gfLogsEnabled = TRUE;
 
 void DebugAI( INT8 bMsgType, SOLDIERTYPE *pSoldier, STR szOutput, INT8 bAction )
 {
-	FILE*	DebugFile;
 	CHAR8	msg[1024];
 	CHAR8	buf[1024];
 
@@ -283,17 +278,11 @@ void DebugAI( INT8 bMsgType, SOLDIERTYPE *pSoldier, STR szOutput, INT8 bAction )
 
 	DebugMsg(TOPIC_DECISIONS, DBG_LEVEL_3, szOutput);
 
-	if ((DebugFile = fopen("Logs\\AI_Decisions.txt", "a+t")) != NULL)
-	{
-		if (bMsgType == AI_MSG_START)
-		{
-			fputs("\n", DebugFile);
-		}
-		fputs(msg, DebugFile);
-		fputs("\n", DebugFile);
-		fclose(DebugFile);
-	}
-	else
+	std::string entry;
+	if (bMsgType == AI_MSG_START)
+		entry = "\r\n";
+	entry.append(msg);
+	if (!ja2::fileio::logStore().appendLine("AI_Decisions.txt", entry))
 	{
 		// cannot open file in Logs folder, stop logging
 		gfLogsEnabled = FALSE;
@@ -301,17 +290,8 @@ void DebugAI( INT8 bMsgType, SOLDIERTYPE *pSoldier, STR szOutput, INT8 bAction )
 	}
 
 	// also log to individual file for selected soldier
-	sprintf(buf, "Logs\\AI_Decisions [%d].txt", pSoldier->ubID.i);
-	if ((DebugFile = fopen(buf, "a+t")) != NULL)
-	{
-		if (bMsgType == AI_MSG_START)
-		{
-			fputs("\n", DebugFile);
-		}
-		fputs(msg, DebugFile);
-		fputs("\n", DebugFile);
-		fclose(DebugFile);
-	}
+	sprintf(buf, "AI_Decisions [%d].txt", pSoldier->ubID.i);
+	(void)ja2::fileio::logStore().appendLine(buf, entry);
 }
 
 extern	UINT32			guiDay;
@@ -333,20 +313,11 @@ void DebugQuestInfo(STR szOutput)
 	if (!gfLogsEnabled)
 		return;
 
-	FILE*	DebugFile;
-
-	DebugFile = fopen("Logs\\QuestInfo.txt", "a+t");
-	if (DebugFile != NULL)
-	{
-		// first write game clock and date/time
-		sprintf(buf, "(%d) Day %d %d:%d ", GetJA2Clock(), guiDay, guiHour, guiMin);
-		fputs(buf, DebugFile);
-
-		fputs(szOutput, DebugFile);
-		fputs("\n", DebugFile);
-		fclose(DebugFile);
-	}
-	else
+	// first write game clock and date/time
+	sprintf(buf, "(%d) Day %d %d:%d ", GetJA2Clock(), guiDay, guiHour, guiMin);
+	std::string line(buf);
+	line.append(szOutput);
+	if (!ja2::fileio::logStore().appendLine("QuestInfo.txt", line))
 	{
 		// cannot open file in Logs folder, stop logging
 		gfLogsEnabled = FALSE;
@@ -357,10 +328,6 @@ void DebugQuestInfo(STR szOutput)
 
 BOOLEAN InitAI( void )
 {
-#ifdef JA2TESTVERSION
-	FILE *		DebugFile;
-#endif
-
 #ifdef _DEBUG
 	if (gfDisplayCoverValues)
 	{
@@ -377,23 +344,19 @@ BOOLEAN InitAI( void )
 
 #ifdef JA2TESTVERSION
 	// Clear the AI debug txt file to prevent it from getting huge
-	if ((DebugFile = fopen( "aidebug.txt", "w" )) != NULL)
-	{
-		fputs( "\n", DebugFile );
-		fclose( DebugFile );
-	}
+	(void)ja2::fileio::logStore().truncate("aidebug.txt");
 #endif
 
 	// sevenfm: Clear the AI debug txt file to prevent it from getting huge
-	remove("Logs\\AI_Decisions.txt");
+	(void)ja2::fileio::logStore().remove("AI_Decisions.txt");
 	//remove("Logs\\QuestInfo.txt");
 
 	// remove all individual files
 	CHAR8	buf[1024];
 	for (UINT16 cnt = 0; cnt < TOTAL_SOLDIERS; cnt++)
 	{
-		sprintf(buf, "Logs\\AI_Decisions [%d].txt", cnt);
-		remove(buf);
+		sprintf(buf, "AI_Decisions [%d].txt", cnt);
+		(void)ja2::fileio::logStore().remove(buf);
 	}
 
 	return( TRUE );

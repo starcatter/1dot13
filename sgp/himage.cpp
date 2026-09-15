@@ -14,7 +14,9 @@
 	#include "vobject.h"
 	#include "vobject_blitters.h"
 
-#include <vfs/Core/vfs.h>
+#include <vfs/Core/vfs_string.h>
+
+#include <map>
 
 const vfs::String::str_t CONST_DOTJPC(L".jpc.7z");
 
@@ -88,7 +90,7 @@ namespace ImageFileType
 		 */
 		if(order == DEFAULT || reader_type != STCI_FILE_READER)
 		{
-			return getVFS()->fileExists(filename) ? reader_type : UNKNOWN_FILE_READER;
+			return FileExists(filename.data()) ? reader_type : UNKNOWN_FILE_READER;
 		}
 		/*
 		 * file must have originally been an STI file, but should be treated as a JPC or a PNG file
@@ -96,7 +98,8 @@ namespace ImageFileType
 		else if(order == JPC || order == PNG)
 		{
 			vfs::String file = filename.substr(0, pos+1).append(order == JPC ? "jpc.7z" : "png");
-			if( getVFS()->fileExists(file) )
+			std::string replacement = file.utf8();
+			if( FileExists(replacement.data()) )
 			{
 				filename = file.utf8();
 				return order == JPC ? JPC_FILE_READER : PNG_FILE_READER;
@@ -110,13 +113,14 @@ namespace ImageFileType
 		else if(order == JPC_FALLBACK || order == PNG_FALLBACK)
 		{
 			vfs::String file = filename.substr(0, pos+1).append(order == JPC_FALLBACK ? "jpc.7z" : "png");
-			if( getVFS()->fileExists(file) )
+			std::string replacement = file.utf8();
+			if( FileExists(replacement.data()) )
 			{
 				filename = file.utf8();
 				return order == JPC_FALLBACK ? JPC_FILE_READER : PNG_FILE_READER;
 			}
 			// fallback to original type
-			return getVFS()->fileExists(filename) ? reader_type : UNKNOWN_FILE_READER;
+			return FileExists(filename.data()) ? reader_type : UNKNOWN_FILE_READER;
 		}
 		return UNKNOWN_FILE_READER;
 	}

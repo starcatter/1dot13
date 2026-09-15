@@ -24,30 +24,27 @@
 //				Includes
 //
 //**************************************************************************
-	#include "types.h"
-	#include <stdlib.h>
-	#include <malloc.h>
-	#include <stdio.h>
-	#include <direct.h>
-	
+#include "FileMan.h"
 
-	#include "windows.h"
-	#include "FileMan.h"
-	#include "MemMan.h"
-	#include "DEBUG.H"
-	#include "io.h"
-	#include "sgp_logger.h"
+#include "DEBUG.H"
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/PlatformPaths.h"
+#include "fileio/StoreRouter.h"
+#include "sgp_logger.h"
+
+#include <algorithm>
+#include <cstdarg>
+#include <cstdio>
+#include <cstring>
+#include <limits>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace std;
-
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_os_functions.h>
-#include <vfs/Aspects/vfs_settings.h>
-
-
-#include <vfs/Core/vfs_file_raii.h>
-#include <vfs/Tools/vfs_parser_tools.h>
-#include <map>
 
 struct SOperation
 {
@@ -59,16 +56,229 @@ struct SOperation
 	SOperation() : op(UNKNOWN) {};
 };
 
-typedef std::map<vfs::IBaseFile*, SOperation> tFILEMAP;
-static tFILEMAP s_mapFiles;
+namespace
+{
+	constexpr UINT32 FILE_HANDLE_INDEX_MASK = 0xffff;
+	constexpr UINT32 FILE_HANDLE_GENERATION_SHIFT = 16;
+
+	struct FileHandleEntry
+	{
+		std::unique_ptr<ja2::fileio::File> ownedFile;
+		ja2::fileio::File* borrowedFile = nullptr;
+		SOperation::EOperation operation = SOperation::UNKNOWN;
+		UINT16 generation = 1;
+
+		ja2::fileio::File* file() const
+		{
+			return ownedFile ? ownedFile.get() : borrowedFile;
+		}
+	};
+
+	std::vector<FileHandleEntry> gFileHandles;
+	std::recursive_mutex gFileHandlesMutex;
+
+	HWFILE RegisterFileHandle(std::unique_ptr<ja2::fileio::File> file,
+		SOperation::EOperation operation)
+	{
+		if (!file)
+		{
+			return 0;
+		}
+		for (size_t index = 0; index < gFileHandles.size(); ++index)
+		{
+			FileHandleEntry& entry = gFileHandles[index];
+			if (entry.file() == nullptr)
+			{
+				entry.ownedFile = std::move(file);
+				entry.operation = operation;
+				return (static_cast<UINT32>(entry.generation) << FILE_HANDLE_GENERATION_SHIFT) |
+					static_cast<UINT32>(index + 1);
+			}
+		}
+
+		if (gFileHandles.size() >= FILE_HANDLE_INDEX_MASK)
+		{
+			return 0;
+		}
+
+		gFileHandles.emplace_back();
+		FileHandleEntry& entry = gFileHandles.back();
+		entry.ownedFile = std::move(file);
+		entry.operation = operation;
+		return (static_cast<UINT32>(entry.generation) << FILE_HANDLE_GENERATION_SHIFT) |
+			static_cast<UINT32>(gFileHandles.size());
+	}
+
+	HWFILE RegisterBorrowedFile(ja2::fileio::File& file, SOperation::EOperation operation)
+	{
+		for (size_t index = 0; index < gFileHandles.size(); ++index)
+		{
+			FileHandleEntry& entry = gFileHandles[index];
+			if (entry.file() == nullptr)
+			{
+				entry.borrowedFile = &file;
+				entry.operation = operation;
+				return (static_cast<UINT32>(entry.generation) << FILE_HANDLE_GENERATION_SHIFT) |
+					static_cast<UINT32>(index + 1);
+			}
+		}
+
+		if (gFileHandles.size() >= FILE_HANDLE_INDEX_MASK)
+		{
+			return 0;
+		}
+
+		gFileHandles.emplace_back();
+		FileHandleEntry& entry = gFileHandles.back();
+		entry.borrowedFile = &file;
+		entry.operation = operation;
+		return (static_cast<UINT32>(entry.generation) << FILE_HANDLE_GENERATION_SHIFT) |
+			static_cast<UINT32>(gFileHandles.size());
+	}
+
+	FileHandleEntry* GetFileHandleEntry(HWFILE handle)
+	{
+		const UINT32 encodedIndex = handle & FILE_HANDLE_INDEX_MASK;
+		if (encodedIndex == 0)
+		{
+			return nullptr;
+		}
+
+		const size_t index = encodedIndex - 1;
+		if (index >= gFileHandles.size())
+		{
+			return nullptr;
+		}
+
+		FileHandleEntry& entry = gFileHandles[index];
+		const UINT16 generation = static_cast<UINT16>(handle >> FILE_HANDLE_GENERATION_SHIFT);
+		if (entry.file() == nullptr || entry.generation != generation)
+		{
+			return nullptr;
+		}
+		return &entry;
+	}
+
+	void ReleaseFileHandleEntry(FileHandleEntry& entry)
+	{
+		entry.ownedFile.reset();
+		entry.borrowedFile = nullptr;
+		entry.operation = SOperation::UNKNOWN;
+		if (++entry.generation == 0)
+		{
+			entry.generation = 1;
+		}
+	}
+
+	struct FileSearchEntry
+	{
+		std::vector<ja2::fileio::DirectoryEntry> entries;
+		size_t next = 0;
+		UINT16 generation = 1;
+		bool active = false;
+	};
+
+	std::vector<std::unique_ptr<FileSearchEntry>> gFileSearches;
+
+	INT32 RegisterFileSearch(std::vector<ja2::fileio::DirectoryEntry> entries)
+	{
+		for (size_t index = 0; index < gFileSearches.size(); ++index)
+		{
+			FileSearchEntry& entry = *gFileSearches[index];
+			if (!entry.active)
+			{
+				entry.entries = std::move(entries);
+				entry.next = 1;
+				entry.active = true;
+				return static_cast<INT32>(
+					(static_cast<UINT32>(entry.generation) << FILE_HANDLE_GENERATION_SHIFT) |
+					static_cast<UINT32>(index + 1));
+			}
+		}
+
+		if (gFileSearches.size() >= FILE_HANDLE_INDEX_MASK)
+		{
+			return 0;
+		}
+
+		gFileSearches.emplace_back(std::make_unique<FileSearchEntry>());
+		FileSearchEntry& entry = *gFileSearches.back();
+		entry.entries = std::move(entries);
+		entry.next = 1;
+		entry.active = true;
+		return static_cast<INT32>(
+			(static_cast<UINT32>(entry.generation) << FILE_HANDLE_GENERATION_SHIFT) |
+			static_cast<UINT32>(gFileSearches.size()));
+	}
+
+	FileSearchEntry* GetFileSearchEntry(INT32 handle)
+	{
+		const UINT32 unsignedHandle = static_cast<UINT32>(handle);
+		const UINT32 encodedIndex = unsignedHandle & FILE_HANDLE_INDEX_MASK;
+		if (encodedIndex == 0)
+		{
+			return nullptr;
+		}
+
+		const size_t index = encodedIndex - 1;
+		if (index >= gFileSearches.size())
+		{
+			return nullptr;
+		}
+
+		FileSearchEntry& entry = *gFileSearches[index];
+		const UINT16 generation = static_cast<UINT16>(unsignedHandle >> FILE_HANDLE_GENERATION_SHIFT);
+		if (!entry.active || entry.generation != generation)
+		{
+			return nullptr;
+		}
+		return &entry;
+	}
+
+	void ReleaseFileSearchEntry(FileSearchEntry& entry)
+	{
+		entry.entries.clear();
+		entry.next = 0;
+		entry.active = false;
+		if (++entry.generation == 0)
+		{
+			entry.generation = 1;
+		}
+	}
+
+	std::string LeafName(const std::string& name)
+	{
+		const size_t separator = name.find_last_of("/\\");
+		return separator == std::string::npos ? name : name.substr(separator + 1);
+	}
+
+	void FillGetFileStruct(GETFILESTRUCT& output, const ja2::fileio::DirectoryEntry& entry)
+	{
+		const std::string name = LeafName(entry.name);
+		const size_t maximumSize = sizeof(output.zFileName) - 1;
+		const size_t size = (std::min)(name.size(), maximumSize);
+		memcpy(output.zFileName, name.data(), size);
+		output.zFileName[size] = 0;
+		output.uiFileSize = static_cast<UINT32>((std::min)(entry.metadata.size,
+			static_cast<std::uint64_t>((std::numeric_limits<UINT32>::max)())));
+		output.uiFileAttribs = entry.metadata.directory ? FILE_IS_DIRECTORY :
+			(entry.metadata.readOnly ? FILE_IS_READONLY : FILE_IS_NORMAL);
+	}
+
+	void NormalizeDirectoryEntryNames(std::vector<ja2::fileio::DirectoryEntry>& entries)
+	{
+		for (ja2::fileio::DirectoryEntry& entry : entries)
+		{
+			entry.name = LeafName(entry.name);
+		}
+	}
+}
 
 //**************************************************************************
 //
 //				Defines
 //
 //**************************************************************************
-
-#define FILENAME_LENGTH					600
 
 #define CHECKF(exp)	if (!(exp)) { return(FALSE); }
 #define CHECKV(exp)	if (!(exp)) { return; }
@@ -77,51 +287,9 @@ static tFILEMAP s_mapFiles;
 
 //**************************************************************************
 //
-//				Typedefs
-//
-//**************************************************************************
-
-typedef struct FMFileInfoTag
-{
-	CHAR		strFilename[FILENAME_LENGTH];
-	UINT8		uiFileAccess;
-	UINT32	uiFilePosition;
-	HANDLE	hFileHandle;
-
-} FMFileInfo;	// for 'File Manager File Information'
-
-typedef struct FileSystemTag
-{
-	FMFileInfo	*pFileInfo;
-	UINT32	uiNumHandles;
-	BOOLEAN	fDebug;
-	BOOLEAN	fDBInitialized;
-
-	CHAR		*pcFileNames;
-	UINT32	uiNumFilesInDirectory;
-} FileSystem;
-
-//**************************************************************************
-//
 //				Variables
 //
 //**************************************************************************
-
-WIN32_FIND_DATA Win32FindInfo[20];
-BOOLEAN fFindInfoInUse[20] = {FALSE,FALSE,FALSE,FALSE,FALSE,
-															FALSE,FALSE,FALSE,FALSE,FALSE,
-															FALSE,FALSE,FALSE,FALSE,FALSE,
-															FALSE,FALSE,FALSE,FALSE,FALSE };
-HANDLE hFindInfoHandle[20] = {INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-															INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-															INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-															INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-															INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-															INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-															INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-															INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-															INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-															INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE };
 
 //**************************************************************************
 //
@@ -174,6 +342,21 @@ BOOLEAN	InitializeFileManager(	STR strIndexFilename )
 
 void ShutdownFileManager( void )
 {
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	for (FileHandleEntry& entry : gFileHandles)
+	{
+		if (entry.file() != nullptr)
+		{
+			ReleaseFileHandleEntry(entry);
+		}
+	}
+	for (const std::unique_ptr<FileSearchEntry>& search : gFileSearches)
+	{
+		if (search->active)
+		{
+			ReleaseFileSearchEntry(*search);
+		}
+	}
 	UnRegisterDebugTopic( TOPIC_FILE_MANAGER, "File Manager" );
 }
 
@@ -204,7 +387,19 @@ void ShutdownFileManager( void )
 //**************************************************************************
 BOOLEAN	FileExists( STR strFilename )
 {
-	return getVFS()->fileExists(vfs::Path(strFilename));
+	if (strFilename == nullptr)
+	{
+		return FALSE;
+	}
+	try
+	{
+		return ja2::fileio::fileServicesInitialized() &&
+			ja2::fileio::storeRouter().exists(strFilename) ? TRUE : FALSE;
+	}
+	catch (...)
+	{
+		return FALSE;
+	}
 }
 
 //**************************************************************************
@@ -231,7 +426,7 @@ BOOLEAN	FileExists( STR strFilename )
 //**************************************************************************
 extern BOOLEAN	FileExistsNoDB( STR strFilename )
 {
-	return getVFS()->fileExists(vfs::Path(strFilename));
+	return FileExists(strFilename);
 }
 
 //**************************************************************************
@@ -256,7 +451,20 @@ extern BOOLEAN	FileExistsNoDB( STR strFilename )
 //**************************************************************************	
 BOOLEAN	FileDelete( STR strFilename )
 {
-	return getVFS()->removeFileFromFS(vfs::Path(strFilename));
+	if (strFilename == nullptr)
+	{
+		return FALSE;
+	}
+	try
+	{
+		if (!ja2::fileio::fileServicesInitialized()) return FALSE;
+		ja2::fileio::storeRouter().remove(strFilename);
+		return TRUE;
+	}
+	catch (...)
+	{
+		return FALSE;
+	}
 }
 
 //**************************************************************************
@@ -286,48 +494,61 @@ BOOLEAN	FileDelete( STR strFilename )
 //**************************************************************************
 HWFILE FileOpen( STR strFilename, UINT32 uiOptions, BOOLEAN fDeleteOnClose, STR strProfilename )//dnl ch81 021213
 {
-	vfs::Path path(strFilename);
-	vfs::IBaseFile *pFile = NULL;
+	if (strFilename == nullptr || !ja2::fileio::fileServicesInitialized())
+	{
+		return 0;
+	}
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
 	try
 	{
 		if(uiOptions & FILE_ACCESS_WRITE)
 		{
-			// 'vfs::CVirtualFile::SF_TOP' should be enough, but if for some strange reason
-			// file creation fails, we will stop at a writable profile 
-			// and won't unintentionally mess up a file from another profile
-			vfs::COpenWriteFile open_w( path, true, false, vfs::CVirtualFile::SF_STOP_ON_WRITABLE_PROFILE);
-			pFile = &open_w.file();
-			open_w.release();
-			s_mapFiles[pFile].op = SOperation::WRITE;
-			return (HWFILE)pFile;
+			return RegisterFileHandle(ja2::fileio::storeRouter().openWrite(strFilename),
+				SOperation::WRITE);
 		}
 		else if(uiOptions & FILE_ACCESS_READ)
 		{
 			if(strProfilename && strProfilename[0])
 			{
-				vfs::COpenReadFile open_r(vfs::tReadableFile::cast(getVFS()->getFile(path, strProfilename)));
-				pFile = &open_r.file();
-				open_r.release();
+				return RegisterFileHandle(
+					ja2::fileio::storeRouter().resourceStore().openFromProfile(
+						strFilename, strProfilename), SOperation::READ);
 			}
-			else
-			{
-				vfs::COpenReadFile open_r(path, vfs::CVirtualFile::SF_TOP);
-				pFile = &open_r.file();
-				open_r.release();
-			}
-			s_mapFiles[pFile].op = SOperation::READ;
-			return (HWFILE)pFile;
+			return RegisterFileHandle(ja2::fileio::storeRouter().openRead(strFilename),
+				SOperation::READ);
 		}
 	}
 	// sometimes a file is supposed to opened that does not exist (not tested with FileExists())
 	// this operation can fail with an exception that the calling code doesn't catch
 	// instead we catch it (any exception, not just CBasicException) here and return 0
-	catch(vfs::Exception& ex) { SGP_ERROR(ex.what()); }
+	catch(const std::exception& ex) { SGP_ERROR(ex.what()); }
 	catch(...)
 	{ 
 		SGP_ERROR( "Caught undefined exception" );
 	}
 	return 0;
+}
+
+BorrowedFileHandle::BorrowedFileHandle(ja2::fileio::File& file, UINT32 uiOptions) : handle_(0)
+{
+	const SOperation::EOperation operation = (uiOptions & FILE_ACCESS_WRITE) ?
+		SOperation::WRITE : ((uiOptions & FILE_ACCESS_READ) ? SOperation::READ : SOperation::UNKNOWN);
+	if (operation == SOperation::UNKNOWN)
+	{
+		return;
+	}
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	handle_ = RegisterBorrowedFile(file, operation);
+}
+
+BorrowedFileHandle::~BorrowedFileHandle()
+{
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileHandleEntry* entry = GetFileHandleEntry(handle_);
+	if (entry != nullptr && entry->borrowedFile != nullptr)
+	{
+		ReleaseFileHandleEntry(*entry);
+	}
 }
 
 //**************************************************************************
@@ -349,11 +570,11 @@ HWFILE FileOpen( STR strFilename, UINT32 uiOptions, BOOLEAN fDeleteOnClose, STR 
 //**************************************************************************
 void FileClose( HWFILE hFile )
 {
-	vfs::IBaseFile *pFile = (vfs::IBaseFile*)hFile;
-	if(pFile)
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileHandleEntry* entry = GetFileHandleEntry(hFile);
+	if(entry != nullptr)
 	{
-		pFile->close();
-		s_mapFiles.erase(pFile);
+		ReleaseFileHandleEntry(*entry);
 	}
 }
 
@@ -409,51 +630,79 @@ BOOLEAN FileRead( HWFILE hFile, PTR pDest, UINT32 uiBytesToRead, UINT32 *puiByte
 #ifdef JA2TESTVERSION
 	TimeCounter timer;
 #endif
-	vfs::IBaseFile *pFile = (vfs::IBaseFile*)hFile;
-	if(pFile && (s_mapFiles[pFile].op == SOperation::READ))
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileHandleEntry* entry = GetFileHandleEntry(hFile);
+	if(entry != nullptr && entry->operation == SOperation::READ)
 	{
-		vfs::tReadableFile *pRF = vfs::tReadableFile::cast(pFile);
-		if(pRF)
+		UINT32 uiBytesRead = 0;
+		try
 		{
-			UINT32 uiBytesRead = 0;
-			try
-			{
-				uiBytesRead = pRF->read((vfs::Byte*)pDest, uiBytesToRead);
-			}
-			catch(std::exception& ex)
-			{
-				pRF->close();
-				SGP_RETHROW(L"", ex);
-			}
-
-			if(puiBytesRead)
-			{
-				*puiBytesRead = uiBytesRead;
-			}
-			if(uiBytesToRead != uiBytesRead)
-			{
-				return FALSE;
-			}
-			return TRUE;
+			uiBytesRead = static_cast<UINT32>(entry->file()->read(pDest, uiBytesToRead));
 		}
+		catch (...)
+		{
+			if (puiBytesRead) *puiBytesRead = uiBytesRead;
+			return FALSE;
+		}
+		if (puiBytesRead) *puiBytesRead = uiBytesRead;
+		return uiBytesRead == uiBytesToRead ? TRUE : FALSE;
 	}
+	if (puiBytesRead) *puiBytesRead = 0;
 	return FALSE;
 }
 
 BOOLEAN FileReadLine( HWFILE hFile, std::string* pDest )
 {
-	vfs::IBaseFile *pFile = (vfs::IBaseFile*)hFile;
-	if ( pFile && FileCheckEndOfFile( hFile ) == FALSE && (s_mapFiles[pFile].op == SOperation::READ) )
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileHandleEntry* entry = GetFileHandleEntry(hFile);
+	if (entry == nullptr || entry->operation != SOperation::READ || pDest == nullptr)
 	{
-		vfs::tReadableFile *pRF = vfs::tReadableFile::cast( pFile );
-		if ( pRF && pDest )
-		{
-			vfs::CReadLine rl( *pRF, false );
-			rl.getLine( *pDest );
-			return TRUE;
-		}
+		return FALSE;
 	}
-	return FALSE;
+	try
+	{
+		ja2::fileio::File& file = *entry->file();
+		if (file.position() >= file.size())
+		{
+			return FALSE;
+		}
+
+		pDest->clear();
+		if (file.position() == 0 && file.size() >= 3)
+		{
+			unsigned char bom[3];
+			if (file.read(bom, sizeof(bom)) != sizeof(bom) ||
+				bom[0] != 0xef || bom[1] != 0xbb || bom[2] != 0xbf)
+			{
+				file.seek(0, ja2::fileio::SeekOrigin::begin);
+			}
+		}
+
+		char character;
+		while (file.read(&character, 1) == 1)
+		{
+			if (character == '\0' || character == '\n')
+			{
+				break;
+			}
+			if (character == '\r')
+			{
+				if (file.position() < file.size())
+				{
+					char next;
+					if (file.read(&next, 1) == 1 && next != '\n' && next != '\0')
+						file.seek(-1, ja2::fileio::SeekOrigin::current);
+				}
+				break;
+			}
+			pDest->push_back(character);
+		}
+		return TRUE;
+	}
+	catch (...)
+	{
+		return FALSE;
+	}
 }
 
 //**************************************************************************
@@ -487,37 +736,29 @@ BOOLEAN FileWrite( HWFILE hFile, const void* pDest, UINT32 uiBytesToWrite, UINT3
 {
 	if(uiBytesToWrite == 0)//dnl ch38 110909
 	{
-		*puiBytesWritten = 0;
+		if (puiBytesWritten)
+		{
+			*puiBytesWritten = 0;
+		}
 		return(TRUE);
 	}
-	vfs::IBaseFile *pFile = (vfs::IBaseFile*)hFile;
-	if(pFile && (s_mapFiles[pFile].op == SOperation::WRITE))
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileHandleEntry* entry = GetFileHandleEntry(hFile);
+	if(entry != nullptr && entry->operation == SOperation::WRITE)
 	{
-		vfs::tWritableFile *pWF = vfs::tWritableFile::cast(pFile);
-		if(pWF)
+		try
 		{
-			UINT32 uiBytesWritten;
-			try
-			{
-				uiBytesWritten = pWF->write((const vfs::Byte*)pDest, uiBytesToWrite);
-			}
-			catch(std::exception& ex)
-			{
-				pWF->close();
-				SGP_RETHROW(L"", ex);
-			}
-
-			if (uiBytesToWrite != uiBytesWritten)
-			{
-				return FALSE;
-			}
-			if ( puiBytesWritten )
-			{
-				*puiBytesWritten = uiBytesWritten;
-			}
+			entry->file()->writeExact(pDest, uiBytesToWrite);
+			if (puiBytesWritten) *puiBytesWritten = uiBytesToWrite;
 			return TRUE;
 		}
+		catch (...)
+		{
+			if (puiBytesWritten) *puiBytesWritten = 0;
+			return FALSE;
+		}
 	}
+	if (puiBytesWritten) *puiBytesWritten = 0;
 	return FALSE;
 }
 
@@ -544,25 +785,23 @@ BOOLEAN FileWrite( HWFILE hFile, const void* pDest, UINT32 uiBytesToWrite, UINT3
 
 BOOLEAN FileLoad( STR strFilename, PTR pDest, UINT32 uiBytesToRead, UINT32 *puiBytesRead )
 {
-	vfs::tReadableFile *pFile = getVFS()->getReadFile(vfs::Path(strFilename));
-	vfs::COpenReadFile rfile(pFile);
-	if(pFile)
+	if (puiBytesRead) *puiBytesRead = 0;
+	if (strFilename == nullptr)
 	{
-		UINT32 uiNumBytesRead;
-		SGP_TRYCATCH_RETHROW(uiNumBytesRead = pFile->read((vfs::Byte*)pDest,uiBytesToRead), L"");
-
-		if (uiBytesToRead != uiNumBytesRead)
-		{
-			return FALSE;
-		}
-		if ( puiBytesRead )
-		{
-			*puiBytesRead = uiNumBytesRead;
-		}
-		CHECKF( uiNumBytesRead == uiBytesToRead );
-		return TRUE;
+		return FALSE;
 	}
-	return FALSE;
+	try
+	{
+		if (!ja2::fileio::fileServicesInitialized()) return FALSE;
+		std::unique_ptr<ja2::fileio::File> file = ja2::fileio::storeRouter().openRead(strFilename);
+		const UINT32 count = static_cast<UINT32>(file->read(pDest, uiBytesToRead));
+		if (puiBytesRead) *puiBytesRead = count;
+		return count == uiBytesToRead ? TRUE : FALSE;
+	}
+	catch (...)
+	{
+		return FALSE;
+	}
 }
 
 //**************************************************************************
@@ -637,17 +876,18 @@ BOOLEAN FileSeek( HWFILE hFile, UINT32 uiDistance, UINT8 uiHow )
 {
 	INT32 iDistance = (INT32)uiDistance;
 
-	vfs::IBaseFile *pFile = (vfs::IBaseFile*)hFile;
-	if(pFile)
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileHandleEntry* entry = GetFileHandleEntry(hFile);
+	if(entry != nullptr)
 	{
-		vfs::IBaseFile::ESeekDir eSD;
+		ja2::fileio::SeekOrigin origin;
 		if ( uiHow == FILE_SEEK_FROM_START )
 		{
-			eSD = vfs::IBaseFile::SD_BEGIN;
+			origin = ja2::fileio::SeekOrigin::begin;
 		}
 		else if ( uiHow == FILE_SEEK_FROM_END )
 		{
-			eSD = vfs::IBaseFile::SD_END;
+			origin = ja2::fileio::SeekOrigin::end;
 			if( iDistance > 0 )
 			{
 				iDistance = -(iDistance);
@@ -655,30 +895,17 @@ BOOLEAN FileSeek( HWFILE hFile, UINT32 uiDistance, UINT8 uiHow )
 		}
 		else
 		{
-			eSD = vfs::IBaseFile::SD_CURRENT;
+			origin = ja2::fileio::SeekOrigin::current;
 		}
 
-		if(s_mapFiles[pFile].op == SOperation::WRITE)
+		try
 		{
-			vfs::tWritableFile *pWF = vfs::tWritableFile::cast(pFile);
-			if(pWF)
-			{
-				SGP_TRYCATCH_RETHROW(pWF->setWritePosition(iDistance, eSD), L"");
-				return TRUE;
-			}
+			entry->file()->seek(iDistance, origin);
+			return TRUE;
 		}
-		else if(s_mapFiles[pFile].op == SOperation::READ)
+		catch (...)
 		{
-			vfs::tReadableFile *pRF = vfs::tReadableFile::cast(pFile);
-			if(pRF)
-			{
-				SGP_TRYCATCH_RETHROW(pRF->setReadPosition(iDistance, eSD), L"");
-				return TRUE;
-			}
-		}
-		else
-		{
-			SGP_THROW(L"unknown operation");
+			return FALSE;
 		}
 	}
 	return FALSE;
@@ -709,21 +936,22 @@ BOOLEAN FileSeek( HWFILE hFile, UINT32 uiDistance, UINT8 uiHow )
 
 INT32 FileGetPos( HWFILE hFile )
 {
-	vfs::IBaseFile *pFile = (vfs::IBaseFile*)hFile;
-	if(pFile && (s_mapFiles[pFile].op == SOperation::WRITE))
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileHandleEntry* entry = GetFileHandleEntry(hFile);
+	if(entry != nullptr)
 	{
-		vfs::tWritableFile *pWF = vfs::tWritableFile::cast(pFile);
-		if(pWF)
+		try
 		{
-			return pWF->getWritePosition();
+			const std::uint64_t position = entry->file()->position();
+			if (position > static_cast<std::uint64_t>((std::numeric_limits<INT32>::max)()))
+			{
+				return BAD_INDEX;
+			}
+			return static_cast<INT32>(position);
 		}
-	}
-	else if(pFile && (s_mapFiles[pFile].op == SOperation::READ))
-	{
-		vfs::tReadableFile *pRF = vfs::tReadableFile::cast(pFile);
-		if(pRF)
+		catch (...)
 		{
-			return pRF->getReadPosition();
+			return BAD_INDEX;
 		}
 	}
 
@@ -755,10 +983,20 @@ INT32 FileGetPos( HWFILE hFile )
 
 UINT32 FileGetSize( HWFILE hFile )
 {
-	vfs::IBaseFile *pFile = (vfs::IBaseFile*)hFile;
-	if(pFile)
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileHandleEntry* entry = GetFileHandleEntry(hFile);
+	if(entry != nullptr)
 	{
-		return pFile->getSize();
+		try
+		{
+			const std::uint64_t size = entry->file()->size();
+			return static_cast<UINT32>((std::min)(size,
+				static_cast<std::uint64_t>((std::numeric_limits<UINT32>::max)())));
+		}
+		catch (...)
+		{
+			return 0;
+		}
 	}
 	return 0;
 }
@@ -766,16 +1004,7 @@ UINT32 FileGetSize( HWFILE hFile )
 
 BOOLEAN SetFileManCurrentDirectory( STR pcDirectory )
 {
-	try
-	{
-		vfs::OS::setCurrectDirectory(pcDirectory);
-	}
-	catch(vfs::Exception& ex)
-	{
-		SGP_ERROR(ex.what());
-		return FALSE;
-	}
-	return TRUE;
+	return pcDirectory != nullptr && ja2::fileio::setCurrentDirectory(pcDirectory) ? TRUE : FALSE;
 }
 
 
@@ -783,11 +1012,11 @@ BOOLEAN GetFileManCurrentDirectory( STRING512 pcDirectory )
 {
 	try
 	{
-		vfs::Path sDir;
-		vfs::OS::getCurrentDirectory(sDir);
-		strncpy(pcDirectory, sDir.to_string().c_str(), 512);
+		const std::string directory = ja2::fileio::currentDirectory();
+		strncpy(pcDirectory, directory.c_str(), 511);
+		pcDirectory[511] = 0;
 	}
-	catch(vfs::Exception& ex)
+	catch(const std::exception& ex)
 	{
 		SGP_ERROR(ex.what());
 		return FALSE;
@@ -802,8 +1031,16 @@ BOOLEAN GetFileManCurrentDirectory( STRING512 pcDirectory )
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 BOOLEAN RemoveFileManDirectory( STRING512 pcDirectory, BOOLEAN fRecursive )
 {
-	// ignore 'recursive' flag, just delete every file in that subtree (but leave the directories)
-	return getVFS()->removeDirectoryFromFS(pcDirectory);
+	try
+	{
+		if (!ja2::fileio::fileServicesInitialized()) return FALSE;
+		ja2::fileio::storeRouter().clearDirectory(pcDirectory, fRecursive != FALSE);
+		return TRUE;
+	}
+	catch (...)
+	{
+		return FALSE;
+	}
 }
 
 
@@ -813,63 +1050,70 @@ BOOLEAN RemoveFileManDirectory( STRING512 pcDirectory, BOOLEAN fRecursive )
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 BOOLEAN EraseDirectory( STRING512 pcDirectory)
 {
-	// ignore 'recursive' flag, just delete every file in that subtree (but leave the directories)
-	return getVFS()->removeDirectoryFromFS(pcDirectory);
+	return RemoveFileManDirectory(pcDirectory, FALSE);
 }
 
 
 BOOLEAN GetExecutableDirectory( STRING512 pcDirectory )
 {
-	vfs::Path exe_dir, exe_file;
-	vfs::OS::getExecutablePath(exe_dir, exe_file);
-	strncpy(pcDirectory, exe_dir.to_string().c_str(), 512);
-	return true;
+	try
+	{
+		const std::string directory = ja2::fileio::executableDirectory();
+		strncpy(pcDirectory, directory.c_str(), 511);
+		pcDirectory[511] = 0;
+		return TRUE;
+	}
+	catch (...)
+	{
+		return FALSE;
+	}
 }
 
-static vfs::CVirtualFileSystem::Iterator file_iter; 
 BOOLEAN GetFileFirst( CHAR8 * pSpec, GETFILESTRUCT *pGFStruct )
 {
 	CHECKF( pSpec != NULL );
 	CHECKF( pGFStruct != NULL );
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
 
-	file_iter = getVFS()->begin(pSpec);
-	if(!file_iter.end())
+	try
 	{
-		vfs::Path const& path = file_iter.value()->getName();
-		std::string s = path.to_string();
-		::size_t size = s.length();
-		size = std::min< ::size_t>(size,260-1);
-		sprintf( pGFStruct->zFileName, s.c_str());
-		pGFStruct->zFileName[size] = 0;
-		
-		pGFStruct->iFindHandle = 0;
-		pGFStruct->uiFileSize = file_iter.value()->getSize();
-		pGFStruct->uiFileAttribs = ( file_iter.value()->implementsWritable() ? FILE_IS_NORMAL : FILE_IS_READONLY );
-
+		if (!ja2::fileio::fileServicesInitialized()) return FALSE;
+		std::vector<ja2::fileio::DirectoryEntry> entries =
+			ja2::fileio::storeRouter().list(pSpec);
+		NormalizeDirectoryEntryNames(entries);
+		if (entries.empty())
+		{
+			pGFStruct->iFindHandle = 0;
+			return FALSE;
+		}
+		FillGetFileStruct(*pGFStruct, entries.front());
+		pGFStruct->iFindHandle = RegisterFileSearch(std::move(entries));
+		if (pGFStruct->iFindHandle == 0)
+		{
+			return FALSE;
+		}
 		return TRUE;
 	}
-	return FALSE;
+	catch (...)
+	{
+		pGFStruct->iFindHandle = 0;
+		return FALSE;
+	}
 }
 
 BOOLEAN GetFileNext( GETFILESTRUCT *pGFStruct )
 {
-	if(!file_iter.end())
+	CHECKF( pGFStruct != NULL );
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileSearchEntry* search = GetFileSearchEntry(pGFStruct->iFindHandle);
+	if (search == nullptr)
 	{
-		file_iter.next();
+		return FALSE;
 	}
-	if(!file_iter.end())
+
+	if(search->next < search->entries.size())
 	{
-		vfs::Path const& path = file_iter.value()->getName();
-		std::string s = path.to_string();
-		::size_t size = s.length();
-		size = std::min< ::size_t>(size,260-1);
-		sprintf( pGFStruct->zFileName, s.c_str());
-		pGFStruct->zFileName[size] = 0;
-
-		pGFStruct->iFindHandle = 0;
-		pGFStruct->uiFileSize = file_iter.value()->getSize();
-		pGFStruct->uiFileAttribs = ( file_iter.value()->implementsWritable() ? FILE_IS_NORMAL : FILE_IS_READONLY );
-
+		FillGetFileStruct(*pGFStruct, search->entries[search->next++]);
 		return TRUE;
 	}
 	return FALSE;
@@ -877,34 +1121,36 @@ BOOLEAN GetFileNext( GETFILESTRUCT *pGFStruct )
 
 void GetFileClose( GETFILESTRUCT *pGFStruct )
 {
-	file_iter = vfs::CVirtualFileSystem::Iterator();
+	if (pGFStruct == NULL)
+	{
+		return;
+	}
+
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileSearchEntry* search = GetFileSearchEntry(pGFStruct->iFindHandle);
+	if (search != nullptr)
+	{
+		ReleaseFileSearchEntry(*search);
+	}
+	pGFStruct->iFindHandle = 0;
 }
 
 
 //returns true if at end of file, else false
 BOOLEAN	FileCheckEndOfFile( HWFILE hFile )
 {
-	vfs::size_t current_position, max_position;
-	vfs::IBaseFile *pFile = (vfs::IBaseFile*)hFile;
+	std::lock_guard<std::recursive_mutex> lock(gFileHandlesMutex);
+	FileHandleEntry* entry = GetFileHandleEntry(hFile);
 
-	if(pFile && (s_mapFiles[pFile].op == SOperation::WRITE))
+	if(entry != nullptr)
 	{
-		vfs::tWritableFile *pWF = vfs::tWritableFile::cast(pFile);
-		if(pWF)
+		try
 		{
-			current_position = pWF->getWritePosition();
-			max_position = pWF->getSize();
-			return current_position >= max_position;
+			return entry->file()->position() >= entry->file()->size() ? TRUE : FALSE;
 		}
-	}
-	else if(pFile && (s_mapFiles[pFile].op == SOperation::READ))
-	{
-		vfs::tReadableFile *pRF = vfs::tReadableFile::cast(pFile);
-		if(pRF)
+		catch (...)
 		{
-			current_position = pRF->getReadPosition();
-			max_position = pRF->getSize();
-			return current_position >= max_position;
+			return FALSE;
 		}
 	}
 	return FALSE;
@@ -913,12 +1159,21 @@ BOOLEAN	FileCheckEndOfFile( HWFILE hFile )
 
 UINT32 FileSize(STR strFilename)
 {
-	vfs::IBaseFile *pFile = getVFS()->getFile(vfs::Path(strFilename));
-	if(pFile)
+	if (strFilename == nullptr)
 	{
-		return pFile->getSize();
+		return 0;
 	}
-	return 0;
+	try
+	{
+		if (!ja2::fileio::fileServicesInitialized()) return 0;
+		const std::uint64_t size = ja2::fileio::storeRouter().metadata(strFilename).size;
+		return static_cast<UINT32>((std::min)(size,
+			static_cast<std::uint64_t>((std::numeric_limits<UINT32>::max)())));
+	}
+	catch (...)
+	{
+		return 0;
+	}
 }
 
 

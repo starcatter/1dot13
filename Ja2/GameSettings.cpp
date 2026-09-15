@@ -33,13 +33,14 @@
 #include "Text.h"
 #include "connect.h"
 #include "sgp_logger.h"
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 
 
 #include "GameInitOptionsScreen.h"
 
 #include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_file_raii.h>
-#include <vfs/Core/File/vfs_file.h>
 
 #define				GAME_SETTINGS_FILE				"Ja2_Settings.ini"
 
@@ -631,18 +632,14 @@ BOOLEAN	SaveGameSettings()
 
 		try
 		{
-			vfs::COpenWriteFile wfile(GAME_SETTINGS_FILE,true,true);
-			wfile->write(settings.str().c_str(), settings.str().length());
+			const std::string contents = settings.str();
+			std::unique_ptr<ja2::fileio::File> file =
+				ja2::fileio::storeRouter().create(GAME_SETTINGS_FILE);
+			file->writeExact(contents.data(), contents.size());
 		}
-		catch(vfs::Exception& ex)
+		catch(const std::exception& ex)
 		{
 			SGP_WARNING(ex.what());
-			vfs::CFile file(GAME_SETTINGS_FILE);
-			if(file.openWrite(true,true))
-			{
-				vfs::COpenWriteFile wfile( vfs::tWritableFile::cast(&file));
-				SGP_TRYCATCH_RETHROW(file.write(settings.str().c_str(), settings.str().length()),L"");
-			}
 		}
 	}
 
@@ -718,18 +715,14 @@ BOOLEAN SaveFeatureFlags()
 
 		try
 		{
-			vfs::COpenWriteFile wfile(FEATURE_FLAGS_FILE,true,true);
-			wfile->write(settings.str().c_str(), settings.str().length());
+			const std::string contents = settings.str();
+			std::unique_ptr<ja2::fileio::File> file =
+				ja2::fileio::storeRouter().create(FEATURE_FLAGS_FILE);
+			file->writeExact(contents.data(), contents.size());
 		}
-		catch(vfs::Exception& ex)
+		catch(const std::exception& ex)
 		{
 			SGP_WARNING(ex.what());
-			vfs::CFile file(FEATURE_FLAGS_FILE);
-			if(file.openWrite(true,true))
-			{
-				vfs::COpenWriteFile wfile( vfs::tWritableFile::cast(&file));
-				SGP_TRYCATCH_RETHROW(file.write(settings.str().c_str(), settings.str().length()),L"");
-			}
 		}
 
 		UpdateFeatureFlags();

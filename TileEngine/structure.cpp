@@ -496,7 +496,8 @@ STRUCTURE_FILE_REF * LoadStructureFile( STR szFileName )
 	{
 		vfs::Path filename = std::string(szFileName) + ".xml";
 
-		if(getVFS()->fileExists(filename))
+		std::string xmlFilename = filename.to_string();
+		if(FileExists(xmlFilename.data()))
 		{
 			pFileRef = (STRUCTURE_FILE_REF *) MemAlloc( sizeof( STRUCTURE_FILE_REF ) );
 			memset( pFileRef, 0, sizeof( STRUCTURE_FILE_REF ) );

@@ -2,7 +2,6 @@
 #define _TRANSFER_RULES_H_
 
 #include <vfs/Core/vfs_path.h>
-#include <vfs/Core/Interface/vfs_file_interface.h>
 
 #include <list>
 
@@ -18,7 +17,6 @@ public:
 	CTransferRules();
 
 	bool	initFromTxtFile(vfs::Path const& sPath);
-	bool	initFromTxtFile(vfs::tReadableFile* pFile);
 
 	void	setDefaultAction(EAction act);
 	EAction	getDefaultAction();

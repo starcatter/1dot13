@@ -40,6 +40,7 @@
 	#include "Interface.h"
 ///ddd
 	#include "GameSettings.h"
+	#include "INIReader.h"
 	#include "editscreen.h"
 	#include "Editor Taskbar Utils.h"
 
@@ -353,20 +354,16 @@ BOOLEAN LoadTileSurfaces( char ppTileSurfaceFilenames[][32], UINT8 ubTilesetID )
 	UINT32					uiPercentage;
 	//UINT32					uiLength;
 	//UINT16					uiFillColor;
-	STRING512				ExeDir;
 	STRING512				INIFile;
 
-	// Get Executable Directory
-	GetExecutableDirectory( ExeDir );
-
-	// Adjust Current Dir
 	// CHECK IF DEFAULT INI OVERRIDE FILE EXISTS
-	sprintf( INIFile, "%s\\engine.ini", ExeDir );
+	strcpy( INIFile, "engine.ini" );
 	if ( !FileExists( INIFile )	)
 	{
 		// USE PER TILESET BASIS
-		sprintf( INIFile, "%s\\engine%d.ini", ExeDir, ubTilesetID );
+		sprintf( INIFile, "engine%d.ini", ubTilesetID );
 	}
+	CIniReader iniReader( INIFile );
 
 	// If no Tileset filenames are given, return error
 	if (ppTileSurfaceFilenames == NULL)
@@ -420,7 +417,7 @@ BOOLEAN LoadTileSurfaces( char ppTileSurfaceFilenames[][32], UINT8 ubTilesetID )
 		// almost completely identical functions
 		if (ppTileSurfaceFilenames == NULL)
 		{
-			GetPrivateProfileString( "TileSurface Filenames", gTileSurfaceName[uiLoop], "", cTemp, SGPFILENAME_LEN, INIFile );
+			iniReader.ReadString( "TileSurface Filenames", gTileSurfaceName[uiLoop], "", cTemp, SGPFILENAME_LEN );
 			if (*cTemp != '\0')
 			{
 				strcpy( TileSurfaceFilenames[uiLoop], cTemp );
@@ -444,7 +441,7 @@ BOOLEAN LoadTileSurfaces( char ppTileSurfaceFilenames[][32], UINT8 ubTilesetID )
 		}
 		else
 		{
-			GetPrivateProfileString( "TileSurface Filenames", gTileSurfaceName[uiLoop], "", cTemp, SGPFILENAME_LEN, INIFile );
+			iniReader.ReadString( "TileSurface Filenames", gTileSurfaceName[uiLoop], "", cTemp, SGPFILENAME_LEN );
 			if (*cTemp != '\0')
 			{
 				strcpy( TileSurfaceFilenames[uiLoop], cTemp );
@@ -621,8 +618,6 @@ BOOLEAN AddTileSurface( STR8  cFilename, UINT32 ubType, UINT8 ubTilesetID, BOOLE
 	return( TRUE );
 }
 
-extern BOOLEAN gfLoadShadeTablesFromTextFile;
-
 void BuildTileShadeTables(  )
 {
 	// BF
@@ -680,12 +675,6 @@ void BuildTileShadeTables(  )
 		{ //same colors, same tileset, so don't rebuild shadetables -- much faster!
 			gfForceBuildShadeTables = FALSE;
 		}
-	}
-
-	if( gfLoadShadeTablesFromTextFile )
-	{ //Because we're tweaking the RGB values in the text file, always force rebuild the shadetables
-		//so that the user can tweak them in the same exe session.
-		memset( gbNewTileSurfaceLoaded, 1, sizeof( gbNewTileSurfaceLoaded ) );
 	}
 
 	for (uiLoop = 0; uiLoop < (UINT32)giNumberOfTileTypes; uiLoop++)
@@ -2803,7 +2792,6 @@ BOOLEAN EvaluateWorld(STR8 pSector, UINT8 ubLevel)
 #endif
 
 extern UINT8 GetCurrentSummaryVersion();
-extern void LoadShadeTablesFromTextFile();
 BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinorMapVersion)//dnl ch44 290909
 {
 	HWFILE					hfile;
@@ -2834,8 +2822,6 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 #ifdef JA2TESTVERSION
 	uiLoadWorldStartTime = GetJA2Clock();
 #endif
-
-	LoadShadeTablesFromTextFile();
 
 	// Append exension to filename!
 	if(gfForceLoad)

@@ -83,8 +83,6 @@ extern void					QueueEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam);
 extern void					KeyDown(UINT32 usParam, UINT32 uiParam);
 extern void					KeyUp(UINT32 usParam, UINT32 uiParam);
 
-extern void					EnableDoubleClk(void);
-extern void					DisableDoubleClk(void);
 extern void					GetMousePos(SGPPoint *Point);
 
 extern StringInput *InitStringInput(UINT16 *pInputString, UINT16 usLength, UINT16 *pFilter);

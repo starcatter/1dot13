@@ -22,11 +22,10 @@
 #include "network.h" // for client name
 #include "SaveLoadScreen.h"
 #include "Game Init.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_init.h>
 #include <vfs/Tools/vfs_property_container.h>
-#include <vfs/Core/vfs_os_functions.h>
 
 #include "random.h"
 
@@ -210,15 +209,9 @@ void			DoneFadeInForExitMPJScreen( void );
 
 void MpIniExists()
 {
-	if(!getVFS()->fileExists(JA2MP_INI_FILENAME))
+	if(!ja2::fileio::storeRouter().exists(JA2MP_INI_FILENAME))
 	{
-		SGP_THROW_IFFALSE(getVFS()->createNewFile(JA2MP_INI_FILENAME),L"could not create file : Ja2_mp.ini");
-		vfs::tWritableFile* file = getVFS()->getWriteFile(JA2MP_INI_FILENAME);
-		if(file)
-		{
-			file->openWrite(true);
-			file->close();
-		}
+		(void)ja2::fileio::storeRouter().create(JA2MP_INI_FILENAME);
 	}
 }
 
@@ -320,10 +313,7 @@ bool	ValidateJoinSettings(bool bSkipServerAddress, bool bSkipSyncDir)
 
 	if (!bSkipSyncDir)
 	{
-		if(vfs::OS::createRealDirectory(vfs::Path(L"Multiplayer")))
-		{
-			vfs::OS::createRealDirectory(vfs::Path(L"Multiplayer/Servers"));
-		}
+		ja2::fileio::storeRouter().ensureDirectory("Multiplayer/Servers");
 	}
 
 	return true;

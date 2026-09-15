@@ -46,6 +46,7 @@
 #include "Strategic Mines LUA.h"
 #include "UndergroundInit.h"
 #include "lua_state.h"
+#include "fileio/LogStore.h"
 
 #include "Interface.h"
 #include "aim.h"
@@ -66,9 +67,32 @@
 #include "DynamicDialogueWidget.h"		// added by Flugente for InitMyBoxes()
 
 #include <language.hpp>
+#include <string>
 
 extern INT16 APBPConstants[TOTAL_APBP_VALUES] = {0};
 extern INT16 gubMaxActionPoints[TOTALBODYTYPES];//MAXBODYTYPES = 28... JUST GETTING IT TO WORK NOW.  GOTTHARD 7/2/08
+
+namespace
+{
+	UINT32 startupTraceStart = 0;
+	UINT32 startupTracePrevious = 0;
+
+	void BeginStartupTrace()
+	{
+		startupTraceStart = startupTracePrevious = GetJA2Clock();
+		(void)ja2::fileio::logStore().truncate("startup-timing.log");
+		(void)ja2::fileio::logStore().appendLine("startup-timing.log", "0 ms (+0 ms): InitializeJA2 begin");
+	}
+
+	void TraceStartup(const char* stage)
+	{
+		const UINT32 now = GetJA2Clock();
+		const std::string line = std::to_string(now - startupTraceStart) + " ms (+" +
+			std::to_string(now - startupTracePrevious) + " ms): " + stage;
+		startupTracePrevious = now;
+		(void)ja2::fileio::logStore().appendLine("startup-timing.log", line);
+	}
+}
 
 // The InitializeGame function is responsible for setting up all data and Gaming Engine
 // tasks which will run the game
@@ -83,8 +107,6 @@ extern INT16 gubMaxActionPoints[TOTALBODYTYPES];//MAXBODYTYPES = 28... JUST GETT
 extern	BOOLEAN	gfUseConsecutiveQuickSaveSlots;
 #endif
 
-
-extern	HINSTANCE					ghInstance;
 
 //extern OBJECTTYPE GLOCK_17_ForUseWithLOS;//dnl ch86 120214
 
@@ -1408,6 +1430,7 @@ if( g_lang != i18n::Lang::en ) {
 
 UINT32 InitializeJA2(void)
 {
+	BeginStartupTrace();
 	HandleJA2CDCheck( );
 
 	gfWorldLoaded = FALSE;
@@ -1418,6 +1441,7 @@ UINT32 InitializeJA2(void)
 	//	return( ERROR_SCREEN );
 	//}
 	SGP_TRYCATCH_RETHROW(LoadExternalGameplayData(TABLEDATA_DIRECTORY, false),L"Loading external data failed");
+	TraceStartup("external gameplay data loaded");
 
 	// sun_alf: set itemId to each Magazine to avoid searching over Item[] on each MagazineClassIndexToItemType() call.
 	for (int i = 0; i < gMAXITEMS_READ; i++)
@@ -1430,9 +1454,11 @@ UINT32 InitializeJA2(void)
 
 	// Load external text
 	LoadAllExternalText();
+	TraceStartup("external text loaded");
 
 	// Init JA2 sounds
 	InitJA2Sound( );
+	TraceStartup("JA2 sound data initialized");
 
 	//dnl ch54 111009
 	//gsRenderCenterX = 805;
@@ -1440,15 +1466,18 @@ UINT32 InitializeJA2(void)
 
 	// Init data
 	InitializeSystemVideoObjects( );
+	TraceStartup("system video objects initialized");
 
 	// Init animation system
 	if ( !InitAnimationSystem( ) )
 	{
 		return( ERROR_SCREEN );
 	}
+	TraceStartup("animation system initialized");
 
 	// Init lighting system
 	InitLightingSystem();
+	TraceStartup("lighting system initialized");
 
 	// Init dialog queue system
 	InitalizeDialogueControl();
@@ -1457,12 +1486,14 @@ UINT32 InitializeJA2(void)
 	{
 		return( ERROR_SCREEN );
 	}
+	TraceStartup("strategic engine initialized");
 
 	//needs to be called here to init the SectorInfo struct
 	if ( !InitStrategicMovementCosts( ) )
 	{
 		return( ERROR_SCREEN );
 	}
+	TraceStartup("strategic movement costs initialized");
 
 	// InitRadarScreenCoords() depend on Mapscreen Interface Bottom coordinates -> need to initiate them first
 	// before calling InitTacticalEngine()
@@ -1473,6 +1504,7 @@ UINT32 InitializeJA2(void)
 	{
 		return( ERROR_SCREEN );
 	}
+	TraceStartup("tactical engine initialized");
 
 	// Init timer system
 	//Moved to the splash screen code.
@@ -1483,29 +1515,34 @@ UINT32 InitializeJA2(void)
 
 	// INit intensity tables
 	BuildIntensityTable( );
+	TraceStartup("shade and intensity tables built");
 
 	// Initailize World
 	if ( !InitializeWorld( ) )
 	{
 		return( ERROR_SCREEN );
 	}
+	TraceStartup("world initialized");
 
 	InitTileCache( );
 
 	InitMercPopupBox( );
 
 	InitMyBoxes();
+	TraceStartup("tile cache and UI boxes initialized");
 
 	// Set global volume
 	MusicSetVolume( gGameSettings.ubMusicVolumeSetting );
 
 	DetermineRGBDistributionSettings();
+	TraceStartup("RGB distribution cache checked");
 
 	// Snap: Init save game directory
 	if ( !InitSaveDir() )
 	{
 		return( ERROR_SCREEN );
 	}
+	TraceStartup("save directory recovered; InitializeJA2 complete");
 
 	//ADB When a merc calcs CTGT for a thrown item he uses a GLOCK temp item
 	//but we don't want to recreate it every single time CTGT is called, so init the GLOCK here

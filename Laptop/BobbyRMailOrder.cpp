@@ -29,7 +29,6 @@
 #include "connect.h"
 #include "GameSettings.h"
 #include <vfs/Core/vfs.h>
-#include <vfs/Core/File/vfs_file.h>
 #include <language.hpp>
 
 /*

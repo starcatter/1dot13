@@ -20,6 +20,7 @@
 
 
 #include <wchar.h>			// for wide-character strings
+#include "FileHandle.h"
 
 // *** SIR-TECH TYPE DEFINITIONS ***
 
@@ -59,7 +60,6 @@ typedef void *			PTR;
 typedef unsigned short	HNDL;
 typedef UINT8			BYTE;
 typedef CHAR8			STRING512[512];
-typedef UINT32			HWFILE;
 
 #define SGPFILENAME_LEN 100
 typedef CHAR8 SGPFILENAME[SGPFILENAME_LEN];	

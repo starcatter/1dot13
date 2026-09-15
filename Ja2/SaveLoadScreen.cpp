@@ -34,8 +34,9 @@
 #include "connect.h"
 
 #include "FileMan.h"
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_file_raii.h>
+#include "fileio/FileServices.h"
+#include "fileio/LocalTime.h"
+#include "fileio/StoreRouter.h"
 
 #ifdef JA2UB
 #include "LuaInitNPCs.h"
@@ -145,7 +146,7 @@ UINT32		guiSaveLoadExitScreen = SAVE_LOAD_SCREEN;
 BOOLEAN		gbSaveGameArray[ NUM_SAVE_GAMES ];
 
 // anv: read times of modification to show them later
-SYSTEMTIME	gstSaveGameCreationTimeArray[ NUM_SAVE_GAMES ];
+ja2::fileio::LocalCalendarTime	gstSaveGameCreationTimeArray[ NUM_SAVE_GAMES ];
 
 BOOLEAN		gfDoingQuickLoad = FALSE;
 
@@ -482,16 +483,16 @@ void InitMSysButtons(BOOLEAN delRegion)
 		// anv: add modification date
 		if( gbSaveGameArray[ VAL_SLOT_START + i ] )
 		{
-			swprintf( zString2, L"%04d", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].wYear );
+			swprintf( zString2, L"%04d", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].year );
 			wcscpy( zString3, zString2 );
-			swprintf( zString2, L"/%02d", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].wMonth );
+			swprintf( zString2, L"/%02d", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].month );
 			wcscat( zString3, zString2 );
-			swprintf( zString2, L"/%02d ", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].wDay );
+			swprintf( zString2, L"/%02d ", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].day );
 			wcscat( zString3, zString2 );
 
-			swprintf( zString2, L"%02d", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].wHour );
+			swprintf( zString2, L"%02d", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].hour );
 			wcscat( zString3, zString2 );
-			swprintf( zString2, L":%02d ", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].wMinute );
+			swprintf( zString2, L":%02d ", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].minute );
 			wcscat( zString3, zString2 );
 
 			wcscat( zString3, zString );
@@ -1326,6 +1327,9 @@ BOOLEAN InitSaveGameArray()
 	{
 		gbSaveGameArray[i] = FALSE;
 	}
+	memset( gstSaveGameCreationTimeArray, 0, sizeof( gstSaveGameCreationTimeArray ) );
+	if( !RecoverSaveTransactions() )
+		return( FALSE );
 
 	for( cnt=0; cnt<NUM_SLOT; cnt++) 
 	{
@@ -1342,25 +1346,20 @@ BOOLEAN InitSaveGameArray()
 			{
 				gbSaveGameArray[VAL_SLOT_START + cnt] = TRUE;
 
-				// anv: read last modified date property of save file
-				// get full path to save file
-				vfs::Path vfsPath;
-				vfs::COpenReadFile rfile(zSaveGameName);
-				rfile->_getRealPath(vfsPath);
-				string str = vfsPath.to_string();
-				LPCSTR lpSaveGamePath = str.c_str();
-				// get file handle
-				HANDLE hFile = CreateFile( lpSaveGamePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
-				// read time attributes
-				FILETIME ftCreationTime, ftLastAccessedTime, ftLastWriteTime;
-				SYSTEMTIME stSystemTime;
-				GetFileTime( hFile, &ftCreationTime, &ftLastAccessedTime, &ftLastWriteTime );
-				// remember time
-				FileTimeToSystemTime( &ftLastWriteTime, &stSystemTime );
-				SystemTimeToTzSpecificLocalTime( NULL, &stSystemTime, &gstSaveGameCreationTimeArray[VAL_SLOT_START + cnt] );
-				// close
-				CloseHandle( hFile );
-				rfile->close();
+				try
+				{
+					const auto modified = ja2::fileio::storeRouter().metadata(
+						zSaveGameName ).modifiedUnixNanoseconds;
+					if( modified )
+					{
+						gstSaveGameCreationTimeArray[VAL_SLOT_START + cnt] =
+							ja2::fileio::localCalendarTimeFromUnixNanoseconds( *modified );
+					}
+				}
+				catch( ... )
+				{
+					// Missing metadata leaves the timestamp at its safe zero default.
+				}
 			}
 		}
 		else
@@ -2413,14 +2412,20 @@ void DeleteAllSaveGameFile( )
 void DeleteSaveGameNumber( UINT8 ubSaveGameSlotID )
 {
 	CHAR8		zSaveGameName[ 512 ];
-	UINT8 newSlot;
+	CHAR8		zInventoryPoolName[ 516 ];
+
+	if( !RecoverSaveTransactions() )
+		return;
 
 	//Create the name of the file
-	newSlot = VAL_SLOT_START + ubSaveGameSlotID;
-	CreateSavedGameFileNameFromNumber( newSlot, zSaveGameName );
+	CreateSavedGameFileNameFromNumber( ubSaveGameSlotID, zSaveGameName );
+	sprintf( zInventoryPoolName, "%s.IPQ", zSaveGameName );
 
-	//Delete the saved game file
-	FileDelete( zSaveGameName );
+	//Delete both members of the save generation.
+	if( FileExists( zInventoryPoolName ) )
+		FileDelete( zInventoryPoolName );
+	if( FileExists( zSaveGameName ) )
+		FileDelete( zSaveGameName );
 }
 
 void DisplayOnScreenNumber( BOOLEAN fErase )

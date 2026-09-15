@@ -3,16 +3,101 @@
 #include "DEBUG.H"
 #include "Font Control.h"
 #include "message.h"
+#include "fileio/BfVfsResourceStore.h"
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 #include <stdio.h>
 #include <string.h>
 #include <sstream>
 
 // Kaiden: INI reading function definitions:
 
-#include <vfs/Core/vfs.h>
+#include <vfs/Tools/vfs_tools.h>
 
-std::set<vfs::Path,vfs::Path::Less> CIniReader::m_merge_files;
+std::set<std::string> CIniReader::m_merge_files;
 std::stack<std::string> iniErrorMessages;
+
+namespace
+{
+bool loadIni(vfs::PropertyContainer& properties, ja2::fileio::File& file)
+{
+	std::string section;
+	std::string line;
+	while(file.position() < file.size())
+	{
+		line.clear();
+		char character = 0;
+		while(file.read(&character, 1) == 1)
+		{
+			if(character == '\n' || character == '\0') break;
+			if(character != '\r') line.push_back(character);
+		}
+		if(line.size() >= 3 && static_cast<unsigned char>(line[0]) == 0xef &&
+			static_cast<unsigned char>(line[1]) == 0xbb &&
+			static_cast<unsigned char>(line[2]) == 0xbf)
+		{
+			line.erase(0, 3);
+		}
+		const std::size_t start = line.find_first_not_of(" \t");
+		if(start == std::string::npos || line[start] == '!' || line[start] == ';' || line[start] == '#')
+			continue;
+		if(line[start] == '[')
+		{
+			const std::size_t close = line.find(']', start + 1);
+			if(close != std::string::npos && close > start + 1)
+				section = vfs::trimString(vfs::String(line.substr(start + 1,
+					close - start - 1)), 0, close - start - 1).utf8();
+			continue;
+		}
+		if(section.empty()) continue;
+
+		std::size_t separator = line.find_first_of("+=", start);
+		if(separator == std::string::npos) continue;
+		const bool append = line[separator] == '+' && separator + 1 < line.size() &&
+			line[separator + 1] == '=';
+		const std::string key = vfs::trimString(vfs::String(line.substr(start,
+			separator - start)), 0, separator - start).utf8();
+		if(key.empty()) continue;
+		if(append) ++separator;
+		const std::string value = vfs::trimString(vfs::String(line.substr(separator + 1)),
+			0, line.size() - separator - 1).utf8();
+		vfs::String finalValue(value);
+		if(append)
+		{
+			finalValue = properties.getStringProperty(section, key, L"");
+			if(!finalValue.empty()) finalValue += L", ";
+			finalValue += vfs::String(value);
+		}
+		properties.setStringProperty(section, key, finalValue);
+	}
+	return true;
+}
+
+bool loadLogicalIni(vfs::PropertyContainer& properties, std::string_view name)
+{
+	try
+	{
+		std::unique_ptr<ja2::fileio::File> file = ja2::fileio::storeRouter().openRead(name);
+		return loadIni(properties, *file);
+	}
+	catch(const ja2::fileio::Error& error)
+	{
+		if(error.code() == ja2::fileio::ErrorCode::notFound) return false;
+		throw;
+	}
+}
+
+std::string overrideName(std::string_view name)
+{
+	std::string result = ja2::fileio::StoreRouter::normalizeLogicalPath(name);
+	const std::size_t slash = result.find_last_of('/');
+	const std::size_t dot = result.find_last_of('.');
+	if(dot != std::string::npos && (slash == std::string::npos || dot > slash)) result.resize(dot);
+	result += ".Override";
+	return result;
+}
+}
 
 template<typename ValueType>
 void PushErrorMessage(std::string const& filename,
@@ -29,70 +114,65 @@ void PushErrorMessage(std::string const& filename,
 	iniErrorMessages.push(errMessage.str());
 }
 
-void CIniReader::RegisterFileForMerging(vfs::Path const& filename)
+void CIniReader::RegisterFileForMerging(std::string_view filename)
 {
-	m_merge_files.insert(filename);
+	m_merge_files.insert(ja2::fileio::StoreRouter::normalizeLogicalPath(filename));
 }
 
 CIniReader::CIniReader(const CHAR8*	szFileName)
 {
 	memset(m_szFileName,0,sizeof(m_szFileName));
+	CIniReader_File_Found = FALSE;
 	strncpy(m_szFileName,szFileName, std::min<int>(strlen(szFileName), sizeof(m_szFileName)-1));
-	if(m_merge_files.find(szFileName) == m_merge_files.end())
+	const std::string logicalName = ja2::fileio::StoreRouter::normalizeLogicalPath(szFileName);
+	if(!ja2::fileio::fileServicesInitialized())
 	{
-		m_oProps.initFromIniFile(vfs::Path(szFileName));
+		CIniReader_File_Found = m_oProps.initFromIniFile(vfs::Path(szFileName)) ? TRUE : FALSE;
+	}
+	else if(m_merge_files.find(logicalName) == m_merge_files.end())
+	{
+		CIniReader_File_Found = loadLogicalIni(m_oProps, logicalName) ? TRUE : FALSE;
 	}
 	else
 	{
-		vfs::CProfileStack* profs = getVFS()->getProfileStack();
-		vfs::CProfileStack::Iterator it = profs->begin();
-		std::stack<vfs::CVirtualProfile*> rev_order;
-		for(; !it.end(); it.next()) { rev_order.push(it.value()); }
-		while(!rev_order.empty())
+		std::vector<ja2::fileio::ResourceVersion> versions =
+			ja2::fileio::resourceStore().openAll(logicalName);
+		for(auto it = versions.rbegin(); it != versions.rend(); ++it)
 		{
-			vfs::IBaseFile* file = rev_order.top()->getFile(szFileName);
-			if(file)
-			{
-				m_oProps.initFromIniFile(vfs::tReadableFile::cast(file));
-			}
-			rev_order.pop();
+			loadIni(m_oProps, *it->file);
+			CIniReader_File_Found = TRUE;
 		}
 	}
-	// check for override file
+	if(ja2::fileio::fileServicesInitialized())
 	{
-		CHAR8 OvrFileName[256], Drive[128], Dir[128], Name[128], Ext[128];
-		_splitpath(szFileName, Drive, Dir, Name, Ext);
-		_makepath(OvrFileName, Drive, Dir, Name, "Override");
-		if(getVFS()->fileExists(OvrFileName))
-			m_oProps.initFromIniFile(vfs::Path(OvrFileName));
+		(void)loadLogicalIni(m_oProps, overrideName(logicalName));
 	}
 }
 
 CIniReader::CIniReader(const CHAR8*	szFileName, BOOLEAN Force_Custom_Data_Path)
 {
 	memset(m_szFileName,0,sizeof(m_szFileName));
+	CIniReader_File_Found = FALSE;
 	// ary-05/05/2009 : force custom data path for potential non existing file -or- force default data path
 	//       : Also, flag file detection to allow functions to determine course of action for case of file [not found/is found].
 	strncpy(m_szFileName,szFileName, std::min<int>(strlen(szFileName), sizeof(m_szFileName)-1));
-	if(m_merge_files.find(szFileName) == m_merge_files.end())
+	const std::string logicalName = ja2::fileio::StoreRouter::normalizeLogicalPath(szFileName);
+	if(!ja2::fileio::fileServicesInitialized())
 	{
 		CIniReader_File_Found = m_oProps.initFromIniFile(vfs::Path(szFileName));
 	}
+	else if(m_merge_files.find(logicalName) == m_merge_files.end())
+	{
+		CIniReader_File_Found = loadLogicalIni(m_oProps, logicalName) ? TRUE : FALSE;
+	}
 	else
 	{
+		std::vector<ja2::fileio::ResourceVersion> versions =
+			ja2::fileio::resourceStore().openAll(logicalName);
 		CIniReader_File_Found = TRUE;
-		vfs::CProfileStack* profs = getVFS()->getProfileStack();
-		vfs::CProfileStack::Iterator it = profs->begin();
-		std::stack<vfs::CVirtualProfile*> rev_order;
-		for(; !it.end(); it.next()) { rev_order.push(it.value()); }
-		while(!rev_order.empty())
+		for(auto it = versions.rbegin(); it != versions.rend(); ++it)
 		{
-			vfs::IBaseFile* file = rev_order.top()->getFile(szFileName);
-			if(file)
-			{
-				CIniReader_File_Found = ((CIniReader_File_Found != FALSE) && m_oProps.initFromIniFile(vfs::tReadableFile::cast(file))) ? TRUE : FALSE;
-			}
-			rev_order.pop();
+			CIniReader_File_Found = loadIni(m_oProps, *it->file) && CIniReader_File_Found ? TRUE : FALSE;
 		}
 	}
 }

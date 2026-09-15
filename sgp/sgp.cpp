@@ -16,6 +16,7 @@
 #include "Timer Control.h"
 #include "Utilities.h"
 #include "GameSettings.h"
+#include "fileio/FileServices.h"
 #include "zmouse.h"
 #include <vfs/Aspects/vfs_settings.h>
 #include <vfs/Core/vfs.h>
@@ -455,6 +456,12 @@ BOOLEAN InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow)
 	getVFS()->getVirtualLocation(vfs::Path("ShadeTables"),true)->setIsExclusive(true);
 	getVFS()->getVirtualLocation(vfs::Path(pMessageStrings[MSG_SAVEDIRECTORY]+3),true)->setIsExclusive(true);
 	getVFS()->getVirtualLocation(vfs::Path(pMessageStrings[MSG_MPSAVEDIRECTORY]+3),true)->setIsExclusive(true);
+	ja2::fileio::initializeFileServices({
+		"Temp",
+		"ShadeTables",
+		vfs::String::as_utf8(pMessageStrings[MSG_SAVEDIRECTORY] + 3),
+		vfs::String::as_utf8(pMessageStrings[MSG_MPSAVEDIRECTORY] + 3)
+	});
 
 	if(!sp_force_load_jsd_xml_file.empty())
 	{
@@ -589,6 +596,7 @@ void ShutdownStandardGamingPlatform(void)
 
 	ShutdownInputManager();
 	ShutdownFileManager();
+	ja2::fileio::shutdownFileServices();
 
 #ifdef EXTREME_MEMORY_DEBUGGING
 	DumpMemoryInfoIntoFile( "ExtremeMemoryDump.txt", FALSE );
@@ -1014,7 +1022,7 @@ void GetRuntimeSettings( )
 	{
 		for(std::list<vfs::String>::iterator it = merge_list.begin(); it != merge_list.end(); ++it)
 		{
-			CIniReader::RegisterFileForMerging(*it);
+			CIniReader::RegisterFileForMerging(it->utf8());
 		}
 	}
 	
@@ -1023,7 +1031,7 @@ void GetRuntimeSettings( )
 	{
 		for(std::list<vfs::String>::iterator it = merge_list_ub.begin(); it != merge_list_ub.end(); ++it)
 		{
-			CIniReader::RegisterFileForMerging(*it);
+			CIniReader::RegisterFileForMerging(it->utf8());
 		}
 	}
 

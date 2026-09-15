@@ -19,7 +19,7 @@
 #include "_Ja25EnglishText.h"
 #include "Soldier Profile.h"
 #include "SaveLoadScreen.h"
-#include <vfs/Core/vfs.h>
+#include "FileMan.h"
 #include <vfs/Tools/vfs_property_container.h>
 
 
@@ -516,12 +516,7 @@ void		ConfirmGioIronManMessageBoxCallBack( UINT8 bExitValue );
 
 BOOLEAN SpIniExists()
 {
-	BOOLEAN exists = TRUE;
-
-	if(!getVFS()->fileExists(JA2SP_INI_FILENAME))	
-		exists = FALSE;		
-	
-	return exists;
+	return FileExists(const_cast<STR>(JA2SP_INI_FILENAME)) ? TRUE : FALSE;
 }
 
 UINT32	GameInitOptionsScreenInit( void )
@@ -2883,12 +2878,7 @@ void		ConfirmGioIronManMessageBoxCallBack( UINT8 bExitValue );
 
 BOOLEAN SpIniExists()
 {
-	BOOLEAN exists = TRUE;
-
-	if(!getVFS()->fileExists(JA2SP_INI_FILENAME))	
-		exists = FALSE;		
-	
-	return exists;
+	return FileExists(const_cast<STR>(JA2SP_INI_FILENAME)) ? TRUE : FALSE;
 }
 
 UINT32	GameInitOptionsScreenInit( void )

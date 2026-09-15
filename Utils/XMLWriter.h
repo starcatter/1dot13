@@ -2,7 +2,7 @@
 #define _XMLWRITER_H_
 
 #include "FileMan.h"
-#include <vfs/Core/Interface/vfs_file_interface.h>
+#include <vfs/Core/vfs_path.h>
 #include <vfs/Core/vfs_string.h>
 
 #include <stack>
@@ -56,7 +56,6 @@ public:
 	bool		closeNode();
 	
 	bool		writeToFile(vfs::Path const& sFileName);
-	bool		writeToFile(vfs::tWritableFile* pFile);
 
 private:
 	std::string	indent();

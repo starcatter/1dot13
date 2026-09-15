@@ -1,6 +1,16 @@
 #include "types.h"
 #include "Soldier Profile.h"
 #include "FileMan.h"
+#include "fileio/FileServices.h"
+#include "fileio/LogStore.h"
+#include "fileio/PhysicalWritableStore.h"
+#include "fileio/SaveTransaction.h"
+#include "fileio/StoreRouter.h"
+#include "fileio/WindowsDurableFileOperations.h"
+#include <exception>
+#include <optional>
+#include <string>
+#include <vector>
 #include <string.h>
 #include <stdio.h>
 #include "DEBUG.H"
@@ -144,7 +154,7 @@ UINT32		guiSizeOfTempFiles;
 CHAR			gzNameOfMapTempFile[128];
 #endif
 
-//#define LOADSAVEGAME_LOGTIME 1
+#define LOADSAVEGAME_LOGTIME 1
 #ifdef LOADSAVEGAME_LOGTIME
 #include "TimeLogging.h"
 #endif
@@ -3367,7 +3377,37 @@ BOOLEAN InitSaveDir()
 	{
 		sprintf(	gSaveDir, "%s", vfs::String::as_utf8(pMessageStrings[ MSG_SAVEDIRECTORY ] + 3).c_str() );
 	}
-	return TRUE;
+	return RecoverSaveTransactions();
+}
+
+BOOLEAN RecoverSaveTransactions()
+{
+	if( gSaveDir[0] == '\0' )
+	{
+		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("Save transaction recovery refused an empty save directory") );
+		return FALSE;
+	}
+
+	try
+	{
+		std::shared_ptr<ja2::fileio::PhysicalWritableStore> store =
+			ja2::fileio::storeRouter().currentWritableStore();
+		ja2::fileio::WindowsDurableFileOperations durable( *store );
+		const std::string directory =
+			ja2::fileio::StoreRouter::normalizeLogicalPath( gSaveDir );
+		ja2::fileio::SaveTransaction::recoverDirectory( *store, durable, directory );
+		return TRUE;
+	}
+	catch( const std::exception& ex )
+	{
+		DebugMsg( TOPIC_JA2, DBG_LEVEL_3,
+			String("Save transaction recovery failed: %s", ex.what()) );
+	}
+	catch( ... )
+	{
+		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("Save transaction recovery failed") );
+	}
+	return FALSE;
 }
 
 // WDS - Automatically try to save when an assertion failure occurs
@@ -3377,7 +3417,6 @@ extern bool bHideTopMessage;
 BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 {
 	UINT32	uiNumBytesWritten=0;
-	HWFILE	hFile=0;
 	SAVED_GAME_HEADER SaveGameHeader;
 	CHAR8		zSaveGameName[ MAX_PATH ];
 	//UINT8		saveDir[100];
@@ -3396,6 +3435,34 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 #ifdef LOADSAVEGAME_LOGTIME
 	TimingLogInitialize("TimeLog_LoadSavedGame.txt");
 #endif
+	const auto cleanupFailedSave = [&]() -> BOOLEAN
+	{
+#ifdef JA2BETAVERSION
+		SaveGameFilePosition( 0, "Failed to Save!!!" );
+#endif
+#if LOADSAVEGAME_LOGTIME
+		TimingLogStop();
+#endif
+		gTacticalStatus.uiFlags &= ~LOADING_SAVED_GAME;
+		if ( fWePausedIt )
+			UnPauseAfterSaveGame();
+
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_INTERFACE, zSaveLoadText[SLG_SAVE_GAME_ERROR] );
+	#ifdef JA2BETAVERSION
+		InitShutDownMapTempFileTest( FALSE, "SaveMapTempFile", ubSaveGameID );
+	#endif
+		NextLoopCheckForEnoughFreeHardDriveSpace();
+
+#ifdef JA2BETAVERSION
+		if( fDisableDueToBattleRoster || fDisableMapInterfaceDueToBattle )
+			gubReportMapscreenLock = 2;
+#endif
+		Assert(guiCurrentSaveGameVersion == SAVE_GAME_VERSION);
+		guiCurrentSaveGameVersion = SAVE_GAME_VERSION;
+		alreadySaving = false;
+		return FALSE;
+	};
+
 	//clear out the save game header
 	memset( &SaveGameHeader, 0, sizeof( SAVED_GAME_HEADER ) );
 
@@ -3540,7 +3607,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	if( !SaveCurrentSectorsInformationToTempItemFile() )
 	{
 		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR in SaveCurrentSectorsInformationToTempItemFile()");
-		goto FAILED_TO_SAVE;
+		return cleanupFailedSave();
 	}
 	
 	//if we are saving the quick save,
@@ -3580,35 +3647,11 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	TimingLog("\nShutdown stuff", 10);
 #endif
 
-	//if the file already exists, delete it
-	if( FileExists( zSaveGameName ) )
+	const auto serializeSaveGame = [&]( HWFILE hFile ) -> BOOLEAN
 	{
-		if( !FileDelete( zSaveGameName ) )
-		{
-			ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR deleting old save");
-			goto FAILED_TO_SAVE;
-		}
-	}
-
-	if(gGameExternalOptions.fEnableInventoryPoolQ)//dnl ch51 081009
-		if(!SaveInventoryPoolQ(ubSaveGameID))
-			return(FALSE);
-
-	// create the save game file
-	hFile = FileOpen( zSaveGameName, FILE_ACCESS_WRITE | FILE_CREATE_ALWAYS, FALSE );
-	if( !hFile )
-	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR creating new save");
-		goto FAILED_TO_SAVE;
-	}
-
 	#ifdef JA2BETAVERSION
 		SaveGameFilePosition( FileGetPos( hFile ), "Just Opened File" );
 	#endif
-
-
-
-
 
 	//
 	// If there are no enemy or civilians to save, we have to check BEFORE savinf the sector info struct because
@@ -4427,8 +4470,70 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	TimingLog("File read done", 10);
 #endif
 
-	//Close the saved game file
-	FileClose( hFile );
+		return TRUE;
+
+	FAILED_TO_SAVE:
+		return FALSE;
+	};
+
+	try
+	{
+		std::shared_ptr<ja2::fileio::PhysicalWritableStore> store =
+			ja2::fileio::storeRouter().currentWritableStore();
+		ja2::fileio::WindowsDurableFileOperations durable( *store );
+		const std::string saveName =
+			ja2::fileio::StoreRouter::normalizeLogicalPath( zSaveGameName );
+		const std::string sidecarName = saveName + ".IPQ";
+		ja2::fileio::SaveTransaction transaction( *store, durable, saveName, sidecarName );
+
+		ja2::fileio::SaveTransaction::StageWriter saveWriter =
+			[&]( ja2::fileio::File& file )
+		{
+			BOOLEAN serialized;
+			{
+				BorrowedFileHandle handle( file, FILE_ACCESS_WRITE );
+				if( !handle.get() )
+					throw ja2::fileio::Error( ja2::fileio::ErrorCode::io,
+						"could not borrow staged save file" );
+				serialized = serializeSaveGame( handle.get() );
+			}
+			if( !serialized )
+				throw ja2::fileio::Error( ja2::fileio::ErrorCode::io,
+					"save serialization failed" );
+		};
+
+		std::optional<ja2::fileio::SaveTransaction::StageWriter> sidecarWriter;
+		if( gGameExternalOptions.fEnableInventoryPoolQ )
+		{
+			sidecarWriter = [&]( ja2::fileio::File& file )
+			{
+				BOOLEAN serialized;
+				{
+					BorrowedFileHandle handle( file, FILE_ACCESS_WRITE );
+					if( !handle.get() )
+						throw ja2::fileio::Error( ja2::fileio::ErrorCode::io,
+							"could not borrow staged inventory sidecar" );
+					serialized = SaveInventoryPoolQ( handle.get() );
+				}
+				if( !serialized )
+					throw ja2::fileio::Error( ja2::fileio::ErrorCode::io,
+						"inventory sidecar serialization failed" );
+			};
+		}
+
+		transaction.commit( saveWriter, sidecarWriter );
+	}
+	catch( const std::exception& ex )
+	{
+		DebugMsg( TOPIC_JA2, DBG_LEVEL_3,
+			String("Save transaction failed: %s", ex.what()) );
+		return cleanupFailedSave();
+	}
+	catch( ... )
+	{
+		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("Save transaction failed") );
+		return cleanupFailedSave();
+	}
 
 	// This defines, which savegame is highlighted in the load screen
 	if (ubSaveGameID == SAVE__END_TURN_NUM)
@@ -4510,52 +4615,6 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	TimingLogStop();
 #endif
 	return( TRUE );
-
-	//if there is an error saving the game
-FAILED_TO_SAVE:
-
-#ifdef JA2BETAVERSION
-	SaveGameFilePosition( FileGetPos( hFile ), "Failed to Save!!!" );
-#endif
-#if LOADSAVEGAME_LOGTIME
-	TimingLogStop();
-#endif
-
-	FileClose( hFile );
-
-	if ( fWePausedIt )
-	{
-		UnPauseAfterSaveGame();
-	}
-
-	//Delete the failed attempt at saving
-#if 0
-	// 0verhaul:	Temporarily disabled to try to troubleshoot save game problems
-	DeleteSaveGameNumber( ubSaveGameID );
-#endif
-
-	//Put out an error message
-	ScreenMsg( FONT_MCOLOR_WHITE, MSG_INTERFACE, zSaveLoadText[SLG_SAVE_GAME_ERROR] );
-
-	#ifdef JA2BETAVERSION
-		InitShutDownMapTempFileTest( FALSE, "SaveMapTempFile", ubSaveGameID );
-	#endif
-
-	//Check for enough free hard drive space
-	NextLoopCheckForEnoughFreeHardDriveSpace();
-
-#ifdef JA2BETAVERSION
-	if( fDisableDueToBattleRoster || fDisableMapInterfaceDueToBattle )
-	{
-		gubReportMapscreenLock = 2;
-	}
-#endif
-
-	Assert(guiCurrentSaveGameVersion == SAVE_GAME_VERSION);
-	guiCurrentSaveGameVersion = SAVE_GAME_VERSION;
-
-	alreadySaving = false;
-	return( FALSE );
 }
 
 
@@ -4577,6 +4636,9 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	CHAR8		zSaveGameName[ MAX_PATH ];
 	UINT32 uiRelStartPerc;
 	UINT32 uiRelEndPerc;
+	(void)ja2::fileio::logStore().truncate("save-load-fileio.log");
+	(void)ja2::fileio::logStore().appendLine("save-load-fileio.log",
+		std::string("loading save slot ") + std::to_string(ubSavedGameID));
 
 #ifdef JA2BETAVERSION
 	gfDisplaySaveGamesNowInvalidatedMsg = FALSE;
@@ -7226,88 +7288,67 @@ BOOLEAN SaveFilesToSavedGame( STR pSrcFileName, HWFILE hFile )
 
 BOOLEAN LoadFilesFromSavedGame( STR pSrcFileName, HWFILE hFile )
 {
-	UINT32	uiFileSize=0;
-	UINT32	uiNumBytesWritten=0;
-	HWFILE	hSrcFile=0;
-	UINT8		*pData=NULL;
-	UINT32	uiNumBytesRead=0;
-		
-	//If the source file exists, delete it
+	UINT32 uiFileSize = 0;
+	UINT32 uiNumBytesWritten = 0;
+	HWFILE hSrcFile = 0;
+	UINT8* pData = NULL;
+	UINT32 uiNumBytesRead = 0;
+
+	// Preserve the legacy extraction order. Several tactical-load callers expect
+	// the destination to disappear before the embedded size and payload are read.
 	if( FileExists( pSrcFileName ) )
 	{
 		if( !FileDelete( pSrcFileName ) )
-		{
-			//unable to delete the original file
-			return( FALSE );
-		}
+			return FALSE;
 	}
 
 #ifdef JA2BETAVERSION
 	++guiNumberOfMapTempFiles;		//Increment counter:	To determine where the temp files are crashing
 #endif
 
-	//open the destination file to write to
 	hSrcFile = FileOpen( pSrcFileName, FILE_ACCESS_WRITE | FILE_CREATE_ALWAYS, FALSE );
 	if( !hSrcFile )
-	{
-		//error, we cant open the saved game file
-		return( FALSE );
-	}
+		return FALSE;
 
-	// Read the size of the data 
 	FileRead( hFile, &uiFileSize, sizeof( UINT32 ), &uiNumBytesRead );
 	if( uiNumBytesRead != sizeof( UINT32 ) )
 	{
 		FileClose( hSrcFile );
-
-		return(FALSE);
+		return FALSE;
 	}
 
-	//if there is nothing in the file, return;
 	if( uiFileSize == 0 )
 	{
 		FileClose( hSrcFile );
-		return( TRUE );
+		return TRUE;
 	}
 
-	//Allocate a buffer to read the data into
-	pData = (UINT8 *) MemAlloc( uiFileSize );
+	pData = (UINT8*)MemAlloc( uiFileSize );
 	if( pData == NULL )
 	{
 		FileClose( hSrcFile );
-		return( FALSE );
+		return FALSE;
 	}
-	//ADB looks hardly necessary if there is a read right below
-	//memset( pData, 0, uiFileSize);
 
-	// Read into the buffer
 	FileRead( hFile, pData, uiFileSize, &uiNumBytesRead );
 	if( uiNumBytesRead != uiFileSize )
 	{
 		FileClose( hSrcFile );
-
-		//Free the buffer
 		MemFree( pData );
-
-		return(FALSE);
+		return FALSE;
 	}
 
-	// Write the buffer to the new file
 	FileWrite( hSrcFile, pData, uiFileSize, &uiNumBytesWritten );
 	if( uiNumBytesWritten != uiFileSize )
 	{
 		FileClose( hSrcFile );
-		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("FAILED to Write to the %s File", pSrcFileName ) );
-		//Free the buffer
+		DebugMsg(TOPIC_JA2, DBG_LEVEL_3,
+			String("FAILED to Write to the %s File", pSrcFileName));
 		MemFree( pData );
-
-		return(FALSE);
+		return FALSE;
 	}
 
-	//Free the buffer
 	MemFree( pData );
-
-	//Close the source data file
 	FileClose( hSrcFile );
 
 #ifdef JA2BETAVERSION

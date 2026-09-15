@@ -1784,19 +1784,19 @@ UINT32 uiSoundID;
 // ========================
 static void * F_CALLBACKAPI SoundFileOpen(const STR8 pName)
 {
-	return((void*)FileOpen(pName, FILE_ACCESS_READ | FILE_OPEN_EXISTING, FALSE));
+	return reinterpret_cast<void*>(static_cast<uintptr_t>(FileOpen(pName, FILE_ACCESS_READ | FILE_OPEN_EXISTING, FALSE)));
 }
 
 static void F_CALLBACKAPI SoundFileClose(void *uiHandle)
 {
-	FileClose((UINT32)uiHandle);
+	FileClose(static_cast<HWFILE>(reinterpret_cast<uintptr_t>(uiHandle)));
 }
 
 static INT F_CALLBACKAPI SoundFileRead(void *pBuffer, INT iSize, void *uiHandle)
 {
 	UINT32 uiActuallyRead;
 
-	FileRead((UINT32)uiHandle, pBuffer, iSize, &uiActuallyRead);
+	FileRead(static_cast<HWFILE>(reinterpret_cast<uintptr_t>(uiHandle)), pBuffer, iSize, &uiActuallyRead);
 	return(uiActuallyRead);
 }
 
@@ -1816,7 +1816,7 @@ static INT F_CALLBACKAPI SoundFileSeek(void *uiHandle, INT iPos, signed char cMo
 		uiHow = FILE_SEEK_FROM_START;
 	}
 
-	return(!FileSeek((UINT32)uiHandle, iPos, uiHow));
+	return(!FileSeek(static_cast<HWFILE>(reinterpret_cast<uintptr_t>(uiHandle)), iPos, uiHow));
 }
 
 static INT F_CALLBACKAPI SoundFileTell(void *uiHandle)

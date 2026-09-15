@@ -74,7 +74,7 @@ BOOLEAN CopySectorInventoryToInventoryPoolQs(UINT8 idx);
 BOOLEAN	DisplaySectorItemsInfo(void);
 BOOLEAN	LoadInventoryPoolQ(UINT8 ubSaveGameID);
 BOOLEAN	MemFreeInventoryPoolQ(void);
-BOOLEAN	SaveInventoryPoolQ(UINT8 ubSaveGameID);
+BOOLEAN	SaveInventoryPoolQ(HWFILE hFile);
 BOOLEAN	SortInventoryPoolQ(void);
 BOOLEAN	SwitchToInventoryPoolQ(UINT8 newidx);
 

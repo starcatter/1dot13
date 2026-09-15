@@ -10,12 +10,18 @@
 #include "finances.h"
 #include "laptop.h"
 #include <language.hpp>
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 
-#include <vfs/Core/vfs.h>
 #include <vfs/Core/vfs_string.h>
 #include <vfs/Tools/vfs_tools.h>
 #include <vfs/Tools/vfs_parser_tools.h>
 #include <vfs/Tools/vfs_property_container.h>
+
+#include <memory>
+#include <sstream>
+#include <vector>
 
 namespace
 {
@@ -351,7 +357,6 @@ bool Loc::ExportStrings()
 	return true;
 }
 
-#include <vfs/Core/vfs_file_raii.h>
 #include "Encrypted File.h"
 
 namespace {
@@ -505,8 +510,8 @@ void ExportMercBio()
 
 	vfs::String::char_t pInfoString[SIZE_MERC_BIO_INFO];
 	vfs::String::char_t pAddInfo[SIZE_MERC_ADDITIONAL_INFO];
-	vfs::COpenReadFile rfile("BINARYDATA\\aimbios.edt");
-	vfs::tReadableFile& file = rfile.file();
+	std::unique_ptr<ja2::fileio::File> file =
+		ja2::fileio::storeRouter().openRead("BINARYDATA/aimbios.edt");
 
 	vfs::PropertyContainer props; 
 	for(int i=0; i<40; ++i)
@@ -514,12 +519,12 @@ void ExportMercBio()
 		memset(pInfoString,0,SIZE_MERC_BIO_INFO*sizeof(wchar_t));
 		memset(pAddInfo,0,SIZE_MERC_ADDITIONAL_INFO*sizeof(wchar_t));
 		//
-		file.read((vfs::Byte*)pInfoString, SIZE_MERC_BIO_INFO);
+		file->read(pInfoString, SIZE_MERC_BIO_INFO);
 		DecodeString(pInfoString,SIZE_MERC_BIO_INFO);
 		Translate(pInfoString, SIZE_MERC_BIO_INFO, g_lang);
 		props.setStringProperty(L"Bio", vfs::toString<wchar_t>(i), pInfoString);
 		
-		file.read((vfs::Byte*)pAddInfo, SIZE_MERC_ADDITIONAL_INFO);
+		file->read(pAddInfo, SIZE_MERC_ADDITIONAL_INFO);
 		DecodeString(pAddInfo, SIZE_MERC_ADDITIONAL_INFO);
 		Translate(pAddInfo, SIZE_MERC_ADDITIONAL_INFO, g_lang);
 		props.setStringProperty(L"Add", vfs::toString<wchar_t>(i), pAddInfo);
@@ -532,15 +537,15 @@ void ExportAIMHistory()
 {
 	#define AIM_HISTORY_LINE_SIZE 400 * 2
 	vfs::String::char_t pHistLine[AIM_HISTORY_LINE_SIZE];
-	vfs::COpenReadFile rfile("BINARYDATA\\AimHist.edt");
-	vfs::tReadableFile& file = rfile.file();
+	std::unique_ptr<ja2::fileio::File> file =
+		ja2::fileio::storeRouter().openRead("BINARYDATA/AimHist.edt");
 
 	vfs::PropertyContainer props; 
 	for(int i=0; i<23; ++i)
 	{
 		memset(pHistLine,0,AIM_HISTORY_LINE_SIZE*sizeof(wchar_t));
 		//
-		file.read((vfs::Byte*)pHistLine, AIM_HISTORY_LINE_SIZE);
+		file->read(pHistLine, AIM_HISTORY_LINE_SIZE);
 		DecodeString(pHistLine,AIM_HISTORY_LINE_SIZE);
 		Translate(pHistLine, AIM_HISTORY_LINE_SIZE, g_lang);
 		props.setStringProperty(L"Line", vfs::toString<wchar_t>(i), pHistLine);
@@ -554,15 +559,15 @@ void ExportAIMPolicy()
 {
 	#define AIM_HISTORY_LINE_SIZE 400 * 2
 	vfs::String::char_t pPolLine[AIM_HISTORY_LINE_SIZE];
-	vfs::COpenReadFile rfile("BINARYDATA\\AimPol.edt");
-	vfs::tReadableFile& file = rfile.file();
+	std::unique_ptr<ja2::fileio::File> file =
+		ja2::fileio::storeRouter().openRead("BINARYDATA/AimPol.edt");
 
 	vfs::PropertyContainer props; 
 	for(int i=0; i<46; ++i)
 	{
 		memset(pPolLine,0,400*sizeof(wchar_t));
 		//
-		file.read((vfs::Byte*)pPolLine, AIM_HISTORY_LINE_SIZE);
+		file->read(pPolLine, AIM_HISTORY_LINE_SIZE);
 		DecodeString(pPolLine,AIM_HISTORY_LINE_SIZE);
 		Translate(pPolLine, AIM_HISTORY_LINE_SIZE, g_lang);
 		props.setStringProperty(L"Line", vfs::toString<wchar_t>(i), pPolLine);
@@ -575,15 +580,15 @@ void ExportAlumniName()
 {
 	#define AIM_ALUMNI_NAME_SIZE 80 * 2
 	vfs::String::char_t pAlumniName[AIM_ALUMNI_NAME_SIZE];
-	vfs::COpenReadFile rfile("BINARYDATA\\AlumName.edt");
-	vfs::tReadableFile& file = rfile.file();
+	std::unique_ptr<ja2::fileio::File> file =
+		ja2::fileio::storeRouter().openRead("BINARYDATA/AlumName.edt");
 
 	vfs::PropertyContainer props; 
 	for(int i=0; i<51; ++i)
 	{
 		memset(pAlumniName,0,AIM_ALUMNI_NAME_SIZE*sizeof(wchar_t));
 		//
-		file.read((vfs::Byte*)pAlumniName, AIM_ALUMNI_NAME_SIZE);
+		file->read(pAlumniName, AIM_ALUMNI_NAME_SIZE);
 		DecodeString(pAlumniName,AIM_ALUMNI_NAME_SIZE);
 		Translate(pAlumniName, AIM_ALUMNI_NAME_SIZE, g_lang);
 		props.setStringProperty(L"Line", vfs::toString<wchar_t>(i), pAlumniName);
@@ -597,23 +602,23 @@ void ExportDialogues()
 	#define DIALOGUESIZE		480
 	vfs::String::char_t pDiagLine[DIALOGUESIZE];
 
-	vfs::CVirtualFileSystem::Iterator it = getVFS()->begin(L"MercEdt/*.edt");
-	for(; !it.end(); it.next())
+	const std::vector<ja2::fileio::DirectoryEntry> entries =
+		ja2::fileio::storeRouter().list("MercEdt/*.edt");
+	for(const ja2::fileio::DirectoryEntry& entry : entries)
 	{
 		vfs::PropertyContainer props;
-		vfs::COpenReadFile rfile(it.value());
-		vfs::tReadableFile& file = rfile.file();
+		std::unique_ptr<ja2::fileio::File> file =
+			ja2::fileio::storeRouter().openRead("MercEdt/" + entry.name);
 
-		std::wstringstream wss;
-		wss.str(file.getName().c_str());
+		std::istringstream name(entry.name);
 		int id=0;
-		wss >> id;
+		name >> id;
 
 		for(int i=0; i<200; ++i)
 		{
 			memset(pDiagLine,0,DIALOGUESIZE*sizeof(wchar_t));
 			//
-			if(file.read((vfs::Byte*)pDiagLine, DIALOGUESIZE) > 0)
+			if(file->read(pDiagLine, DIALOGUESIZE) > 0)
 			{
 				DecodeString(pDiagLine,DIALOGUESIZE);
 				Translate(pDiagLine, DIALOGUESIZE, g_lang);
@@ -624,7 +629,7 @@ void ExportDialogues()
 			}
 		}
 		vfs::Path x(L"Localization/Dialogue");
-		x += vfs::Path(file.getName().c_wcs() + L".xml");
+		x += vfs::Path(entry.name + ".xml");
 		vfs::PropertyContainer::TagMap tags;
 		props.writeToXMLFile(x, tags);
 	}
@@ -636,14 +641,15 @@ void ExportNPCDialogues()
 	#define CIVQUOTESIZE		320
 	vfs::String::char_t pDiagLine[DIALOGUESIZE];
 
-	vfs::CVirtualFileSystem::Iterator it = getVFS()->begin(L"npcdata/*.edt");
-	for(; !it.end(); it.next())
+	const std::vector<ja2::fileio::DirectoryEntry> entries =
+		ja2::fileio::storeRouter().list("npcdata/*.edt");
+	for(const ja2::fileio::DirectoryEntry& entry : entries)
 	{
 		vfs::PropertyContainer props;
-		vfs::COpenReadFile rfile(it.value());
-		vfs::tReadableFile& file = rfile.file();
+		std::unique_ptr<ja2::fileio::File> file =
+			ja2::fileio::storeRouter().openRead("npcdata/" + entry.name);
 
-		vfs::String::str_t const& ws = file.getName().c_wcs();
+		const vfs::String::str_t ws = vfs::String(entry.name).c_wcs();
 		vfs::String::str_t::size_type pos = ws.find_first_of(L".");
 		vfs::String id = ws.substr(0,pos);
 
@@ -661,7 +667,7 @@ void ExportNPCDialogues()
 		{
 			memset(pDiagLine,0,DIALOGUESIZE*sizeof(wchar_t));
 			//
-			if(file.read((vfs::Byte*)pDiagLine, SIZE) > 0)
+			if(file->read(pDiagLine, SIZE) > 0)
 			{
 				DecodeString(pDiagLine,SIZE);
 				Translate(pDiagLine, SIZE, g_lang);
@@ -672,7 +678,7 @@ void ExportNPCDialogues()
 			}
 		}
 		vfs::Path x(L"Localization/NpcDialogue");
-		x += vfs::Path(file.getName().c_wcs() + L".xml");
+		x += vfs::Path(entry.name + ".xml");
 		vfs::PropertyContainer::TagMap tags;
 		props.writeToXMLFile(x, tags);
 	}

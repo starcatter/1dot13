@@ -86,13 +86,10 @@
 #include "mapscreen.h"
 
 #include "MessageBoxScreen.h"
+#include "fileio/FileIO.h"
+#include "fileio/FileServices.h"
+#include "fileio/StoreRouter.h"
 
-#include <vfs/Core/vfs.h>
-#include <vfs/Core/vfs_init.h>
-#include <vfs/Core/vfs_profile.h>
-#include <vfs/Core/vfs_file_raii.h>
-#include <vfs/Core/vfs_os_functions.h>
-#include <vfs/Core/File/vfs_file.h>
 #include "transfer_rules.h"
 
 #include "Keys.h"
@@ -201,10 +198,11 @@ class ClientTransferCB : public FileListTransferCBInterface
 			
 			try
 			{
-				vfs::COpenWriteFile wfile(fileName,true,true);
-				wfile->write(onFileStruct->fileData,onFileStruct->finalDataLength);
+				std::unique_ptr<ja2::fileio::File> output =
+					ja2::fileio::storeRouter().create(fileName.to_string());
+				output->writeExact(onFileStruct->fileData,onFileStruct->finalDataLength);
 			}
-			catch(vfs::Exception& ex)
+			catch(const std::exception& ex)
 			{
 				SGP_ERROR(ex.what());
 				ScreenMsg( FONT_BCOLOR_BLUE, MSG_CHAT, MPClientMessage[70], targetFileName);				
