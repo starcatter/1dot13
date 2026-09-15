@@ -36,6 +36,7 @@
 #include "SaveLoadGame.h"//dnl ch51 081009
 #include "Food.h"	// added by Flugente
 #include "mapscreen.h"
+#include "platform/Clock.h"
 
 //forward declarations of common classes to eliminate includes
 class OBJECTTYPE;
@@ -4729,7 +4730,7 @@ void AnimateZoomInventory ( UINT16 iLocationInPool, UINT16 iCounter, INT32 iStar
 	// Set transition time and other variables.
 	uiTimeRange = 400;
 	iPercentage = iRealPercentage = 0;
-	uiStartTime = GetJA2Clock();
+	uiStartTime = Platform::GetClockMilliseconds();
 
 	// Loud click!
 	PlayJA2Sample( 202, RATE_11025, HIGHVOLUME, 1, MIDDLEPAN );
@@ -4751,7 +4752,7 @@ void AnimateZoomInventory ( UINT16 iLocationInPool, UINT16 iCounter, INT32 iStar
 		BlitBufferToBuffer( guiSAVEBUFFER, FRAME_BUFFER, INVEN_POOL_X, INVEN_POOL_Y, SCREEN_WIDTH-INVEN_POOL_X, SCREEN_HEIGHT-INVEN_POOL_Y);
 
 		// Get the current time
-		uiCurrTime = GetJA2Clock();
+		uiCurrTime = Platform::GetClockMilliseconds();
 		// Compare it to the current time to get a percentage. This signifies how much of the animation has been
 		// done.
 		iPercentage = (uiCurrTime-uiStartTime) * 100 / uiTimeRange;

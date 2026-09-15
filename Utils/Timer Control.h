@@ -1,6 +1,8 @@
 #ifndef __TIMER_CONTROL_H
 #define __TIMER_CONTROL_H
 
+#include "types.h"
+
 typedef INT32		TIMECOUNTER;
 
 //typedef void (__stdcall *JA2_TIMERPROC)( UINT32 uiID, UINT32 uiMsg, UINT32 uiUser, UINT32 uiDw1, UINT32 uiDw2 );
@@ -48,22 +50,19 @@ extern INT32	giTimerIntervals[ NUMTIMERS ];
 // TIMER COUNTERS
 extern INT32	giTimerCounters[ NUMTIMERS ];
 
-// GLOBAL SYNC TEMP TIME
-extern INT32	giClockTimer;
 extern INT32	giTimerDiag;
 extern INT32	giTimerTeamTurnUpdate;
 
 
 // Functions
 BOOLEAN InitializeJA2Clock( void );
-void	ShutdownJA2Clock( void );
+BOOLEAN UpdateJA2Clock( void );
+UINT32 GetJA2ClockNextWakeMilliseconds( void );
 
 #define GetJA2Clock()						guiBaseJA2Clock
 
 #define GetJA2NoPauseClock()           guiBaseJA2NoPauseClock
 
-
-UINT32	GetPauseJA2Clock( );
 
 void PauseTime( BOOLEAN fPaused );
 
@@ -75,26 +74,15 @@ void SetFastForwardKey(INT32 key);
 BOOLEAN IsFastForwardKeyPressed();
 void SetFastForwardMode(BOOLEAN enable);
 BOOLEAN IsFastForwardMode();
-INT32 GetFastForwardLoopCount();
-void SetFastForwardLoopCount(INT32 value);
 
 void SetNotifyFrequencyKey(INT32 value);
 void SetClockSpeedPercent(FLOAT value);
-
-BOOLEAN IsTimerActive();
-BOOLEAN IsJA2TimerThread();
 
 //Don't modify this value
 extern UINT32	guiBaseJA2Clock;
 extern UINT32	guiBaseJA2NoPauseClock;
 extern CUSTOMIZABLE_TIMER_CALLBACK gpCustomizableTimerCallback;
 
-typedef void (*TIMER_NOTIFY_CALLBACK) ( INT32 timer, PTR state );
-void AddTimerNotifyCallback( TIMER_NOTIFY_CALLBACK callback, PTR state );
-void RemoveTimerNotifyCallback( TIMER_NOTIFY_CALLBACK callback, PTR state );
-void ClearTimerNotifyCallbacks();
-
-BOOLEAN UpdateCounter(INT32 iTimer);
 void ResetCounter(INT32 iTimer);
 BOOLEAN CounterDone(INT32 iTimer);
 void ResetTimerCounter(INT32 &timer, INT32 value);
@@ -102,10 +90,8 @@ BOOLEAN TimeCounterDone(INT32 timer);
 void ZeroTimeCounter(INT32& timer);
 
 
-#define	UPDATECOUNTER( c )  UpdateCounter(c)
 #define	RESETCOUNTER( c )	ResetCounter(c)
 #define	COUNTERDONE( c )	CounterDone(c)
-#define	UPDATETIMECOUNTER( c )	UpdateTimeCounter(c)
 #define RESETTIMECOUNTER( c, d ) ResetTimerCounter(c, d)
 #define TIMECOUNTERDONE(c, d)	TimeCounterDone(c)
 #define	SYNCTIMECOUNTER( )

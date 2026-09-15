@@ -114,11 +114,8 @@ void				ShutdownStandardGamingPlatform(void);
 void				GetRuntimeSettings( );
 
 
-INT32 FAR PASCAL	SyncWindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LPARAM lParam);
-void				CreateStandardGamingPlatform(HWND hWindow);
 void				SafeSGPExit(void);
-static bool			CallGameLoop(bool wait);
-static CRITICAL_SECTION gcsGameLoop;
+static void			CallGameLoop();
 
 
 
@@ -154,16 +151,6 @@ CHAR8				gzCommandLine[100];		// Command line given
 
 CHAR8				gzErrorMsg[2048]="";
 BOOLEAN				gfIgnoreMessages=FALSE;
-
-
-INT32 FAR PASCAL SyncWindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LPARAM lParam)
-{
-	INT32 retval;
-	EnterCriticalSection(&gcsGameLoop);
-	retval = WindowProcedure(hWindow, Message, wParam, lParam);
-	LeaveCriticalSection(&gcsGameLoop);
-	return retval;
-}
 
 
 bool				s_bExportStrings		= false;
@@ -251,17 +238,7 @@ INT32 FAR PASCAL WindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LP
 		SetCursor( NULL);
 		return TRUE;
 
-	case WM_TIMER:
-#ifdef LUACONSOLE
-		PollConsole( );
-#endif
-		if (gfApplicationActive)
-		{
-			GameLoop();		
-		} 
-		break;
-
-	case WM_ACTIVATEAPP: 
+	case WM_ACTIVATEAPP:
 		switch(wParam)
 		{
 		case TRUE: // We are restarting DirectDraw
@@ -295,8 +272,7 @@ INT32 FAR PASCAL WindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LP
 		break;
 
 	case WM_CREATE:
-
-		CreateStandardGamingPlatform(hWindow);
+		InitializeJA2Clock();
 		break;
 
 	case WM_DESTROY: 
@@ -412,9 +388,6 @@ BOOLEAN InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow)
 		FastDebugMsg("FAILED : Initializing Input Manager");
 		return FALSE;
 	}
-
-	InitializeCriticalSection(&gcsGameLoop);
-
 
 	FastDebugMsg("Initializing Video Manager");
 	// Initialize DirectDraw (DirectX 2)
@@ -539,30 +512,12 @@ BOOLEAN InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow)
 	return TRUE;
 }
 
-static void TimerActivatedCallback(INT32 timer, PTR state)
-{
-	if (gfApplicationActive && gfProgramIsRunning)
-	{
-		if (CallGameLoop(false))
-			YieldProcessor();
-	}
-}
-
-void CreateStandardGamingPlatform(HWND hWindow)
-{
-	InitializeJA2Clock();
-	AddTimerNotifyCallback(TimerActivatedCallback, hWindow);
-}
-
-
 void ShutdownStandardGamingPlatform(void)
 {
 
 	//
 	// Shut down the different components of the SGP
 	//
-
-	ClearTimerNotifyCallbacks();
 
 	// TEST
 	SoundServiceStreams();
@@ -604,8 +559,6 @@ void ShutdownStandardGamingPlatform(void)
 	// Make sure we unregister the last remaining debug topic before shutting
 	// down the debugging layer
 	UnRegisterDebugTopic(TOPIC_SGP, "Standard Gaming Platform");
-
-	DeleteCriticalSection(&gcsGameLoop);
 
 	ShutdownDebugManager();
 
@@ -720,8 +673,6 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 
 	MSG				Message;
 	HWND			hPrevInstanceWindow;
-	UINT32			uiTimer = 0;
-
 	// Make sure the game works out of the box on Linux/macOS/Android (WINE)
 	if (wine_add_dll_overrides())
 	{
@@ -849,12 +800,25 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 		MAGIC();
 		while (gfProgramIsRunning)
 		{
-			if (!GetMessage(&Message, NULL, 0, 0))
+			if (UpdateJA2Clock() && gfApplicationActive)
 			{
-				// It's quitting time
-				return Message.wParam;
+			#ifdef LUACONSOLE
+				PollConsole();
+			#endif
+				CallGameLoop();
 			}
-			// Ok, now that we have the message, let's handle it
+
+			const DWORD waitResult = MsgWaitForMultipleObjectsEx(
+				0, NULL, GetJA2ClockNextWakeMilliseconds(),
+				QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+			if (waitResult == WAIT_FAILED)
+			{
+				ShutdownWithErrorBox("Waiting for the main-loop deadline failed.");
+				break;
+			}
+			if (waitResult != WAIT_OBJECT_0) continue;
+			if (!PeekMessage(&Message, NULL, 0, 0, PM_REMOVE)) continue;
+			if (Message.message == WM_QUIT) return Message.wParam;
 			TranslateMessage(&Message);
 			DispatchMessage(&Message);
 		}
@@ -1373,39 +1337,22 @@ static void SGPGameLoop()
 	}
 }
 
-static bool CallGameLoop(bool wait)
+static void CallGameLoop()
 {
 	static int numUnsuccessfulTries = 0;
-	if (wait)
-	{
-		EnterCriticalSection(&gcsGameLoop);
-	}
-	else
-	{
-		if ( !TryEnterCriticalSection(&gcsGameLoop) )
-			return false;
-	}
-
 	__try
 	{
-		__try
-		{
-			SGPGameLoop();
-			numUnsuccessfulTries = 0;
-		}
-		__except( SGPExceptionFilter(++numUnsuccessfulTries, GetExceptionInformation()) )
-		{
-		}
+		SGPGameLoop();
+		numUnsuccessfulTries = 0;
 	}
-	__finally
+	__except( SGPExceptionFilter(++numUnsuccessfulTries, GetExceptionInformation()) )
 	{
-		LeaveCriticalSection(&gcsGameLoop);
 	}
 
 	// Give it several attempts to recover from random exceptions and to display error screen
 	if (numUnsuccessfulTries > 5)
+	{
 		ShutdownWithErrorBox("Unhandled exception. Unable to recover.");
-
-	return true;
+	}
 }
 

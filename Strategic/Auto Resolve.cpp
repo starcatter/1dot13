@@ -63,6 +63,7 @@
 #include "MilitiaIndividual.h"			// added by Flugente
 #include "Rebel Command.h"
 #include "Reinforcement.h"
+#include "platform/Clock.h"
 
 //#define INVULNERABILITY
 
@@ -518,7 +519,7 @@ static void DoTransitionFromPreBattleInterfaceToAutoResolve()
 
 	uiTimeRange = 1000;
 	iPercentage = 0;
-	uiStartTime = GetJA2Clock();
+	uiStartTime = Platform::GetClockMilliseconds();
 
 	sStartLeft = 59 + xResOffset;
 	sStartTop = 69 + yResOffset;
@@ -541,7 +542,7 @@ static void DoTransitionFromPreBattleInterfaceToAutoResolve()
 	PlayJA2SampleFromFile( "SOUNDS\\Laptop power up (8-11).wav", RATE_11025, HIGHVOLUME, 1, MIDDLEPAN );
 	while( iPercentage < 100	)
 	{
-		uiCurrTime = GetJA2Clock();
+		uiCurrTime = Platform::GetClockMilliseconds();
 		iPercentage = (uiCurrTime-uiStartTime) * 100 / uiTimeRange;
 		iPercentage = min( iPercentage, 100 );
 
@@ -5307,13 +5308,6 @@ static void TargetHitCallback( SOLDIERCELL *pTarget, INT32 index )
 	pTarget->uiFlags |= CELL_HITBYATTACKER | CELL_DIRTY;
 }
 
-static void Delay( UINT32 uiMilliseconds )
-{
-	INT32 iTime;
-	iTime = GetJA2Clock();
-	while( GetJA2Clock() < iTime + uiMilliseconds );
-}
-
 BOOLEAN IsBattleOver()
 {
 	INT32 i;
@@ -5644,6 +5638,7 @@ void ProcessBattleFrame()
 	static INT32 iEnemiesLeft = 0;
 	BOOLEAN found = FALSE;
 	INT32 iTime, iAttacksThisFrame;
+	const UINT32 processingStartTime = Platform::GetClockMilliseconds();
 
 	pAttacker = NULL;
 	iAttacksThisFrame = 0;
@@ -5698,7 +5693,7 @@ void ProcessBattleFrame()
 		while( --iTotal )
 		{
 			INT32 cnt;
-			if( iTimeSlice != 0x7fffffff && GetJA2Clock() > gpAR->uiCurrTime+17 ||
+			if( iTimeSlice != 0x7fffffff && Platform::GetClockMilliseconds() - processingStartTime > 17 ||
 				!gpAR->fInstantFinish && iAttacksThisFrame > (gpAR->ubMercs+gpAR->ubCivs+gpAR->ubEnemies)/4 )
 			{ //We have spent too much time in here.	In order to maintain 60FPS, we will
 				//leave now, which will allow for updating of the graphics (and mouse cursor),

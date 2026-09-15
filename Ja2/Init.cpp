@@ -1693,8 +1693,6 @@ void ShutdownJA2(void)
 
 	DeleteTileCache( );
 
-	ShutdownJA2Clock( );
-
 	ShutdownFonts();
 
 	ShutdownJA2Sound( );

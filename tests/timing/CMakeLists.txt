@@ -24,3 +24,22 @@ endif()
 find_package(Threads REQUIRED)
 target_link_libraries(clock_tests PRIVATE Threads::Threads)
 add_test(NAME clock_tests COMMAND clock_tests)
+
+add_executable(scheduler_tests
+	scheduler_tests.cpp
+	../../sgp/timing/MainLoopScheduler.cpp
+)
+target_include_directories(scheduler_tests PRIVATE ../../sgp)
+set_target_properties(scheduler_tests PROPERTIES
+	CXX_STANDARD 17
+	CXX_STANDARD_REQUIRED YES
+	CXX_EXTENSIONS NO
+)
+
+if(MSVC)
+	target_compile_options(scheduler_tests PRIVATE /W4 /WX)
+else()
+	target_compile_options(scheduler_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+
+add_test(NAME scheduler_tests COMMAND scheduler_tests)

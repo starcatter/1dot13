@@ -10,15 +10,15 @@ This is an important architectural milestone, but it is not yet a native Linux p
 
 In roadmap terms, the update moves the project from "stabilize and reproduce the legacy Windows program" into "extract replaceable platform backends." File and resource access is now sufficiently isolated that subsequent work does not need to solve storage portability at the same time as windowing, rendering, input, or audio. That substantially reduces the risk and scope of each later migration.
 
-## Platform-Core Progress: Monotonic Timing
+## Platform-Core Progress: Monotonic Timing and Scheduling
 
-The engine clock-source migration is now implemented as the first platform-core extraction. A project-owned C++17 monotonic clock wraps `std::chrono::steady_clock` and supplies process-relative microsecond, 64-bit millisecond, and legacy wrapping 32-bit millisecond readings. Runtime users of `GetTickCount`, QueryPerformanceCounter, the window `SetTimer` clock manager, and the dormant WinMM callback-timer path now use that clock. The fixed-step synthetic JA2 clocks, pause behavior, configurable clock speed, fast-forward cadence, and notification behavior remain engine policy rather than properties of the host clock.
+The engine clock-source migration is now implemented as the first platform-core extraction. A project-owned C++17 monotonic clock wraps `std::chrono::steady_clock` and supplies process-relative microsecond, 64-bit millisecond, and legacy wrapping 32-bit millisecond readings. Former runtime uses of `GetTickCount`, QueryPerformanceCounter, window timers, and the dormant WinMM callback-timer path have been replaced or removed. The fixed-step synthetic JA2 clocks, pause behavior, configurable clock speed, fast-forward cadence, and notification behavior remain engine policy rather than properties of the host clock.
 
-Native timing tests cover monotonicity, unit coherence, elapsed-time accuracy, 32-bit deadline wraparound, and the legacy clock-manager/countdown contract. The same tests build for Windows x86 and compare the replacement directly with QueryPerformanceCounter and GetTickCount64. The Windows executable also builds with the replacement wired in.
+Native timing tests cover monotonicity, unit coherence, elapsed-time accuracy, 32-bit deadline wraparound, fixed-step scheduling, delayed catch-up, fast-forward behavior, and the legacy countdown contract. The same tests build and run for Windows x86; the clock test compares the replacement directly with QueryPerformanceCounter and GetTickCount64. The Windows executable also builds with the replacement wired in.
 
-Thread creation, events, waits, and critical sections in `Utils/Timer Control.cpp` deliberately remain for the next platform-core step. They are the delivery mechanism for timer ticks, not a clock source. Windows' short-sleep resolution hint is isolated behind a platform service so the current executable retains its pacing while the thread/wait loop is replaced.
+Tick delivery is now single-threaded. A portable `MainLoopScheduler` calculates fixed ticks, periodic game-loop notifications, delayed catch-up, and the next host wake deadline. `Utils/Timer Control.cpp` advances the legacy synthetic clocks and countdowns in bulk while preserving pause, configurable clock speed, fast-forward, and exact-boundary countdown behavior. The Windows host waits for either queued messages or that portable deadline and runs the game loop on its main thread.
 
-Stracciatella provides a useful independent design check. Its current timer control also uses `std::chrono::steady_clock`; after first replacing decrementing counters with steady-clock deadlines, it removed its SDL timer as inaccurate overhead and advances the JA2 clock from the main loop. That validates the selected clock source and argues against mechanically translating the current Win32 timer and notify threads to `std::thread`. The next synchronization step should instead move tick delivery onto a portable main-loop scheduler, then delete those threads, events, callback lists, game-loop critical section, and the temporary Windows sleep-resolution hint together. This branch must retain the 1.13-specific fixed-step, clock-speed, fast-forward, pause, and notification semantics while doing so; Stracciatella's simpler elapsed-millisecond policy is not a drop-in replacement for them.
+The two Win32 timer threads, their events and shutdown waits, timer callback list and lock, game-loop critical section, and temporary Windows sleep-resolution hint have therefore been deleted. Stracciatella provided a useful independent design check: it likewise removed timer-thread delivery and advances its clock from the main loop. The 1.13 implementation remains deliberately distinct because it retains the branch's fixed-step, clock-speed, fast-forward, pause, and timer-notification semantics rather than adopting Stracciatella's simpler elapsed-millisecond policy.
 
 ## Position Against the Portable-I/O Plan
 
@@ -83,7 +83,7 @@ These changes make a future x64 Windows target more plausible, although they do 
 The next practical step is to inventory and extract the non-rendering platform services required before the game loop can compile natively. Expected boundaries include:
 
 - Process entry, executable/base/user-directory discovery, command-line handling, restart, and single-instance behavior.
-- Monotonic clocks, wall-clock time, timers, sleeping, and event-loop scheduling.
+- Wall-clock services, sleeping, and the remaining host-specific event-loop wait/pump.
 - Window creation, message/event pumping, cursor and focus state, keyboard, mouse, and text input.
 - Dynamic-library loading and the narrow crash-reporting facilities that must remain platform-specific.
 - Threading and synchronization calls that still expose Windows types or semantics.
@@ -250,13 +250,13 @@ The next header cleanup should split common engine declarations from platform/wi
 
 ### Application Host and Event Loop
 
-`sgp/sgp.cpp` is still the complete Windows application host:
+`sgp/sgp.cpp` is still the complete Windows application host, although timer delivery has been separated from it:
 
 - `sgp/sgp.cpp:705` defines `WinMain`.
-- `sgp/sgp.cpp:176-369` handles focus, activation, input, rendering restoration, timers, shutdown, and other window messages in one WndProc.
-- `sgp/sgp.cpp:849-864` runs a blocking `GetMessage` loop.
-- `sgp/sgp.cpp:254-261` triggers game execution through `WM_TIMER`.
-- `sgp/sgp.cpp:542-559` also registers timer-thread notifications.
+- `sgp/sgp.cpp:176-369` handles focus, activation, input, rendering restoration, shutdown, and other window messages in one WndProc.
+- The main loop waits with `MsgWaitForMultipleObjectsEx` for either a portable scheduler deadline or queued Windows messages.
+- Game ticks and `SGPGameLoop` now run on the main thread rather than from a timer notification thread.
+- `WindowProcedure` still owns Windows focus, activation, input, restoration, and shutdown messages.
 
 This coupling means SDL cannot be introduced cleanly by replacing only DirectDraw. A neutral application host should own initialization, event polling, focus transitions, game ticks, quit requests, and exactly-once teardown. Win32 and SDL should implement that contract separately.
 
@@ -278,17 +278,17 @@ These are narrow services and should not delay early rendering experiments. Nati
 
 ### Timing, Threads, and Synchronization
 
-The timer layer has a reusable API but a deeply Windows-specific implementation:
+The clock and scheduling layer is now portable:
 
 - `sgp/timer.h:20-24` is already platform-neutral.
-- `sgp/timer.cpp:13-41` uses `GetTickCount`, `SetTimer`, and `KillTimer`.
-- `Utils/Timer Control.cpp:22-50` stores QueryPerformanceCounter state.
-- `Utils/Timer Control.cpp:322-444` creates Win32 threads/events and uses WinMM timing.
-- `Utils/Timer Control.cpp:456-483` performs timed shutdown waits and closes handles without a conventional RAII join model.
+- `sgp/platform/Clock.cpp` wraps `std::chrono::steady_clock` and supplies the legacy clock views.
+- `sgp/timing/MainLoopScheduler.cpp` owns fixed-tick and notification deadlines without host APIs.
+- `Utils/Timer Control.cpp` retains only engine timing policy and legacy counter advancement.
+- `sgp/sgp.cpp` is the remaining Windows adapter for waiting on scheduler deadlines and pumping messages.
 
-Three important critical sections cover the game loop (`sgp/sgp.cpp:121`), timer notifications (`Utils/Timer Control.cpp:150`), and input queue (`sgp/input.cpp:97`). `Platform::Sleep` already has a neutral header (`sgp/platform/Sleep.h:1-8`), but only the Windows implementation is selected in `sgp/CMakeLists.txt:45-47`.
+The game-loop and timer-notification critical sections are gone because all clock and game-loop work now runs on the host thread. The input queue still has its own synchronization (`sgp/input.cpp`), and `Platform::Sleep` still needs a non-Windows implementation before native game code can use it.
 
-A portable timing phase should preserve observable tick cadence and the legacy 32-bit millisecond behavior while moving implementation to `steady_clock`, RAII synchronization, events/condition variables, and joinable threads. Timing changes affect AI, input repetition, sound callbacks, and animation, so they require trace-based tests rather than only successful compilation.
+Deterministic tests now cover scheduler cadence, delayed catch-up, fast-forward wake behavior, and the legacy countdown edge cases in addition to the clock-source tests. Playtesting remains important because timing affects AI, input repetition, sound callbacks, and animation, but no platform thread abstraction is required for timer delivery.
 
 ### Text and Encoding
 
@@ -309,7 +309,6 @@ Crash handling is intentionally platform-specific but currently leaks Windows an
 
 - Vectored exception setup occurs around `sgp/sgp.cpp:680-708`.
 - Main-loop and shutdown recovery use MSVC SEH at `sgp/sgp.cpp:1246-1257` and `1397-1415`.
-- Timer threads use SEH in `Utils/Timer Control.cpp:322-353` and `724-736`.
 - `sgp/crash_report.h:7-30` exposes `_EXCEPTION_POINTERS`.
 - `sgp/crash_report.cpp:119-229` assumes 32-bit registers/addresses and walks Windows process internals.
 
@@ -492,7 +491,7 @@ Exit gate: a meaningful shared source subset compiles under a native GCC/Clang t
 Deliverables:
 
 - Application host and event-loop interface with Win32 and SDL/Linux implementations.
-- Monotonic time, scheduling, sleep, synchronization, and thread lifecycle backends.
+- Host event-loop, sleep, synchronization, and any independently required thread lifecycle backends.
 - Linux executable/base/user path policy.
 - POSIX durable save operations and Linux timestamps.
 - Platform diagnostics, dialogs/no-op policy, dynamic-library handling, and crash boundaries.
@@ -589,7 +588,7 @@ Then proceed through these independently verifiable seams:
 1. Condition CMake and establish a small native shared-core target.
 2. Extract process services: command-line handling, restart/single-instance behavior, dialogs, and telemetry.
 3. Put an interface in front of FMOD while retaining the existing Windows implementation.
-4. Extract monotonic time, timers, synchronization, and thread lifecycle, validating behavior with traces.
+4. Completed: extracted monotonic time and timer scheduling, then removed the timer threads and their synchronization; continue characterizing the independently used input/threading paths.
 5. Remove DirectDraw and Win32 presentation/input types from platform-neutral headers.
 6. Introduce the SDL window, input translation, and framebuffer presentation only after those dependencies are isolated.
 

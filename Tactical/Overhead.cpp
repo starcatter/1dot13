@@ -105,6 +105,7 @@
 #include "Vehicles.h"
 #include "XML.h"
 #include "GameInitOptionsScreen.h"
+#include "platform/Clock.h"
 
 
 #ifdef JA2UB
@@ -937,6 +938,7 @@ BOOLEAN ExecuteOverhead( )
     }
     // Diagnostic Stuff
     iTimerVal = GetJA2Clock();
+    const UINT32 processingStartTime = Platform::GetClockMilliseconds();
     giTimerDiag = iTimerVal - iTimerTest;
     iTimerTest = iTimerVal;
 
@@ -1817,7 +1819,7 @@ BOOLEAN ExecuteOverhead( )
                 HandleSoldierAI( pSoldier );
                 if ( !((gTacticalStatus.uiFlags & TURNBASED) && (gTacticalStatus.uiFlags & INCOMBAT)) )
                 {
-                    if (GetJA2Clock() - iTimerVal > RT_AI_TIMESLICE)
+                    if (Platform::GetClockMilliseconds() - processingStartTime > RT_AI_TIMESLICE)
                     {
                         // don't do any more AI this time!
                         fHandleAI = FALSE;

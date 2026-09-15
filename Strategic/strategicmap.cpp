@@ -65,6 +65,7 @@
 #include "Militia Control.h"
 #include "GameSettings.h"
 #include "Dialogue Control.h"
+#include "platform/Clock.h"
 #include "Town Militia.h"
 #include "sysutil.h"
 #include "Sound Control.h"
@@ -1532,13 +1533,13 @@ void BeginLoadScreen( void )
 			uiTimeRange = 2000;
 			iPercentage = 0;
 			iLastShadePercentage = 0;
-			uiStartTime = GetJA2Clock( );
+			uiStartTime = Platform::GetClockMilliseconds();
 
 			BlitBufferToBuffer( FRAME_BUFFER, guiSAVEBUFFER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 			PlayJA2SampleFromFile( "SOUNDS\\Final Psionic Blast 01 (16-44).wav", RATE_11025, HIGHVOLUME, 1, MIDDLEPAN );
 			while ( iPercentage < 100 )
 			{
-				uiCurrTime = GetJA2Clock( );
+				uiCurrTime = Platform::GetClockMilliseconds();
 				iPercentage = (uiCurrTime - uiStartTime) * 100 / uiTimeRange;
 				iPercentage = min( iPercentage, 100 );
 

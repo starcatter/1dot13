@@ -36,6 +36,7 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/STCI.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/stringicmp.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/timer.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/timing/MainLoopScheduler.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/video.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/vobject.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/vobject_blitters.cpp"
@@ -46,12 +47,10 @@ set(sgpSrc
 if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
 	list(APPEND sgpSrc
 		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/WindowsDurableFileOperations.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/TimerResolution.cpp")
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp")
 elseif(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
 	list(APPEND sgpSrc
-		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/PosixDurableFileOperations.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/TimerResolution.cpp")
+		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/PosixDurableFileOperations.cpp")
 endif()
 
 set(sgpSrc ${sgpSrc} PARENT_SCOPE)

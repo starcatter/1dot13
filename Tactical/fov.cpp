@@ -26,6 +26,7 @@
 
 #include "connect.h"
 #include "GameSettings.h"
+#include "platform/Clock.h"
 
 /* view directions */
 #define DLEFT			0
@@ -501,7 +502,7 @@ void RevealRoofsAndItems(SOLDIERTYPE *pSoldier, UINT32 itemsToo, BOOLEAN fShowLo
 #ifdef _DEBUG
 			if ( _KeyDown( NUM_LOCK ) )
 			{
-				int cnt = GetJA2Clock( );
+				const UINT32 startTime = Platform::GetClockMilliseconds();
 
 				gubFOVDebugInfoInfo[ marker ] = (UINT8)markercnt;
 
@@ -523,7 +524,7 @@ void RevealRoofsAndItems(SOLDIERTYPE *pSoldier, UINT32 itemsToo, BOOLEAN fShowLo
 				do
 				{
 
-				} while( ( GetJA2Clock( ) - cnt ) < 250 );
+				} while (Platform::GetClockMilliseconds() - startTime < 250);
 
 			}
 #endif

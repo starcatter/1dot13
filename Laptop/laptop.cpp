@@ -68,6 +68,7 @@
 	#include "Cursor Control.h"
 	#include "Quests.h"
 	#include "Multi Language Graphic Utils.h"
+	#include "platform/Clock.h"
 	#include "BrokenLink.h"
 	#include "BobbyRShipments.h"
 	#include "Dialogue Control.h"
@@ -2393,7 +2394,7 @@ UINT32 LaptopScreenHandle()
 
 			uiTimeRange = 1000;
 			iPercentage = iRealPercentage = 0;
-			uiStartTime = GetJA2Clock();
+			uiStartTime = Platform::GetClockMilliseconds();
 
 			BlitBufferToBuffer( FRAME_BUFFER, guiSAVEBUFFER, iScreenWidthOffset, iScreenHeightOffset,
 				640, 480 );
@@ -2406,7 +2407,7 @@ UINT32 LaptopScreenHandle()
 				BlitBufferToBuffer( guiEXTRABUFFER, FRAME_BUFFER, iScreenWidthOffset, iScreenHeightOffset,
 					SCREEN_WIDTH - iScreenWidthOffset, SCREEN_HEIGHT - iScreenHeightOffset );
 
-				uiCurrTime = GetJA2Clock();
+				uiCurrTime = Platform::GetClockMilliseconds();
 				iPercentage = (uiCurrTime-uiStartTime) * 100 / uiTimeRange;
 				iPercentage = min( iPercentage, 100 );
 
@@ -3171,7 +3172,7 @@ BOOLEAN LeaveLapTopScreen( void )
 
 				uiTimeRange = 1000;
 				iPercentage = iRealPercentage = 100;
-				uiStartTime = GetJA2Clock();
+				uiStartTime = Platform::GetClockMilliseconds();
 
 				BlitBufferToBuffer( FRAME_BUFFER, guiSAVEBUFFER, iScreenWidthOffset, iScreenHeightOffset,
 					640, 480 );
@@ -3183,7 +3184,7 @@ BOOLEAN LeaveLapTopScreen( void )
 					BlitBufferToBuffer( guiEXTRABUFFER, FRAME_BUFFER, iScreenWidthOffset, iScreenHeightOffset,
 						SCREEN_WIDTH - iScreenWidthOffset, SCREEN_HEIGHT - iScreenHeightOffset );
 
-					uiCurrTime = GetJA2Clock();
+					uiCurrTime = Platform::GetClockMilliseconds();
 					iPercentage = (uiCurrTime-uiStartTime) * 100 / uiTimeRange;
 					iPercentage = min( iPercentage, 100 );
 					iPercentage = 100 - iPercentage;

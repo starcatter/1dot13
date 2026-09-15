@@ -44,6 +44,7 @@
 	#include "MilitiaSquads.h"				// added by Flugente
 	#include "SkillCheck.h"					// added by Flugente
 	#include "Strategic Transport Groups.h"
+	#include "platform/Clock.h"
 	
 #ifdef JA2UB
 #include "ub_config.h"
@@ -1120,7 +1121,7 @@ void DoTransitionFromMapscreenToPreBattleInterface()
 
 	uiTimeRange = 1000;
 	iPercentage = 0;
-	uiStartTime = GetJA2Clock();
+	uiStartTime = Platform::GetClockMilliseconds();
 
 	GetScreenXYFromMapXY( gubPBSectorX, gubPBSectorY, &sStartLeft, &sStartTop );
 	sStartLeft += UI_MAP.GridSize.iX / 2;
@@ -1167,7 +1168,7 @@ void DoTransitionFromMapscreenToPreBattleInterface()
 
 	while( iPercentage < 100	)
 	{
-		uiCurrTime = GetJA2Clock();
+		uiCurrTime = Platform::GetClockMilliseconds();
 		iPercentage = (uiCurrTime-uiStartTime) * 100 / uiTimeRange;
 		iPercentage = min( iPercentage, 100 );
 
