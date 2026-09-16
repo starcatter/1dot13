@@ -12,6 +12,7 @@
 LPDIRECTDRAWSURFACE2 GetVideoSurfaceDDSurface( HVSURFACE hVSurface );
 LPDIRECTDRAWSURFACE	GetVideoSurfaceDDSurfaceOne( HVSURFACE hVSurface );
 LPDIRECTDRAWPALETTE	GetVideoSurfaceDDPalette( HVSURFACE hVSurface );
+void NotifyVideoSurfaceDirectDrawModified( HVSURFACE hVSurface );
 
 HVSURFACE CreateVideoSurfaceFromDDSurface( LPDIRECTDRAWSURFACE2 lpDDSurface );
 

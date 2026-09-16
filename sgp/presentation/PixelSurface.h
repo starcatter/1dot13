@@ -42,6 +42,8 @@ public:
 	MutablePixelBuffer lock() noexcept;
 	void unlock() noexcept {}
 	ConstPixelBuffer pixels() const noexcept;
+	bool replacePixelsFrom(const ConstPixelBuffer& source) noexcept;
+	bool copyPixelsTo(const MutablePixelBuffer& destination) const noexcept;
 
 	void setPalette(const SGPPaletteEntry* entries, std::size_t count);
 	const SGPPaletteEntry* palette() const noexcept;

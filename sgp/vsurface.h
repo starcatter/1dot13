@@ -3,7 +3,9 @@
 
 #include "types.h"
 #include "himage.h"
+#include "presentation/PixelSurface.h"
 #include "vobject.h"
+#include <memory>
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +42,7 @@
 // Effects structure for specialized blitting
 //
 
-typedef struct 
+typedef struct
 {
 	COLORVAL ColorFill;		// Used for fill effect
 	SGPRect	SrcRect;			// Given SRC subrect instead of srcregion
@@ -89,7 +91,7 @@ typedef struct
 // This structure is a video Surface. Contains a HLIST of regions
 //
 
-typedef struct
+typedef struct SGPVSurface
 {
 	UINT16					usHeight;							// Height of Video Surface
 	UINT16					usWidth;							// Width of Video Surface
@@ -105,6 +107,9 @@ typedef struct
 	UINT16					*p16BPPPalette;				// A 16BPP palette used for 8->16 blits
 	COLORVAL				TransparentColor;			// Defaults to 0,0,0
 	PTR							pClipper;							// A void pointer encapsolated as a clipper Surface
+	std::unique_ptr<ja2::presentation::PixelSurface> pixelSurface;
+	bool pixelSurfaceDirty;						// PixelSurface is newer than compatibility mirror
+	bool directDrawSurfaceDirty;				// compatibility mirror is newer than PixelSurface
 	std::vector<VSURFACE_REGION> RegionList; // A List of regions within the video Surface
 		
 } SGPVSurface, *HVSURFACE;

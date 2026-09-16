@@ -452,6 +452,7 @@ void PrintWinFont( UINT32 uiDestBuf, INT32 iFont, INT32 x, INT32 y, STR16 pFontS
 	TextOutW( hdc, x, y, string, len );
 
 	IDirectDrawSurface2_ReleaseDC( pDDSurface, hdc );
+	NotifyVideoSurfaceDirectDrawModified(hVSurface);
 
 }
 

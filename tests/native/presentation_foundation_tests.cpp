@@ -2,6 +2,7 @@
 #include "presentation/PixelSurface.h"
 #include "presentation/Presenter.h"
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <cstring>
@@ -115,6 +116,54 @@ void testPixelStorageAndPalette()
 	indexed.setPalette(palette.data(), palette.size());
 	assert(indexed.palette() != nullptr);
 	assert(indexed.palette()[35].peGreen == 34);
+}
+
+void testExternalPixelTransferWithDifferentPitch()
+{
+	constexpr UINT32 sourcePitch = 10;
+	constexpr UINT32 destinationPitch = 12;
+	std::array<BYTE, sourcePitch * 2> source{};
+	const std::array<UINT16, 6> expected{{1, 2, 3, 4, 5, 6}};
+	for (std::size_t index = 0; index < expected.size(); ++index)
+	{
+		const std::size_t y = index / 3;
+		const std::size_t x = index % 3;
+		std::memcpy(source.data() + y * sourcePitch + x * 2,
+			&expected[index], sizeof(UINT16));
+	}
+	std::fill(source.begin() + 6, source.begin() + sourcePitch, 0xee);
+	std::fill(source.begin() + sourcePitch + 6, source.end(), 0xee);
+
+	PixelSurface surface(3, 2, PixelFormat::rgb565, 8);
+	assert(surface.replacePixelsFrom(
+		{source.data(), sourcePitch, 3, 2, PixelFormat::rgb565}));
+	assertVisibleEquals(surface, expected);
+
+	std::array<BYTE, destinationPitch * 2> destination{};
+	destination.fill(0xdd);
+	assert(surface.copyPixelsTo(
+		{destination.data(), destinationPitch, 3, 2, PixelFormat::rgb565}));
+	for (std::size_t index = 0; index < expected.size(); ++index)
+	{
+		UINT16 value = 0;
+		const std::size_t y = index / 3;
+		const std::size_t x = index % 3;
+		std::memcpy(&value, destination.data() + y * destinationPitch + x * 2,
+			sizeof(value));
+		assert(value == expected[index]);
+	}
+	for (std::size_t y = 0; y < 2; ++y)
+	{
+		for (std::size_t byte = 6; byte < destinationPitch; ++byte)
+		{
+			assert(destination[y * destinationPitch + byte] == 0xdd);
+		}
+	}
+
+	assert(!surface.replacePixelsFrom(
+		{source.data(), 5, 3, 2, PixelFormat::rgb565}));
+	assert(!surface.copyPixelsTo(
+		{destination.data(), destinationPitch, 3, 2, PixelFormat::indexed8}));
 }
 
 void testBlits()
@@ -292,6 +341,7 @@ int main()
 {
 	testDirtyRegions();
 	testPixelStorageAndPalette();
+	testExternalPixelTransferWithDifferentPitch();
 	testBlits();
 	testNearestStretch();
 	testGoldenFramebufferCompositionAndBackupRestore();

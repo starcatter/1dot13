@@ -52,12 +52,30 @@ the replacement is developed.
 - Windows GDI WinFont rendering remains available only through the Windows
   backend. Portable builds deliberately select JA2 bitmap fonts.
 
+## Conversion status
+
+Explicit system-memory `SGPVSurface` objects now use `PixelSurface` as their
+canonical pixel storage. Lock/unlock, fills, same-format copies, color keys,
+palettes, and nearest-neighbor stretch operate on that storage. Their existing
+DirectDraw allocation is retained temporarily as a lazy compatibility mirror:
+portable-to-portable operations never cross it, while mixed blits synchronize
+only the participant that changed. Windows WinFont similarly synchronizes before
+acquiring a GDI context and marks the mirror authoritative after drawing.
+
+This makes a useful generic-surface slice portable without breaking the many
+copies between generic and reserved surfaces. Default/video-memory generic
+surfaces and the reserved primary/back/frame/cursor surfaces remain DirectDraw
+owned. The next slice should convert the reserved logical frame/cursor buffers,
+then make final presentation the only DirectDraw consumer. The compatibility
+mirror can be deleted after WinFont and all mixed paths have portable owners.
+
 ## Replacement sequence
 
 1. Give every generic and reserved logical surface one project-owned storage
    representation; preserve existing numeric handles and lock/pitch behavior.
-2. Route fills and cross-surface copies through it. Convert generic and reserved
-   surfaces together because today they blit between each other.
+   Explicit system-memory generic surfaces are complete behind a lazy mirror.
+2. Route fills and cross-surface copies through it. The lazy mirror keeps mixed
+   generic/reserved copies valid while the reserved surfaces are converted.
 3. Keep the existing software blitters, including `vobject_blitters.cpp`, on
    their raw pixel-buffer interface.
 4. Make cursor save/compose/restore operate on the project-owned back buffer.

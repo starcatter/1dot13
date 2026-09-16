@@ -56,6 +56,41 @@ ConstPixelBuffer PixelSurface::pixels() const noexcept
 	return {pixels_.data(), pitchBytes_, width_, height_, format_};
 }
 
+bool PixelSurface::replacePixelsFrom(const ConstPixelBuffer& source) noexcept
+{
+	const std::size_t rowBytes = static_cast<std::size_t>(width_) * bytesPerPixel();
+	if (source.pixels == nullptr || source.width != width_ ||
+		source.height != height_ || source.format != format_ ||
+		source.pitchBytes < rowBytes)
+	{
+		return false;
+	}
+	for (UINT16 y = 0; y < height_; ++y)
+	{
+		std::memcpy(pixels_.data() + static_cast<std::size_t>(y) * pitchBytes_,
+			source.pixels + static_cast<std::size_t>(y) * source.pitchBytes, rowBytes);
+	}
+	return true;
+}
+
+bool PixelSurface::copyPixelsTo(const MutablePixelBuffer& destination) const noexcept
+{
+	const std::size_t rowBytes = static_cast<std::size_t>(width_) * bytesPerPixel();
+	if (destination.pixels == nullptr || destination.width != width_ ||
+		destination.height != height_ || destination.format != format_ ||
+		destination.pitchBytes < rowBytes)
+	{
+		return false;
+	}
+	for (UINT16 y = 0; y < height_; ++y)
+	{
+		std::memcpy(destination.pixels +
+				static_cast<std::size_t>(y) * destination.pitchBytes,
+			pixels_.data() + static_cast<std::size_t>(y) * pitchBytes_, rowBytes);
+	}
+	return true;
+}
+
 void PixelSurface::setPalette(
 	const SGPPaletteEntry* entries, std::size_t count)
 {

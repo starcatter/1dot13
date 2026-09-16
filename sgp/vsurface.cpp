@@ -104,6 +104,80 @@ HVSURFACE		ghBackBuffer = NULL;
 HVSURFACE   ghFrameBuffer = NULL;
 HVSURFACE   ghMouseBuffer = NULL;
 
+namespace
+{
+ja2::presentation::PixelFormat PixelFormatForSurface(const HVSURFACE surface)
+{
+	return surface->ubBitDepth == 8
+		? ja2::presentation::PixelFormat::indexed8
+		: ja2::presentation::PixelFormat::rgb565;
+}
+
+BOOLEAN SyncPixelSurfaceToDirectDraw(HVSURFACE surface)
+{
+	if (!surface->pixelSurface || !surface->pixelSurfaceDirty)
+	{
+		return TRUE;
+	}
+
+	DDSURFACEDESC description;
+	DDLockSurface(static_cast<LPDIRECTDRAWSURFACE2>(surface->pSurfaceData),
+		NULL, &description, 0, NULL);
+	const bool copied = description.lPitch > 0 &&
+		surface->pixelSurface->copyPixelsTo({
+			static_cast<BYTE*>(description.lpSurface),
+			static_cast<UINT32>(description.lPitch), surface->usWidth,
+			surface->usHeight, PixelFormatForSurface(surface)});
+	DDUnlockSurface(static_cast<LPDIRECTDRAWSURFACE2>(surface->pSurfaceData), NULL);
+	if (copied)
+	{
+		surface->pixelSurfaceDirty = false;
+	}
+	return copied ? TRUE : FALSE;
+}
+
+BOOLEAN SyncPixelSurfaceFromDirectDraw(HVSURFACE surface)
+{
+	if (!surface->pixelSurface || !surface->directDrawSurfaceDirty)
+	{
+		return TRUE;
+	}
+
+	DDSURFACEDESC description;
+	DDLockSurface(static_cast<LPDIRECTDRAWSURFACE2>(surface->pSurfaceData),
+		NULL, &description, 0, NULL);
+	const bool copied = description.lPitch > 0 &&
+		surface->pixelSurface->replacePixelsFrom({
+			static_cast<const BYTE*>(description.lpSurface),
+			static_cast<UINT32>(description.lPitch), surface->usWidth,
+			surface->usHeight, PixelFormatForSurface(surface)});
+	DDUnlockSurface(static_cast<LPDIRECTDRAWSURFACE2>(surface->pSurfaceData), NULL);
+	if (copied)
+	{
+		surface->directDrawSurfaceDirty = false;
+	}
+	return copied ? TRUE : FALSE;
+}
+
+void MarkPixelSurfaceModified(HVSURFACE surface)
+{
+	if (surface->pixelSurface)
+	{
+		surface->pixelSurfaceDirty = true;
+		surface->directDrawSurfaceDirty = false;
+	}
+}
+
+void MarkDirectDrawSurfaceModified(HVSURFACE surface)
+{
+	if (surface->pixelSurface)
+	{
+		surface->directDrawSurfaceDirty = true;
+		surface->pixelSurfaceDirty = false;
+	}
+}
+}
+
 #include <map>
 #include <vector>
 
@@ -1213,6 +1287,18 @@ HVSURFACE CreateVideoSurface( VSURFACE_DESC *VSurfaceDesc )
 		hVSurface->fFlags |= VSURFACE_VIDEO_MEM_USAGE;
 	}
 
+	// Explicit system-memory surfaces are now backed canonically by portable
+	// PixelSurface storage. DirectDraw remains a lazy compatibility mirror while
+	// reserved presentation surfaces and mixed blits are being migrated.
+	if (VSurfaceDesc->fCreateFlags & VSURFACE_SYSTEM_MEM_USAGE)
+	{
+		hVSurface->pixelSurface =
+			std::make_unique<ja2::presentation::PixelSurface>(
+				hVSurface->usWidth, hVSurface->usHeight,
+				PixelFormatForSurface(hVSurface), 4);
+		hVSurface->pixelSurfaceDirty = true;
+	}
+
 	//
 	// If in video memory, create backup surface
 	//
@@ -1349,6 +1435,18 @@ BOOLEAN RestoreVideoSurface( HVSURFACE hVSurface )
 // The time between Locking and unlocking must be minimal
 BYTE *LockVideoSurfaceBuffer( HVSURFACE hVSurface, UINT32 *pPitch )
 {
+	if (hVSurface != NULL && hVSurface->pixelSurface)
+	{
+		if (!SyncPixelSurfaceFromDirectDraw(hVSurface))
+		{
+			return NULL;
+		}
+		const ja2::presentation::MutablePixelBuffer pixels =
+			hVSurface->pixelSurface->lock();
+		*pPitch = pixels.pitchBytes;
+		return pixels.pixels;
+	}
+
 	DDSURFACEDESC SurfaceDescription;
 
 	// Assertions
@@ -1372,6 +1470,12 @@ BYTE *LockVideoSurfaceBuffer( HVSURFACE hVSurface, UINT32 *pPitch )
 void UnLockVideoSurfaceBuffer( HVSURFACE hVSurface )
 {
 	Assert( hVSurface != NULL );
+	if (hVSurface->pixelSurface)
+	{
+		hVSurface->pixelSurface->unlock();
+		MarkPixelSurfaceModified(hVSurface);
+		return;
+	}
 
 
 	DDUnlockSurface( (LPDIRECTDRAWSURFACE2)hVSurface->pSurfaceData, NULL );
@@ -1479,6 +1583,10 @@ BOOLEAN SetVideoSurfacePalette( HVSURFACE hVSurface, SGPPaletteEntry *pSrcPalett
 {
 
 	Assert( hVSurface != NULL );
+	if (hVSurface->pixelSurface && hVSurface->ubBitDepth == 8)
+	{
+		hVSurface->pixelSurface->setPalette(pSrcPalette, 256);
+	}
 
 	// Create palette object if not already done so
 	if ( hVSurface->pPalette == NULL )
@@ -1522,6 +1630,12 @@ BOOLEAN SetVideoSurfaceTransparencyColor( HVSURFACE hVSurface, COLORVAL TransCol
 
 	//Set trans color into Video Surface
 	hVSurface->TransparentColor = TransColor;
+	if (hVSurface->pixelSurface)
+	{
+		hVSurface->pixelSurface->setColorKey(hVSurface->ubBitDepth == 8
+			? static_cast<UINT16>(TransColor)
+			: Get16BPPColor(TransColor));
+	}
 
 	// Get surface pointer
 	lpDDSurface = (LPDIRECTDRAWSURFACE2)hVSurface->pSurfaceData;
@@ -1557,6 +1671,12 @@ BOOLEAN SetVideoSurfaceTransparencyColor( HVSURFACE hVSurface, COLORVAL TransCol
 
 BOOLEAN GetVSurfacePaletteEntries( HVSURFACE hVSurface, SGPPaletteEntry *pPalette )
 {
+	if (hVSurface->pixelSurface && hVSurface->pixelSurface->palette())
+	{
+		memcpy(pPalette, hVSurface->pixelSurface->palette(),
+			256 * sizeof(SGPPaletteEntry));
+		return TRUE;
+	}
 	CHECKF( hVSurface->pPalette != NULL );
 
 	DDGetPaletteEntries( (LPDIRECTDRAWPALETTE)hVSurface->pPalette, 0, 0, 256, (PALETTEENTRY*)pPalette );
@@ -2096,6 +2216,10 @@ BOOLEAN UpdateBackupSurface( HVSURFACE hVSurface )
 LPDIRECTDRAWSURFACE2 GetVideoSurfaceDDSurface( HVSURFACE hVSurface )
 {
 	Assert( hVSurface != NULL );
+	if (!SyncPixelSurfaceToDirectDraw(hVSurface))
+	{
+		return NULL;
+	}
 
 	return( (LPDIRECTDRAWSURFACE2) hVSurface->pSurfaceData );
 }
@@ -2103,8 +2227,18 @@ LPDIRECTDRAWSURFACE2 GetVideoSurfaceDDSurface( HVSURFACE hVSurface )
 LPDIRECTDRAWSURFACE GetVideoSurfaceDDSurfaceOne( HVSURFACE hVSurface )
 {
 	Assert( hVSurface != NULL );
+	if (!SyncPixelSurfaceToDirectDraw(hVSurface))
+	{
+		return NULL;
+	}
 
 	return( (LPDIRECTDRAWSURFACE) hVSurface->pSurfaceData1 );
+}
+
+void NotifyVideoSurfaceDirectDrawModified(HVSURFACE hVSurface)
+{
+	Assert(hVSurface != NULL);
+	MarkDirectDrawSurfaceModified(hVSurface);
 }
 
 
@@ -2283,6 +2417,14 @@ BOOLEAN FillSurface( HVSURFACE hDestVSurface, blt_vs_fx *pBltFx )
 
 	Assert( hDestVSurface != NULL );
 	CHECKF( pBltFx != NULL );
+	if (hDestVSurface->pixelSurface)
+	{
+		CHECKF(SyncPixelSurfaceFromDirectDraw(hDestVSurface));
+		hDestVSurface->pixelSurface->fill(
+			static_cast<UINT16>(pBltFx->ColorFill));
+		MarkPixelSurfaceModified(hDestVSurface);
+		return TRUE;
+	}
 
 	BlitterFX.dwSize = sizeof( DDBLTFX );
 	BlitterFX.dwFillColor = pBltFx->ColorFill;
@@ -2303,6 +2445,14 @@ BOOLEAN FillSurfaceRect( HVSURFACE hDestVSurface, blt_vs_fx *pBltFx )
 
 	Assert( hDestVSurface != NULL );
 	CHECKF( pBltFx != NULL );
+	if (hDestVSurface->pixelSurface)
+	{
+		CHECKF(SyncPixelSurfaceFromDirectDraw(hDestVSurface));
+		hDestVSurface->pixelSurface->fillRect(pBltFx->FillRect,
+			static_cast<UINT16>(pBltFx->ColorFill));
+		MarkPixelSurfaceModified(hDestVSurface);
+		return TRUE;
+	}
 
 	BlitterFX.dwSize = sizeof( DDBLTFX );
 	BlitterFX.dwFillColor = pBltFx->ColorFill;
@@ -2322,6 +2472,33 @@ BOOLEAN BltVSurfaceUsingDD( HVSURFACE hDestVSurface, HVSURFACE hSrcVSurface, UIN
 {
 	UINT32		uiDDFlags;
 	RECT			DestRect;
+	if (fBltFlags & VS_BLT_FAST)
+	{
+		CHECKF(iDestX >= 0);
+		CHECKF(iDestY >= 0);
+	}
+
+	if (hDestVSurface->pixelSurface && hSrcVSurface->pixelSurface &&
+		hDestVSurface->pixelSurface->format() ==
+			hSrcVSurface->pixelSurface->format())
+	{
+		CHECKF(SyncPixelSurfaceFromDirectDraw(hDestVSurface));
+		CHECKF(SyncPixelSurfaceFromDirectDraw(hSrcVSurface));
+		const ja2::presentation::BlitOptions options{
+			(fBltFlags & VS_BLT_USECOLORKEY) != 0,
+			(fBltFlags & VS_BLT_USEDESTCOLORKEY) != 0};
+		const SGPRect sourceRect = {SrcRect->left, SrcRect->top,
+			SrcRect->right, SrcRect->bottom};
+		CHECKF(hDestVSurface->pixelSurface->blitFrom(
+			*hSrcVSurface->pixelSurface, sourceRect, iDestX, iDestY, options));
+		MarkPixelSurfaceModified(hDestVSurface);
+		return TRUE;
+	}
+
+	// DirectDraw owns the mixed path until the reserved presentation surfaces
+	// are converted. Bring any portable participant's mirror up to date first.
+	CHECKF(SyncPixelSurfaceToDirectDraw(hSrcVSurface));
+	CHECKF(SyncPixelSurfaceToDirectDraw(hDestVSurface));
 
 	// Blit using the correct blitter
 	if ( fBltFlags & VS_BLT_FAST )
@@ -2395,6 +2572,7 @@ BOOLEAN BltVSurfaceUsingDD( HVSURFACE hDestVSurface, HVSURFACE hSrcVSurface, UIN
 			SrcRect, uiDDFlags, NULL );
 
 	}
+	MarkDirectDrawSurfaceModified(hDestVSurface);
 
 	// Update backup surface with new data
 	if ( hDestVSurface->fFlags & VSURFACE_VIDEO_MEM_USAGE && !(hDestVSurface->fFlags & VSURFACE_RESERVED_SURFACE) )
@@ -2522,6 +2700,27 @@ BOOLEAN BltVSurfaceUsingDDBlt( HVSURFACE hDestVSurface, HVSURFACE hSrcVSurface, 
 {
 	UINT32		uiDDFlags;
 
+	if (hDestVSurface->pixelSurface && hSrcVSurface->pixelSurface &&
+		hDestVSurface->pixelSurface->format() ==
+			hSrcVSurface->pixelSurface->format())
+	{
+		CHECKF(SyncPixelSurfaceFromDirectDraw(hDestVSurface));
+		CHECKF(SyncPixelSurfaceFromDirectDraw(hSrcVSurface));
+		const ja2::presentation::BlitOptions options{
+			(fBltFlags & VS_BLT_USECOLORKEY) != 0, false};
+		const SGPRect sourceRect = {SrcRect->left, SrcRect->top,
+			SrcRect->right, SrcRect->bottom};
+		const SGPRect destinationRect = {DestRect->left, DestRect->top,
+			DestRect->right, DestRect->bottom};
+		CHECKF(hDestVSurface->pixelSurface->stretchFrom(
+			*hSrcVSurface->pixelSurface, sourceRect, destinationRect, options));
+		MarkPixelSurfaceModified(hDestVSurface);
+		return TRUE;
+	}
+
+	CHECKF(SyncPixelSurfaceToDirectDraw(hSrcVSurface));
+	CHECKF(SyncPixelSurfaceToDirectDraw(hDestVSurface));
+
 	// Default flags
 	uiDDFlags = DDBLT_WAIT;
 
@@ -2533,6 +2732,7 @@ BOOLEAN BltVSurfaceUsingDDBlt( HVSURFACE hDestVSurface, HVSURFACE hSrcVSurface, 
 
 	DDBltSurface( (LPDIRECTDRAWSURFACE2)hDestVSurface->pSurfaceData, DestRect, (LPDIRECTDRAWSURFACE2)hSrcVSurface->pSurfaceData,
 		SrcRect, uiDDFlags, NULL );
+	MarkDirectDrawSurfaceModified(hDestVSurface);
 
 	// Update backup surface with new data
 	if ( hDestVSurface->fFlags & VSURFACE_VIDEO_MEM_USAGE && !(hDestVSurface->fFlags & VSURFACE_RESERVED_SURFACE) )
