@@ -26,7 +26,8 @@
 #include "network.h" // for client name
 #include "message.h"
 #include "Init.h"
-#include "XML.h"
+	#include "XML.h"
+	#include "UtfConversion.h"
 
 
 ////////////////////////////////////////////
@@ -480,7 +481,7 @@ void	SetConnectScreenHeadingW( STR16 cmsg )
 void	SetConnectScreenHeadingA( const char* cmsg )
 {
 	CHAR16 converted[512];
-	MultiByteToWideChar( CP_UTF8, 0, cmsg, -1, (LPWSTR)converted, 512);
+	ja2::text::copyUtf8ToUtf16( cmsg, converted );
 	SetConnectScreenHeadingW( converted );
 }
 
@@ -493,7 +494,7 @@ void	SetConnectScreenSubMessageW( STR16 cmsg )
 void	SetConnectScreenSubMessageA( const char* cmsg )
 {
 	CHAR16 converted[512];
-	MultiByteToWideChar( CP_UTF8, 0, cmsg, -1, (LPWSTR)converted, 512);
+	ja2::text::copyUtf8ToUtf16( cmsg, converted );
 	SetConnectScreenSubMessageW( converted );
 }
 

@@ -6,6 +6,7 @@
 #include "FileMan.h"
 #include "GameSettings.h"
 #include "Game Clock.h"
+#include "UtfConversion.h"
 
 extern "C" {
 #include "lua.h"
@@ -223,15 +224,14 @@ void LuaUnderground::GetSectorName(INT16 x, INT16 y, INT16 z, const UNDERGROUND_
 
 		if (lua_isstring(L(), -1))
 		{
-			const char * utf8 = lua_tostring(L(), -1);
-			int result = MultiByteToWideChar(CP_UTF8, 0, lua_tostring(L(), -1), -1, buffer, bufSizeInWChar-1);
-			if (result == 0)
+			size_t utf8Length = 0;
+			const char * utf8 = lua_tolstring( L(), -1, &utf8Length );
+			const ja2::text::BufferConversionResult result = ja2::text::copyUtf8ToUtf16(
+				std::string_view( utf8, utf8Length ), buffer,
+				bufSizeInWChar == 0 ? 0 : bufSizeInWChar - 1 );
+			if ( result.truncated || !result.inputWasValid )
 			{
-				// Houston, we have a problem...
-				buffer[bufSizeInWChar-1] = L'\0';
-
-				const auto errorcode = GetLastError();
-				if (errorcode == ERROR_INSUFFICIENT_BUFFER)
+				if ( result.truncated )
 				{
 					// quick note on logging:
 					// we explicitly turn logging off once we encounter an error

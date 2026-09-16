@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "FileMan.h"
 	#include "Debug Control.h"
 	#include "expat.h"
@@ -150,14 +151,12 @@ transformEndElementHandle(void *userData, const XML_Char *name)
 		else if(strcmp(name, "szMenuRowText") == 0)
 		{
 			pData->curElement = ELEMENT;
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curTransform.szMenuRowText, sizeof(pData->curTransform.szMenuRowText)/sizeof(pData->curTransform.szMenuRowText[0]) );
-			pData->curTransform.szMenuRowText[sizeof(pData->curTransform.szMenuRowText)/sizeof(pData->curTransform.szMenuRowText[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curTransform.szMenuRowText );
 		}
 		else if(strcmp(name, "szTooltipText") == 0)
 		{
 			pData->curElement = ELEMENT;
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curTransform.szTooltipText, sizeof(pData->curTransform.szTooltipText)/sizeof(pData->curTransform.szTooltipText[0]) );
-			pData->curTransform.szTooltipText[sizeof(pData->curTransform.szTooltipText)/sizeof(pData->curTransform.szTooltipText[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curTransform.szTooltipText );
 		}
 
 		pData->maxReadDepth--;

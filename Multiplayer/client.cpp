@@ -5,6 +5,7 @@
 	#include "stdlib.h"
 	#include "DEBUG.H"
 	#include "math.h"
+	#include "UtfConversion.h"
 	#include "worlddef.h"
 	#include "worldman.h"
 	#include "renderworld.h"
@@ -3923,8 +3924,8 @@ void send_death( SOLDIERTYPE *pSoldier )
     if (pSoldier)  {
 	    char s_name[10];
 	    char a_name[10];
-	    WideCharToMultiByte(CP_UTF8,0,pS_name,-1, s_name,10,NULL,NULL);
-	    WideCharToMultiByte(CP_UTF8,0,pA_name,-1, a_name,10,NULL,NULL);
+	    ja2::text::copyUtf16ToUtf8( pS_name, s_name );
+	    ja2::text::copyUtf16ToUtf8( pA_name, a_name );
 	
 	    if (pSoldier->bTeam==1) 
 		    MPDebugMsg( String ( "MPDEBUG SEND - Enemy AI #%d was killed by ('%s' - %d) (client %d - '%s')\n",nDeath.soldier_id,a_name,nDeath.attacker_id,pA_bTeam,client_names[pA_bTeam-1]) );
@@ -4012,8 +4013,8 @@ void recieveDEATH (RPCParameters *rpcParameters)
 #ifdef JA2BETAVERSION
 	char s_name[10];
 	char a_name[10];
-	WideCharToMultiByte(CP_UTF8,0,pS_name,-1, s_name,10,NULL,NULL);
-	WideCharToMultiByte(CP_UTF8,0,pA_name,-1, a_name,10,NULL,NULL);
+	ja2::text::copyUtf16ToUtf8( pS_name, s_name );
+	ja2::text::copyUtf16ToUtf8( pA_name, a_name );
 	
 	if (pSoldier->bTeam==1) 
 		MPDebugMsg( String ( "MPDEBUG RECV - Enemy AI #%d was killed by ('%s' - #%d) (client %d - '%s')\n",nDeath->soldier_id,a_name,nDeath->attacker_id,pA_bTeam,client_names[pA_bTeam-1]) );

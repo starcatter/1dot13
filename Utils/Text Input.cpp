@@ -1,4 +1,5 @@
 	#include <math.h>
+	#include <algorithm>
 	#include <stdio.h>
 	#include <time.h>
 	#include <wchar.h>
@@ -14,6 +15,7 @@
 	#include "vobject_blitters.h"
 	#include "Font Control.h"
 	#include "Sound Control.h"
+	#include "UtfConversion.h"
 
 
 STR16 szClipboard;
@@ -1897,12 +1899,14 @@ UINT32 PasteClipboardText()
 			char* cbTextA = (char*)GetClipboardData(CF_TEXT);
 			if (cbTextA != NULL)
 			{
-				iStrLen = strlen(cbTextA);
-				if (iStrLen > 0)
+				const ja2::text::Utf16String converted =
+					ja2::text::utf8ToUtf16ReplacingInvalid( cbTextA );
+				iStrLen = static_cast<UINT32>( converted.size() );
+				if ( iStrLen > 0 )
 				{
 					szClipboard = (STR16)MemAlloc((iStrLen+1)*sizeof(CHAR16));
-					MultiByteToWideChar( CP_UTF8, 0, cbTextA, -1, (LPWSTR)szClipboard, iStrLen);//swprintf(szClipboard,L"%S",cbTextA);
-					szClipboard[iStrLen] = L'\0';
+					std::copy( converted.begin(), converted.end(), szClipboard );
+					szClipboard[iStrLen] = 0;
 
 					// empty clipboard of data as we have copied it into the "local" clipboard
 					// and we will use that from now on

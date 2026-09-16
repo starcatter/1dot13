@@ -32,6 +32,7 @@
 	#include "PATHAI.H"
 	#include "fov.h"
 	#include "MessageBoxScreen.h"
+	#include "UtfConversion.h"
 	#include "Explosion Control.h"
 	#include "SkillCheck.h"
 	#include "Campaign.h"
@@ -8371,16 +8372,17 @@ std::vector<std::pair<INT16, STR16> > GetCurrentSectorTileSetVector()
 		// if tileset is from the current tileset, check that
 		if ( gTilesets[giCurrentTilesetID].TileSurfaceFilenames[iType][0] )
 		{
-			int nChars = MultiByteToWideChar( CP_ACP, 0, gTilesets[giCurrentTilesetID].TileSurfaceFilenames[iType], -1, NULL, 0 );
-			MultiByteToWideChar( CP_UTF8, 0, gTilesets[giCurrentTilesetID].TileSurfaceFilenames[iType], -1, gCurrentSectorTileNamesChar16[iType], nChars );
+			ja2::text::copyUtf8ToUtf16(
+				gTilesets[giCurrentTilesetID].TileSurfaceFilenames[iType],
+				gCurrentSectorTileNamesChar16[iType] );
 
 			vec.push_back( std::make_pair( iType, gCurrentSectorTileNamesChar16[iType] ) );
 		}
 		// otherwise, check first tileset (GENERIC 1)
 		else if ( gTilesets[0].TileSurfaceFilenames[iType][0] )
 		{
-			int nChars = MultiByteToWideChar( CP_ACP, 0, gTilesets[0].TileSurfaceFilenames[iType], -1, NULL, 0 );
-			MultiByteToWideChar( CP_UTF8, 0, gTilesets[0].TileSurfaceFilenames[iType], -1, gCurrentSectorTileNamesChar16[iType], nChars );
+			ja2::text::copyUtf8ToUtf16(
+				gTilesets[0].TileSurfaceFilenames[iType], gCurrentSectorTileNamesChar16[iType] );
 
 			vec.push_back( std::make_pair( iType, gCurrentSectorTileNamesChar16[iType] ) );
 		}
@@ -8407,8 +8409,8 @@ std::vector<std::pair<INT16, STR16> > GetCurrentSectorAllowedFortificationTileSe
 			{
 				if ( !_strnicmp( gTilesets[asTileSetId].TileSurfaceFilenames[iType], gStructureConstruct[i].szTileSetName, 11 ) )
 				{
-					int nChars = MultiByteToWideChar( CP_ACP, 0, gStructureConstruct[i].szTileSetDisplayName, -1, NULL, 0 );
-					MultiByteToWideChar( CP_UTF8, 0, gStructureConstruct[i].szTileSetDisplayName, -1, gCurrentSectorTileNamesChar16[i], nChars );
+					ja2::text::copyUtf8ToUtf16(
+						gStructureConstruct[i].szTileSetDisplayName, gCurrentSectorTileNamesChar16[i] );
 
 					pairset.insert( std::make_pair( i, gCurrentSectorTileNamesChar16[i] ) );
 
@@ -8419,8 +8421,8 @@ std::vector<std::pair<INT16, STR16> > GetCurrentSectorAllowedFortificationTileSe
 			{
 				if ( !_strnicmp( gTilesets[0].TileSurfaceFilenames[iType], gStructureConstruct[i].szTileSetName, 11 ) )
 				{
-					int nChars = MultiByteToWideChar( CP_ACP, 0, gStructureConstruct[i].szTileSetDisplayName, -1, NULL, 0 );
-					MultiByteToWideChar( CP_UTF8, 0, gStructureConstruct[i].szTileSetDisplayName, -1, gCurrentSectorTileNamesChar16[i], nChars );
+					ja2::text::copyUtf8ToUtf16(
+						gStructureConstruct[i].szTileSetDisplayName, gCurrentSectorTileNamesChar16[i] );
 
 					pairset.insert( std::make_pair( i, gCurrentSectorTileNamesChar16[i] ) );
 

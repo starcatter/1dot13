@@ -29,6 +29,8 @@ if(JA2_PLATFORM_BACKEND STREQUAL "LINUX" AND NOT CMAKE_SYSTEM_NAME STREQUAL "Lin
 endif()
 message(STATUS "Configuring JA2_PLATFORM_BACKEND=\"${JA2_PLATFORM_BACKEND}\"")
 
+include(cmake/AssertPortableTextBoundaries.cmake)
+
 option(USE_SCCACHE "Cache compiled objects with sccache if installed" ON)
 if(USE_SCCACHE)
   find_program(SCCACHE_PROGRAM sccache)

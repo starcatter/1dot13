@@ -33,10 +33,10 @@ Filter::~Filter(void) {
 	}
 }
 
-void Filter::AddCriterion(UINT32 type, std::wstring& value) {
+void Filter::AddCriterion(UINT32 type, const ja2::text::Utf16String& value) {
 	type &= ~_TYPE_INTEGER;
 	type |= _TYPE_STRING;
-	std::wstring* str = new std::wstring(value);
+	ja2::text::Utf16String* str = new ja2::text::Utf16String(value);
 	criterionVariant val;
 	val.string = str;
 	criteria.insert(CriteriaMap::value_type(type, val));
@@ -45,7 +45,7 @@ void Filter::AddCriterion(UINT32 type, std::wstring& value) {
 void Filter::AddCriterion(UINT32 type, STR16 value) {
 	type &= ~_TYPE_INTEGER;
 	type |= _TYPE_STRING;
-	std::wstring* str = new std::wstring(value);
+	ja2::text::Utf16String* str = new ja2::text::Utf16String(value);
 	criterionVariant val;
 	val.string = str;
 	criteria.insert(CriteriaMap::value_type(type, val));
@@ -89,38 +89,6 @@ void Filter::AddCriterion(UINT32 type, Filter* filter) {
 	criterionVariant val;
 	val.filter = filter;
 	criteria.insert(CriteriaMap::value_type(type, val));
-}
-
-void Filter::Dump(std::wstringstream& stream) {
-	stream << L"<-------- Filter" << std::endl;
-	for (CriteriaMap::iterator ii = criteria.begin(); ii != criteria.end(); ii++) {
-		UINT32 flags = ii->first & _UNSET_FLAGS;
-		UINT32 cType = ii->first & ~_UNSET_FLAGS;
-		std::string op = "";
-		if (flags & _REQ_OR) op += "OR";
-		if (flags & _REQ_AND) op += "AND";
-		std::string cmpop = "";
-		if ((flags & _REQ_NOT) && (flags & _REQ_EQ)) cmpop = "!=";
-		if (((flags & _REQ_NOT) != _REQ_NOT) && (flags & _REQ_EQ)) cmpop = "==";
-		if ((flags & _REQ_NOT) && (flags & _REQ_GT)) cmpop = ">";
-		if (((flags & _REQ_NOT) != _REQ_NOT) && (flags & _REQ_GT)) cmpop = "<=";
-		if ((flags & _REQ_NOT) && (flags & _REQ_LT)) cmpop = "<";
-		if (((flags & _REQ_NOT) != _REQ_NOT) && (flags & _REQ_LT)) cmpop = ">=";
-		if (flags & Filter::_TYPE_STRING) {
-			std::string enumStr;
-			EnumeratorDB::Instance().GetEnumeratorStr("StringFilterCriterionTypes", cType, enumStr);
-			stream << L"criterion: " << op << L" str " << enumStr << L" " << cmpop << L" " << *ii->second.string << std::endl;
-		}
-		if (flags & Filter::_TYPE_INTEGER) {
-			std::string enumStr;
-			// first try to find the enumerator in the integer criterion type list then in the enum list
-			bool foundEnumerator = EnumeratorDB::Instance().GetEnumeratorStr("IntegerFilterCriterionTypes", cType, enumStr);
-			if (!foundEnumerator) EnumeratorDB::Instance().GetEnumeratorStr("EnumFilterCriterionTypes", cType, enumStr);
-			stream << L"criterion: " << op << L" str " << enumStr << L" " << cmpop << L" " << ii->second.number << std::endl;
-		}
-		// TODO: drop method or update to match the additional types that have been added.
-	}
-	stream << L"-------->" << std::endl;
 }
 
 // quite an ugly implementation. Should be re-done
@@ -300,26 +268,22 @@ bool Filter::Match(SOLDIERTYPE* pSoldier) {
 			// I wanted to use the signum compare as with the integer values. But since that 
 			// is more like a code gimmick than an actual useful feature, probably better to
 			// drop the check for > < for strings alltogether.
-			std::wstring cmp_val;
-			CHAR16 wStr[31];
+			ja2::text::Utf16String cmp_val;
 			switch (r & ~_UNSET_FLAGS) {
 				case REQ_NAME:
-					wcscpy(wStr, pSoldier->name);
-					cmp_val = wStr;
+					cmp_val = pSoldier->name;
 					break;
 				case REQ_PROFILENAME:
 					if (pSoldier->ubProfile == NO_PROFILE
 						|| pSoldier->ubProfile < 1
 						|| pSoldier->ubProfile > NUM_PROFILES - 2) return false;
-					wcscpy(wStr, gMercProfiles[pSoldier->ubProfile].zName);
-					cmp_val = wStr;
+					cmp_val = gMercProfiles[pSoldier->ubProfile].zName;
 					break;
 				case REQ_NICKNAME:
 					if (pSoldier->ubProfile == NO_PROFILE
 						|| pSoldier->ubProfile < 1
 						|| pSoldier->ubProfile > NUM_PROFILES - 2) return false;
-					wcscpy(wStr, gMercProfiles[pSoldier->ubProfile].zNickname);
-					cmp_val = wStr;
+					cmp_val = gMercProfiles[pSoldier->ubProfile].zNickname;
 					break;
 				default:
 					// not implemented. We should log this somehow(must be cached).
@@ -336,7 +300,7 @@ bool Filter::Match(SOLDIERTYPE* pSoldier) {
 				}
 			}
 			else {
-				std::wstring* sp = ii->second.string;
+				ja2::text::Utf16String* sp = ii->second.string;
 				sgn = cmp_val.compare(*sp);
 			}
 		} else if (r & _TYPE_FILTER) {

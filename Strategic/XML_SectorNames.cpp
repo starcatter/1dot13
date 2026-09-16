@@ -7,6 +7,7 @@
 	#include "MemMan.h"
 	#include "Debug Control.h"
 	#include "mapscreen.h"
+	#include "UtfConversion.h"
 
 #define MAX_CHAR_DATA_LENGTH			500
 
@@ -296,32 +297,28 @@ SectorNameEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->szCurUnexploredName, sizeof(pData->szCurUnexploredName)/sizeof(pData->szCurUnexploredName[0]) );
-			pData->szCurUnexploredName[sizeof(pData->szCurUnexploredName)/sizeof(pData->szCurUnexploredName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->szCurUnexploredName );
 		}
 
 		else if(strcmp(name, "szDetailedUnexploredName") == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->szCurDetailedUnexploredName, sizeof(pData->szCurDetailedUnexploredName)/sizeof(pData->szCurDetailedUnexploredName[0]) );
-			pData->szCurDetailedUnexploredName[sizeof(pData->szCurDetailedUnexploredName)/sizeof(pData->szCurDetailedUnexploredName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->szCurDetailedUnexploredName );
 		}
 
 		else if(strcmp(name, "szExploredName") == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->szCurExploredName, sizeof(pData->szCurExploredName)/sizeof(pData->szCurExploredName[0]) );
-			pData->szCurExploredName[sizeof(pData->szCurExploredName)/sizeof(pData->szCurExploredName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->szCurExploredName );
 		}
 
 		else if(strcmp(name, "szDetailedExploredName") == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->szCurDetailedExploredName, sizeof(pData->szCurDetailedExploredName)/sizeof(pData->szCurDetailedExploredName[0]) );
-			pData->szCurDetailedExploredName[sizeof(pData->szCurDetailedExploredName)/sizeof(pData->szCurDetailedExploredName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->szCurDetailedExploredName );
 		}
 
 		else if(strcmp(name, "sWaterType") == 0)

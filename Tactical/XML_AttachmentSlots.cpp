@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "FileMan.h"
 #include "Item Types.h"
 	#include "Debug Control.h"
@@ -129,8 +130,7 @@ attachmentslotEndElementHandle(void *userData, const XML_Char *name)
 		else if(strcmp(name, "szSlotName") == 0)
 		{
 			pData->curElement = ELEMENT;
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curAttachmentSlot.szSlotName, sizeof(pData->curAttachmentSlot.szSlotName)/sizeof(pData->curAttachmentSlot.szSlotName[0]) );
-			pData->curAttachmentSlot.szSlotName[sizeof(pData->curAttachmentSlot.szSlotName)/sizeof(pData->curAttachmentSlot.szSlotName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curAttachmentSlot.szSlotName );
 		}
 		else if(strcmp(name, "nasAttachmentClass") == 0)
 		{

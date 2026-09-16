@@ -76,13 +76,6 @@ struct {
 INT32 TOOLTIP_IFONT = -1;
 INT32 TOOLTIP_IFONT_BOLD = -1;
 
-void Convert16BitStringTo8Bit( CHAR8 *dst, CHAR16 *src )
-{
-  //hope 'dst' is big enough
-  WideCharToMultiByte(CP_ACP, 0, src, -1, dst, 512 ,NULL,NULL);
-  return;
-}
-
 void GetWinFontInfo()
 {
 /*

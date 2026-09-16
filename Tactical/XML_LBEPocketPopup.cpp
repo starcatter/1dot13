@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "popup_class.h"
 	#include "popup_definition.h"
 	#include "Debug Control.h"
@@ -48,13 +49,13 @@ struct
 
 	// for reading in options to popups and subPopups
 	//popupDefOption	*curPocketPopupOption;	// not really used
-	WCHAR			curPocketPopupOptionName[128];
+	CHAR16			curPocketPopupOptionName[128];
 	UINT16			curPocketPopupOptionCallback;
 	UINT16			curPocketPopupOptionAvail;
 
 	// for reading in subPopups
 	popupDefSubPopupOption *curPocketSubPopupOption[POPUP_MAX_SUB_POPUPS];
-	WCHAR			curPocketSubPopupOptionName[POPUP_MAX_SUB_POPUPS][128];
+	CHAR16			curPocketSubPopupOptionName[POPUP_MAX_SUB_POPUPS][128];
 
 	// for reading in content generator references
 	popupDefContentGenerator	*curPocketPopupGenerator;	// not really used
@@ -347,24 +348,24 @@ pocketPopupEndElementHandle(void *userData, const XML_Char *name)
 			case POPUP_PARSE::OPTION_PROPERTY:
 				pData->curElement = POPUP_PARSE::OPTION;
 
-				MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curPocketPopupOptionName, sizeof(pData->curPocketPopupOptionName)/sizeof(pData->curPocketPopupOptionName[0]) );
-				pData->curPocketPopupOptionName[sizeof(pData->curPocketPopupOptionName)/sizeof(pData->curPocketPopupOptionName[0]) - 1] = '\0';
+				ja2::text::copyUtf8ToUtf16( pData->szCharData,
+					pData->curPocketPopupOptionName );
 
 				break;
 
 			case POPUP_PARSE::SUBMENU_OPTION_PROPERTY:
 				pData->curElement = POPUP_PARSE::SUBMENU_OPTION;
 
-				MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curPocketPopupOptionName, sizeof(pData->curPocketPopupOptionName)/sizeof(pData->curPocketPopupOptionName[0]) );
-				pData->curPocketPopupOptionName[sizeof(pData->curPocketPopupOptionName)/sizeof(pData->curPocketPopupOptionName[0]) - 1] = '\0';
+				ja2::text::copyUtf8ToUtf16( pData->szCharData,
+					pData->curPocketPopupOptionName );
 
 				break;
 
 			case POPUP_PARSE::SUBMENU_PROPERTY:
 				pData->curElement = POPUP_PARSE::SUBMENU;
 
-				MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curPocketSubPopupOptionName[pData->curSubPopupLevel-1], sizeof(pData->curPocketSubPopupOptionName[pData->curSubPopupLevel-1])/sizeof(pData->curPocketSubPopupOptionName[pData->curSubPopupLevel-1][0]) );
-				pData->curPocketSubPopupOptionName[pData->curSubPopupLevel-1][sizeof(pData->curPocketSubPopupOptionName[pData->curSubPopupLevel-1])/sizeof(pData->curPocketSubPopupOptionName[pData->curSubPopupLevel-1][0]) - 1] = '\0';
+				ja2::text::copyUtf8ToUtf16( pData->szCharData,
+					pData->curPocketSubPopupOptionName[pData->curSubPopupLevel - 1] );
 
 				break;
 

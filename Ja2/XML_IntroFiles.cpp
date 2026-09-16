@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -105,8 +106,7 @@ introNamesEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curIntroNames.szFile, sizeof(pData->curIntroNames.szFile)/sizeof(pData->curIntroNames.szFile[0]) );
-			pData->curIntroNames.szFile[sizeof(pData->curIntroNames.szFile)/sizeof(pData->curIntroNames.szFile[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curIntroNames.szFile );
 		}
 		pData->maxReadDepth--;
 	}

@@ -11,6 +11,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "GameSettings.h"
@@ -396,16 +397,14 @@ profileEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curProfile.zName, sizeof(pData->curProfile.zName)/sizeof(pData->curProfile.zName[0]) );
-			pData->curProfile.zName[sizeof(pData->curProfile.zName)/sizeof(pData->curProfile.zName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curProfile.zName );
 		}
 
 		else if(strcmp(name, "zNickname") == 0)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curProfile.zNickname, sizeof(pData->curProfile.zNickname)/sizeof(pData->curProfile.zNickname[0]) );
-			pData->curProfile.zNickname[sizeof(pData->curProfile.zNickname)/sizeof(pData->curProfile.zNickname[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curProfile.zNickname );
 		}
 
 		else if(strcmp(name, "ubFaceIndex") == 0)

@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "FileMan.h"
 	#include "Drugs And Alcohol.h"
 	#include "Debug Control.h"
@@ -196,8 +197,8 @@ drugsEndElementHandle(void *userData, const XML_Char *name)
 			pData->curElement = ELEMENT;
 			// not needed, but its there for informational purposes
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curArray[pData->uiIndex].szName, sizeof(pData->curArray[pData->uiIndex].szName) / sizeof(pData->curArray[pData->uiIndex].szName[0]) );
-			pData->curArray[pData->uiIndex].szName[sizeof(pData->curArray[pData->uiIndex].szName) / sizeof(pData->curArray[pData->uiIndex].szName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData,
+				pData->curArray[pData->uiIndex].szName );
 		}
 		else if(strcmp(name, "opinionevent") == 0)
 		{

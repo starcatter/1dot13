@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -138,8 +139,7 @@ actionItemsEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curActionItems.szName, sizeof(pData->curActionItems.szName)/sizeof(pData->curActionItems.szName[0]) );
-			pData->curActionItems.szName[sizeof(pData->curActionItems.szName)/sizeof(pData->curActionItems.szName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curActionItems.szName );
 		}
 		else if(strcmp(name, "ActionID") == 0)
 		{

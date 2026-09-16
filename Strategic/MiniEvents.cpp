@@ -38,6 +38,7 @@ to call into.
 #include "Strategic Movement.h"
 #include "Strategic Town Loyalty.h"
 #include "Town Militia.h"
+#include "UtfConversion.h"
 #include "Vehicles.h"
 
 extern "C" {
@@ -1146,8 +1147,7 @@ namespace MiniEventHelpers
 		const INT8 z = lua_tointeger(LS, 3);
 		CHAR16 sectorName[512];
 		GetSectorIDString(x, y, z, sectorName, FALSE);
-		std::wstring wsSectorName(sectorName);
-		std::string strSectorName(wsSectorName.begin(), wsSectorName.end());
+		const std::string strSectorName = ja2::text::utf16ToUtf8ReplacingInvalid( sectorName );
 
 		lua_pushstring(LS, strSectorName.c_str());
 		return 1;
@@ -1542,8 +1542,8 @@ void MiniEventsLua(UINT32 eventId)
 			const SOLDIERTYPE* merc = i;
 			if (merc && merc->bActive && merc->bAssignment != IN_TRANSIT && !(merc->flags.uiStatusFlags & SOLDIER_VEHICLE) && !(AM_A_ROBOT(merc)))
 			{
-				std::wstring ws(gMercProfiles[merc->ubProfile].zNickname);
-				std::string str(ws.begin(), ws.end());
+				const std::string str = ja2::text::utf16ToUtf8ReplacingInvalid(
+					gMercProfiles[merc->ubProfile].zNickname );
 				f.TParam(str.c_str(), (int)merc->ubProfile);
 			}
 		}
@@ -1561,8 +1561,8 @@ void MiniEventsLua(UINT32 eventId)
 			const SOLDIERTYPE* merc = i;
 			if (merc && merc->bActive && merc->bAssignment != IN_TRANSIT && !(merc->flags.uiStatusFlags & SOLDIER_VEHICLE) && !(AM_A_ROBOT(merc)))
 			{
-				std::wstring ws(gMercProfiles[merc->ubProfile].zNickname);
-				std::string str(ws.begin(), ws.end());
+				const std::string str = ja2::text::utf16ToUtf8ReplacingInvalid(
+					gMercProfiles[merc->ubProfile].zNickname );
 				f.TParam(str.c_str(), (int)merc->ubProfile);
 			}
 		}
@@ -1575,21 +1575,18 @@ void MiniEventsLua(UINT32 eventId)
 static int MiniEventsLua_MessageBox(lua_State* LS)
 {
 	size_t len = 0;
+	const char *text = lua_tolstring(LS, 1, &len);
+	ja2::text::copyUtf8ToUtf16(
+		std::string_view( text, len ).substr( 0, MAX_BUTTON_LENGTH ), gzUserDefinedButton1, 128 );
+
+	text = lua_tolstring(LS, 2, &len);
+	ja2::text::copyUtf8ToUtf16(
+		std::string_view( text, len ).substr( 0, MAX_BUTTON_LENGTH ), gzUserDefinedButton2, 128 );
+
+	text = lua_tolstring(LS, 3, &len);
 	CHAR16 w_str[500];
-
-	std::string str = lua_tolstring(LS, 1, &len);
-	MultiByteToWideChar( CP_UTF8, 0, len > MAX_BUTTON_LENGTH ? str.substr(0, MAX_BUTTON_LENGTH).c_str() : str.c_str(), -1, w_str, sizeof(w_str) / sizeof(w_str[0]) );
-	w_str[sizeof(w_str) / sizeof(w_str[0]) - 1] = '\0';
-	wcscpy( gzUserDefinedButton1, w_str );
-
-	str = lua_tolstring(LS, 2, &len);
-	MultiByteToWideChar( CP_UTF8, 0, len > MAX_BUTTON_LENGTH ? str.substr(0, MAX_BUTTON_LENGTH).c_str() : str.c_str(), -1, w_str, sizeof(w_str) / sizeof(w_str[0]) );
-	w_str[sizeof(w_str) / sizeof(w_str[0]) - 1] = '\0';
-	wcscpy( gzUserDefinedButton2, w_str );
-
-	str = lua_tolstring(LS, 3, &len);
-	MultiByteToWideChar( CP_UTF8, 0, len > MAX_BODY_LENGTH ? str.substr(0, MAX_BODY_LENGTH).c_str() : str.c_str(), -1, w_str, sizeof(w_str) / sizeof(w_str[0]) );
-	w_str[sizeof(w_str) / sizeof(w_str[0]) - 1] = '\0';
+	ja2::text::copyUtf8ToUtf16(
+		std::string_view( text, len ).substr( 0, MAX_BODY_LENGTH ), w_str );
 
 	// we need to cache the screen here so that the second msgbox doesn't keep the global screen state in MSG_BOX_SCREEN (causes infinite recursion)
 	guiMiniEventsCachedScreen = guiCurrentScreen;
@@ -1609,7 +1606,7 @@ static void MiniEventsLua_MessageBoxCallback(UINT8 ubExitValue)
 static int MiniEventsLua_ResolveEvent(lua_State* LS)
 {
 	size_t len = 0;
-	std::string str = lua_tolstring(LS, 1, &len);
+	const char *text = lua_tolstring(LS, 1, &len);
 
 	UINT32 nextEventId = 0;
 	if (lua_gettop(LS) >= 2)
@@ -1620,8 +1617,8 @@ static int MiniEventsLua_ResolveEvent(lua_State* LS)
 		hoursToNextMiniEvent = static_cast<UINT32>(lua_tointeger(LS, 3));
 
 	CHAR16 w_str[500];
-	MultiByteToWideChar( CP_UTF8, 0, len > MAX_BODY_LENGTH ? str.substr(0, MAX_BODY_LENGTH).c_str() : str.c_str(), -1, w_str, sizeof(w_str) / sizeof(w_str[0]) );
-	w_str[sizeof(w_str) / sizeof(w_str[0]) - 1] = '\0';
+	ja2::text::copyUtf8ToUtf16(
+		std::string_view( text, len ).substr( 0, MAX_BODY_LENGTH ), w_str );
 
 	MSYS_RemoveRegion(&(gMsgBox.BackRegion));
 	DoMessageBox(MSG_BOX_MINIEVENT_STYLE, w_str,
@@ -1635,11 +1632,10 @@ static int MiniEventsLua_ResolveEvent(lua_State* LS)
 static int MiniEventsLua_ScreenMsg(lua_State* LS)
 {
 	size_t len = 0;
-	std::string str = lua_tolstring(LS, 1, &len);
+	const char *text = lua_tolstring(LS, 1, &len);
 
 	CHAR16 w_str[250];
-	MultiByteToWideChar( CP_UTF8, 0, len > 250 ? str.substr(0, 250).c_str() : str.c_str(), -1, w_str, sizeof(w_str) / sizeof(w_str[0]) );
-	w_str[sizeof(w_str) / sizeof(w_str[0]) - 1] = '\0';
+	ja2::text::copyUtf8ToUtf16( std::string_view( text, len ).substr( 0, 250 ), w_str );
 
 	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s", w_str );
 	return 0;

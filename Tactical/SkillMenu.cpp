@@ -16,6 +16,7 @@
 #include "Rotting Corpses.h"
 #include "Dialogue Control.h"
 #include "Handle Items.h"
+#include "UtfConversion.h"
 
 extern void GetEquipmentTemplates( );
 
@@ -909,8 +910,9 @@ DragSelection::Setup( UINT32 aVal )
 
 				if ( xmlentry >= 0 )
 				{
-					WCHAR buf[256];
-					MultiByteToWideChar(CP_UTF8, 0, gStructureMovePossible[xmlentry].szTileSetDisplayName, -1, buf, 256);
+					CHAR16 buf[256];
+					ja2::text::copyUtf8ToUtf16(
+						gStructureMovePossible[xmlentry].szTileSetDisplayName, buf );
 					swprintf(pStr, L"%s (%s)", buf, FaceDirs[gOneCDirection[ubDirection]]);
 
 					// we have to use an offset of NOBODY in order to differentiate between person and corpse
@@ -1045,12 +1047,8 @@ EquipmentSelection::Setup(UINT32 aVal)
 
 		std::string str82 = str8.substr( 0, found );
 		
-		const char* coca = str82.c_str( );
-
 		CHAR16 tmpchar[256];
-
-		int nChars = MultiByteToWideChar( CP_ACP, 0, coca, -1, NULL, 0 );
-		MultiByteToWideChar( CP_UTF8, 0, coca, -1, tmpchar, nChars );
+		ja2::text::copyUtf8ToUtf16( str82, tmpchar );
 
 		pOption = new POPUP_OPTION( std::wstring( tmpchar ), new popupCallbackFunction<void, UINT32>( &Wrapper_Function_EquipmentSelection, i ) );
 

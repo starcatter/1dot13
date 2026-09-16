@@ -40,6 +40,7 @@
 #include "Sys Globals.h"
 #include "Exit Grids.h"
 #include "Tactical Save.h"
+#include "UtfConversion.h"
 #include "PATHAI.H"
 #include "Animation Control.h"
 #include "Squads.h"
@@ -1137,7 +1138,8 @@ citytableEndElementHandle( void *userData, const XML_Char *name )
 				gubTownRebelSentiment[pData->curCityInfo.uiIndex] = pData->curCityInfo.townRebelSentiment;
 				gfMilitiaAllowedInTown[pData->curCityInfo.uiIndex] = pData->curCityInfo.townMilitiaAllowed;
 				//mbstowcs( pTownNames[pData->curCityInfo.uiIndex], pData->curCityInfo.cityName, MAX_TOWN_NAME_LENGHT);
-				MultiByteToWideChar( CP_UTF8, 0, pData->curCityInfo.cityName, -1, pTownNames[pData->curCityInfo.uiIndex], MAX_TOWN_NAME_LENGHT );
+				ja2::text::copyUtf8ToUtf16( pData->curCityInfo.cityName,
+					pTownNames[pData->curCityInfo.uiIndex], MAX_TOWN_NAME_LENGHT );
 
 				strncpy( gHiddenIcon[pData->curCityInfo.uiIndex].IconSti, pData->curCityInfo.IconSTI, MAX_ICON_CHARS );
 
@@ -1169,7 +1171,8 @@ citytableEndElementHandle( void *userData, const XML_Char *name )
 			}
 			else if ( pData->curCityInfo.uiIndex != INVALID_TOWN_INDEX && localizedMapTextOnly )
 			{
-				MultiByteToWideChar( CP_UTF8, 0, pData->curCityInfo.cityName, -1, pTownNames[pData->curCityInfo.uiIndex], MAX_TOWN_NAME_LENGHT );
+				ja2::text::copyUtf8ToUtf16( pData->curCityInfo.cityName,
+					pTownNames[pData->curCityInfo.uiIndex], MAX_TOWN_NAME_LENGHT );
 			}
 		}
 		else if ( strcmp( name, "uiIndex" ) == 0 && pData->curElement == CITYTABLE_ELEMENT_INDEX )
@@ -1304,14 +1307,18 @@ citytableEndElementHandle( void *userData, const XML_Char *name )
 
 			if ( !localizedMapTextOnly )
 			{
-				MultiByteToWideChar( CP_UTF8, 0, pData->countryName, -1, pCountryNames[COUNTRY_NAME], MAX_TOWN_NAME_LENGHT );
-				MultiByteToWideChar( CP_UTF8, 0, pData->countryNoun, -1, pCountryNames[COUNTRY_NOUN], MAX_TOWN_NAME_LENGHT );
+				ja2::text::copyUtf8ToUtf16(
+					pData->countryName, pCountryNames[COUNTRY_NAME], MAX_TOWN_NAME_LENGHT );
+				ja2::text::copyUtf8ToUtf16(
+					pData->countryNoun, pCountryNames[COUNTRY_NOUN], MAX_TOWN_NAME_LENGHT );
 
 			}
 			else if ( localizedMapTextOnly )
 			{
-				MultiByteToWideChar( CP_UTF8, 0, pData->countryName, -1, pCountryNames[COUNTRY_NAME], MAX_TOWN_NAME_LENGHT );
-				MultiByteToWideChar( CP_UTF8, 0, pData->countryNoun, -1, pCountryNames[COUNTRY_NOUN], MAX_TOWN_NAME_LENGHT );
+				ja2::text::copyUtf8ToUtf16(
+					pData->countryName, pCountryNames[COUNTRY_NAME], MAX_TOWN_NAME_LENGHT );
+				ja2::text::copyUtf8ToUtf16(
+					pData->countryNoun, pCountryNames[COUNTRY_NOUN], MAX_TOWN_NAME_LENGHT );
 			}
 		}
 		else if ( strcmp( name, "countryName" ) == 0 && pData->curElement == CITYTABLE_ELEMENT_COUNTRYNAME )

@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -107,15 +108,13 @@ mineralsEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curMinerals.sType, sizeof(pData->curMinerals.sType)/sizeof(pData->curMinerals.sType[0]) );
-			pData->curMinerals.sType[sizeof(pData->curMinerals.sType)/sizeof(pData->curMinerals.sType[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curMinerals.sType );
 		}
 		else if(strcmp(name, "sMineral") == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curMinerals.sMinerals, sizeof(pData->curMinerals.sMinerals)/sizeof(pData->curMinerals.sMinerals[0]) );
-			pData->curMinerals.sMinerals[sizeof(pData->curMinerals.sMinerals)/sizeof(pData->curMinerals.sMinerals[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curMinerals.sMinerals );
 		}
 		pData->maxReadDepth--;
 	}

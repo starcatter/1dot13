@@ -4,6 +4,7 @@
 
 #include <string>
 #include <map>
+#include "UtfConversion.h"
 #include "DEBUG.H"
 #include "Soldier Control.h"
 #include "soldier profile type.h"
@@ -100,11 +101,11 @@ public:
 		_UNSET_FLAGS = _TYPE_FILTER | _TYPE_PAIR | _TYPE_LIST | _TYPE_ENUM | _TYPE_STRING | _TYPE_INTEGER | _REQ_IN | _REQ_OR | _REQ_AND | _REQ_BTWN | _REQ_NOT | _REQ_EQ | _REQ_LT | _REQ_GT
 	};
 	typedef std::pair <INT32, INT32> NumberPair;
-	typedef std::list <std::wstring> StringList;
+	typedef std::list <ja2::text::Utf16String> StringList;
 	typedef std::vector <INT32> NumberList;
 	union criterionVariant {
 		INT32 number;
-		std::wstring* string;
+		ja2::text::Utf16String* string;
 		NumberPair* numberPair;
 		StringList* stringList;
 		NumberList* numberList;
@@ -115,14 +116,13 @@ public:
 public:
 	Filter(void);
 	~Filter(void);
-	void AddCriterion(UINT32 type, std::wstring& value);
+	void AddCriterion(UINT32 type, const ja2::text::Utf16String& value);
 	void AddCriterion(UINT32 type, STR16 value);
 	void AddCriterion(UINT32 type, StringList& list);
 	void AddCriterion(UINT32 type, INT32 value);
 	void AddCriterion(UINT32 type, INT32 value1, INT32 value2);
 	void AddCriterion(UINT32 type, NumberList& list);
 	void AddCriterion(UINT32 type, Filter* filter);
-	void Dump(std::wstringstream& stream);
 	bool Match(SOLDIERTYPE* pSoldier);
 
 private:

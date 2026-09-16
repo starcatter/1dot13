@@ -1,4 +1,5 @@
 #include "LegacySGP.h"
+#include "UtfConversion.h"
 #include "Debug Control.h"
 #include "expat.h"
 #include "XML.h"
@@ -199,22 +200,21 @@ newCarEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curNewCar.NewVehicleName, sizeof(pData->curNewCar.NewVehicleName)/sizeof(pData->curNewCar.NewVehicleName[0]) );
-			pData->curNewCar.NewVehicleName[sizeof(pData->curNewCar.NewVehicleName)/sizeof(pData->curNewCar.NewVehicleName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curNewCar.NewVehicleName );
 		}
 		else if(strcmp(name, "LongName") == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curNewCar.NewVehicleStrings, sizeof(pData->curNewCar.NewVehicleStrings)/sizeof(pData->curNewCar.NewVehicleStrings[0]) );
-			pData->curNewCar.NewVehicleStrings[sizeof(pData->curNewCar.NewVehicleStrings)/sizeof(pData->curNewCar.NewVehicleStrings[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData,
+				pData->curNewCar.NewVehicleStrings );
 		}
 		else if(strcmp(name, "ShortName") == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curNewCar.NewShortVehicleStrings, sizeof(pData->curNewCar.NewShortVehicleStrings)/sizeof(pData->curNewCar.NewShortVehicleStrings[0]) );
-			pData->curNewCar.NewShortVehicleStrings[sizeof(pData->curNewCar.NewShortVehicleStrings)/sizeof(pData->curNewCar.NewShortVehicleStrings[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData,
+				pData->curNewCar.NewShortVehicleStrings );
 		}
 		else if(strcmp(name, "StiFaceIcon") == 0)
 		{
@@ -256,8 +256,8 @@ newCarEndElementHandle(void *userData, const XML_Char *name)
 		else if(strcmp(name, "SeatName") == 0)
 		{
 			pData->curElement = ELEMENT_SUBLIST;
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curNewCar.VehicleSeats[pData->curSeatIndex].zSeatName, sizeof(pData->curNewCar.VehicleSeats[pData->curSeatIndex].zSeatName)/sizeof( pData->curNewCar.VehicleSeats[pData->curSeatIndex].zSeatName[0]) );
-			pData->curNewCar.VehicleSeats[pData->curSeatIndex].zSeatName[sizeof(pData->curNewCar.VehicleSeats[pData->curSeatIndex].zSeatName)/sizeof(pData->curNewCar.VehicleSeats[pData->curSeatIndex].zSeatName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData,
+				pData->curNewCar.VehicleSeats[pData->curSeatIndex].zSeatName );
 		}
 		else if(strcmp(name, "Driver") == 0)
 		{

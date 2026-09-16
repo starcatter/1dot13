@@ -45,6 +45,7 @@
 
 #include "LOS.h"
 #include "Music Control.h"
+#include "UtfConversion.h"
 
 #include "GameInitOptionsScreen.h"
 
@@ -11427,8 +11428,7 @@ static int l_SetScreenMsg(lua_State* L)
 
 		CHAR16 w_str[1000];
 
-		MultiByteToWideChar(CP_UTF8, 0, str, -1, w_str, sizeof(w_str) / sizeof(w_str[0]));
-		w_str[sizeof(w_str) / sizeof(w_str[0]) - 1] = '\0';
+		ja2::text::copyUtf8ToUtf16( std::string_view( str, len ), w_str );
 
 		ScreenMsg(usColor, MSG_INTERFACE, w_str);
 	}
@@ -11587,8 +11587,7 @@ static int l_SetAdditionalDialogue(lua_State* L)
 
 			CHAR16 quote_str[1000];
 
-			MultiByteToWideChar(CP_UTF8, 0, str, -1, quote_str, sizeof(quote_str) / sizeof(quote_str[0]));
-			quote_str[sizeof(quote_str) / sizeof(quote_str[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( std::string_view( str, len ), quote_str );
 
 			SetQuoteStr(quote_str);
 		}
@@ -11614,8 +11613,7 @@ static int l_SetReplaceDialogue(lua_State* L)
 
 			CHAR16 quote_str[1000];
 
-			MultiByteToWideChar(CP_UTF8, 0, str, -1, quote_str, sizeof(quote_str) / sizeof(quote_str[0]));
-			quote_str[sizeof(quote_str) / sizeof(quote_str[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( std::string_view( str, len ), quote_str );
 
 			SetQuoteStr(quote_str);
 		}
@@ -11788,8 +11786,7 @@ static int l_SetPhotoFactLaptopData(lua_State* L)
 
 		CHAR16 w_str[1000];
 
-		MultiByteToWideChar(CP_UTF8, 0, str, -1, w_str, sizeof(w_str) / sizeof(w_str[0]));
-		w_str[sizeof(w_str) / sizeof(w_str[0]) - 1] = '\0';
+		ja2::text::copyUtf8ToUtf16( std::string_view( str, len ), w_str );
 
 		AddPhotoFactTaken(type, sIndex, w_str);
 	}
@@ -11887,16 +11884,15 @@ static int l_SetIntelAndQuestMapDataForSector(lua_State* L)
 			size_t len = 0;
 			const char* str = lua_tolstring(L, 5, &len);
 
-			MultiByteToWideChar(CP_UTF8, 0, str, -1, w_str, sizeof(w_str) / sizeof(w_str[0]));
-			w_str[sizeof(w_str) / sizeof(w_str[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( std::string_view( str, len ), w_str );
 
 			if (n >= 6)
 			{
 				size_t len_short = 0;
 				const char* str_short = lua_tolstring(L, 6, &len_short);
 
-				MultiByteToWideChar(CP_UTF8, 0, str_short, -1, w_str_short, sizeof(w_str_short) / sizeof(w_str_short[0]));
-				w_str_short[sizeof(w_str_short) / sizeof(w_str_short[0]) - 1] = '\0';
+				ja2::text::copyUtf8ToUtf16(
+					std::string_view( str_short, len_short ), w_str_short );
 			}
 		}
 

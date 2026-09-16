@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -237,22 +238,19 @@ backgroundEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 			
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curBackground.szName, sizeof(pData->curBackground.szName)/sizeof(pData->curBackground.szName[0]) );
-			pData->curBackground.szName[sizeof(pData->curBackground.szName)/sizeof(pData->curBackground.szName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curBackground.szName );
 		}
 		else if(strcmp(name, "szShortName") == 0 )
 		{
 			pData->curElement = ELEMENT;
 			
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curBackground.szShortName, sizeof(pData->curBackground.szShortName)/sizeof(pData->curBackground.szShortName[0]) );
-			pData->curBackground.szShortName[sizeof(pData->curBackground.szShortName)/sizeof(pData->curBackground.szShortName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curBackground.szShortName );
 		}
 		else if(strcmp(name, "szDescription") == 0 )
 		{
 			pData->curElement = ELEMENT;
 			
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curBackground.szDescription, sizeof(pData->curBackground.szDescription)/sizeof(pData->curBackground.szDescription[0]) );
-			pData->curBackground.szDescription[sizeof(pData->curBackground.szDescription)/sizeof(pData->curBackground.szDescription[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curBackground.szDescription );
 		}
 		else if(strcmp(name, "ap_polar") == 0)
 		{

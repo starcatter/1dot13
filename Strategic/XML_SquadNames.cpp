@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include <FileMan.h>
 	#include "Debug Control.h"
 	#include "expat.h"
@@ -88,8 +89,7 @@ squadnamesEndElementHandle(void *userData, const XML_Char *name)
 
 			CHAR16 bla[30];
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, bla, sizeof( bla ) / sizeof( bla[0] ) );
-			bla[sizeof( bla ) / sizeof( bla[0] ) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, bla );
 
 			gSquadNameVector.push_back( bla );
 		}

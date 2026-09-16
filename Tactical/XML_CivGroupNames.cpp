@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -146,8 +147,7 @@ civGroupNamesEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curCivGroupNames.szCurGroup, sizeof(pData->curCivGroupNames.szCurGroup)/sizeof(pData->curCivGroupNames.szCurGroup[0]) );
-			pData->curCivGroupNames.szCurGroup[sizeof(pData->curCivGroupNames.szCurGroup)/sizeof(pData->curCivGroupNames.szCurGroup[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curCivGroupNames.szCurGroup );
 	
 			#ifdef JA2EDITOR
 			wcscpy(gszCivGroupNames[pData->curCivGroupNames.uiIndex], pData->curCivGroupNames.szCurGroup);

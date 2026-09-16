@@ -64,6 +64,8 @@ int main()
 	expect( utf16ToUtf8( replaced ) == "\xef\xbf\xbd", "invalid UTF-8 was not replaced predictably" );
 
 	const Utf16String loneSurrogate{ static_cast<CHAR16>( 0xd800 ) };
+	expect( isValidUtf16( wide ) && !isValidUtf16( loneSurrogate ),
+		"UTF-16 validity check reported the wrong result" );
 	expectConversionError( [&] { (void) utf16ToUtf8( loneSurrogate ); }, Encoding::utf16,
 		"invalid UTF-16 did not produce ConversionError" );
 	expect( utf16ToUtf8ReplacingInvalid( loneSurrogate ) == "\xef\xbf\xbd",
@@ -114,6 +116,51 @@ int main()
 	{
 		(void) copyUtf8ToUtf16( "A", nullptr, 1 );
 		expect( false, "null non-empty output buffer was accepted" );
+	}
+	catch ( const std::invalid_argument& )
+	{
+	}
+
+	char exactUtf8Buffer[5]{};
+	const ByteBufferConversionResult exactUtf8Result = copyUtf16ToUtf8( emoji, exactUtf8Buffer );
+	expect( exactUtf8Result.bytesWritten == 4 && exactUtf8Result.inputWasValid &&
+		!exactUtf8Result.truncated && std::string( exactUtf8Buffer ) == "\xf0\x9f\x98\x80",
+		"exact-fit UTF-8 buffer conversion reported the wrong result" );
+
+	char shortUtf8Buffer[4]{ 'X', 'X', 'X', 'X' };
+	const ByteBufferConversionResult shortUtf8Result = copyUtf16ToUtf8( emoji, shortUtf8Buffer );
+	expect( shortUtf8Result.bytesWritten == 0 && shortUtf8Result.truncated && shortUtf8Buffer[0] == '\0',
+		"UTF-8 buffer truncation wrote a partial sequence" );
+	const Utf16String asciiThenEmoji{ static_cast<CHAR16>( 'A' ),
+		static_cast<CHAR16>( 0xd83d ), static_cast<CHAR16>( 0xde00 ) };
+	char prefixedShortUtf8Buffer[3]{ 'X', 'X', 'X' };
+	const ByteBufferConversionResult prefixedShortUtf8Result =
+		copyUtf16ToUtf8( asciiThenEmoji, prefixedShortUtf8Buffer );
+	expect( prefixedShortUtf8Result.bytesWritten == 1 && prefixedShortUtf8Result.truncated &&
+		std::string( prefixedShortUtf8Buffer ) == "A",
+		"UTF-8 buffer truncation discarded a complete prefix" );
+
+	char invalidUtf16Buffer[4]{};
+	const ByteBufferConversionResult invalidUtf16Result =
+		copyUtf16ToUtf8( loneSurrogate, invalidUtf16Buffer );
+	expect( invalidUtf16Result.bytesWritten == 3 && !invalidUtf16Result.inputWasValid &&
+		!invalidUtf16Result.truncated && std::string( invalidUtf16Buffer ) == "\xef\xbf\xbd",
+		"buffer conversion did not report and replace invalid UTF-16" );
+
+	char nullUtf16Buffer[1]{ 'X' };
+	const ByteBufferConversionResult nullUtf16Result =
+		copyUtf16ToUtf8( static_cast<const CHAR16 *>( nullptr ), nullUtf16Buffer );
+	expect( nullUtf16Result.bytesWritten == 0 && nullUtf16Result.inputWasValid &&
+		!nullUtf16Result.truncated && nullUtf16Buffer[0] == '\0',
+		"null UTF-16 input did not produce an empty byte string" );
+
+	const ByteBufferConversionResult zeroByteCapacityResult = copyUtf16ToUtf8( emoji, nullptr, 0 );
+	expect( zeroByteCapacityResult.bytesWritten == 0 && zeroByteCapacityResult.truncated,
+		"zero-capacity UTF-8 buffer reported the wrong result" );
+	try
+	{
+		(void) copyUtf16ToUtf8( emoji, nullptr, 1 );
+		expect( false, "null non-empty UTF-8 output buffer was accepted" );
 	}
 	catch ( const std::invalid_argument& )
 	{

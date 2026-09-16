@@ -1,4 +1,5 @@
 #include "LegacySGP.h"
+#include "UtfConversion.h"
 #include "FileMan.h"
 #include "Disease.h"
 #include "Debug Control.h"
@@ -162,22 +163,19 @@ diseaseEndElementHandle( void *userData, const XML_Char *name )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curItem.szName, sizeof(pData->curItem.szName) / sizeof(pData->curItem.szName[0]) );
-			pData->curItem.szName[sizeof(pData->curItem.szName) / sizeof(pData->curItem.szName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curItem.szName );
 		}
 		else if ( strcmp( name, "szFatName" ) == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curItem.szFatName, sizeof(pData->curItem.szFatName) / sizeof(pData->curItem.szFatName[0]) );
-			pData->curItem.szFatName[sizeof(pData->curItem.szFatName) / sizeof(pData->curItem.szFatName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curItem.szFatName );
 		}
 		else if ( strcmp( name, "szDescription" ) == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curItem.szDescription, sizeof(pData->curItem.szDescription) / sizeof(pData->curItem.szDescription[0]) );
-			pData->curItem.szDescription[sizeof(pData->curItem.szDescription) / sizeof(pData->curItem.szDescription[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curItem.szDescription );
 		}
 		else if ( strcmp( name, "sInfectionPtsInitial" ) == 0 )
 		{

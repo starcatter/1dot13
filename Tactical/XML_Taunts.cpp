@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -231,9 +232,11 @@ tauntEndElementHandle(void *userData, const XML_Char *name)
 				{			
 					// WANNE: Not working
 					/*
-					MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curArray[pData->curTaunt.uiIndex].szText, sizeof(pData->curTaunt.szText)/sizeof(pData->curTaunt.szText[0]) );
+					ja2::text::copyUtf8ToUtf16( pData->szCharData,
+						pData->curArray[pData->curTaunt.uiIndex].szText );
 					pData->curTaunt.szText[sizeof(pData->curTaunt.szText)/sizeof(pData->curTaunt.szText[0]) - 1] = '\0';
-					MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curArray[pData->curTaunt.uiIndex].szCensoredText, sizeof(pData->curTaunt.szCensoredText)/sizeof(pData->curTaunt.szCensoredText[0]) );
+					ja2::text::copyUtf8ToUtf16( pData->szCharData,
+						pData->curArray[pData->curTaunt.uiIndex].szCensoredText );
 					pData->curTaunt.szCensoredText[sizeof(pData->curTaunt.szCensoredText)/sizeof(pData->curTaunt.szCensoredText[0]) - 1] = '\0';
 					*/
 
@@ -303,15 +306,13 @@ tauntEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 			
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curTaunt.szText, sizeof(pData->curTaunt.szText)/sizeof(pData->curTaunt.szText[0]) );
-			pData->curTaunt.szText[sizeof(pData->curTaunt.szText)/sizeof(pData->curTaunt.szText[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curTaunt.szText );
 		}
 		else if(strcmp(name, "szCensoredText") == 0 )
 		{
 			pData->curElement = ELEMENT;
 			
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curTaunt.szCensoredText, sizeof(pData->curTaunt.szCensoredText)/sizeof(pData->curTaunt.szCensoredText[0]) );
-			pData->curTaunt.szCensoredText[sizeof(pData->curTaunt.szCensoredText)/sizeof(pData->curTaunt.szCensoredText[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curTaunt.szCensoredText );
 		}
 		else if(strcmp(name, "aggressive") == 0)
 		{

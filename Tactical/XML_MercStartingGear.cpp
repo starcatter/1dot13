@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "FileMan.h"
 #include "Item Types.h"
 	#include "Debug Control.h"
@@ -251,8 +252,8 @@ MercStartingGearEndElementHandle(void *userData, const XML_Char *name)
 		else if(strcmp(name, "mGearKitName") == 0)
 		{
 			pData->curElement = ELEMENT_SUBLIST;
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curMercStartingGear.mGearKitName, sizeof(pData->curMercStartingGear.mGearKitName)/sizeof(pData->curMercStartingGear.mGearKitName[0]) );
-			pData->curMercStartingGear.mGearKitName[sizeof(pData->curMercStartingGear.mGearKitName)/sizeof(pData->curMercStartingGear.mGearKitName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData,
+				pData->curMercStartingGear.mGearKitName );
 		}
 		else if(strcmp(name, "mHelmet") == 0)
 		{

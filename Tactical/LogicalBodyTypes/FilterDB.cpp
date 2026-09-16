@@ -1,4 +1,5 @@
 #include "FilterDB.h"
+#include "UtfConversion.h"
 
 namespace LogicalBodyTypes {
 
@@ -175,36 +176,40 @@ namespace LogicalBodyTypes {
 		switch (data->state) {
 		case E_CRITERION:
 			// TODO: trim character data!
-			char* text = new char[len + 1];
-			strncpy(text, str, len);
-			text[len] = '\0';
+			std::string text(str, len);
 			if (data->criterionType & Filter::_TYPE_STRING) {
-				STR16 wStr = NULL;
-				int len = MultiByteToWideChar(CP_UTF8, 0, text, -1, wStr, 0);
-				wStr = (STR16)MemAlloc(len * sizeof(CHAR16));
-				MultiByteToWideChar(CP_UTF8, 0, text, -1, wStr, len);
+				ja2::text::Utf16String wStr = ja2::text::utf8ToUtf16ReplacingInvalid(text);
 				if (data->criterionType & Filter::_TYPE_LIST) {
 					Filter::StringList list;
-					wchar_t* token = wcstok(wStr, L", ");
-					while (token != NULL) {
-						list.push_back(token);
-						token = wcstok(NULL, L", ");
+					std::size_t start = 0;
+					while (start < wStr.size()) {
+						while (start < wStr.size() && (wStr[start] == static_cast<CHAR16>(',') ||
+							wStr[start] == static_cast<CHAR16>(' '))) {
+							++start;
+						}
+						std::size_t end = start;
+						while (end < wStr.size() && wStr[end] != static_cast<CHAR16>(',') &&
+							wStr[end] != static_cast<CHAR16>(' ')) {
+							++end;
+						}
+						if (end != start) {
+							list.emplace_back(wStr.begin() + start, wStr.begin() + end);
+						}
+						start = end;
 					}
 					data->currentFilter->AddCriterion(data->operationFlags | data->criterionType, list);
 				}
 				else {
 					data->currentFilter->AddCriterion(data->operationFlags | data->criterionType, wStr);
 				}
-				MemFree(wStr);
 			}
 			else if (data->criterionType & Filter::_TYPE_INTEGER) {
 				if ((data->criterionType & Filter::_TYPE_LIST) || (data->criterionType & Filter::_TYPE_PAIR)) {
 					Filter::NumberList list;
-					char* token = strtok(text, ", ");
+					char* token = strtok(text.data(), ", ");
 					while (token != NULL) {
 						INT32 val;
 						if (!ConvertStringToINT32(token, &val)) {
-							delete text;
 							throw XMLParseException("Invalid value!", data->criterionName.c_str(), data->pParser);
 						}
 						list.push_back(val);
@@ -212,7 +217,6 @@ namespace LogicalBodyTypes {
 					}
 					if (data->criterionType & Filter::_TYPE_PAIR) {
 						if (list.size() != 2) {
-							delete text;
 							throw XMLParseException("Exactly 2 operands must be specified for 'between' operator!", data->criterionName.c_str(), data->pParser);
 						}
 						data->currentFilter->AddCriterion(data->operationFlags | data->criterionType, list.front(), list.back());
@@ -223,8 +227,7 @@ namespace LogicalBodyTypes {
 				}
 				else {
 					INT32 val;
-					if (!ConvertStringToINT32(text, &val)) {
-						delete text;
+					if (!ConvertStringToINT32(text.c_str(), &val)) {
 						throw XMLParseException("Invalid value!", data->criterionName.c_str(), data->pParser);
 					}
 					data->currentFilter->AddCriterion(data->operationFlags | data->criterionType, val);
@@ -232,7 +235,7 @@ namespace LogicalBodyTypes {
 			}
 			else if (data->criterionType & Filter::_TYPE_ENUM) {
 				INT32 ord;
-				if (EnumeratorDB::Instance().GetEnumeratorByStr(data->criterionName.c_str(), text, ord)) {
+				if (EnumeratorDB::Instance().GetEnumeratorByStr(data->criterionName.c_str(), text.c_str(), ord)) {
 					// For the filter no enum type exists.
 					// Since we now know the integer value of the enumerator we treat it like any other integer criterion
 					data->criterionType &= ~Filter::_TYPE_ENUM;
@@ -240,7 +243,6 @@ namespace LogicalBodyTypes {
 					data->currentFilter->AddCriterion(data->operationFlags | data->criterionType, ord);
 				}
 				else {
-					delete text;
 					throw XMLParseException("Can't find specified enumerator!", data->criterionName.c_str(), data->pParser);
 				}
 			}
@@ -251,7 +253,6 @@ namespace LogicalBodyTypes {
 				}
 				data->currentFilter->AddCriterion(data->operationFlags | data->criterionType, f);
 			}
-			delete text;
 			break;
 		}
 	}

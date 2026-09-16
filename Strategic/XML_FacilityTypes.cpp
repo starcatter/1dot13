@@ -10,6 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "GameSettings.h"
@@ -588,15 +589,13 @@ facilitytypeEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = FACILITYTYPE_TYPE;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curFacilityTypeData.szFacilityName, sizeof(pData->curFacilityTypeData.szFacilityName)/sizeof(pData->curFacilityTypeData.szFacilityName[0]) );
-			pData->curFacilityTypeData.szFacilityName[sizeof(pData->curFacilityTypeData.szFacilityName)/sizeof(pData->curFacilityTypeData.szFacilityName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curFacilityTypeData.szFacilityName );
 		}
 		else if(strcmp(name, "szFacilityShortName") == 0)
 		{
 			pData->curElement = FACILITYTYPE_TYPE;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curFacilityTypeData.szFacilityShortName, sizeof(pData->curFacilityTypeData.szFacilityShortName)/sizeof(pData->curFacilityTypeData.szFacilityShortName[0]) );
-			pData->curFacilityTypeData.szFacilityShortName[sizeof(pData->curFacilityTypeData.szFacilityShortName)/sizeof(pData->curFacilityTypeData.szFacilityShortName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curFacilityTypeData.szFacilityShortName );
 		}
 		else if(strcmp(name, "ubTotalStaffLimit") == 0 )
 		{
@@ -955,8 +954,7 @@ facilitytypeEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = FACILITYTYPE_ASSIGNMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curAssignmentData.szTooltipText, sizeof(pData->curAssignmentData.szTooltipText)/sizeof(pData->curAssignmentData.szTooltipText[0]) );
-			pData->curAssignmentData.szTooltipText[sizeof(pData->curAssignmentData.szTooltipText)/sizeof(pData->curAssignmentData.szTooltipText[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curAssignmentData.szTooltipText );
 		}
 
 		else if(strcmp(name, "sCostPerHour") == 0 )
@@ -1206,15 +1204,14 @@ facilitytypeEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = FACILITYTYPE_PRODUCTION;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curProductionData.szProductionName, sizeof( pData->curProductionData.szProductionName ) / sizeof( pData->curProductionData.szProductionName[0] ) );
-			pData->curProductionData.szProductionName[sizeof( pData->curProductionData.szProductionName ) / sizeof( pData->curProductionData.szProductionName[0] ) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curProductionData.szProductionName );
 		}
 		else if ( strcmp( name, "szAdditionalRequirementTips" ) == 0 )
 		{
 			pData->curElement = FACILITYTYPE_PRODUCTION;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curProductionData.szAdditionalRequirementTips, sizeof( pData->curProductionData.szAdditionalRequirementTips ) / sizeof( pData->curProductionData.szAdditionalRequirementTips[0] ) );
-			pData->curProductionData.szAdditionalRequirementTips[sizeof( pData->curProductionData.szAdditionalRequirementTips ) / sizeof( pData->curProductionData.szAdditionalRequirementTips[0] ) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData,
+				pData->curProductionData.szAdditionalRequirementTips );
 		}
 		else if ( strcmp( name, "usItemToCreate" ) == 0 )
 		{

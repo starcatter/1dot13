@@ -31,6 +31,7 @@
 #include "Game Clock.h"
 #include "Interface Items.h"
 #include "physics.h"
+#include "UtfConversion.h"
 #include "UI Cursors.h"
 #include "strategicmap.h"
 #include "Soldier Profile.h"
@@ -3591,8 +3592,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 
 											CHAR16 whcarthing[100];
 
-											int nChars = MultiByteToWideChar( CP_ACP, 0, tilesestr.c_str(), -1, NULL, 0 );
-											MultiByteToWideChar( CP_UTF8, 0, tilesestr.c_str( ), -1, whcarthing, nChars );
+											ja2::text::copyUtf8ToUtf16( tilesestr, whcarthing );
 
 											swprintf( zOutputString, L"Tileset %d: Tilesetname: %s tileindex: %d", giCurrentTilesetID, whcarthing, pStruct->pDBStructureRef->pDBStructure->usStructureNumber );
 											ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, zOutputString );

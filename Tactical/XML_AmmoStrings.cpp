@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Overhead.h"
 	#include "Text.h"
 	#include "Debug Control.h"
@@ -90,7 +91,7 @@ ammoEndElementHandle(void *userData, const XML_Char *name)
 			pData->curElement = ELEMENT;
 			if(pData->curIndex < pData->maxArraySize)
 			{
-				MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, AmmoCaliber[pData->curIndex], sizeof(AmmoCaliber[0])/sizeof(AmmoCaliber[0][0]) );
+				ja2::text::copyUtf8ToUtf16( pData->szCharData, AmmoCaliber[pData->curIndex] );
 				AmmoCaliber[pData->curIndex][sizeof(AmmoCaliber[0])/sizeof(AmmoCaliber[0][0]) - 1] = '\0';
 			}
 
@@ -100,7 +101,8 @@ ammoEndElementHandle(void *userData, const XML_Char *name)
 			pData->curElement = ELEMENT;
 			if(pData->curIndex < pData->maxArraySize)
 			{
-				MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, BobbyRayAmmoCaliber[pData->curIndex], sizeof(BobbyRayAmmoCaliber[0])/sizeof(BobbyRayAmmoCaliber[0][0]) );
+				ja2::text::copyUtf8ToUtf16( pData->szCharData,
+					BobbyRayAmmoCaliber[pData->curIndex] );
 				BobbyRayAmmoCaliber[pData->curIndex][sizeof(BobbyRayAmmoCaliber[0])/sizeof(BobbyRayAmmoCaliber[0][0]) - 1] = '\0';
 			}
 

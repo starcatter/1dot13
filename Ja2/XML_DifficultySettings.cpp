@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -263,15 +264,13 @@ difficultySettingsEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curDifficultySettings.szDiffName, sizeof(pData->curDifficultySettings.szDiffName)/sizeof(pData->curDifficultySettings.szDiffName[0]) );
-			pData->curDifficultySettings.szDiffName[sizeof(pData->curDifficultySettings.szDiffName)/sizeof(pData->curDifficultySettings.szDiffName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curDifficultySettings.szDiffName );
 		}
 		else if(strcmp(name, "ConfirmText") == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curDifficultySettings.szConfirmText, sizeof(pData->curDifficultySettings.szConfirmText)/sizeof(pData->curDifficultySettings.szConfirmText[0]) );
-			pData->curDifficultySettings.szConfirmText[sizeof(pData->curDifficultySettings.szConfirmText)/sizeof(pData->curDifficultySettings.szConfirmText[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curDifficultySettings.szConfirmText );
 		}		
 		else if(strcmp(name, "StartingCash") == 0)
 		{

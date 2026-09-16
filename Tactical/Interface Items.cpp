@@ -1,6 +1,7 @@
 	#include "mapscreen.h"
 	#include <stdio.h>
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "himage.h"
 	#include "vobject.h"
 	#include "sysutil.h"
@@ -7277,7 +7278,8 @@ void RenderItemDescriptionBox( )
 
 						// print value
 						SetFontForeground( 5 );
-						MultiByteToWideChar( CP_UTF8, 0, gpSpreadPattern[GetSpreadPattern( gpItemDescObject )].Name, -1, pStr, sizeof(pStr)/sizeof(pStr[0]) );
+						ja2::text::copyUtf8ToUtf16(
+							gpSpreadPattern[GetSpreadPattern( gpItemDescObject )].Name, pStr );
 						FindFontRightCoordinates( gItemDescTextRegions[regionindex].sLeft, gItemDescTextRegions[regionindex].sTop, gItemDescTextRegions[regionindex].sRight - gItemDescTextRegions[regionindex].sLeft ,gItemDescTextRegions[regionindex].sBottom - gItemDescTextRegions[regionindex].sTop ,pStr, BLOCKFONT2, &usX, &usY);
 						mprintf( usX, usY, pStr );
 					}

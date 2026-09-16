@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -111,8 +112,7 @@ soldierProfilesEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 			
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curSoldierProfile.szName, sizeof(pData->curSoldierProfile.szName)/sizeof(pData->curSoldierProfile.szName[0]) );
-			pData->curSoldierProfile.szName[sizeof(pData->curSoldierProfile.szName)/sizeof(pData->curSoldierProfile.szName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curSoldierProfile.szName );
 		}
 		else if(strcmp(name, "uiBodyType") == 0)
 		{

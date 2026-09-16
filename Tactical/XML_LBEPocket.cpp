@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "FileMan.h"
 #include "Item Types.h"
 	#include "Debug Control.h"
@@ -189,8 +190,7 @@ lbepocketParseData * pData = (lbepocketParseData *)userData;
 		else if(strcmp(name, "pName") == 0)
 		{
 			pData->curElement = ELEMENT;
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curLBEPocket.pName, sizeof(pData->curLBEPocket.pName)/sizeof(pData->curLBEPocket.pName[0]) );
-			pData->curLBEPocket.pName[sizeof(pData->curLBEPocket.pName)/sizeof(pData->curLBEPocket.pName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curLBEPocket.pName );
 		}
 		else if(strcmp(name, "pSilhouette") == 0)
 		{
