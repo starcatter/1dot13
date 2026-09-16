@@ -69,5 +69,44 @@ int main()
 	expect( utf16ToUtf8ReplacingInvalid( loneSurrogate ) == "\xef\xbf\xbd",
 		"invalid UTF-16 was not replaced predictably" );
 
+	CHAR16 exactBuffer[4]{};
+	const BufferConversionResult exactResult = copyUtf8ToUtf16( "ABC", exactBuffer );
+	expect( exactResult.codeUnitsWritten == 3 && exactResult.inputWasValid && !exactResult.truncated,
+		"exact-fit buffer conversion reported the wrong result" );
+	expect( exactBuffer[0] == static_cast<CHAR16>( 'A' ) && exactBuffer[2] == static_cast<CHAR16>( 'C' ) &&
+		exactBuffer[3] == 0, "exact-fit buffer conversion wrote the wrong text" );
+
+	CHAR16 shortBuffer[3]{};
+	const BufferConversionResult shortResult = copyUtf8ToUtf16( "ABCD", shortBuffer );
+	expect( shortResult.codeUnitsWritten == 2 && shortResult.truncated,
+		"short buffer did not report truncation" );
+	expect( shortBuffer[0] == static_cast<CHAR16>( 'A' ) && shortBuffer[1] == static_cast<CHAR16>( 'B' ) &&
+		shortBuffer[2] == 0, "short buffer was not safely terminated" );
+
+	CHAR16 surrogateBuffer[2]{ static_cast<CHAR16>( 'X' ), static_cast<CHAR16>( 'X' ) };
+	const BufferConversionResult surrogateResult = copyUtf8ToUtf16( "\xf0\x9f\x98\x80", surrogateBuffer );
+	expect( surrogateResult.codeUnitsWritten == 0 && surrogateResult.truncated && surrogateBuffer[0] == 0,
+		"buffer truncation split a surrogate pair" );
+
+	CHAR16 replacementBuffer[2]{};
+	const BufferConversionResult replacementResult = copyUtf8ToUtf16( invalidUtf8, replacementBuffer );
+	expect( replacementResult.codeUnitsWritten == 1 && !replacementResult.inputWasValid &&
+		!replacementResult.truncated && replacementBuffer[0] == static_cast<CHAR16>( 0xfffd ),
+		"buffer conversion did not report and replace invalid UTF-8" );
+
+	const BufferConversionResult zeroCapacityResult = copyUtf8ToUtf16( "A", nullptr, 0 );
+	expect( zeroCapacityResult.codeUnitsWritten == 0 && zeroCapacityResult.truncated,
+		"zero-capacity buffer reported the wrong result" );
+	expectConversionError( [] { (void) utf8ToUtf16( std::string( "\xed\xa0\x80", 3 ) ); }, Encoding::utf8,
+		"UTF-8 encoding of a surrogate was accepted" );
+	try
+	{
+		(void) copyUtf8ToUtf16( "A", nullptr, 1 );
+		expect( false, "null non-empty output buffer was accepted" );
+	}
+	catch ( const std::invalid_argument& )
+	{
+	}
+
 	return failures == 0 ? 0 : 1;
 }

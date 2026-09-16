@@ -4,6 +4,7 @@
 	#include "XML.h"
 	#include "Interface.h"
 	#include "Text.h"
+	#include "UtfConversion.h"
 
 struct
 {
@@ -95,8 +96,7 @@ senderNameListEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curSenderNameList.Name, sizeof(pData->curSenderNameList.Name)/sizeof(pData->curSenderNameList.Name[0]) );
-			pData->curSenderNameList.Name[sizeof(pData->curSenderNameList.Name)/sizeof(pData->curSenderNameList.Name[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curSenderNameList.Name );
 		}
 		pData->maxReadDepth--;
 	}

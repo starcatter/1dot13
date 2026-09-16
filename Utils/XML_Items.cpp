@@ -33,6 +33,7 @@
 	#include "XML.h"
 	#include "Utilities.h"
 	#include "Store Inventory.h"
+	#include "UtfConversion.h"
 
 // Flugente: in order not to loop over MAXITEMS items if we only have a few thousand, remember the actual number of items in the xml
 UINT32 gMAXITEMS_READ = 0;
@@ -464,40 +465,35 @@ itemEndElementHandle(void *userData, const XML_Char *name)
 			//	pData->curItem.szItemName[MAX_CHAR_DATA_LENGTH] = '\0';
 			//}
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curItem.szItemName, sizeof(pData->curItem.szItemName)/sizeof(pData->curItem.szItemName[0]) );
-			pData->curItem.szItemName[sizeof(pData->curItem.szItemName)/sizeof(pData->curItem.szItemName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curItem.szItemName );
 		}
 		else if(strcmp(name, "szLongItemName") == 0)
 		{
 			//DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"itemEndElementHandle: longitemname");
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curItem.szLongItemName, sizeof(pData->curItem.szLongItemName)/sizeof(pData->curItem.szLongItemName[0]) );
-			pData->curItem.szLongItemName[sizeof(pData->curItem.szLongItemName)/sizeof(pData->curItem.szLongItemName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curItem.szLongItemName );
 		}
 		else if(strcmp(name, "szItemDesc") == 0)
 		{
 			//DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"itemEndElementHandle: itemdesc");
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curItem.szItemDesc, sizeof(pData->curItem.szItemDesc)/sizeof(pData->curItem.szItemDesc[0]) );
-			pData->curItem.szItemDesc[sizeof(pData->curItem.szItemDesc)/sizeof(pData->curItem.szItemDesc[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curItem.szItemDesc );
 		}
 		else if(strcmp(name, "szBRName") == 0)
 		{
 			//DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"itemEndElementHandle: brname");
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curItem.szBRName, sizeof(pData->curItem.szBRName)/sizeof(pData->curItem.szBRName[0]) );
-			pData->curItem.szBRName[sizeof(pData->curItem.szBRName)/sizeof(pData->curItem.szBRName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curItem.szBRName );
 		}
 		else if(strcmp(name, "szBRDesc") == 0)
 		{
 			//DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"itemEndElementHandle: brdesc");
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curItem.szBRDesc, sizeof(pData->curItem.szBRDesc)/sizeof(pData->curItem.szBRDesc[0]) );
-			pData->curItem.szBRDesc[sizeof(pData->curItem.szBRDesc)/sizeof(pData->curItem.szBRDesc[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curItem.szBRDesc );
 		}
 		else if(strcmp(name, "usItemClass") == 0)
 		{

@@ -24,6 +24,7 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/impTGA.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/input.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/line.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/LegacyStringConversion.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/MemMan.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/mousesystem.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/PCX.cpp"

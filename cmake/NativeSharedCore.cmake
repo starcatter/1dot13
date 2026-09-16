@@ -17,6 +17,7 @@ add_library(ja2_shared_core STATIC
   sgp/English.cpp
   sgp/FileMan.cpp
   sgp/himage.cpp
+  sgp/LegacyStringConversion.cpp
   sgp/fileio/BfVfsResourceStore.cpp
   sgp/fileio/DurableFileOperationsFactory.cpp
   sgp/fileio/FileServices.cpp

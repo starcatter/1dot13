@@ -2,6 +2,7 @@
 
 #include <utf8.h>
 
+#include <algorithm>
 #include <iterator>
 
 namespace ja2::text
@@ -94,5 +95,30 @@ std::string utf16ToUtf8( const CHAR16 *input )
 	if ( input == nullptr )
 		return {};
 	return utf16ToUtf8( Utf16View( input, std::char_traits<CHAR16>::length( input ) ) );
+}
+
+BufferConversionResult copyUtf8ToUtf16(
+	std::string_view input, CHAR16 *output, std::size_t capacity )
+{
+	if ( output == nullptr && capacity != 0 )
+		throw std::invalid_argument( "UTF-16 output buffer is null" );
+
+	const bool inputWasValid = isValidUtf8( input );
+	const Utf16String converted = utf8ToUtf16ReplacingInvalid( input );
+	if ( capacity == 0 )
+		return { 0, inputWasValid, !converted.empty() };
+
+	const std::size_t maximumCodeUnits = capacity - 1;
+	std::size_t codeUnitsWritten = std::min( maximumCodeUnits, converted.size() );
+	if ( codeUnitsWritten < converted.size() && codeUnitsWritten != 0 &&
+		converted[codeUnitsWritten - 1] >= static_cast<CHAR16>( 0xd800 ) &&
+		converted[codeUnitsWritten - 1] <= static_cast<CHAR16>( 0xdbff ) )
+	{
+		--codeUnitsWritten;
+	}
+
+	std::copy_n( converted.begin(), codeUnitsWritten, output );
+	output[codeUnitsWritten] = 0;
+	return { codeUnitsWritten, inputWasValid, codeUnitsWritten < converted.size() };
 }
 }

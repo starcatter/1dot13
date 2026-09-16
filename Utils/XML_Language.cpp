@@ -11,6 +11,7 @@
 	#include "Encrypted File.h"
 	#include "GameSettings.h"
 	#include "Text.h"
+	#include "UtfConversion.h"
 
 #include "XML_Language.h"
 
@@ -137,8 +138,7 @@ languageLocationEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = LANGUAGE_ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curLanguageData.Message, sizeof(pData->curLanguageData.Message)/sizeof(pData->curLanguageData.Message[0]) );
-			pData->curLanguageData.Message[sizeof(pData->curLanguageData.Message)/sizeof(pData->curLanguageData.Message[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curLanguageData.Message );
 		}
 		
 		pData->maxReadDepth--;
