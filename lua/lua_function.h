@@ -3,6 +3,7 @@
 
 #include <lua_state.h>
 #include <lua_table.h>
+#include "LegacyStringConversion.h"
 
 #include <stack>
 

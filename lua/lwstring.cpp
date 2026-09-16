@@ -1,6 +1,5 @@
-#include <windows.h>
-
 #include "MemMan.h"
+#include "UtfConversion.h"
 
 #include "lwstring.h"
 
@@ -23,20 +22,22 @@ void luaWS_newlstr (lua_State *L, const CHAR16 *str, size_t l)
 // Called from LUA code
 int LuaWStringFromUTF8( lua_State *L )
 {
-	const CHAR8 *utf8 = luaL_checkstring( L, 1 );
-	STR16 str = NULL;
-	int len;
+	size_t length = 0;
+	const CHAR8 *utf8 = luaL_checklstring( L, 1, &length );
+	ja2::text::Utf16String str;
+	bool valid = true;
+	try
+	{
+		str = ja2::text::utf8ToUtf16( std::string_view( utf8, length ) );
+	}
+	catch ( const ja2::text::ConversionError& )
+	{
+		valid = false;
+	}
+	if ( !valid )
+		return luaL_error( L, "invalid UTF-8 passed to wstring.fromUTF8" );
 
-	// Find out how long this needs to be
-	len = MultiByteToWideChar( CP_UTF8, 0, utf8, -1, str, 0);
-	str = (STR16) MemAlloc( len * sizeof(CHAR16));
-
-	// Get the string
-	MultiByteToWideChar( CP_UTF8, 0, utf8, -1, str, len);
-
-	luaWS_newlstr( L, str, len - 1);
-
-	MemFree( str);
+	luaWS_newlstr( L, str.data(), str.size() );
 	return 1;
 }
 
@@ -151,14 +152,11 @@ static int LuaWStringRep( lua_State *L )
 	STR16 str = (STR16) MemAlloc( len * sizeof( CHAR16) );
 	int idx;
 
-	if (num > 0)
+	for( idx=0; idx<num; idx++)
 	{
-		wcscpy( str, tw->data);
+		memcpy( str + idx * tw->len, tw->data, tw->len * sizeof( CHAR16 ) );
 	}
-	for( idx=1; idx<num; idx++)
-	{
-		wcscat( str, tw->data);
-	}
+	str[ len - 1 ] = 0;
 
 	luaWS_newlstr( L, str, len-1);
 
@@ -212,14 +210,9 @@ static int LuaWStringUpper( lua_State *L )
 static int LuaWStringToString( lua_State *L )
 {
 	TWString *tw = (TWString*) luaL_checkudata( L, 1, "wstring" );
-	int newlen;
-	STR8 newstr = NULL;
-
-	newlen = WideCharToMultiByte( CP_UTF8, 0, tw->data, -1, newstr, 0, NULL, NULL);
-	newstr = (STR8) MemAlloc( newlen);
-	WideCharToMultiByte( CP_UTF8, 0, tw->data, -1, newstr, newlen, NULL, NULL);
-	lua_pushstring( L, newstr);
-	MemFree( newstr);
+	const std::string newstr = ja2::text::utf16ToUtf8ReplacingInvalid(
+		ja2::text::Utf16View( tw->data, tw->len ) );
+	lua_pushlstring( L, newstr.data(), newstr.size() );
 	return 1;
 }
 

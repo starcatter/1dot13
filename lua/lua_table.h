@@ -3,6 +3,8 @@
 
 #include "lua_state.h"
 
+#include <string>
+
 class LuaTable
 {
 public:

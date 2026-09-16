@@ -34,9 +34,10 @@ add_library(ja2_shared_core STATIC
   sgp/stringicmp.cpp
   sgp/timer.cpp
   sgp/timing/MainLoopScheduler.cpp
+  sgp/UtfConversion.cpp
 )
 target_include_directories(ja2_shared_core PUBLIC "${CMAKE_SOURCE_DIR}/sgp")
-target_link_libraries(ja2_shared_core PUBLIC JA2::bfVFS Threads::Threads ZLIB::ZLIB)
+target_link_libraries(ja2_shared_core PUBLIC JA2::bfVFS Threads::Threads ZLIB::ZLIB PRIVATE JA2::utf8cpp)
 target_compile_options(ja2_shared_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 enable_testing()
@@ -73,6 +74,11 @@ add_executable(ja2_himage_tests tests/native/himage_tests.cpp)
 target_link_libraries(ja2_himage_tests PRIVATE ja2_shared_core)
 target_compile_options(ja2_himage_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 add_test(NAME ja2_himage_tests COMMAND ja2_himage_tests)
+
+add_executable(ja2_utf_conversion_tests tests/native/utf_conversion_tests.cpp)
+target_link_libraries(ja2_utf_conversion_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_utf_conversion_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_utf_conversion_tests COMMAND ja2_utf_conversion_tests)
 
 # Keep the focused characterization suites independently linkable while also
 # making the complete native checkpoint available through one root CTest run.

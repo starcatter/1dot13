@@ -150,33 +150,4 @@ typedef VECTOR4	MATRIX4[4];		// 4x4 matrix
 //typedef VECTOR3	ANGLE;			// angle return array //lal removed
 typedef	VECTOR4	COLOR;			// rgba color array
 
-
-#include <vfs/Aspects/vfs_settings.h>
-#include <vfs/Core/vfs_string.h>
-
-inline void convert_string(std::wstring const& str_in, std::string &str_out)
-{
-	if(vfs::Settings::getUseUnicode())
-	{
-		str_out = vfs::String::as_utf8(str_in);
-	}
-	else
-	{
-		vfs::String::narrow(str_in, str_out);
-	}
-}
-
-inline void convert_string(std::string const& str_in, std::wstring &str_out)
-{
-	if(vfs::Settings::getUseUnicode())
-	{
-		vfs::String::as_utf16(str_in, str_out);
-	}
-	else
-	{
-		vfs::String::widen(str_in, str_out);
-	}
-}
-
-
 #endif

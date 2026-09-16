@@ -38,6 +38,7 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/stringicmp.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/timer.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/timing/MainLoopScheduler.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/UtfConversion.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/video.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/vobject.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/vobject_blitters.cpp"

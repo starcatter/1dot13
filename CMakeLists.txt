@@ -217,6 +217,9 @@ foreach(app IN LISTS ApplicationTargets)
     if(lib IN_LIST ExpatConsumers)
       target_link_libraries(${game_library} PRIVATE EXPAT::EXPAT)
     endif()
+    if(lib STREQUAL "sgp")
+      target_link_libraries(${game_library} PRIVATE JA2::utf8cpp)
+    endif()
   endforeach()
 
   # executable for the application, e.g. JA2.exe

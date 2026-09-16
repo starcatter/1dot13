@@ -1,0 +1,73 @@
+#include "UtfConversion.h"
+
+#include <iostream>
+#include <string>
+
+namespace
+{
+int failures = 0;
+
+void expect( bool condition, const char *message )
+{
+	if ( condition )
+		return;
+	std::cerr << message << '\n';
+	++failures;
+}
+
+template<typename Function>
+void expectConversionError( Function function, ja2::text::Encoding encoding, const char *message )
+{
+	try
+	{
+		function();
+		expect( false, message );
+	}
+	catch ( const ja2::text::ConversionError& error )
+	{
+		expect( error.encoding() == encoding, "conversion error identified the wrong input encoding" );
+	}
+	catch ( ... )
+	{
+		expect( false, "conversion leaked a third-party exception" );
+	}
+}
+}
+
+int main()
+{
+	using namespace ja2::text;
+
+	expect( utf8ToUtf16( "" ).empty(), "empty UTF-8 did not produce empty UTF-16" );
+	expect( utf16ToUtf8( Utf16View{} ).empty(), "empty UTF-16 did not produce empty UTF-8" );
+	expect( utf16ToUtf8( static_cast<const CHAR16 *>( nullptr ) ).empty(), "null legacy string was not empty" );
+
+	const std::string multilingual = u8"Zażółć gęślą jaźń — Привет — 日本語 — 😀";
+	const Utf16String wide = utf8ToUtf16( multilingual );
+	expect( utf16ToUtf8( wide ) == multilingual, "multilingual text did not round-trip" );
+	expect( wide.size() >= 2 && wide[wide.size() - 2] == static_cast<CHAR16>( 0xd83d ) &&
+		wide.back() == static_cast<CHAR16>( 0xde00 ), "supplementary character was not encoded as a surrogate pair" );
+
+	const std::string withNull( "A\0B", 3 );
+	const Utf16String wideWithNull = utf8ToUtf16( withNull );
+	expect( wideWithNull.size() == 3, "embedded NUL changed UTF-16 length" );
+	expect( utf16ToUtf8( wideWithNull ) == withNull, "embedded NUL did not round-trip" );
+
+	const Utf16String emoji{ static_cast<CHAR16>( 0xd83d ), static_cast<CHAR16>( 0xde00 ) };
+	expect( utf16ToUtf8( emoji ) == "\xf0\x9f\x98\x80", "surrogate pair produced the wrong UTF-8" );
+
+	const std::string invalidUtf8( "\xc0\xaf", 2 );
+	expect( !isValidUtf8( invalidUtf8 ), "overlong UTF-8 sequence was accepted" );
+	expectConversionError( [&] { (void) utf8ToUtf16( invalidUtf8 ); }, Encoding::utf8,
+		"invalid UTF-8 did not produce ConversionError" );
+	const Utf16String replaced = utf8ToUtf16ReplacingInvalid( invalidUtf8 );
+	expect( utf16ToUtf8( replaced ) == "\xef\xbf\xbd", "invalid UTF-8 was not replaced predictably" );
+
+	const Utf16String loneSurrogate{ static_cast<CHAR16>( 0xd800 ) };
+	expectConversionError( [&] { (void) utf16ToUtf8( loneSurrogate ); }, Encoding::utf16,
+		"invalid UTF-16 did not produce ConversionError" );
+	expect( utf16ToUtf8ReplacingInvalid( loneSurrogate ) == "\xef\xbf\xbd",
+		"invalid UTF-16 was not replaced predictably" );
+
+	return failures == 0 ? 0 : 1;
+}

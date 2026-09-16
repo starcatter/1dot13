@@ -60,6 +60,7 @@
 	#include "fileio/FileServices.h"
 	#include "fileio/PhysicalWritableStore.h"
 	#include "fileio/StoreRouter.h"
+	#include "UtfConversion.h"
 	// added by sevenfm - this is needed for _keydown(SHIFT) to work
 	#include "english.h"
 
@@ -126,15 +127,14 @@ std::string WideNameToUtf8( STR16 name )
 	if ( !name )
 		return std::string();
 
-	const int size = WideCharToMultiByte( CP_UTF8, 0, name, -1, NULL, 0, NULL, NULL );
-	if ( size <= 0 )
+	try
+	{
+		return ja2::text::utf16ToUtf8( name );
+	}
+	catch ( const ja2::text::ConversionError& )
+	{
 		throw ja2::fileio::Error( ja2::fileio::ErrorCode::invalidPath, "invalid equipment template name" );
-
-	std::string result( static_cast<std::size_t>( size ), '\0' );
-	if ( !WideCharToMultiByte( CP_UTF8, 0, name, -1, result.data(), size, NULL, NULL ) )
-		throw ja2::fileio::Error( ja2::fileio::ErrorCode::invalidPath, "invalid equipment template name" );
-	result.resize( result.size() - 1 );
-	return result;
+	}
 }
 
 std::string FoldAsciiFileName( std::string name )

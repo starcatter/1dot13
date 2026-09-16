@@ -47,7 +47,7 @@ foreach(file IN LISTS bfvfs_production_files)
 endforeach()
 string(SHA256 bfvfs_manifest_hash "${bfvfs_manifest}")
 if(NOT bfvfs_manifest_hash STREQUAL
-    "49f6b14e3cc28480ddd596358d438d97d72c07b35deb419aafb3545b66d2187b")
+    "cec4acbdb450ed0c4d92b758478765beb13ae545836ae1e79478c264c7b89989")
   message(FATAL_ERROR
     "Patched bfVFS production manifest has unexpected SHA-256 ${bfvfs_manifest_hash}")
 endif()

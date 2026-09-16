@@ -19,6 +19,7 @@
 #endif
 
 #include "types.h"
+#include "LegacyStringConversion.h"
 #include "TopicOps.h"
 #include "TopicIDs.h"
 

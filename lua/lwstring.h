@@ -7,7 +7,7 @@
 #ifndef lwstring_h
 #define lwstring_h
 
-#include <wchar.h>
+#include <string>
 
 extern "C" {
 #include <lua.h>
@@ -24,9 +24,12 @@ typedef struct {
 
 #define sizewstring(s)	(sizeof(int) + (s) * sizeof(CHAR16) + sizeof(CHAR16))
 
-#define luaWS_newstr(L, s)	(luaWS_newlstr(L, s, wcslen(s)))
-
 void luaWS_newlstr (lua_State *L, const CHAR16 *str, size_t l);
+
+inline void luaWS_newstr(lua_State *L, const CHAR16 *str)
+{
+	luaWS_newlstr(L, str, std::char_traits<CHAR16>::length(str));
+}
 
 
 #endif
