@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -107,15 +108,13 @@ emailMercAvailableEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curEmailMercAvailable.szSubject, sizeof(pData->curEmailMercAvailable.szSubject)/sizeof(pData->curEmailMercAvailable.szSubject[0]) );
-			pData->curEmailMercAvailable.szSubject[sizeof(pData->curEmailMercAvailable.szSubject)/sizeof(pData->curEmailMercAvailable.szSubject[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curEmailMercAvailable.szSubject );
 		}
 		else if(strcmp(name, "Message") == 0 )
 		{
 			pData->curElement = ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curEmailMercAvailable.szMessage, sizeof(pData->curEmailMercAvailable.szMessage)/sizeof(pData->curEmailMercAvailable.szMessage[0]) );
-			pData->curEmailMercAvailable.szMessage[sizeof(pData->curEmailMercAvailable.szMessage)/sizeof(pData->curEmailMercAvailable.szMessage[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curEmailMercAvailable.szMessage );
 		}
 		pData->maxReadDepth--;
 	}

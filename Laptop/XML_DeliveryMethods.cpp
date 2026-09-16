@@ -1,4 +1,5 @@
 #include "LegacySGP.h"
+#include "UtfConversion.h"
 #include "Overhead Types.h"
 #include "Overhead.h"
 #include "Text.h"
@@ -161,7 +162,8 @@ deliveryMethodEndElementHandle(void *userData, const XML_Char *name)
 		else if(strcmp(name, "description") == 0)
 		{
 			pData->curElement = DELIVERYMETHOD_ELEMENT;
-			MultiByteToWideChar(CP_UTF8, 0, pData->szCharData, -1, &pData->CurDeliveryMethod.szDescription[0], MAX_DELIVERYMETHOD_DESC_LENGTH);
+			ja2::text::copyUtf8ToUtf16( pData->szCharData,
+				pData->CurDeliveryMethod.szDescription, MAX_DELIVERYMETHOD_DESC_LENGTH );
 		}
 		else if(strcmp(name, "DESTINATIONDELIVERYINFOTABLE") == 0)
 		{

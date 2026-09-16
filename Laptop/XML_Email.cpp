@@ -1,4 +1,5 @@
 #include "LegacySGP.h"
+#include "UtfConversion.h"
 #include "Debug Control.h"
 #include "expat.h"
 #include "XML.h"
@@ -107,19 +108,19 @@ EmailOtherEndElementHandle(void* userData, const XML_Char* name)
             pData->curElement = ELEMENT;
             if ( !Emails_TextOnly )
             {
-                MultiByteToWideChar(CP_UTF8, 0, pData->szCharData, -1, gEmails.back().Subject, sizeof(gEmails.back().Subject) / sizeof(gEmails.back().Subject[0]));
+                ja2::text::copyUtf8ToUtf16( pData->szCharData, gEmails.back().Subject );
             }
             else
             {
                 // Replace existing text with localized version
                 const auto i = pData->currentEmailIndex;
-                MultiByteToWideChar(CP_UTF8, 0, pData->szCharData, -1, gEmails[i].Subject, sizeof(gEmails[i].Subject) / sizeof(gEmails[i].Subject[0]));
+                ja2::text::copyUtf8ToUtf16( pData->szCharData, gEmails[i].Subject );
             }
         }
         else if (strcmp(name, "Message") == 0)
         {
             pData->curElement = ELEMENT;
-            MultiByteToWideChar(CP_UTF8, 0, pData->szCharData, -1, pData->currentMessage, sizeof(pData->currentMessage) / sizeof(pData->currentMessage[0]));
+            ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->currentMessage );
 
             if ( !Emails_TextOnly )
             {

@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -116,8 +117,7 @@ aimOldArchivesEndElementHandle(void *userData, const XML_Char *name)
 		
 			pData->curElement = ELEMENT;
 			
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curAimOldArchives.szNickName, sizeof(pData->curAimOldArchives.szNickName)/sizeof(pData->curAimOldArchives.szNickName[0]) );
-			pData->curAimOldArchives.szNickName[sizeof(pData->curAimOldArchives.szNickName)/sizeof(pData->curAimOldArchives.szNickName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curAimOldArchives.szNickName );
 
 		}	
 		else if(strcmp(name, "Name") == 0)
@@ -125,8 +125,7 @@ aimOldArchivesEndElementHandle(void *userData, const XML_Char *name)
 		
 			pData->curElement = ELEMENT;
 			
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curAimOldArchives.szName, sizeof(pData->curAimOldArchives.szName)/sizeof(pData->curAimOldArchives.szName[0]) );
-			pData->curAimOldArchives.szName[sizeof(pData->curAimOldArchives.szName)/sizeof(pData->curAimOldArchives.szName[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curAimOldArchives.szName );
 
 		}	
 		else if(strcmp(name, "Bio") == 0)
@@ -134,8 +133,7 @@ aimOldArchivesEndElementHandle(void *userData, const XML_Char *name)
 		
 			pData->curElement = ELEMENT;
 			
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curAimOldArchives.szBio, sizeof(pData->curAimOldArchives.szBio)/sizeof(pData->curAimOldArchives.szBio[0]) );
-			pData->curAimOldArchives.szBio[sizeof(pData->curAimOldArchives.szBio)/sizeof(pData->curAimOldArchives.szBio[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curAimOldArchives.szBio );
 
 		}	
 		else if(strcmp(name, "FaceID") == 0)

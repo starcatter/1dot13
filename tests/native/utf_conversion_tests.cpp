@@ -83,6 +83,17 @@ int main()
 	expect( shortBuffer[0] == static_cast<CHAR16>( 'A' ) && shortBuffer[1] == static_cast<CHAR16>( 'B' ) &&
 		shortBuffer[2] == 0, "short buffer was not safely terminated" );
 
+	CHAR16 explicitlyLimitedBuffer[4]{ static_cast<CHAR16>( 'X' ), static_cast<CHAR16>( 'X' ),
+		static_cast<CHAR16>( 'X' ), static_cast<CHAR16>( 'X' ) };
+	const BufferConversionResult limitedResult =
+		copyUtf8ToUtf16( "ABC", explicitlyLimitedBuffer, 3 );
+	expect( limitedResult.codeUnitsWritten == 2 && limitedResult.truncated,
+		"explicit buffer capacity was not respected" );
+	expect( explicitlyLimitedBuffer[0] == static_cast<CHAR16>( 'A' ) &&
+		explicitlyLimitedBuffer[1] == static_cast<CHAR16>( 'B' ) && explicitlyLimitedBuffer[2] == 0 &&
+		explicitlyLimitedBuffer[3] == static_cast<CHAR16>( 'X' ),
+		"explicit buffer capacity wrote beyond its declared range" );
+
 	CHAR16 surrogateBuffer[2]{ static_cast<CHAR16>( 'X' ), static_cast<CHAR16>( 'X' ) };
 	const BufferConversionResult surrogateResult = copyUtf8ToUtf16( "\xf0\x9f\x98\x80", surrogateBuffer );
 	expect( surrogateResult.codeUnitsWritten == 0 && surrogateResult.truncated && surrogateBuffer[0] == 0,

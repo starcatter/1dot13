@@ -1,4 +1,5 @@
 #include "LegacySGP.h"
+#include "UtfConversion.h"
 #include "Overhead Types.h"
 #include "Overhead.h"
 #include "Text.h"
@@ -138,7 +139,8 @@ destinationEndElementHandle(void *userData, const XML_Char *name)
 		else if(strcmp(name, "name") == 0)
 		{
 			pData->curElement = ELEMENT;
-			MultiByteToWideChar(CP_UTF8, 0, pData->szCharData, -1, pData->tempDest.szName, MAX_DEST_NAME_LENGTH);
+			ja2::text::copyUtf8ToUtf16(
+				pData->szCharData, pData->tempDest.szName, MAX_DEST_NAME_LENGTH );
 
 		}
 		else if(strcmp(name, "ubMapX") == 0)

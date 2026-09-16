@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Debug Control.h"
 	#include "expat.h"
 	#include "XML.h"
@@ -281,8 +282,7 @@ encyclopediaLocationEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ENCYCLOPEDIA_ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curEncyclopediaData.Name, sizeof(pData->curEncyclopediaData.Name)/sizeof(pData->curEncyclopediaData.Name[0]) );
-			pData->curEncyclopediaData.Name[sizeof(pData->curEncyclopediaData.Name)/sizeof(pData->curEncyclopediaData.Name[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curEncyclopediaData.Name );
 		}
 		else if(strcmp(name, "Hidden") == 0)
 		{
@@ -313,8 +313,7 @@ encyclopediaLocationEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = ENCYCLOPEDIA_ELEMENT;
 
-			MultiByteToWideChar( CP_UTF8, 0, pData->szCharData, -1, pData->curEncyclopediaData.sCode, sizeof(pData->curEncyclopediaData.sCode)/sizeof(pData->curEncyclopediaData.sCode[0]) );
-			pData->curEncyclopediaData.sCode[sizeof(pData->curEncyclopediaData.sCode)/sizeof(pData->curEncyclopediaData.sCode[0]) - 1] = '\0';
+			ja2::text::copyUtf8ToUtf16( pData->szCharData, pData->curEncyclopediaData.sCode );
 		}
 		else if(strcmp(name, "NextMission") == 0)
 		{
