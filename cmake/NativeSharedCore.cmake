@@ -14,6 +14,7 @@ include(cmake/Warnings.cmake)
 
 add_library(ja2_shared_core STATIC
   sgp/Compression.cpp
+  sgp/crash_telemetry.cpp
   sgp/English.cpp
   sgp/FileMan.cpp
   sgp/himage.cpp
@@ -30,6 +31,9 @@ add_library(ja2_shared_core STATIC
   sgp/fileio/StoreRouter.cpp
   sgp/line.cpp
   sgp/platform/Clock.cpp
+  sgp/platform/Process.cpp
+  sgp/platform/portable/Dialog.cpp
+  sgp/platform/portable/Process.cpp
   sgp/platform/Thread.cpp
   sgp/platform/portable/Sleep.cpp
   sgp/stringicmp.cpp
@@ -80,6 +84,11 @@ add_executable(ja2_utf_conversion_tests tests/native/utf_conversion_tests.cpp)
 target_link_libraries(ja2_utf_conversion_tests PRIVATE ja2_shared_core)
 target_compile_options(ja2_utf_conversion_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 add_test(NAME ja2_utf_conversion_tests COMMAND ja2_utf_conversion_tests)
+
+add_executable(ja2_process_services_tests tests/native/process_services_tests.cpp)
+target_link_libraries(ja2_process_services_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_process_services_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_process_services_tests COMMAND ja2_process_services_tests)
 
 # Keep the focused characterization suites independently linkable while also
 # making the complete native checkpoint available through one root CTest run.

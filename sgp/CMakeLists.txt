@@ -30,6 +30,7 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/PCX.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/PngLoader.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/platform/Clock.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/platform/Process.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/platform/Thread.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Random.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/sgp_logger.cpp"
@@ -50,10 +51,15 @@ set(sgpSrc
 if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
 	list(APPEND sgpSrc
 		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/WindowsDurableFileOperations.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Dialog.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Process.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp")
 elseif(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
 	list(APPEND sgpSrc
-		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/PosixDurableFileOperations.cpp")
+		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/PosixDurableFileOperations.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Dialog.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Process.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Sleep.cpp")
 endif()
 
 set(sgpSrc ${sgpSrc} PARENT_SCOPE)

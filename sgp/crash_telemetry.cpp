@@ -6,12 +6,15 @@
 // startup with a healthy heap and is ordinary code. Keeping the two apart keeps the
 // no-heap rule easy to see and easy to hold.
 
-#if defined(_MSC_VER)
+#include "crash_telemetry.h"
 
-#include "crash_report.h"
+#if defined(_WIN32)
+
 #include "fileio/FileIO.h"
 #include "fileio/PhysicalWritableStore.h"
 #include "platform/Thread.h"
+#include "platform/Dialog.h"
+#include "UtfConversion.h"
 
 #include <windows.h>
 #include <winhttp.h>
@@ -168,24 +171,28 @@ void drainTelemetryReports(const std::filesystem::path& root, const std::wstring
 } // anonymous namespace
 
 namespace sgp {
-void processCrashTelemetry(const wchar_t* url) {
-	if (url == NULL || url[0] == L'\0') return; // no endpoint configured: feature off
+bool crashTelemetryAvailable() noexcept {
+	return true;
+}
+
+void processCrashTelemetry(std::string_view urlUtf8) {
+	if (urlUtf8.empty()) return; // no endpoint configured: feature off
 
 	try {
+		const ja2::text::Utf16String url = ja2::text::utf8ToUtf16(urlUtf8);
 		const std::filesystem::path root = std::filesystem::current_path();
 		TelemetryStore store(root);
 		int consent = readConsent(store);
 		if (consent < 0) { // first run: ask once, remember the answer
-			int r = MessageBoxW(NULL,
-				L"This build can send crash reports to the developers to help fix bugs.\n"
-				L"A report contains where the game crashed, the names of the loaded\n"
-				L"modules, and the HANDLE from your Ja2.ini if you set one. No file\n"
-				L"paths, no save games, nothing else about your machine.\n\n"
-				L"Send crash reports automatically?",
-				L"Jagged Alliance 2 v1.13 \x2014 Crash Reporting",
-				MB_YESNO | MB_ICONQUESTION);
-			writeConsent(store, r == IDYES);
-			consent = (r == IDYES) ? 1 : 0;
+			const bool accepted = Platform::AskYesNo(
+				"Jagged Alliance 2 v1.13 - Crash Reporting",
+				"This build can send crash reports to the developers to help fix bugs.\n"
+				"A report contains where the game crashed, the names of the loaded\n"
+				"modules, and the HANDLE from your Ja2.ini if you set one. No file\n"
+				"paths, no save games, nothing else about your machine.\n\n"
+				"Send crash reports automatically?");
+			writeConsent(store, accepted);
+			consent = accepted ? 1 : 0;
 		}
 		if (consent != 1) return; // declined: leave reports on disk, accumulating
 
@@ -195,7 +202,7 @@ void processCrashTelemetry(const wchar_t* url) {
 		// the splash screen. Nothing waits on the result, so it can take as long as it
 		// takes. The consent prompt above stays here, on purpose — that one is a
 		// question, and a question has to be asked before anything is sent.
-		const std::wstring telemetryUrl(url);
+		const std::wstring telemetryUrl(url.begin(), url.end());
 		Platform::RunDetached([root, telemetryUrl]() {
 			drainTelemetryReports(root, telemetryUrl);
 		});
@@ -205,4 +212,18 @@ void processCrashTelemetry(const wchar_t* url) {
 }
 } // namespace sgp
 
-#endif // _MSC_VER
+#else
+
+namespace sgp
+{
+bool crashTelemetryAvailable() noexcept
+{
+	return false;
+}
+
+void processCrashTelemetry(std::string_view)
+{
+}
+}
+
+#endif

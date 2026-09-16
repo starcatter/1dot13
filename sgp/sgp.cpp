@@ -17,6 +17,9 @@
 #include "Utilities.h"
 #include "GameSettings.h"
 #include "fileio/FileServices.h"
+#include "platform/Process.h"
+#include "platform/Dialog.h"
+#include "UtfConversion.h"
 #include "zmouse.h"
 #include <vfs/Aspects/vfs_settings.h>
 #include <vfs/Core/vfs.h>
@@ -124,6 +127,19 @@ int PASCAL HandledWinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pC
 
 
 static void PopulateSectionFromCommandLine(vfs::PropertyContainer &oProps, vfs::String const& sSection);
+
+static Platform::WindowShowMode WindowShowModeFromCommand(int command)
+{
+	switch (command)
+	{
+		case SW_HIDE: return Platform::WindowShowMode::hidden;
+		case SW_SHOWMINIMIZED:
+		case SW_MINIMIZE:
+		case SW_SHOWMINNOACTIVE: return Platform::WindowShowMode::minimized;
+		case SW_SHOWMAXIMIZED: return Platform::WindowShowMode::maximized;
+		default: return Platform::WindowShowMode::normal;
+	}
+}
 
 HINSTANCE			ghInstance;
 
@@ -583,6 +599,7 @@ static vfs::String getGameID()
 }
 
 #include "crash_report.h"
+#include "crash_telemetry.h"
 #include "GameVersion.h" // czVersionString, stamped into crash reports
 #include <vfs/Aspects/vfs_logging.h>
 
@@ -672,15 +689,11 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 #endif
 
 	MSG				Message;
-	HWND			hPrevInstanceWindow;
 	// Make sure the game works out of the box on Linux/macOS/Android (WINE)
 	if (wine_add_dll_overrides())
 	{
 		/* newly added dll overrides only work after a restart */
-		char exe_path[MAX_PATH] = { 0 };
-		GetModuleFileNameA(NULL, exe_path, _countof(exe_path));
-
-		ShellExecuteA(NULL, "open", exe_path, pCommandLine, NULL, sCommandShow);
+		Platform::RelaunchCurrentProcess(WindowShowModeFromCommand(sCommandShow));
 		return 0;
 	}
 
@@ -703,13 +716,9 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 
 	// Make sure that only one instance of this application is running at once
 	// // Look for prev instance by searching for the window
-	hPrevInstanceWindow = FindWindowEx( NULL, NULL, APPLICATION_NAME, APPLICATION_NAME );
-
-	// One is found, bring it up!
-	if ( hPrevInstanceWindow != NULL )
+	if (Platform::ActivateExistingInstance(APPLICATION_NAME) ==
+		Platform::ExistingInstanceResult::activated)
 	{
-		SetForegroundWindow( hPrevInstanceWindow );
-		ShowWindow( hPrevInstanceWindow, SW_RESTORE );
 		return( 0 );
 	}
 
@@ -886,11 +895,12 @@ void SGPExit(void)
 	// player has to send us, so it replaces the generic box rather than adding to it.
 	if (const wchar_t* crashMsg = sgp::crashReportMessage())
 	{
-		MessageBoxW(NULL, crashMsg, L"Jagged Alliance 2 1.13 - Crash", MB_OK | MB_ICONERROR);
+		Platform::ShowDialog("Jagged Alliance 2 1.13 - Crash",
+			ja2::text::utf16ToUtf8ReplacingInvalid(crashMsg), Platform::DialogKind::error);
 	}
 	else if(strlen(gzErrorMsg))
 	{
-		MessageBox(NULL, gzErrorMsg, "Error", MB_OK | MB_ICONERROR	);
+		Platform::ShowDialog("Error", gzErrorMsg, Platform::DialogKind::error);
 	}
 
 
@@ -910,7 +920,7 @@ void GetRuntimeSettings( )
 	// Upload crash reports from previous runs (first launch asks the player).
 	// Empty CRASH_TELEMETRY_URL = off. Runs here, at startup, never in a crash.
 	sgp::processCrashTelemetry(
-		oProps.getStringProperty("Ja2 Settings", L"CRASH_TELEMETRY_URL").c_str());
+		oProps.getStringProperty("Ja2 Settings", L"CRASH_TELEMETRY_URL").utf8());
 
 	// Optional player handle stamped into crash reports written from here on, so a
 	// report can be tied to whoever raises it with us. Unset = field omitted.
@@ -1272,33 +1282,11 @@ void ProcessJa2CommandLineBeforeInitialization(CHAR8 *pCommandLine)
 
 static void PopulateSectionFromCommandLine(vfs::PropertyContainer &oProps, vfs::String const& sSection)
 {
-	const wchar_t* lpCommandLine = GetCommandLineW();
-	int argc = 0, nchars = 0;
-	ParseCommandLine( lpCommandLine, NULL, NULL, &argc, &nchars);
-	wchar_t **argv = (wchar_t **)_alloca(argc * sizeof(wchar_t *) + nchars * sizeof(wchar_t));
-	ParseCommandLine( lpCommandLine, argv, (wchar_t *)(((char*)argv) + argc * sizeof(wchar_t*)), &argc, &nchars);
-
-	for (int i = 1; i < argc; i++)
+	for (const Platform::CommandLineProperty& property :
+		Platform::ParseCommandLineProperties(Platform::GetProcessArguments()))
 	{
-		wchar_t *arg = argv[i];
-		if (arg == NULL)
-			continue;
-		if (arg[0] == L'-' || arg[0] == L'/')
-		{
-			wchar_t *pkey = arg+1;
-			wchar_t *psep = wcspbrk(arg, L":=");
-			wchar_t *param = (psep ? psep+1 : NULL);
-			if (psep) *psep = 0;
-			if ( (param == NULL || param[0] == 0) && ( i+1<argc && argv[i+1] && ( argv[i+1][0] != L'-' && argv[i+1][0] != L'/' ) ) )//dnl ch79 291113
-			{
-				param = argv[++i];
-				argv[i] = NULL;
-			}
-			if (param != NULL)
-			{
-				oProps.setStringProperty(sSection, pkey, param);
-			}
-		}
+		oProps.setStringProperty(
+			sSection, vfs::String(property.key), vfs::String(property.value));
 	}
 }
 

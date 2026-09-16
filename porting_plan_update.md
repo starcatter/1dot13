@@ -30,7 +30,7 @@ Native tests cover detached execution, captured-state ownership, empty-task reje
 
 ## Native-Build Progress: Shared Core
 
-The root build now selects `JA2_PLATFORM_BACKEND=LINUX` by default on a Linux host and produces `ja2_shared_core` instead of entering the Windows application, renderer, input, audio, tools, and resource-file source groups. The target contains 23 first-party translation units: the complete file/resource service boundary, POSIX durable operations and paths, the legacy `FileMan` compatibility facade, monotonic clocks, fixed-step scheduling, portable sleep, detached tasks, zlib compression, CPU line rendering, key translation, portable `HIMAGE` layout/palette/copy operations, the legacy clock facade, a platform-neutral string utility, the isolated legacy host-wide conversion implementation, and the UTF-8/UTF-16 conversion service. It also builds the pinned patched bfVFS, LZMA SDK, zlib, and utf8cpp dependencies natively from the same sources used by the Windows baseline.
+The root build now selects `JA2_PLATFORM_BACKEND=LINUX` by default on a Linux host and produces `ja2_shared_core` instead of entering the Windows application, renderer, input, audio, tools, and resource-file source groups. The target contains 27 first-party translation units: the complete file/resource service boundary, POSIX durable operations and paths, the legacy `FileMan` compatibility facade, monotonic clocks, fixed-step scheduling, portable sleep, detached tasks, process arguments and property parsing, explicit native restart/single-instance/telemetry policy, stderr-backed host dialogs, zlib compression, CPU line rendering, key translation, portable `HIMAGE` layout/palette/copy operations, the legacy clock facade, a platform-neutral string utility, the isolated legacy host-wide conversion implementation, and the UTF-8/UTF-16 conversion service. It also builds the pinned patched bfVFS, LZMA SDK, zlib, and utf8cpp dependencies natively from the same sources used by the Windows baseline.
 
 An integrated `ja2_shared_core_smoke` executable links and exercises the combined target: monotonic time and sleeping, scheduler construction, detached execution, physical writable storage, durable file sync, metadata, and executable-path discovery. The existing timing/thread and file-I/O suites are registered alongside fixed-width type, legacy `FileMan`, compression, CPU rendering/key translation, image-layout/palette/copy, and UTF conversion tests, giving the root Linux build one 16-test CTest gate. GCC 16 and Clang 22 builds pass with strict first-party warnings; a GCC AddressSanitizer build also passes when leak detection is disabled under the ptrace-based test container.
 
@@ -185,7 +185,7 @@ The terms below are used deliberately:
 | Windows x86 compilation | Supported with MSVC; Wine-hosted toolchain documented | Working regression reference |
 | Windows x86 runtime | Smoke-tested under Wine before the final commit boundary | Useful behavioral oracle, but exact-commit and native-Windows validation remain |
 | Portable file contracts | Implemented | Callers no longer require Win32 file handles or writable bfVFS access |
-| Native core build | Root `ja2_shared_core` builds 23 first-party units with GCC and Clang; all 16 registered tests pass | Storage, resources, legacy file handles, compression, CPU line/image operations, UTF conversion, timing, sleep, and threading form a proven host-native island |
+| Native core build | Root `ja2_shared_core` builds 27 first-party units with GCC and Clang; all 17 registered tests pass | Storage, resources, legacy file handles, compression, CPU line/image operations, UTF conversion, timing, sleep, threading, and bounded process services form a proven host-native island |
 | Linux game executable | Not defined yet | Legacy UTF-16 manipulation, image-format loaders/blitters, and remaining subsystem backends are the next blockers |
 | Window/event backend | Win32 only | Hard Linux blocker |
 | Rendering/presentation | DirectDraw 2 plus cnc-ddraw | Works as a legacy compatibility path; no native Linux renderer |
@@ -287,17 +287,14 @@ The same extraction should address lifecycle hazards already visible in the refe
 
 ### Process, Paths, and Operating-System Services
 
-Remaining process-level assumptions include:
+The bounded process-service extraction is now implemented:
 
-- Restart through `GetModuleFileNameA` and `ShellExecuteA` (`sgp/sgp.cpp:729-737`).
-- Single-instance detection by window title (`sgp/sgp.cpp:757-766`).
-- Windows command-line acquisition and `_alloca` (`sgp/sgp.cpp:1317-1324`).
-- A second fixed 99-byte command-line representation (`sgp/sgp.cpp:799-804`).
-- Wine registry detection/override exposed by `wine/include/wine.h:4-13` and implemented in `wine/wine.cpp:14-64`.
-- Win32 dialogs in lifecycle and telemetry (`sgp/sgp.cpp:925-934`, `sgp/crash_telemetry.cpp:175-203`).
-- WinHTTP telemetry in `sgp/crash_telemetry.cpp:71-103`.
+- `Platform::GetProcessArguments` returns UTF-8 arguments through Windows and Linux backends; VFS command-line property parsing is portable, allocation-safe, and covered for inline, separated, empty, and Unicode values.
+- Executable restart and previous-window activation are behind project-owned result types. Windows retains the startup behavior using wide host APIs; Linux explicitly reports these compatibility policies unavailable until a native host needs them.
+- Lifecycle, renderer-failure, fatal-error, and telemetry prompts use a UTF-8 dialog service. Windows retains task-modal message boxes; the pre-window Linux backend writes messages to stderr and answers questions with a privacy-safe `no`.
+- Crash telemetry accepts a portable UTF-8 endpoint and advertises transport availability. The existing consent/file-retention/WinHTTP implementation remains the Windows backend; Linux is an explicit no-network implementation.
 
-These are narrow services and should not delay early rendering experiments. Native Linux can initially use no-op single-instance/restart/telemetry implementations, provided the behavior is explicit and the core interfaces do not expose Windows types.
+Remaining process/host assumptions are the second fixed 99-byte legacy command-line representation, Wine registry override setup, the Windows crash reporter/SEH boundary, and ownership of shutdown and the event loop. The obsolete time-limited-build dialog is also deliberately dormant rather than part of the maintained runtime boundary.
 
 ### Timing, Threads, and Synchronization
 
@@ -309,7 +306,7 @@ The clock and scheduling layer is now portable:
 - `Utils/Timer Control.cpp` retains only engine timing policy and legacy counter advancement.
 - `sgp/sgp.cpp` is the remaining Windows adapter for waiting on scheduler deadlines and pumping messages.
 
-The game-loop and timer-notification critical sections are gone because all clock and game-loop work now runs on the host thread. The input queue retains synchronization through `std::recursive_mutex`, and detached best-effort work runs through `Platform::RunDetached`; neither exposes Windows thread types or lifecycle calls. `Platform::Sleep` still needs a non-Windows implementation before native game code can use it.
+The game-loop and timer-notification critical sections are gone because all clock and game-loop work now runs on the host thread. The input queue retains synchronization through `std::recursive_mutex`, detached best-effort work runs through `Platform::RunDetached`, and `Platform::Sleep` has both Windows and portable implementations; none expose Windows thread types or lifecycle calls.
 
 Deterministic tests now cover scheduler cadence, delayed catch-up, fast-forward wake behavior, and the legacy countdown edge cases in addition to the clock-source tests. Playtesting remains important because timing affects AI, input repetition, sound callbacks, and animation, but no platform thread abstraction is required for timer delivery.
 
@@ -495,7 +492,7 @@ Deliverables:
 - Save corpus and deterministic format hashes.
 - Resource/profile/archive fixtures.
 - Renderer screenshots/framebuffer hashes, input traces, and audio callback traces.
-- Completed root integration of the 15 native shared-core, type, compression, CPU-rendering/image, timing/thread, and file-I/O tests; CI wiring remains.
+- Completed root integration of the 17 native shared-core, type, compression, CPU-rendering/image, text/process-service, timing/thread, and file-I/O tests; CI wiring remains.
 
 Exit gate: the current backend is measurable enough to identify whether later differences are intentional.
 
@@ -611,7 +608,7 @@ Completed immediately after the file-I/O checkpoint:
 Then proceed through these independently verifiable seams:
 
 1. Completed: conditioned CMake and established the `ja2_shared_core` Linux target with an integrated smoke test.
-2. Extract process services: command-line handling, restart/single-instance behavior, dialogs, and telemetry.
+2. Completed first process-service boundary: portable command-line handling, backend-owned restart/single-instance behavior, dialogs, and explicit native telemetry policy.
 3. Put an interface in front of FMOD while retaining the existing Windows implementation.
 4. Completed: extracted monotonic time and timer scheduling, removed the timer threads, and migrated the remaining active input synchronization and detached worker lifecycle to portable C++17 primitives.
 5. Remove DirectDraw and Win32 presentation/input types from platform-neutral headers.

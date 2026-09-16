@@ -17,6 +17,8 @@
 #include "fileio/FileServices.h"
 #include "fileio/StoreRouter.h"
 #include "platform/Clock.h"
+#include "platform/Dialog.h"
+#include "UtfConversion.h"
 
 #include "resource.h"
 #include <vfs/Core/vfs_string.h>
@@ -362,7 +364,8 @@ BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *
 
 			CHAR16 sString[256];
 			swprintf(sString, Additional113Text[ADDTEXT_DIFFRES_REQUIRED], SCREEN_WIDTH, SCREEN_HEIGHT);
-			MessageBoxW(NULL, sString, APPLICATION_NAMEW, MB_ICONEXCLAMATION);
+			Platform::ShowDialog(APPLICATION_NAME,
+				ja2::text::utf16ToUtf8ReplacingInvalid(sString), Platform::DialogKind::warning);
 			PostQuitMessage(1);
 			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
 			return FALSE;
@@ -2778,7 +2781,9 @@ BOOLEAN GetRGBDistribution(void)
 
 	if (!gusRedMask)
 	{
-		MessageBoxW( NULL, Additional113Text[ADDTEXT_16BPP_REQUIRED], APPLICATION_NAMEW, MB_ICONEXCLAMATION);
+		Platform::ShowDialog(APPLICATION_NAME,
+			ja2::text::utf16ToUtf8ReplacingInvalid(Additional113Text[ADDTEXT_16BPP_REQUIRED]),
+			Platform::DialogKind::warning);
 		PostQuitMessage(1);
 		return FALSE;
 	}
@@ -3121,7 +3126,7 @@ void FatalError( const STR8 pError, ...)
 	gfProgramIsRunning = FALSE;
 
 	//MessageBox( ghWindow, gFatalErrorString, "JA2 Fatal Error", MB_OK | MB_TASKMODAL );
-	MessageBoxW( ghWindow, vfs::String::as_utf16(gFatalErrorString).c_str(), L"JA2 Fatal Error", MB_OK | MB_TASKMODAL );
+	Platform::ShowDialog("JA2 Fatal Error", gFatalErrorString, Platform::DialogKind::error);
 }
 
 
