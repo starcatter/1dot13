@@ -51,8 +51,8 @@ typedef struct InputAtom
 } InputAtom;
 
 //Mouse pos extracting macros from InputAtom
-#define GETYPOS(a) HIWORD(((a)->uiParam))
-#define GETXPOS(a) LOWORD(((a)->uiParam))
+#define GETYPOS(a) ((UINT16)((((a)->uiParam) >> 16) & 0xffffU))
+#define GETXPOS(a) ((UINT16)(((a)->uiParam) & 0xffffU))
 
 
 typedef struct StringInput
@@ -83,7 +83,14 @@ extern void					QueueEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam);
 extern void					KeyDown(UINT32 usParam, UINT32 uiParam);
 extern void					KeyUp(UINT32 usParam, UINT32 uiParam);
 
+// Backend-to-core entry point. Position is in logical client coordinates;
+// event is one of the existing mouse InputAtom values, or zero for position/
+// wheel-state updates which do not enqueue an event.
+extern void					InputInjectMouseEvent(UINT16 event, SGPPoint position,
+									INT16 wheelDelta, BOOLEAN updateWheelState);
+
 extern void					GetMousePos(SGPPoint *Point);
+extern BOOLEAN				IsPhysicalKeyPressed(UINT8 key);
 
 extern StringInput *InitStringInput(UINT16 *pInputString, UINT16 usLength, UINT16 *pFilter);
 extern void		 LinkPreviousString(StringInput *pCurrentString, StringInput *pPreviousString);
@@ -109,8 +116,6 @@ extern void		 RestoreCursorClipRect( void );
 void SimulateMouseMovement( UINT32 uiNewXPos, UINT32 uiNewYPos );
 BOOLEAN InputEventInside(InputAtom *Event, UINT32 uiX1, UINT32 uiY1, UINT32 uiX2, UINT32 uiY2);
 
-INT16 GetMouseWheelDeltaValue( UINT32 wParam );
-
 extern void DequeueAllKeyBoardEvents();
 extern BOOLEAN PeekSpecificEvent(UINT32 uiMaskFlags);//dnl ch74 221013
 
@@ -133,7 +138,7 @@ extern BOOLEAN		gfSGPInputReceived;
 #define _MouseXPos				gusMouseXPos
 #define _MouseYPos				gusMouseYPos
 
-// NOTE: this may not be the absolute most-latest current mouse co-ordinates, use GetCursorPos for that
+// NOTE: this may not be the absolute most-latest current mouse coordinates; use GetMousePos for that.
 #define _gusMouseInside(x1,y1,x2,y2)	((gusMouseXPos >= x1) && (gusMouseXPos <= x2) && (gusMouseYPos >= y1) && (gusMouseYPos <= y2))
 
 #define _EvType(a)		 ((InputAtom *)(a))->usEvent

@@ -1,6 +1,6 @@
 # Native foothold for platform-neutral engine services. This target is
 # intentionally independent of the Windows application, renderer, input, and
-# audio source groups; grow it as those boundaries become portable.
+# production audio backend; grow it as those boundaries become portable.
 
 find_package(Threads REQUIRED)
 
@@ -13,6 +13,9 @@ ja2_asan_instrument_first_party()
 include(cmake/Warnings.cmake)
 
 add_library(ja2_shared_core STATIC
+  sgp/application/ApplicationLoop.cpp
+  sgp/application/ShutdownOnce.cpp
+  sgp/audio/portable/NullAudioBackend.cpp
   sgp/Compression.cpp
   sgp/crash_telemetry.cpp
   sgp/English.cpp
@@ -33,13 +36,20 @@ add_library(ja2_shared_core STATIC
   sgp/platform/Clock.cpp
   sgp/platform/Process.cpp
   sgp/platform/portable/Dialog.cpp
+  sgp/platform/portable/Input.cpp
+  sgp/platform/portable/NativeFonts.cpp
   sgp/platform/portable/Process.cpp
   sgp/platform/Thread.cpp
   sgp/platform/portable/Sleep.cpp
+  sgp/platform/portable/Window.cpp
+  sgp/presentation/DirtyRegionTracker.cpp
+  sgp/presentation/PixelSurface.cpp
+  sgp/soundman.cpp
   sgp/stringicmp.cpp
   sgp/timer.cpp
   sgp/timing/MainLoopScheduler.cpp
   sgp/UtfConversion.cpp
+  Utils/Quantize.cpp
 )
 target_include_directories(ja2_shared_core PUBLIC "${CMAKE_SOURCE_DIR}/sgp")
 target_link_libraries(ja2_shared_core PUBLIC JA2::bfVFS Threads::Threads ZLIB::ZLIB PRIVATE JA2::utf8cpp)
@@ -89,6 +99,44 @@ add_executable(ja2_process_services_tests tests/native/process_services_tests.cp
 target_link_libraries(ja2_process_services_tests PRIVATE ja2_shared_core)
 target_compile_options(ja2_process_services_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 add_test(NAME ja2_process_services_tests COMMAND ja2_process_services_tests)
+
+add_executable(ja2_input_backend_tests tests/native/input_backend_tests.cpp)
+target_link_libraries(ja2_input_backend_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_input_backend_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_input_backend_tests COMMAND ja2_input_backend_tests)
+
+add_executable(ja2_audio_backend_tests tests/native/audio_backend_tests.cpp)
+target_link_libraries(ja2_audio_backend_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_audio_backend_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_audio_backend_tests COMMAND ja2_audio_backend_tests)
+
+add_executable(ja2_video_interface_tests tests/native/video_interface_tests.cpp)
+target_link_libraries(ja2_video_interface_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_video_interface_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_video_interface_tests COMMAND ja2_video_interface_tests)
+
+add_executable(ja2_platform_neutral_headers_tests
+  tests/native/platform_neutral_headers_tests.cpp)
+target_link_libraries(ja2_platform_neutral_headers_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_platform_neutral_headers_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_platform_neutral_headers_tests COMMAND ja2_platform_neutral_headers_tests)
+
+add_executable(ja2_quantize_tests tests/native/quantize_tests.cpp)
+target_link_libraries(ja2_quantize_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_quantize_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_quantize_tests COMMAND ja2_quantize_tests)
+
+add_executable(ja2_application_lifecycle_tests
+  tests/native/application_lifecycle_tests.cpp)
+target_link_libraries(ja2_application_lifecycle_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_application_lifecycle_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_application_lifecycle_tests COMMAND ja2_application_lifecycle_tests)
+
+add_executable(ja2_presentation_foundation_tests
+  tests/native/presentation_foundation_tests.cpp)
+target_link_libraries(ja2_presentation_foundation_tests PRIVATE ja2_shared_core)
+target_compile_options(ja2_presentation_foundation_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_presentation_foundation_tests COMMAND ja2_presentation_foundation_tests)
 
 # Keep the focused characterization suites independently linkable while also
 # making the complete native checkpoint available through one root CTest run.

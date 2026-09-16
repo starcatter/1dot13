@@ -1,6 +1,8 @@
 #include "types.h"
 #include "FeaturesScreen.h"
 #include "video.h"
+#include "vsurface.h"
+#include "video_windows.h"
 #include "Font Control.h"
 #include "Game Clock.h"
 #include "Text Input.h"
@@ -767,11 +769,6 @@ void RenderScreen()
 void GetUserInput()
 {
 	InputAtom Event;
-	POINT	MousePos;
-
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
-
 	while (DequeueSpecificEvent(&Event, KEY_DOWN | KEY_UP | KEY_REPEAT))
 	{
 		if (!HandleTextInput(&Event) && Event.usEvent == KEY_DOWN)

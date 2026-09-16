@@ -1,5 +1,4 @@
 #include "types.h"
-#include "windows.h"
 #include "input.h"
 #include "english.h"
 #include "Isometric Utils.h"
@@ -64,7 +63,7 @@ STR16 SeenStr(INT32 value)
 }
 
 extern struct MOUSETT mouseTT;
-extern BOOL mouseTTrender,mouseTTdone;
+extern BOOLEAN mouseTTrender,mouseTTdone;
 
 const int	DL_Limited		= 1;
 const int	DL_Basic		= 2;
@@ -728,7 +727,7 @@ void DisplayWeaponInfo( SOLDIERTYPE* pSoldier, CHAR16* pStrInfo, UINT8 ubSlot, U
 }
 
 MOUSETT mouseTT;
-BOOL mouseTTrender, mouseTTdone;
+BOOLEAN mouseTTrender, mouseTTdone;
 
 void DrawMouseTooltip()
 {

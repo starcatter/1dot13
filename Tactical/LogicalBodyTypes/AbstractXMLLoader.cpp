@@ -29,8 +29,8 @@ bool AbstractXMLLoader::LoadFromFile(const char* directoryName, const char* file
 	UINT32 uiBytesRead;
 	UINT32 uiFSize;
 	CHAR8* lpcBuffer;
-	char fileNameFull[MAX_PATH + 1];
-	if (strlen(fileName) + strlen(directoryName) >= MAX_PATH) {
+	char fileNameFull[PathCapacity];
+	if (strlen(fileName) + strlen(directoryName) >= PathCapacity - 1) {
 		sprintf(errorBuf, "Can't load file %s%s, Concatenated filename too long for buffer!", directoryName, fileName);
 		LiveMessage(errorBuf);
 		return false;
@@ -97,12 +97,12 @@ bool AbstractXMLLoader::LoadFromFile(const char* directoryName, const char* file
 
 int XMLCALL AbstractXMLLoader::ExternalEntityHandler(XML_Parser args, const XML_Char* context, const XML_Char* base, const XML_Char* systemId, const XML_Char* publicId) {
 	ExternalEntityArgs* eArgs = (ExternalEntityArgs*)args;
-	char fileNameFull[MAX_PATH + 1];
+	char fileNameFull[PathCapacity];
 	UINT32 uiBytesRead;
 	UINT32 uiFSize;
 	CHAR8* lpcBuffer;
 	HWFILE hFile;
-	if (strlen(eArgs->directoryName) + strlen(systemId) >= MAX_PATH) {
+	if (strlen(eArgs->directoryName) + strlen(systemId) >= PathCapacity - 1) {
 		LiveMessage("Can't load file specified in external entity. Concatinated filename too long for buffer!");
 		return XML_STATUS_ERROR;
 	}

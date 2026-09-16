@@ -179,7 +179,7 @@ CIniReader::CIniReader(const CHAR8*	szFileName, BOOLEAN Force_Custom_Data_Path)
 
 void CIniReader::Clear()
 {
-	memset(m_szFileName, 0, MAX_PATH);
+	memset(m_szFileName, 0, sizeof(m_szFileName));
 	m_oProps.clearContainer();
 }
 

@@ -350,7 +350,7 @@ void ReBuildWorldItemStashForLoadedSector( INT32 iNumberSeenItems, INT32 iNumber
 BOOLEAN IsMapScreenWorldItemVisibleInMapInventory( WORLDITEM *pWorldItem );
 BOOLEAN IsMapScreenWorldItemInvisibleInMapInventory( WORLDITEM *pWorldItem );
 void CheckGridNoOfItemsInMapScreenMapInventory();
-INT32 MapScreenSectorInventoryCompare( const void *pNum1, const void *pNum2);
+static bool MapScreenSectorInventoryLess( const WORLDITEM& first, const WORLDITEM& second );
 void SortSectorInventory( std::vector<WORLDITEM>& pInventory, UINT32 uiSizeOfArray );
 BOOLEAN CanPlayerUseSectorInventory( SOLDIERTYPE *pSelectedSoldier );
 
@@ -3773,35 +3773,23 @@ void CheckGridNoOfItemsInMapScreenMapInventory()
 
 void SortSectorInventory( std::vector<WORLDITEM>& pInventory, UINT32 uiSizeOfArray )
 {
-#if _ITERATOR_DEBUG_LEVEL > 1//dnl ch75 061113 under debug VS2010 throws exceptions after qsort but not under VS2005 and VS2008, all release version seems to work fine
-	std::sort(pInventory.begin(), pInventory.begin() + uiSizeOfArray);
-#else
-	qsort((LPVOID)&pInventory.front(), (size_t)uiSizeOfArray, sizeof(WORLDITEM), MapScreenSectorInventoryCompare);
-#endif
+	// WORLDITEM owns std::list storage through OBJECTTYPE. It must be moved by
+	// C++ operations; qsort's bytewise relocation corrupts those list owners.
+	AssertLE(uiSizeOfArray, pInventory.size());
+	const size_t itemsToSort = std::min<size_t>(uiSizeOfArray, pInventory.size());
+	std::sort(pInventory.begin(), pInventory.begin() + itemsToSort, MapScreenSectorInventoryLess);
 }
 
-INT32 MapScreenSectorInventoryCompare( const void *pNum1, const void *pNum2)
+static bool MapScreenSectorInventoryLess( const WORLDITEM& first, const WORLDITEM& second )
 {
-	WORLDITEM *pFirst = (WORLDITEM *)pNum1;
-	WORLDITEM *pSecond = (WORLDITEM *)pNum2;
-	UINT16	usItem1Index;
-	UINT16	usItem2Index;
-	UINT16		ubItem1Quality;
-	UINT16		ubItem2Quality;
-
 	//dnl ch75 071113 without below fix sort will create mess when use empty slots because fExists remain TRUE after item is removed from inventory so decide to rather check ubNumberOfObjects
-	if(!pFirst->object.ubNumberOfObjects)
-		return(1);
-	if(!pSecond->object.ubNumberOfObjects)
-		return(-1);
+	if(!first.object.ubNumberOfObjects)
+		return false;
+	if(!second.object.ubNumberOfObjects)
+		return true;
 
-	usItem1Index = pFirst->object.usItem;
-	usItem2Index = pSecond->object.usItem;
-
-	ubItem1Quality = pFirst->object[0]->data.objectStatus;
-	ubItem2Quality = pSecond->object[0]->data.objectStatus;
-
-	return( CompareItemsForSorting( usItem1Index, usItem2Index, ubItem1Quality, ubItem2Quality ) );
+	return CompareItemsForSorting(first.object.usItem, second.object.usItem,
+		first.object[0]->data.objectStatus, second.object[0]->data.objectStatus) < 0;
 }
 
 BOOLEAN CanPlayerUseSectorInventory( SOLDIERTYPE *pSelectedSoldier )
@@ -6032,13 +6020,14 @@ void HandleItemCooldownFunctions( OBJECTTYPE* itemStack, INT32 deltaSeconds, BOO
 			{
 				if ( iter->exists() && Item[ iter->usItem ].usItemClass & (IC_GUN|IC_LAUNCHER) )
 				{
-					FLOAT temperature =  (*iter)[i]->data.bTemperature;			// ... get temperature of item ...
+					// This attachment belongs to parent stack element i, but has its own object index.
+					FLOAT temperature = (*iter)[0]->data.bTemperature;			// ... get temperature of item ...
 
 					FLOAT cooldownfactor = GetItemCooldownFactor( &(*iter) );	// ... get cooldown factor ...
 
 					FLOAT newtemperature = max(0.0f, temperature - tickspassed * cooldownfactor );	// ... calculate new temperature ...
 
-					(*iter)[i]->data.bTemperature = newtemperature;				// ... set new temperature
+					(*iter)[0]->data.bTemperature = newtemperature;				// ... set new temperature
 
 #if JA2TESTVERSION
 					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"World: Item temperature lowered from %4.2f to %4.2f", temperature, newtemperature);

@@ -1,14 +1,4 @@
-// WANNE: Only include _WIN32_WINNT WINVER in VS versions <= 2005
-#if _MSC_VER < 1500
-	#define _WIN32_WINNT WINVER
-#endif
-
-//** dd for defines that needed for additional mouse buttons
-#define _WIN32_WINNT 0x500
-
-//**
 	#include "types.h"
-	#include <windows.h>
 	#include <stdio.h>
 	#include <memory.h>
 	#include <mutex>
@@ -19,6 +9,8 @@
 		#include "video.h"
 	#include "local.h"
 	#include "platform/Clock.h"
+	#include "platform/Input.h"
+	#include "platform/Window.h"
 
 
 // Make sure to refer to the translation table which is within one of the following files (depending
@@ -33,8 +25,6 @@ extern BOOLEAN gfApplicationActive;
 // the interface.
 
 BOOLEAN	gfKeyState[256];			// TRUE = Pressed, FALSE = Not Pressed
-BOOLEAN	fCursorWasClipped = FALSE;
-RECT		gCursorClipRect;
 extern BOOLEAN gfMouseLockedOnBorder;
 extern int iWindowedMode;
 
@@ -83,12 +73,6 @@ UINT16	gusTailIndex;
 // ATE: Added to signal if we have had input this frame - cleared by the SGP main loop
 BOOLEAN		gfSGPInputReceived = FALSE;
 
-// This is the WIN95 hook specific data and defines used to handle the keyboard and
-// mouse hook
-
-HHOOK ghKeyboardHook;
-HHOOK ghMouseHook;
-
 // If the following pointer is non NULL then input characters are redirected to
 // the related string
 
@@ -108,131 +92,49 @@ void	QueueEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam);
 BOOLEAN InternalDequeueEvent(InputAtom *Event);
 void	RedirectToString(UINT16 uiInputCharacter);
 void	HandleSingleClicksAndButtonRepeats( void );
-void	AdjustMouseForWindowOrigin(void);
 
-// These are the hook functions for both keyboard and mouse
-
-LRESULT CALLBACK KeyboardHandler(int Code, WPARAM wParam, LPARAM lParam)
+void InputInjectMouseEvent(UINT16 event, SGPPoint position, INT16 wheelDelta,
+	BOOLEAN updateWheelState)
 {
-	if (Code < 0) // Do not handle this message, pass it on to another window
-		return CallNextHookEx(ghKeyboardHook, Code, wParam, lParam);
+	gusMouseXPos = static_cast<INT16>(position.iX);
+	gusMouseYPos = static_cast<INT16>(position.iY);
 
-	if (lParam & TRANSITION_MASK) // The key has been released
-		KeyUp(wParam, lParam);		//gfSGPInputReceived =	TRUE;
-	else
-	{ // Key was up
-	KeyDown(wParam, lParam);
-	gfSGPInputReceived =	TRUE;
-	}
-	return TRUE;
-}
+	UINT32 packedPosition = gusMouseYPos;
+	packedPosition <<= 16;
+	packedPosition |= gusMouseXPos;
+	if (updateWheelState)
+		gsMouseWheelDeltaValue = wheelDelta;
 
-
-LRESULT CALLBACK MouseHandler(int Code, WPARAM wParam, LPARAM lParam)
-{
-	UINT32 uiParam;
-	POINT mpos;
-	MOUSEHOOKSTRUCTEX* p_mhs;
-
-	if (Code < 0) // Do not handle this message, pass it on to another window
-		return CallNextHookEx(ghMouseHook, Code, wParam, lParam);
-	
-	p_mhs = (MOUSEHOOKSTRUCTEX*)lParam;
-
-	mpos = ((MOUSEHOOKSTRUCT *)lParam)->pt;
-	ScreenToClient( ghWindow, &mpos);
-	gusMouseXPos = (INT16)mpos.x;
-	gusMouseYPos = (INT16)mpos.y;
-	uiParam = gusMouseYPos;
-	uiParam = uiParam << 16;
-	uiParam = uiParam | gusMouseXPos;
-
-	switch (wParam)
+	switch (event)
 	{
-	case WM_XBUTTONDOWN://** code is working
-		if( p_mhs->mouseData== (XBUTTON1<<16) ) 			//MessageBeep(-1);
-		{
-			gfX1ButtonState = TRUE;			
-			gfSGPInputReceived =	TRUE;
-			QueueEvent(X1_BUTTON_DOWN, 0, uiParam);
-		}
-		if( p_mhs->mouseData== (XBUTTON2<<16) ) 			//MessageBeep(0x00000040L);
-		{
-			gfX2ButtonState = TRUE;			
-			gfSGPInputReceived =	TRUE;
-			QueueEvent(X2_BUTTON_DOWN, 0, uiParam);
-		}
-		break;
-	case WM_XBUTTONUP://** code is working
-		if( p_mhs->mouseData== (XBUTTON1<<16) )
-		{
-			gfX1ButtonState = FALSE;			
-			gfSGPInputReceived =	TRUE;
-			QueueEvent(X1_BUTTON_UP, 0, uiParam);
-		}
-		if( p_mhs->mouseData== (XBUTTON2<<16) )
-		{
-			gfX2ButtonState = FALSE;			
-			gfSGPInputReceived =	TRUE;
-			QueueEvent(X2_BUTTON_UP, 0, uiParam);
-		}
-		break;
-	case WM_MOUSEWHEEL:
-		gsMouseWheelDeltaValue = GetMouseWheelDeltaValue(((MOUSEHOOKSTRUCTEX *)lParam)->mouseData);//dnl ch4 210909
-		if(p_mhs->mouseData==(WHEEL_DELTA<<16))  //up	MessageBeep(-1);
-			QueueEvent(MOUSE_WHEEL_UP, 0, uiParam);
-		if(p_mhs->mouseData==(-WHEEL_DELTA<<16)) //dn  MessageBeep(0x00000040L);
-			QueueEvent(MOUSE_WHEEL_DOWN, 0, uiParam);
-		break;
-	case WM_MBUTTONDOWN:
-		gfMiddleButtonState= TRUE;			//Set that we have input
-		gfSGPInputReceived =	TRUE;//Set that we have input
-		QueueEvent(MIDDLE_BUTTON_DOWN, 0, uiParam);// Trigger an input event
-		break;
-	case WM_MBUTTONUP:
-		gfMiddleButtonState= FALSE;
-		gfSGPInputReceived =	TRUE;
-		QueueEvent(MIDDLE_BUTTON_UP, 0, uiParam);
-		break;
-	case WM_LBUTTONDOWN: 
-		gfLeftButtonState = TRUE;
-		gfSGPInputReceived =	TRUE;
-		QueueEvent(LEFT_BUTTON_DOWN, 0, uiParam);
-		break;
-	case WM_LBUTTONUP: 
-		gfLeftButtonState = FALSE;
-		gfSGPInputReceived =	TRUE;
-		QueueEvent(LEFT_BUTTON_UP, 0, uiParam);
-		break;
-	case WM_RBUTTONDOWN:
-		gfRightButtonState = TRUE;
-		gfSGPInputReceived =	TRUE;
-		QueueEvent(RIGHT_BUTTON_DOWN, 0, uiParam);
-		break;
-	case WM_RBUTTONUP:
-		gfRightButtonState = FALSE;
-		gfSGPInputReceived =	TRUE;
-		QueueEvent(RIGHT_BUTTON_UP, 0, uiParam);
-		break;
-	case WM_MOUSEMOVE:
-		// Trigger an input event
-		if (gfTrackMousePos == TRUE)
-			QueueEvent(MOUSE_POS, 0, uiParam);
-		gfSGPInputReceived =	TRUE;
-		break;
-	default:
-		return CallNextHookEx(ghMouseHook, Code, wParam, lParam);
+		case X1_BUTTON_DOWN: gfX1ButtonState = TRUE; break;
+		case X1_BUTTON_UP: gfX1ButtonState = FALSE; break;
+		case X2_BUTTON_DOWN: gfX2ButtonState = TRUE; break;
+		case X2_BUTTON_UP: gfX2ButtonState = FALSE; break;
+		case MIDDLE_BUTTON_DOWN: gfMiddleButtonState = TRUE; break;
+		case MIDDLE_BUTTON_UP: gfMiddleButtonState = FALSE; break;
+		case LEFT_BUTTON_DOWN: gfLeftButtonState = TRUE; break;
+		case LEFT_BUTTON_UP: gfLeftButtonState = FALSE; break;
+		case RIGHT_BUTTON_DOWN: gfRightButtonState = TRUE; break;
+		case RIGHT_BUTTON_UP: gfRightButtonState = FALSE; break;
+		case MOUSE_WHEEL_UP:
+		case MOUSE_WHEEL_DOWN:
+			QueueEvent(event, 0, packedPosition);
+			return;
+		case MOUSE_POS:
+			if (gfTrackMousePos == TRUE)
+				QueueEvent(MOUSE_POS, 0, packedPosition);
+			gfSGPInputReceived = TRUE;
+			return;
+		case 0:
+			return;
+		default:
+			return;
 	}
 
-	//ddd why below code commented?
-//	if (gusMouseXPos < 0 || gusMouseXPos >= SCREEN_WIDTH ||
-//	gusMouseYPos < 0 || gusMouseYPos >= SCREEN_HEIGHT)
-		return CallNextHookEx(ghMouseHook, Code, wParam, lParam);
-
-	return TRUE;
+	gfSGPInputReceived = TRUE;
+	QueueEvent(event, 0, packedPosition);
 }
-
-
 
 BOOLEAN InitializeInputManager(void)
 {
@@ -267,22 +169,16 @@ BOOLEAN InitializeInputManager(void)
 	// Initialize the string input mechanism
 	gfCurrentStringInputState	= FALSE;
 	gpCurrentStringDescriptor	= NULL;
-	// Activate the hook functions for both keyboard and Mouse
-//	ghKeyboardHook = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC) KeyboardHandler, (HINSTANCE) 0, GetCurrentThreadId());
-//	DbgMessage(TOPIC_INPUT, DBG_LEVEL_2, String("Set keyboard hook returned %d", ghKeyboardHook));
-
-	ghMouseHook = SetWindowsHookEx(WH_MOUSE, (HOOKPROC) MouseHandler, (HINSTANCE) 0, GetCurrentThreadId());
-	DbgMessage(TOPIC_INPUT, DBG_LEVEL_2, String("Set mouse hook returned %d", ghMouseHook));
+	const bool eventSourceReady = Platform::Input::InitializeEventSource();
+	DbgMessage(TOPIC_INPUT, DBG_LEVEL_2,
+		String("Input event source initialized: %d", eventSourceReady ? 1 : 0));
 	return TRUE;
 }
 
 void ShutdownInputManager(void)
 {
-	// There's very little to do when shutting down the input manager. In the future, this is where the keyboard and
-	// mouse hooks will be destroyed
+	Platform::Input::ShutdownEventSource();
 	UnRegisterDebugTopic(TOPIC_INPUT, "Input Manager");
-//	UnhookWindowsHookEx(ghKeyboardHook);
-	UnhookWindowsHookEx(ghMouseHook);
 }
 
 void QueuePureEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam)
@@ -513,7 +409,7 @@ void KeyChange(UINT32 usParam, UINT32 uiParam, UINT8 ufKeyState)
 {
 	UINT32 ubKey;
 	UINT16 ubChar;
-	POINT	MousePos;
+	SGPPoint MousePos;
 	UINT32 uiTmpLParam;
 
 	if ((usParam >= 96)&&(usParam <= 110))
@@ -925,10 +821,9 @@ void KeyChange(UINT32 usParam, UINT32 uiParam, UINT8 ufKeyState)
 		}
 	}
 
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
+	MousePos = Platform::Input::GetCursorPosition();
 
-	uiTmpLParam = ((MousePos.y << 16) & 0xffff0000) | (MousePos.x & 0x0000ffff);
+	uiTmpLParam = ((MousePos.iY << 16) & 0xffff0000) | (MousePos.iX & 0x0000ffff);
 
 	if (ufKeyState == TRUE)
 	{
@@ -979,7 +874,7 @@ void KeyChange(UINT32 usParam, UINT32 uiParam, UINT8 ufKeyState)
 		else if( ubChar == TAB && gfAltState )
 		{
 			// therefore minimize the application
-			ShowWindow( ghWindow, SW_MINIMIZE );
+			Platform::MinimizeMainWindow();
 			gfKeyState[ ALT ] = FALSE;
 			gfAltState = FALSE;
 		}
@@ -1080,15 +975,12 @@ void KeyUp(UINT32 usParam, UINT32 uiParam)
 
 void GetMousePos(SGPPoint *Point)
 {
-	POINT MousePos;
+	*Point = Platform::Input::GetCursorPosition();
+}
 
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
-
-	Point->iX = (UINT32) MousePos.x;
-	Point->iY = (UINT32) MousePos.y;
-
-	return;
+BOOLEAN IsPhysicalKeyPressed(UINT8 key)
+{
+	return Platform::Input::IsLegacyKeyPressed(key) ? TRUE : FALSE;
 }
 
 // These functions will be used for string input
@@ -1527,18 +1419,12 @@ void RestrictMouseToXYXY(UINT16 usX1, UINT16 usY1, UINT16 usX2, UINT16 usY2)
 
 void RestrictMouseCursor(SGPRect *pRectangle)
 {
-	// Make a copy of our rect....
-	memcpy( &gCursorClipRect, pRectangle, sizeof( gCursorClipRect ) );
-	ClientToScreen( ghWindow, (LPPOINT)&gCursorClipRect);
-	ClientToScreen( ghWindow, ((LPPOINT)&gCursorClipRect)+1);
-	ClipCursor(&gCursorClipRect);
-	fCursorWasClipped = TRUE;
+	Platform::Input::RestrictCursor(*pRectangle);
 }
 
 void FreeMouseCursor( BOOLEAN fLockForTacticalWindowedMode )
 {
-	ClipCursor(NULL);
-	fCursorWasClipped = FALSE;
+	Platform::Input::FreeCursor();
 
 	// Buggler: Need to relock for fullscreen mode as ClipCursor release mouse boundary to full desktop resolution on multi-monitor setup &&
 	// for windowed mode, lockscreen only when player activates feature in tactical screen due to mouse restriction applies to desktop too!
@@ -1556,31 +1442,23 @@ void FreeMouseCursor( BOOLEAN fLockForTacticalWindowedMode )
 
 void RestoreCursorClipRect( void )
 {
-	if ( fCursorWasClipped )
-	{
-		ClipCursor( &gCursorClipRect );
-	}
+	Platform::Input::RestoreCursorRestriction();
 }
 
 void GetRestrictedClipCursor( SGPRect *pRectangle )
 {
-	GetClipCursor((RECT *) pRectangle );
-	ScreenToClient( ghWindow, (LPPOINT)pRectangle);
-	ScreenToClient( ghWindow, ((LPPOINT)pRectangle)+1);
+	*pRectangle = Platform::Input::GetCursorRestriction();
 }
 
 BOOLEAN IsCursorRestricted( void )
 {
-	return( fCursorWasClipped );
+	return Platform::Input::IsCursorRestricted() ? TRUE : FALSE;
 }
 
 void SimulateMouseMovement( UINT32 uiNewXPos, UINT32 uiNewYPos )
 {
-	POINT newmouse;
-	newmouse.x = uiNewXPos;
-	newmouse.y = uiNewYPos;
-	ClientToScreen( ghWindow, &newmouse);
-	SetCursorPos( newmouse.x, newmouse.y);
+	Platform::Input::SetCursorPosition(
+		{static_cast<INT32>(uiNewXPos), static_cast<INT32>(uiNewYPos)});
 }
 
 
@@ -1599,16 +1477,10 @@ BOOLEAN InputEventInside(InputAtom *Event, UINT32 uiX1, UINT32 uiY1, UINT32 uiX2
 void DequeueAllKeyBoardEvents()
 {
 	InputAtom	InputEvent;
-	MSG			KeyMessage;
-
-
-	//dequeue all the events waiting in the windows queue
-	//Give them proper processing like the old window hook method used to.
-	while( PeekMessage( &KeyMessage, ghWindow, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE ) )
-	{
-		TranslateMessage( &KeyMessage);
-		DispatchMessage( &KeyMessage);
-	}
+	// First let the selected host dispatch pending native keyboard input, as the
+	// Win32 implementation historically did, then discard the resulting engine
+	// events along with everything already queued.
+	Platform::Input::FlushPendingKeyboardEvents();
 
 	//Now deque all the events waiting in the SGP queue
 	//Including those that were just posted in the code above
@@ -1632,11 +1504,8 @@ void HandleSingleClicksAndButtonRepeats( void )
 		if ((guiLeftButtonRepeatTimer > 0)&&(guiLeftButtonRepeatTimer <= uiTimer))
 		{
 			UINT32 uiTmpLParam;
-			POINT	MousePos;
-
-			GetCursorPos(&MousePos);
-			ScreenToClient(ghWindow, &MousePos); // In window coords!
-			uiTmpLParam = ((MousePos.y << 16) & 0xffff0000) | (MousePos.x & 0x0000ffff);
+			const SGPPoint MousePos = Platform::Input::GetCursorPosition();
+			uiTmpLParam = ((MousePos.iY << 16) & 0xffff0000) | (MousePos.iX & 0x0000ffff);
 			QueueEvent(LEFT_BUTTON_REPEAT, 0, uiTmpLParam);
 			guiLeftButtonRepeatTimer = uiTimer + BUTTON_REPEAT_TIME;
 		}
@@ -1653,11 +1522,8 @@ void HandleSingleClicksAndButtonRepeats( void )
 		if ((guiRightButtonRepeatTimer > 0)&&(guiRightButtonRepeatTimer <= uiTimer))
 		{
 			UINT32 uiTmpLParam;
-			POINT	MousePos;
-
-			GetCursorPos(&MousePos);
-			ScreenToClient(ghWindow, &MousePos); // In window coords!
-			uiTmpLParam = ((MousePos.y << 16) & 0xffff0000) | (MousePos.x & 0x0000ffff);
+			const SGPPoint MousePos = Platform::Input::GetCursorPosition();
+			uiTmpLParam = ((MousePos.iY << 16) & 0xffff0000) | (MousePos.iX & 0x0000ffff);
 			QueueEvent(RIGHT_BUTTON_REPEAT, 0, uiTmpLParam);
 			guiRightButtonRepeatTimer = uiTimer + BUTTON_REPEAT_TIME;
 		}
@@ -1668,13 +1534,6 @@ void HandleSingleClicksAndButtonRepeats( void )
 	}
 }
 
-
-INT16 GetMouseWheelDeltaValue( UINT32 wParam )
-{
-	INT16 sDelta = HIWORD( wParam );
-
-	return( sDelta / WHEEL_DELTA );
-}
 
 BOOLEAN PeekSpecificEvent(UINT32 uiMaskFlags)//dnl ch74 221013
 {

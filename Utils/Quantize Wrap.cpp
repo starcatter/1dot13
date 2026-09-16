@@ -1,8 +1,3 @@
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <windows.h>
 #include "types.h"
 #include "himage.h"
 #include "Quantize.h"
@@ -31,7 +26,7 @@ BOOLEAN	QuantizeImage( UINT8 *pDest, UINT8 *pSrc, INT16 sWidth, INT16 sHeight, S
 
 	memset( pPalette, 0,	sizeof( SGPPaletteEntry ) * 256 );
 
-	q.GetColorTable( (RGBQUAD*)pPalette );
+	q.GetColorTable( pPalette );
 
 	// THEN MAP IMAGE TO PALETTE
 	// OK, MAPIT!

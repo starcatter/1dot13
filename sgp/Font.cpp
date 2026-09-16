@@ -3,7 +3,6 @@
 	#include <stdio.h>
 	#include <stdarg.h>
 	#include <malloc.h>
-	#include <windows.h>
 	#include <stdarg.h>
 	#include <wchar.h>
 	#include "LegacySGP.h"

@@ -4,6 +4,7 @@
 	#include	"WCheck.h"
 	#include	"Font Control.h"
 	#include	"video.h"
+	#include	"video_windows.h"
 	#include	"Game Clock.h"
 	#include	"Render Dirty.h"
 	#include	"WordWrap.h"
@@ -1296,12 +1297,8 @@ void DisplayCurrentGridNo()
 void		GetUserInput()
 {
 	InputAtom Event;
-	POINT	MousePos;
 	UINT8	ubPanelMercShouldUse = WhichPanelShouldTalkingMercUse( /*giSelectedMercCurrentQuote*/ ); // doesn't take parameters (jonathanl)
 
-
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
 
 	while( DequeueSpecificEvent(&Event, KEY_DOWN|KEY_UP|KEY_REPEAT) )
 	{

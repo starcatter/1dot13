@@ -3,6 +3,7 @@
 	#include	"FileMan.h"
 	#include	"string.h"
 	#include	"Sound Control.h"
+	#include	"soundman.h"
 	#include	"SaveLoadScreen.h"
 	#include	"Music Control.h"
 	#include	"Options Screen.h"
@@ -1186,6 +1187,7 @@ void LoadGameExternalOptions()
 	gGameExternalOptions.ubVolumeSSA						= iniReader.ReadInteger("Sound Settings", "VOLUME_SSA", 50, 1, 127);
 	gGameExternalOptions.fNWSS								= iniReader.ReadBoolean("Sound Settings", "NWSS", false, false);
 	gGameExternalOptions.fLimitSimultaneousSound			= iniReader.ReadBoolean("Sound Settings", "LIMIT_SIMULTANEOUS_SOUND", true, false);
+	SoundSetSimultaneousSoundLimit(gGameExternalOptions.fLimitSimultaneousSound);
 
 	//################# Tactical Interface Settings #################
 

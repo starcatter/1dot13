@@ -12,7 +12,10 @@
 //=================================================================================================
 
 	#include "types.h"
-	#include <windows.h>
+	#include "local.h"
+	#include "Render Dirty.h"
+	#include "Font Control.h"
+	#include "WinFont.h"
 	#include <stdio.h>
 	#include <memory.h>
 	#include "DEBUG.H"

@@ -431,12 +431,6 @@ void BtnIMPBeginScreenDoneCallback(GUI_BUTTON *btn,INT32 reason)
 void GetPlayerKeyBoardInputForIMPBeginScreen( void )
 {
 	InputAtom					InputEvent;
-	POINT	MousePos;
-
-	// get the current curosr position, might just need it.
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
-
 	// handle input events
 	while (DequeueSpecificEvent(&InputEvent, KEY_DOWN|KEY_UP|KEY_REPEAT))
 	{

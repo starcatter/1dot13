@@ -5,6 +5,7 @@
 	#include "mousesystem.h"
 	#include "Button System.h"
 	#include "LegacySGP.h"
+	#include "input.h"
 	#include "Utilities.h"
 	#include "message.h"
 	#include "mapscreen.h"
@@ -1129,7 +1130,7 @@ void DeleteMapScreenBottomMessageScrollRegion( void )
 
 void MapScreenMessageScrollBarCallBack( MOUSE_REGION *pRegion, INT32 iReason )
 {
-	POINT MousePos;
+	SGPPoint MousePos;
 	UINT8 ubMouseYOffset;
 	UINT8	ubDesiredSliderOffset;
 	UINT8 ubDesiredMessageIndex;
@@ -1151,10 +1152,9 @@ void MapScreenMessageScrollBarCallBack( MOUSE_REGION *pRegion, INT32 iReason )
 		if ( ubNumMessages > MAX_MESSAGES_ON_MAP_BOTTOM )
 		{
 			// where is the mouse?
-			GetCursorPos( &MousePos );
-			ScreenToClient(ghWindow, &MousePos); // In window coords!
+			GetMousePos(&MousePos);
 
-			ubMouseYOffset = (UINT8) MousePos.y - MESSAGE_SCROLL_AREA_START_Y;
+			ubMouseYOffset = (UINT8) MousePos.iY - MESSAGE_SCROLL_AREA_START_Y;
 
 			// if clicking in the top 5 pixels of the slider bar
 			if ( ubMouseYOffset < ( SLIDER_HEIGHT / 2 ) )

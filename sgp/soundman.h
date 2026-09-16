@@ -2,7 +2,6 @@
 #define __SOUNDMAN_
 
 #include "types.h"
-#include "fmod.h"
 
 /*
 #ifdef __cplusplus
@@ -56,6 +55,7 @@ extern void		ShutdownSoundManager(void);
 // Configuration functions
 extern BOOLEAN	SoundSetMemoryLimit(UINT32 uiLimit);
 extern BOOLEAN	SoundSetCacheThreshhold(UINT32 uiThreshold);
+extern void		SoundSetSimultaneousSoundLimit(BOOLEAN enabled);
 extern void *	SoundGetDriverHandle( void );
 
 // Master volume control functions
@@ -97,7 +97,7 @@ extern void SoundRemoveSampleFlags( UINT32 uiSample, UINT32 uiFlags );
 
 extern void SoundEnableSound(BOOLEAN fEnable);
 
-extern void SoundLog(CHAR8 *strMessage);
+extern void SoundLog(const CHAR8 *strMessage);
 
 /*
 #ifdef __cplusplus

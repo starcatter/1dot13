@@ -1687,7 +1687,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 {
 	InputAtom					InputEvent;
 	BOOLEAN						fKeyTaken = FALSE;
-	POINT	MousePos;
+	SGPPoint MousePos;
 	//SOLDIERTYPE				*pSoldier;
 	static BOOLEAN	fShifted = FALSE;
 	static BOOLEAN	fShifted2 = FALSE;
@@ -1696,8 +1696,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 	
 	CHAR16	zString[128]; 
 
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
+	GetMousePos(&MousePos);
 
 	GetMouseMapPos( &usMapPos );
 
@@ -1707,16 +1706,16 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 		switch(InputEvent.usEvent)
 		{
 		case LEFT_BUTTON_DOWN:
-			MouseSystemHook(LEFT_BUTTON_DOWN, (INT16)MousePos.x, (INT16)MousePos.y,_LeftButtonDown, _RightButtonDown);
+			MouseSystemHook(LEFT_BUTTON_DOWN, (INT16)MousePos.iX, (INT16)MousePos.iY,_LeftButtonDown, _RightButtonDown);
 			break;
 		case LEFT_BUTTON_UP:
-			MouseSystemHook(LEFT_BUTTON_UP, (INT16)MousePos.x, (INT16)MousePos.y ,_LeftButtonDown, _RightButtonDown);
+			MouseSystemHook(LEFT_BUTTON_UP, (INT16)MousePos.iX, (INT16)MousePos.iY ,_LeftButtonDown, _RightButtonDown);
 			break;
 		case RIGHT_BUTTON_DOWN:
-			MouseSystemHook(RIGHT_BUTTON_DOWN, (INT16)MousePos.x, (INT16)MousePos.y,_LeftButtonDown, _RightButtonDown);
+			MouseSystemHook(RIGHT_BUTTON_DOWN, (INT16)MousePos.iX, (INT16)MousePos.iY,_LeftButtonDown, _RightButtonDown);
 			break;
 		case RIGHT_BUTTON_UP:
-			MouseSystemHook(RIGHT_BUTTON_UP, (INT16)MousePos.x, (INT16)MousePos.y,_LeftButtonDown, _RightButtonDown);
+			MouseSystemHook(RIGHT_BUTTON_UP, (INT16)MousePos.iX, (INT16)MousePos.iY,_LeftButtonDown, _RightButtonDown);
 			break;
 
 		}

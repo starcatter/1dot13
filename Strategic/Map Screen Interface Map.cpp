@@ -415,7 +415,7 @@ INT16 sBaseSectorList[ MAX_TOWNS - 1 ];/*={
 
 // position of town names on the map
 // these are no longer PIXELS, but 10 * the X,Y position in SECTORS (fractions possible) to the X-CENTER of the town
-POINT pTownPoints[ MAX_TOWNS ];/*={
+SGPPoint pTownPoints[ MAX_TOWNS ];/*={
 	{ 0 ,  0 },
 	{ 90, 10}, // Omerta
 	{125, 40}, // Drassen
@@ -1213,8 +1213,8 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Map Screen1");
 				wcscpy( sStringA, L"");
 			}
 
-			usX = (UINT16) (UI_MAP.ViewRegion.x + UI_MAP.GridSize.iX +  (pTownPoints[ bTown ].x * UI_MAP.GridSize.iX) / 10);
-			usY = (UINT16) (UI_MAP.ViewRegion.y + UI_MAP.GridSize.iY + ((pTownPoints[ bTown ].y * UI_MAP.GridSize.iY) / 10) + 1);
+			usX = (UINT16) (UI_MAP.ViewRegion.x + UI_MAP.GridSize.iX +  (pTownPoints[ bTown ].iX * UI_MAP.GridSize.iX) / 10);
+			usY = (UINT16) (UI_MAP.ViewRegion.y + UI_MAP.GridSize.iY + ((pTownPoints[ bTown ].iY * UI_MAP.GridSize.iY) / 10) + 1);
 
 			// red for low loyalty, green otherwise
 			SetFontForeground( ( UINT8 ) ( fLoyaltyTooLowToTrainMilitia ? FONT_MCOLOR_RED : FONT_MCOLOR_LTGREEN ) );

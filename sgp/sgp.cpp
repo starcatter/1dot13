@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <string.h>
 #include "LegacySGP.h"
+#include "video_windows.h"
 #include "vobject.h"
 #include "Font.h"
 #include "local.h"
@@ -16,9 +17,13 @@
 #include "Timer Control.h"
 #include "Utilities.h"
 #include "GameSettings.h"
+#include "application/ApplicationLoop.h"
+#include "application/ShutdownOnce.h"
 #include "fileio/FileServices.h"
+#include "platform/windows/ApplicationHost.h"
 #include "platform/Process.h"
 #include "platform/Dialog.h"
+#include "platform/NativeFonts.h"
 #include "UtfConversion.h"
 #include "zmouse.h"
 #include <vfs/Aspects/vfs_settings.h>
@@ -53,6 +58,7 @@ static std::list<vfs::Path> vfs_config_ini;
 
 static bool			s_DebugKeyboardInput = false;
 static vfs::Path	s_CodePage;
+static ja2::application::ShutdownOnce s_ShutdownOnce;
 
 
 int		iWindowedMode;
@@ -167,6 +173,41 @@ CHAR8				gzCommandLine[100];		// Command line given
 
 CHAR8				gzErrorMsg[2048]="";
 BOOLEAN				gfIgnoreMessages=FALSE;
+
+namespace
+{
+class LegacyApplicationLoopClient final : public ja2::application::ApplicationLoopClient
+{
+public:
+	bool isRunning() const override
+	{
+		return gfProgramIsRunning != FALSE;
+	}
+
+	bool isActive() const override
+	{
+		return gfApplicationActive != FALSE;
+	}
+
+	bool updateClock() override
+	{
+		return UpdateJA2Clock() != FALSE;
+	}
+
+	std::uint32_t nextWakeMilliseconds() const override
+	{
+		return GetJA2ClockNextWakeMilliseconds();
+	}
+
+	void runFrame() override
+	{
+#ifdef LUACONSOLE
+		PollConsole();
+#endif
+		CallGameLoop();
+	}
+};
+}
 
 
 bool				s_bExportStrings		= false;
@@ -291,8 +332,7 @@ INT32 FAR PASCAL WindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LP
 		InitializeJA2Clock();
 		break;
 
-	case WM_DESTROY: 
-		ShutdownStandardGamingPlatform();
+	case WM_DESTROY:
 //		ShowCursor(TRUE);
 		PostQuitMessage(0);
 		break;
@@ -530,6 +570,10 @@ BOOLEAN InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow)
 
 void ShutdownStandardGamingPlatform(void)
 {
+	if (!s_ShutdownOnce.begin())
+	{
+		return;
+	}
 
 	//
 	// Shut down the different components of the SGP
@@ -582,6 +626,7 @@ void ShutdownStandardGamingPlatform(void)
 	vfs::Log::flushDeleteAll();
 	vfs::CVirtualFileSystem::shutdownVFS();
 	vfs::ObjectAllocator::clear();
+	s_ShutdownOnce.complete();
 }
 
 #include "MPJoinScreen.h"
@@ -688,7 +733,6 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 	/****************************************************************************************************/
 #endif
 
-	MSG				Message;
 	// Make sure the game works out of the box on Linux/macOS/Android (WINE)
 	if (wine_add_dll_overrides())
 	{
@@ -800,36 +844,26 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 
 	FastDebugMsg("Running Game");
 
-	// At this point the SGP is set up, which means all I/O, Memory, tools, etc... are available. All we need to do is 
+	// At this point the SGP is set up, which means all I/O, Memory, tools, etc... are available. All we need to do is
 	// attend to the gaming mechanics themselves
-	Message.wParam = 0;
+	int applicationExitCode = 0;
 
 	try
 	{
 		MAGIC();
-		while (gfProgramIsRunning)
+		LegacyApplicationLoopClient loopClient;
+		Platform::WindowsApplicationHost applicationHost;
+		const ja2::application::ApplicationLoopResult loopResult =
+			ja2::application::RunApplicationLoop(loopClient, applicationHost);
+		if (loopResult.reason ==
+			ja2::application::ApplicationLoopExitReason::hostFailure)
 		{
-			if (UpdateJA2Clock() && gfApplicationActive)
-			{
-			#ifdef LUACONSOLE
-				PollConsole();
-			#endif
-				CallGameLoop();
-			}
-
-			const DWORD waitResult = MsgWaitForMultipleObjectsEx(
-				0, NULL, GetJA2ClockNextWakeMilliseconds(),
-				QS_ALLINPUT, MWMO_INPUTAVAILABLE);
-			if (waitResult == WAIT_FAILED)
-			{
-				ShutdownWithErrorBox("Waiting for the main-loop deadline failed.");
-				break;
-			}
-			if (waitResult != WAIT_OBJECT_0) continue;
-			if (!PeekMessage(&Message, NULL, 0, 0, PM_REMOVE)) continue;
-			if (Message.message == WM_QUIT) return Message.wParam;
-			TranslateMessage(&Message);
-			DispatchMessage(&Message);
+			ShutdownWithErrorBox("Waiting for the main-loop deadline failed.");
+		}
+		if (loopResult.reason ==
+			ja2::application::ApplicationLoopExitReason::quitRequested)
+		{
+			applicationExitCode = loopResult.exitCode;
 		}
 	}
 	catch(sgp::Exception &ex)
@@ -865,13 +899,12 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 
 	// This is the normal exit point
 	FastDebugMsg("Exiting Game");
-	PostQuitMessage(0);
+	SGPExit();
 
-	// SGPExit() will be called next through the atexit() mechanism...	This way we correctly process both normal exits and
-	// emergency aborts (such as those caused by a failed assertion).
-
-	// return wParam of the last message received
-	return Message.wParam;
+	// The registered atexit handler remains an emergency fallback. SGPExit and
+	// ShutdownStandardGamingPlatform are idempotent, so normal teardown happens
+	// here exactly once and the fallback becomes a no-op.
+	return applicationExitCode;
 }
 
 
@@ -1198,7 +1231,8 @@ void GetRuntimeSettings( )
 	// WANNE: Should we play the intro?
 	iPlayIntro = (int)oProps.getIntProperty("Ja2 Settings","PLAY_INTRO", iPlayIntro);
 
-    iUseWinFonts= (int)oProps.getIntProperty("Ja2 Settings","USE_WINFONTS", iUseWinFonts);
+    iUseWinFonts = Platform::ResolveNativeFontSetting(
+		(int)oProps.getIntProperty("Ja2 Settings", "USE_WINFONTS", iUseWinFonts));
 	fTooltipScaleFactor = ((float)oProps.getFloatProperty("Ja2 Settings", "TOOLTIP_SCALE_FACTOR", 100)) / 100;
 	if (fTooltipScaleFactor < 1) fTooltipScaleFactor = 1;
 

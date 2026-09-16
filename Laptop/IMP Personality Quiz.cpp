@@ -1603,11 +1603,10 @@ void CheckStateOfTheConfirmButton( void )
 void HandleIMPQuizKeyBoard( void )
 {
 	InputAtom					InputEvent;
-	POINT	MousePos;
+	SGPPoint MousePos;
 	BOOLEAN fSkipFrame = FALSE;
 
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
+	GetMousePos(&MousePos);
 
 	while( ( DequeueEvent(&InputEvent) == TRUE )	)
 	{
@@ -1683,27 +1682,27 @@ void HandleIMPQuizKeyBoard( void )
 			switch(InputEvent.usEvent)
 			{
 				case LEFT_BUTTON_DOWN:
-					MouseSystemHook(LEFT_BUTTON_DOWN, (INT16)MousePos.x, (INT16)MousePos.y,_LeftButtonDown, _RightButtonDown);
+					MouseSystemHook(LEFT_BUTTON_DOWN, (INT16)MousePos.iX, (INT16)MousePos.iY,_LeftButtonDown, _RightButtonDown);
 
 					break;
 				case LEFT_BUTTON_UP:
-					MouseSystemHook(LEFT_BUTTON_UP, (INT16)MousePos.x, (INT16)MousePos.y ,_LeftButtonDown, _RightButtonDown);
+					MouseSystemHook(LEFT_BUTTON_UP, (INT16)MousePos.iX, (INT16)MousePos.iY ,_LeftButtonDown, _RightButtonDown);
 
 					break;
 				case RIGHT_BUTTON_DOWN:
-					MouseSystemHook(RIGHT_BUTTON_DOWN, (INT16)MousePos.x, (INT16)MousePos.y,_LeftButtonDown, _RightButtonDown);
+					MouseSystemHook(RIGHT_BUTTON_DOWN, (INT16)MousePos.iX, (INT16)MousePos.iY,_LeftButtonDown, _RightButtonDown);
 
 					break;
 				case RIGHT_BUTTON_UP:
-					MouseSystemHook(RIGHT_BUTTON_UP, (INT16)MousePos.x, (INT16)MousePos.y,_LeftButtonDown, _RightButtonDown);
+					MouseSystemHook(RIGHT_BUTTON_UP, (INT16)MousePos.iX, (INT16)MousePos.iY,_LeftButtonDown, _RightButtonDown);
 
 					break;
 				case RIGHT_BUTTON_REPEAT:
-					MouseSystemHook(RIGHT_BUTTON_REPEAT, (INT16)MousePos.x, (INT16)MousePos.y,_LeftButtonDown, _RightButtonDown);
+					MouseSystemHook(RIGHT_BUTTON_REPEAT, (INT16)MousePos.iX, (INT16)MousePos.iY,_LeftButtonDown, _RightButtonDown);
 
 					break;
 				case LEFT_BUTTON_REPEAT:
-					MouseSystemHook(LEFT_BUTTON_REPEAT, (INT16)MousePos.x, (INT16)MousePos.y,_LeftButtonDown, _RightButtonDown);
+					MouseSystemHook(LEFT_BUTTON_REPEAT, (INT16)MousePos.iX, (INT16)MousePos.iY,_LeftButtonDown, _RightButtonDown);
 
 					break;
 				default:

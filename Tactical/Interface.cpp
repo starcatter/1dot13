@@ -2621,12 +2621,11 @@ BOOLEAN DrawCTHIndicator()
 	INT16 sStartScreenX;
 	INT16 sStartScreenY;
 
-	POINT	MousePos;
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!	
+	SGPPoint MousePos;
+	GetMousePos(&MousePos);
 
-	sStartScreenX = (INT16)MousePos.x - 1;	// sevenfm: fix (-1) for cursor mismatch
-	sStartScreenY = (INT16)MousePos.y - 1;
+	sStartScreenX = (INT16)MousePos.iX - 1;	// sevenfm: fix (-1) for cursor mismatch
+	sStartScreenY = (INT16)MousePos.iY - 1;
 
 	// Define regions for the various indicators. We need to do this now because the Aperture Circles will want to
 	// avoid being drawn within these regions, otherwise they might make them harder to see.

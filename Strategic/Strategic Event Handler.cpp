@@ -1,5 +1,4 @@
 	#include "Strategic Event Handler.h"
-	#include <Windows.h>
 	#include "Items.h"
 	#include "Handle Items.h"
 	#include "Tactical Save.h"

@@ -6550,7 +6550,6 @@ UINT32 HandleMapUI( )
 	UINT32 uiNewEvent = MAP_EVENT_NONE;
 	INT16 sMapX = 0, sMapY = 0;
 	INT16 sX, sY;
-	POINT MousePos;
 	UINT32 uiNewScreen = MAP_SCREEN;
 	BOOLEAN fWasAlreadySelected;
 
@@ -6621,8 +6620,6 @@ UINT32 HandleMapUI( )
 				{
 					sX = ( GetLastSectorIdInCharactersPath( gCharactersList[GetSelectedDestChar()].usSolID	) % MAP_WORLD_X );
 					sY = ( GetLastSectorIdInCharactersPath( gCharactersList[GetSelectedDestChar()].usSolID	) / MAP_WORLD_X );
-					GetCursorPos(&MousePos);
-					ScreenToClient(ghWindow, &MousePos); // In window coords!
 					RestoreBackgroundForMapGrid( sX, sY );
 					// fMapPanelDirty = TRUE;
 				}
@@ -8967,7 +8964,7 @@ INT32 iCounter2 = 0;
 
 BOOLEAN GetMouseMapXY( INT16 *psMapWorldX, INT16 *psMapWorldY )
 {
-	POINT	MousePos;
+	SGPPoint MousePos;
 
 	if( IsMapScreenHelpTextUp( ) )
 	{
@@ -8975,10 +8972,9 @@ BOOLEAN GetMouseMapXY( INT16 *psMapWorldX, INT16 *psMapWorldY )
 		return( FALSE );
 	}
 
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
+	GetMousePos(&MousePos);
 
-	return( GetMapXY( (INT16)MousePos.x, (INT16)MousePos.y, psMapWorldX, psMapWorldY ) );
+	return( GetMapXY( (INT16)MousePos.iX, (INT16)MousePos.iY, psMapWorldX, psMapWorldY ) );
 }
 
 
@@ -12202,15 +12198,14 @@ INT32 GetIndexForthis( SOLDIERTYPE *pSoldier )
 
 BOOLEAN IsCursorWithInRegion(INT16 sLeft, INT16 sRight, INT16 sTop, INT16 sBottom )
 {
-	POINT MousePos;
+	SGPPoint MousePos;
 
 	// get cursor position
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
+	GetMousePos(&MousePos);
 
 	// is it within region?
 
-	if( ( sLeft < MousePos.x ) && ( sRight > MousePos.x) && (sTop < MousePos.y ) && ( sBottom > MousePos.y ) )
+	if( ( sLeft < MousePos.iX ) && ( sRight > MousePos.iX) && (sTop < MousePos.iY ) && ( sBottom > MousePos.iY ) )
 	{
 		return ( TRUE );
 	}

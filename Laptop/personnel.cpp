@@ -5767,7 +5767,7 @@ void HandleSliderBarClickCallback( MOUSE_REGION *pRegion, INT32 iReason )
 {
 	INT32 iValue = 0;
 	INT32 iNumberOfItems = 0;
-	POINT MousePos;
+	SGPPoint MousePos;
 	INT16 sSizeOfEachSubRegion = 0;
 	INT16 sYPositionOnBar = 0;
 	INT16 iCurrentItemValue = 0;
@@ -5793,14 +5793,13 @@ void HandleSliderBarClickCallback( MOUSE_REGION *pRegion, INT32 iReason )
 		}
 
 		// find the x,y on the slider bar
-		GetCursorPos(&MousePos);
-		ScreenToClient(ghWindow, &MousePos); // In window coords!
+		GetMousePos(&MousePos);
 
 		// get the subregion sizes
 		sSizeOfEachSubRegion = ( INT16 )( ( INT32 )( Y_SIZE_OF_PERSONNEL_SCROLL_REGION - SIZE_OF_PERSONNEL_CURSOR ) / ( INT32 )( iNumberOfItems	) );
 
 		// get the cursor placement
-		sYPositionOnBar = (INT16) MousePos.y - Y_OF_PERSONNEL_SCROLL_REGION;
+		sYPositionOnBar = (INT16) MousePos.iY - Y_OF_PERSONNEL_SCROLL_REGION;
 
 		if( sSizeOfEachSubRegion == 0 )
 		{
@@ -5955,11 +5954,6 @@ void HandlePersonnelKeyboard( void )
 	CHAR16 sZero[ 2 ] = L"0";
 
 	InputAtom					InputEvent;
-	POINT	MousePos;
-
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
-
 	//while (DequeueSpecificEvent(&InputEvent, KEY_DOWN|KEY_UP|KEY_REPEAT))
 	while (DequeueEvent(&InputEvent) == TRUE)
 	{

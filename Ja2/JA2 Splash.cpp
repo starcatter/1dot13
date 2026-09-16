@@ -2,6 +2,8 @@
 #include "vsurface.h"
 #include "mainmenuscreen.h"
 #include "video.h"
+#include "local.h"
+#include "DEBUG.H"
 #include "Timer Control.h"
 #include "Multi Language Graphic Utils.h"
 #include <stdio.h>

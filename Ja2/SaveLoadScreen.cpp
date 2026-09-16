@@ -1,6 +1,7 @@
 	#include	"types.h"
 	#include	"SaveLoadScreen.h"
 	#include	"video.h"
+	#include	"video_windows.h"
 	#include	"Font Control.h"
 	#include	"Game Clock.h"
 	#include	"Render Dirty.h"
@@ -1016,12 +1017,8 @@ void HandleSaveLoadScreen()
 void GetSaveLoadScreenUserInput()
 {
 	InputAtom Event;
-	POINT	MousePos;
 	INT8		bActiveTextField;
 	static BOOLEAN	fWasCtrlHeldDownLastFrame = FALSE;
-
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
 
 	//if we are going to be instantly leaving the screen, dont draw the numbers
 	if( gfLoadGameUponEntry )

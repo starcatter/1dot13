@@ -1,13 +1,9 @@
 #ifndef __VIDEO_
 #define __VIDEO_
 
-#include <windows.h>
-#include <ddraw.h>
-
-#include "local.h"
-#include "DEBUG.H"
 #include "types.h"
-#include "DirectDraw Calls.h"
+#include "himage.h"
+#include "DEBUG.H"
 #include "vsurface.h"
 
 #define BUFFER_READY			0x00
@@ -20,7 +16,6 @@
 #define VIDEO_NO_CURSOR				0xFFFF
 
 
-extern HWND										ghWindow;
 extern UINT32				 guiMouseBufferState;	// BUFFER_READY, BUFFER_DIRTY, BUFFER_DISABLED
 //#ifdef WINFONTS
 extern UINT32 CurrentSurface;
@@ -31,7 +26,6 @@ extern "C" {
 #endif
 */
 
-extern BOOLEAN				InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *WindowProc);
 extern void				 ShutdownVideoManager(void);
 extern void				 SuspendVideoManager(void);
 extern BOOLEAN				RestoreVideoManager(void);
@@ -43,11 +37,6 @@ extern void				 InvalidateRegions(SGPRect *pArrayOfRegions, UINT32 uiRegionCount
 extern void				 InvalidateScreen(void);
 extern void				 InvalidateFrameBuffer(void);
 extern void				 SetFrameBufferRefreshOverride(PTR pFrameBufferRefreshOverride);
-extern LPDIRECTDRAW2		GetDirectDraw2Object(void);
-extern LPDIRECTDRAWSURFACE2 GetPrimarySurfaceObject(void);
-extern LPDIRECTDRAWSURFACE2 GetBackBufferObject(void);
-extern LPDIRECTDRAWSURFACE2 GetFrameBufferObject(void);
-extern LPDIRECTDRAWSURFACE2 GetMouseBufferObject(void);
 extern PTR					LockPrimarySurface(UINT32 *uiPitch);
 extern void				 UnlockPrimarySurface(void);
 extern PTR					LockBackBuffer(UINT32 *uiPitch);
@@ -89,7 +78,6 @@ void FatalError( const STR8 pError, ...);
 
 
 extern SGPPaletteEntry			gSgpPalette[256];
-extern LPDIRECTDRAWPALETTE	gpDirectDrawPalette;
 
 /*
 #ifdef __cplusplus

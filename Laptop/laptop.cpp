@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "input.h"
 	#include "Utilities.h"
 	#include "WCheck.h"
 	#include "Render Dirty.h"
@@ -698,11 +699,6 @@ void HandleLapTopCursorUpDate()
 void GetLaptopKeyboardInput()
 {
 	InputAtom					InputEvent;
-	POINT	MousePos;
-
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
-
 	fTabHandled = FALSE;
 
 	while (DequeueSpecificEvent(&InputEvent, KEY_DOWN|KEY_UP|KEY_REPEAT))
@@ -3831,10 +3827,9 @@ void PersonnelRegionMvtCallback(MOUSE_REGION * pRegion, INT32 iReason )
 void
 CheckIfMouseLeaveScreen()
 {
- 	POINT	MousePos;
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
-	if((MousePos.x >LAPTOP_SCREEN_LR_X )||(MousePos.x<LAPTOP_UL_X)||(MousePos.y<LAPTOP_UL_Y )||(MousePos.y >LAPTOP_SCREEN_LR_Y))
+	SGPPoint MousePos;
+	GetMousePos(&MousePos);
+	if((MousePos.iX >LAPTOP_SCREEN_LR_X )||(MousePos.iX<LAPTOP_UL_X)||(MousePos.iY<LAPTOP_UL_Y )||(MousePos.iY >LAPTOP_SCREEN_LR_Y))
 	{
 		guiCurrentLapTopCursor=LAPTOP_PANEL_CURSOR;
 	}

@@ -254,11 +254,6 @@ void DisplayActivationStringCursor( void )
 void GetPlayerKeyBoardInputForIMPHomePage( void )
 {
 	InputAtom					InputEvent;
-	POINT	MousePos;
-
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
-
 	while (DequeueSpecificEvent(&InputEvent, KEY_DOWN|KEY_UP|KEY_REPEAT))
 	{
 		if(	!HandleTextInput( &InputEvent ) && (InputEvent.usEvent == KEY_DOWN || InputEvent.usEvent == KEY_REPEAT || InputEvent.usEvent == KEY_UP ) )

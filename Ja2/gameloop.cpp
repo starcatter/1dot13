@@ -1,5 +1,7 @@
 	#include <time.h>
 	#include "LegacySGP.h"
+#include "input.h"
+#include "vsurface.h"
 	#include "gameloop.h"
 	#include "Screens.h"
 	#include "Cursors.h"
@@ -222,7 +224,7 @@ void GameLoop(void)
 	//	DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"GameLoop");
 
 	InputAtom	InputEvent;
-	POINT		MousePos;
+	SGPPoint	MousePos;
 	UINT32		uiOldScreen=guiCurrentScreen;
 	clock_t		startTime = clock(); // decrease CPU load patch from defrog
 
@@ -230,12 +232,11 @@ void GameLoop(void)
 		ResizeWorldItems();
 
 	//DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"GameLoop: get mouse position");
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
+	GetMousePos(&MousePos);
 
 	// Hook into mouse stuff for MOVEMENT MESSAGES
 	//DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"GameLoop: get mouse hook");
-	MouseSystemHook(MOUSE_POS, (UINT16)MousePos.x ,(UINT16)MousePos.y ,_LeftButtonDown, _RightButtonDown);
+	MouseSystemHook(MOUSE_POS, (UINT16)MousePos.iX, (UINT16)MousePos.iY, _LeftButtonDown, _RightButtonDown);
 	//DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"GameLoop: get music");
 	MusicPoll( FALSE );
 
@@ -250,7 +251,7 @@ void GameLoop(void)
 	{
 		// HOOK INTO MOUSE HOOKS
 	//DebugMsg (TOPIC_JA2,DBG_LEVEL_3,String("GameLoop: mouse event %d", InputEvent.usEvent ));
-		MouseSystemHook(InputEvent.usEvent, (UINT16)MousePos.x ,(UINT16)MousePos.y ,_LeftButtonDown, _RightButtonDown);
+		MouseSystemHook(InputEvent.usEvent, (UINT16)MousePos.iX, (UINT16)MousePos.iY, _LeftButtonDown, _RightButtonDown);
 		
 
 	/*	switch(InputEvent.usEvent)
@@ -643,10 +644,9 @@ void HandleDefaultEvent(InputAtom *Event)
 
 	if (Event != NULL && Event->usEvent & MouseButtonEvents)
 	{
-		POINT		MousePos;
-		GetCursorPos(&MousePos);
-		ScreenToClient(ghWindow, &MousePos); // In window coords!
-		MouseSystemHook(Event->usEvent, (UINT16)MousePos.x ,(UINT16)MousePos.y ,_LeftButtonDown, _RightButtonDown);
+		SGPPoint MousePos;
+		GetMousePos(&MousePos);
+		MouseSystemHook(Event->usEvent, (UINT16)MousePos.iX, (UINT16)MousePos.iY, _LeftButtonDown, _RightButtonDown);
 	}
 }
 

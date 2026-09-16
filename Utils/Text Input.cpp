@@ -4,10 +4,12 @@
 	#include <time.h>
 	#include <wchar.h>
 	#include "input.h"
+	#include "mousesystem.h"
 	#include "Font.h"
 	#include "english.h"
 	#include "vsurface.h"
 	#include "video.h"
+	#include "video_windows.h"
 	#include "DEBUG.H"
 	#include "Cursors.h"
 	#include "Text Input.h"

@@ -5,8 +5,10 @@
 	#include "english.h"
 	#include "DEBUG.H"
 	#include "video.h"
+	#include "video_windows.h"
 	#include "vobject_blitters.h"
 	#include "line.h"
+	#include "input.h"
 
 	//ja2
 	#include "Tactical Placement GUI.h"
@@ -381,7 +383,7 @@ static void LoadSliderBar( void )
 
 static void TacticalPlacementScrollBarCallBack( MOUSE_REGION *pRegion, INT32 iReason )
 {
-	POINT MousePos;
+	SGPPoint MousePos;
 	UINT16 desiredMercIndex;
 	const UINT8 sliderWidth = 11;
 	const UINT16 sliderBarRange = gScrollAreaXEnd - gScrollAreaXStart - sliderWidth;
@@ -398,10 +400,9 @@ static void TacticalPlacementScrollBarCallBack( MOUSE_REGION *pRegion, INT32 iRe
 		if ( giPlacements > MaxRenderedFaces() )
 		{
 			// where is the mouse?
-			GetCursorPos( &MousePos );
-			ScreenToClient( ghWindow, &MousePos ); // In window coords!
+			GetMousePos(&MousePos);
 
-			const UINT16 ubMouseXOffset = (UINT16)MousePos.x - gScrollAreaXStart;
+			const UINT16 ubMouseXOffset = (UINT16)MousePos.iX - gScrollAreaXStart;
 
 			// if clicking in the top 5 pixels of the slider bar
 			if ( ubMouseXOffset < (sliderWidth / 2) )

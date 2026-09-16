@@ -1,4 +1,6 @@
 set(sgpSrc
+"${CMAKE_CURRENT_SOURCE_DIR}/application/ApplicationLoop.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/application/ShutdownOnce.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Button Sound Control.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Button System.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Compression.cpp"
@@ -32,6 +34,8 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/platform/Clock.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/platform/Process.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/platform/Thread.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/presentation/DirtyRegionTracker.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/presentation/PixelSurface.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Random.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/sgp_logger.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/shading.cpp"
@@ -50,16 +54,25 @@ set(sgpSrc
 
 if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
 	list(APPEND sgpSrc
+		"${CMAKE_CURRENT_SOURCE_DIR}/audio/windows/FmodAudioBackend.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/WindowsDurableFileOperations.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Dialog.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/ApplicationHost.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Input.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/NativeFonts.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Process.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp")
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Window.cpp")
 elseif(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
 	list(APPEND sgpSrc
+		"${CMAKE_CURRENT_SOURCE_DIR}/audio/portable/NullAudioBackend.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/PosixDurableFileOperations.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Dialog.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Input.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/NativeFonts.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Process.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Sleep.cpp")
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Sleep.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Window.cpp")
 endif()
 
 set(sgpSrc ${sgpSrc} PARENT_SCOPE)

@@ -1,5 +1,7 @@
 #include "random.h"
+#include "GameRandom.h"
 #include "Debug Control.h"
+#include "input.h"
 #include "platform/Clock.h"
 
 extern bool is_client;
@@ -7,6 +9,11 @@ extern bool is_server;
 extern bool is_networked;
 
 bool gfMPDebugOutputRandoms = false;
+
+UINT32 GameRandom(UINT32 range)
+{
+	return Random(range);
+}
 
 // OJW - 091024 - MP random syncing
 // need to syncronise the randomness of events in a multiplayer game on all clients
@@ -35,8 +42,6 @@ UINT32 MPPreRandom( UINT32 uiRange )
 }
 
 #ifdef BMP_RANDOM//dnl ch55 111009
-
-#include <windows.h>
 
 UINT32 guiPreRandomIndex;
 UINT32 guiPreRandomNums[MAX_PREGENERATED_NUMS];
@@ -68,12 +73,12 @@ UINT32 GetRndNum(UINT32 maxnum)
 		return MPPreRandom(maxnum);
 
 	static UINT32 rnd=0, cnt=0;
-	POINT pt;
+	SGPPoint point{};
 
 	if(!(cnt++%RAND_MAX))
 	{
-		GetCursorPos(&pt);// Get cursor location
-		srand(maxnum ^ rnd ^ pt.x ^ pt.y ^ Platform::GetClockMilliseconds());
+		GetMousePos(&point);
+		srand(maxnum ^ rnd ^ point.iX ^ point.iY ^ Platform::GetClockMilliseconds());
 	}
 	if(maxnum == 0)
 		return(0);

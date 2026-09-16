@@ -1,14 +1,8 @@
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include "types.h"
-#include <windows.h>
 #include "Quantize.h"
-#include "types.h"
-#include "himage.h"
 
-CQuantizer::CQuantizer (UINT nMaxColors, UINT nColorBits)
+#include <new>
+
+CQuantizer::CQuantizer (UINT32 nMaxColors, UINT32 nColorBits)
 {
 	m_pTree = NULL;
 	m_nLeafCount = 0;
@@ -24,14 +18,14 @@ CQuantizer::~CQuantizer ()
 		DeleteTree (&m_pTree);
 }
 
-BOOL CQuantizer::ProcessImage (BYTE *pData, int iWidth, int iHeight )
+BOOLEAN CQuantizer::ProcessImage (UINT8 *pData, int iWidth, int iHeight )
 {
-	BYTE* pbBits;
-	BYTE r, g, b;
+	UINT8* pbBits;
+	UINT8 r, g, b;
 	int i, j;
 
 
-	pbBits = (BYTE*)pData;
+	pbBits = pData;
 	for (i=0; i<iHeight; i++) {
 		for (j=0; j<iWidth; j++) {
 			b = *pbBits++;
@@ -48,31 +42,10 @@ BOOL CQuantizer::ProcessImage (BYTE *pData, int iWidth, int iHeight )
 	return TRUE;
 }
 
-int CQuantizer::GetLeftShiftCount (DWORD dwVal)
+void CQuantizer::AddColor (NODE** ppNode, UINT8 r, UINT8 g, UINT8 b,
+	UINT32 nColorBits, UINT32 nLevel, UINT32* pLeafCount, NODE** pReducibleNodes)
 {
-	int nCount = 0;
-	for (int i=0; i<sizeof (DWORD) * 8; i++) {
-		if (dwVal & 1)
-			nCount++;
-		dwVal >>= 1;
-	}
-	return (8 - nCount);
-}
-
-int CQuantizer::GetRightShiftCount (DWORD dwVal)
-{
-	for (int i=0; i<sizeof (DWORD) * 8; i++) {
-		if (dwVal & 1)
-			return i;
-		dwVal >>= 1;
-	}
-	return -1;
-}
-
-void CQuantizer::AddColor (NODE** ppNode, BYTE r, BYTE g, BYTE b,
-	UINT nColorBits, UINT nLevel, UINT* pLeafCount, NODE** pReducibleNodes)
-{
-	static BYTE mask[8] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+	static UINT8 mask[8] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
 	//
 	// If the node doesn't exist, create it.
@@ -104,13 +77,11 @@ void CQuantizer::AddColor (NODE** ppNode, BYTE r, BYTE g, BYTE b,
 	}
 }
 
-NODE* CQuantizer::CreateNode (UINT nLevel, UINT nColorBits, UINT* pLeafCount,
+NODE* CQuantizer::CreateNode (UINT32 nLevel, UINT32 nColorBits, UINT32* pLeafCount,
 	NODE** pReducibleNodes)
 {
-	NODE* pNode;
-
-	if ((pNode = (NODE*) HeapAlloc (GetProcessHeap (), HEAP_ZERO_MEMORY,
-		sizeof (NODE))) == NULL)
+	NODE* pNode = new (std::nothrow) NODE{};
+	if (pNode == NULL)
 		return NULL;
 
 	pNode->bIsLeaf = (nLevel == nColorBits) ? TRUE : FALSE;
@@ -123,7 +94,7 @@ NODE* CQuantizer::CreateNode (UINT nLevel, UINT nColorBits, UINT* pLeafCount,
 	return pNode;
 }
 
-void CQuantizer::ReduceTree (UINT nColorBits, UINT* pLeafCount,
+void CQuantizer::ReduceTree (UINT32 nColorBits, UINT32* pLeafCount,
 	NODE** pReducibleNodes)
 {
 	//
@@ -140,10 +111,10 @@ void CQuantizer::ReduceTree (UINT nColorBits, UINT* pLeafCount,
 	NODE* pNode = pReducibleNodes[i];
 	pReducibleNodes[i] = pNode->pNext;
 
-	UINT nRedSum = 0;
-	UINT nGreenSum = 0;
-	UINT nBlueSum = 0;
-	UINT nChildren = 0;
+	UINT32 nRedSum = 0;
+	UINT32 nGreenSum = 0;
+	UINT32 nBlueSum = 0;
+	UINT32 nChildren = 0;
 
 	for (i=0; i<8; i++) {
 		if (pNode->pChild[i] != NULL) {
@@ -151,7 +122,7 @@ void CQuantizer::ReduceTree (UINT nColorBits, UINT* pLeafCount,
 			nGreenSum += pNode->pChild[i]->nGreenSum;
 			nBlueSum += pNode->pChild[i]->nBlueSum;
 			pNode->nPixelCount += pNode->pChild[i]->nPixelCount;
-			HeapFree (GetProcessHeap (), 0, pNode->pChild[i]);
+			delete pNode->pChild[i];
 			pNode->pChild[i] = NULL;
 			nChildren++;
 		}
@@ -170,39 +141,39 @@ void CQuantizer::DeleteTree (NODE** ppNode)
 		if ((*ppNode)->pChild[i] != NULL)
 			DeleteTree (&((*ppNode)->pChild[i]));
 	}
-	HeapFree (GetProcessHeap (), 0, *ppNode);
+	delete *ppNode;
 	*ppNode = NULL;
 }
 
-void CQuantizer::GetPaletteColors (NODE* pTree, RGBQUAD* prgb, UINT* pIndex)
+void CQuantizer::GetPaletteColors (NODE* pTree, SGPPaletteEntry* palette, UINT32* pIndex)
 {
 	if (pTree->bIsLeaf) {
-		prgb[*pIndex].rgbRed =
-			(BYTE) ((pTree->nRedSum) / (pTree->nPixelCount));
-		prgb[*pIndex].rgbGreen =
-			(BYTE) ((pTree->nGreenSum) / (pTree->nPixelCount));
-		prgb[*pIndex].rgbBlue =
-			(BYTE) ((pTree->nBlueSum) / (pTree->nPixelCount));
-		prgb[*pIndex].rgbReserved = 0;
+		palette[*pIndex].peRed =
+			(UINT8) ((pTree->nRedSum) / (pTree->nPixelCount));
+		palette[*pIndex].peGreen =
+			(UINT8) ((pTree->nGreenSum) / (pTree->nPixelCount));
+		palette[*pIndex].peBlue =
+			(UINT8) ((pTree->nBlueSum) / (pTree->nPixelCount));
+		palette[*pIndex].peFlags = 0;
 		(*pIndex)++;
 	}
 	else {
 		for (int i=0; i<8; i++) {
 			if (pTree->pChild[i] != NULL)
-				GetPaletteColors (pTree->pChild[i], prgb, pIndex);
+				GetPaletteColors (pTree->pChild[i], palette, pIndex);
 		}
 	}
 }
 
-UINT CQuantizer::GetColorCount ()
+UINT32 CQuantizer::GetColorCount ()
 {
 	return m_nLeafCount;
 }
 
-void CQuantizer::GetColorTable (RGBQUAD* prgb)
+void CQuantizer::GetColorTable (SGPPaletteEntry* palette)
 {
-	UINT nIndex = 0;
-	GetPaletteColors (m_pTree, prgb, &nIndex);
+	UINT32 nIndex = 0;
+	GetPaletteColors (m_pTree, palette, &nIndex);
 }
 
 

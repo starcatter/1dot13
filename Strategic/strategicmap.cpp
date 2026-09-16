@@ -855,7 +855,7 @@ typedef struct
 	UINT32	uiIndex;
 	UINT8	ubBaseX;
 	UINT8	ubBaseY;
-	POINT	townPoint;
+	SGPPoint townPoint;
 	BOOLEAN townUsesLoyalty;
 	UINT8	townRebelSentiment;
 	BOOLEAN	townMilitiaAllowed;
@@ -1293,13 +1293,13 @@ citytableEndElementHandle( void *userData, const XML_Char *name )
 		{
 			pData->curElement = CITYTABLE_ELEMENT_TOWNPOINT;
 
-			pData->curCityInfo.townPoint.x = atol( pData->szCharData );
+			pData->curCityInfo.townPoint.iX = atol( pData->szCharData );
 		}
 		else if ( strcmp( name, "y" ) == 0 && pData->curElement == CITYTABLE_ELEMENT_TOWNPOINT_Y )
 		{
 			pData->curElement = CITYTABLE_ELEMENT_TOWNPOINT;
 
-			pData->curCityInfo.townPoint.y = atol( pData->szCharData );
+			pData->curCityInfo.townPoint.iY = atol( pData->szCharData );
 		}
 		else if ( strcmp( name, "COUNTRY" ) == 0 && pData->curElement == CITYTABLE_ELEMENT_COUNTRYINFO )
 		{
@@ -1385,8 +1385,8 @@ BOOLEAN WriteInStrategicMapSectorTownNames( STR fileName )
 
 
 			FilePrintf( hFile, "\t\t\t<townPoint>\r\n" );
-			FilePrintf( hFile, "\t\t\t\t<x>%d</x>\r\n", pTownPoints[cnt].x );
-			FilePrintf( hFile, "\t\t\t\t<y>%d</y>\r\n", pTownPoints[cnt].y );
+			FilePrintf( hFile, "\t\t\t\t<x>%d</x>\r\n", pTownPoints[cnt].iX );
+			FilePrintf( hFile, "\t\t\t\t<y>%d</y>\r\n", pTownPoints[cnt].iY );
 			FilePrintf( hFile, "\t\t\t</townPoint>\r\n" );
 
 

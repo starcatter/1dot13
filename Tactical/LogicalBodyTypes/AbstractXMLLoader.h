@@ -3,6 +3,7 @@
 #ifndef _LBT_ABSTRACTXMLLOADER__H_
 #define _LBT_ABSTRACTXMLLOADER__H_
 
+#include <cstddef>
 #include <string>
 #include <map>
 #include "expat.h"
@@ -22,6 +23,8 @@ namespace LogicalBodyTypes {
 
 class AbstractXMLLoader : public ISingleton<AbstractXMLLoader>
 {
+private:
+	static constexpr std::size_t PathCapacity = 261;
 
 protected:
 	enum ParseState {
@@ -35,7 +38,7 @@ protected:
 		int state; // we sacrifice type safety for the enumerators so subclasses can define their own states
 		UINT32 level;
 		CHAR8 szCharData[MAX_CHAR_DATA_LENGTH + 1];
-		CHAR8 szErrorTxt[MAX_PATH + 1];
+		CHAR8 szErrorTxt[PathCapacity];
 	} typedef ParseData;
 	struct ExternalEntityArgs {
 		const char* directoryName;
@@ -49,8 +52,8 @@ private:
 	XML_EndElementHandler endElementHandler;
 	XML_CharacterDataHandler characterDataHandler;
 	ParseDataFactoryFunc parseDataFactFuncPntr;
-	char directoryName[MAX_PATH + 1];
-	char fileName[MAX_PATH + 1];
+	char directoryName[PathCapacity];
+	char fileName[PathCapacity];
 
 public:
 	AbstractXMLLoader(XML_StartElementHandler startHandler, XML_EndElementHandler endHandler, XML_CharacterDataHandler charHandler, ParseDataFactoryFunc parseDataFactF = MakeParseData);

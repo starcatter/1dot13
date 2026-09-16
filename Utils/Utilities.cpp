@@ -1,8 +1,8 @@
 	#include "types.h"
 	#include <stdio.h>
-	#include <windows.h>
 	#include "LegacySGP.h"
-	#include "time.h"
+	#include "platform/Dialog.h"
+	#include <ctime>
 	#include "vobject.h"
 	#include "FileMan.h"
 	#include "Utilities.h"
@@ -245,90 +245,19 @@ BOOLEAN	WrapString( STR16 pStr, STR16 pStr2, UINT16 usWidth, INT32 uiFont )
 
 BOOLEAN IfWinNT(void)
 {
-	OSVERSIONINFO OsVerInfo;
-
-	OsVerInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-	GetVersionEx(&OsVerInfo);
-
-	if ( OsVerInfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
-		return(TRUE);
-	else
-		return(FALSE);
+	// All supported Windows hosts use the NT family.
+	return TRUE;
 }
 
 BOOLEAN IfWin95(void)
 {
-	OSVERSIONINFO OsVerInfo;
-
-	OsVerInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-	GetVersionEx(&OsVerInfo);
-
-	if ( OsVerInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
-		return(TRUE);
-	else
-		return(FALSE);
+	return FALSE;
 }
-
 
 void HandleLimitedNumExecutions( )
 {
-	// Get system directory
-	HWFILE	 hFileHandle;
-	CHAR8	ubSysDir[ 512 ];
-	INT8	bNumRuns;
-
-	GetSystemDirectory( (LPSTR) ubSysDir, sizeof( ubSysDir ) );
-
-	// Append filename
-	strcat( ubSysDir, "\\winaese.dll" );
-
-	// Open file and check # runs...
-	if ( FileExists( (STR)ubSysDir ) )
-	{
-		// Open and read
-		if ( ( hFileHandle = FileOpen( (STR)ubSysDir, FILE_ACCESS_READ, FALSE)) == 0)
-		{
-			return;
-		}
-
-		// Read value
-		FileRead( hFileHandle, &bNumRuns, sizeof( bNumRuns ) , NULL);
-
-		// Close file
-		FileClose( hFileHandle );
-
-		if ( bNumRuns <= 0 )
-		{
-			// Fail!
-			SET_ERROR( "Error 1054: Cannot execute - contact Sir-Tech Software." );
-			return;
-		}
-
-	}
-	else
-	{
-		bNumRuns = 10;
-	}
-
-	// OK, decrement # runs...
-	bNumRuns--;
-
-	// Open and write
-	if ( ( hFileHandle = FileOpen( (STR)ubSysDir, FILE_ACCESS_WRITE, FALSE)) == 0)
-	{
-		return;
-	}
-
-	// Write value
-	FileWrite( hFileHandle, &bNumRuns, sizeof( bNumRuns ) , NULL);
-
-	// Close file
-	FileClose( hFileHandle );
-
+	// Disabled legacy trial counter; its only call site has been inactive for years.
 }
-
 
 UINT32 gCheckFileMinSizes[] =
 {
@@ -381,16 +310,21 @@ BOOLEAN PerformTimeLimitedCheck()
 		return( TRUE );
 
 #else
-	SYSTEMTIME sSystemTime;
-
-	GetSystemTime( &sSystemTime );
+	const std::time_t now = std::time(nullptr);
+	const std::tm* utc = std::gmtime(&now);
+	if (utc == nullptr)
+	{
+		return FALSE;
+	}
 
 
 	//if according to the system clock, we are past july 1999, quit the game
-	if( sSystemTime.wYear > 1999 || sSystemTime.wMonth > 7 )
+	if (utc->tm_year + 1900 > 1999 || utc->tm_mon + 1 > 7)
 	{
 		//spit out an error message
-		MessageBox( NULL, "This time limited version of Jagged Alliance 2 v1.13 has expired.", "Ja2 Error!", MB_OK	);
+		Platform::ShowDialog("Ja2 Error!",
+			"This time limited version of Jagged Alliance 2 v1.13 has expired.",
+			Platform::DialogKind::error);
 		return( FALSE );
 	}
 

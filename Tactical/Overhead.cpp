@@ -9474,6 +9474,17 @@ static SOLDIERTYPE *InternalReduceAttackBusyCount( )
     BOOLEAN     fEnterCombat = FALSE;
     SoldierID   ubID;
 
+	// Loading discards the old tactical world synchronously.  TrashWorld resets
+	// the busy count before deleting animation tiles, and those tiles can still
+	// own bullets whose removal arrives here.  Do not reconstruct an attacker
+	// from the (already trashed) soldier table or run LOS/suppression callbacks
+	// for an attack that belongs to the discarded world.
+	if (gTacticalStatus.uiFlags & LOADING_SAVED_GAME)
+	{
+		gTacticalStatus.ubAttackBusyCount = 0;
+		return NULL;
+	}
+
 
     //  if ((gTacticalStatus.uiFlags & TURNBASED) && (gTacticalStatus.uiFlags & INCOMBAT))
     //  {

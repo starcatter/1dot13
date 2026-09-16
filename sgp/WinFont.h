@@ -1,6 +1,8 @@
 #ifndef __WINFONT_
 #define __WINFONT_
-#include <windows.h>
+
+#include "types.h"
+#include "vobject.h"
 
 void InitWinFonts( );
 void ShutdownWinFonts( );
@@ -8,7 +10,6 @@ void ShutdownWinFonts( );
 void InitTooltipFonts();
 void ShutdownTooltipFonts();
 
-INT32 CreateWinFont( LOGFONT &logfont );
 void	DeleteWinFont( INT32 iFont );
 
 void SetWinFontBackColor( INT32 iFont, COLORVAL *pColor );

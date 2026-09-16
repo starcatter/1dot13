@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "DEBUG.H"
 #include "video.h"
+#include "video_windows.h"
 #include "himage.h"
 #include "vsurface.h"
 #include "vsurface_private.h"
@@ -1337,7 +1338,7 @@ BOOLEAN RestoreVideoSurface( HVSURFACE hVSurface )
 	aRect.bottom = (int)hVSurface->usHeight;
 	aRect.right = (int)hVSurface->usWidth;
 
-	DDBltFastSurface( (LPDIRECTDRAWSURFACE2)hVSurface->pSavedSurfaceData, 0, 0, (LPDIRECTDRAWSURFACE2)hVSurface->pSurfaceData, &aRect, DDBLTFAST_NOCOLORKEY );
+	DDBltFastSurface( (LPDIRECTDRAWSURFACE2)hVSurface->pSurfaceData, 0, 0, (LPDIRECTDRAWSURFACE2)hVSurface->pSavedSurfaceData, &aRect, DDBLTFAST_NOCOLORKEY );
 
 	return( TRUE );
 }
@@ -2079,7 +2080,7 @@ BOOLEAN UpdateBackupSurface( HVSURFACE hVSurface )
 	aRect.right = (int)hVSurface->usWidth;
 
 	// Copy all contents into backup buffer
-	DDBltFastSurface( (LPDIRECTDRAWSURFACE2)hVSurface->pSurfaceData, 0, 0, (LPDIRECTDRAWSURFACE2)hVSurface->pSavedSurfaceData, &aRect, DDBLTFAST_NOCOLORKEY );
+	DDBltFastSurface( (LPDIRECTDRAWSURFACE2)hVSurface->pSavedSurfaceData, 0, 0, (LPDIRECTDRAWSURFACE2)hVSurface->pSurfaceData, &aRect, DDBLTFAST_NOCOLORKEY );
 
 	return( TRUE );
 

@@ -1,10 +1,10 @@
 #ifndef INIREADER_H
 #define INIREADER_H
-#define NOMINMAX
+
+#include "types.h"
+
 #include <vector>
 #include <algorithm>
-#include <windows.h>
-#include <types.h>
 #include <stack>
 #include <set>
 #include <string>
@@ -61,8 +61,9 @@ public:
 
 	static void RegisterFileForMerging(std::string_view filename);
 private:
+	static constexpr std::size_t FilenameCapacity = 260;
 	vfs::PropertyContainer m_oProps;
-	char m_szFileName[MAX_PATH];
+	char m_szFileName[FilenameCapacity];
 	BOOLEAN CIniReader_File_Found;
 
 	UINT32 ReadUINT(const CHAR8* szSection, const CHAR8* szKey, UINT32 defaultValue, UINT32 minValue, UINT32 maxValue);

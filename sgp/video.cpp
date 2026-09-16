@@ -1,5 +1,7 @@
 #include "types.h"
 #include "video.h"
+#include "video_windows.h"
+#include "DirectDraw Calls.h"
 #include "vobject_blitters.h"
 #include "LegacySGP.h"
 #include <stdio.h>
@@ -18,6 +20,7 @@
 #include "fileio/StoreRouter.h"
 #include "platform/Clock.h"
 #include "platform/Dialog.h"
+#include "presentation/DirtyRegionTracker.h"
 #include "UtfConversion.h"
 
 #include "resource.h"
@@ -34,8 +37,6 @@ extern int iScreenMode;
 // Local Defines
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-#define MAX_DIRTY_REGIONS	 128
 
 #define VIDEO_OFF			 0x00
 #define VIDEO_ON				0x01
@@ -161,18 +162,10 @@ UINT32						guiRefreshThreadState;	// THREAD_ON, THREAD_OFF, THREAD_SUSPENDED
 //
 
 void							(*gpFrameBufferRefreshOverride)(void);
-SGPRect						gListOfDirtyRegions[MAX_DIRTY_REGIONS];
-UINT32						guiDirtyRegionCount;
-BOOLEAN						gfForceFullScreenRefresh;
-
-
-SGPRect						gDirtyRegionsEx[MAX_DIRTY_REGIONS];
-UINT32						gDirtyRegionsFlagsEx[MAX_DIRTY_REGIONS];
-UINT32						guiDirtyRegionExCount;
-
-SGPRect						gBACKUPListOfDirtyRegions[MAX_DIRTY_REGIONS];
-UINT32						gBACKUPuiDirtyRegionCount;
-BOOLEAN						gBACKUPfForceFullScreenRefresh;
+// The real dimensions are installed by InitializeVideoManager after runtime
+// resolution selection. Avoid reading the zero-initialized screen globals
+// during static initialization.
+static ja2::presentation::DirtyRegionTracker gDirtyRegionTracker(1, 1);
 
 //
 // Screen output stuff
@@ -204,7 +197,6 @@ extern INT16	gusGreenShift;
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-void AddRegionEx(INT32 iLeft, INT32 iTop, INT32 iRight, INT32 iBottom, UINT32 uiFlags );
 void SnapshotSmall( void );
 void VideoMovieCapture( BOOLEAN fEnable );
 void RefreshMovieCache( );
@@ -624,8 +616,10 @@ BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *
 	guiMouseBufferState			= BUFFER_DISABLED;
 	guiVideoManagerState		 = VIDEO_ON;
 	guiRefreshThreadState		= THREAD_OFF;
-	guiDirtyRegionCount			= 0;
-	gfForceFullScreenRefresh	 = TRUE;
+	// Runtime settings may have changed the resolution since static startup.
+	gDirtyRegionTracker = ja2::presentation::DirtyRegionTracker(
+		SCREEN_WIDTH, SCREEN_HEIGHT);
+	gDirtyRegionTracker.invalidateScreen();
 	gpFrameBufferRefreshOverride = NULL;
 	gpCursorStore				= NULL;
 	gfPrintFrameBuffer			= FALSE;
@@ -776,7 +770,7 @@ BOOLEAN RestoreVideoManager(void)
 
 		guiFrameBufferState = BUFFER_DIRTY;
 		guiMouseBufferState = BUFFER_DIRTY;
-		gfForceFullScreenRefresh = TRUE;
+		gDirtyRegionTracker.invalidateScreen();
 		guiVideoManagerState = VIDEO_ON;
 		return TRUE;
 	}
@@ -837,133 +831,14 @@ BOOLEAN CanBlitToMouseBuffer(void)
 
 void InvalidateRegion(INT32 iLeft, INT32 iTop, INT32 iRight, INT32 iBottom)
 {
-	if (gfForceFullScreenRefresh == TRUE)
-	{
-		//
-		// There's no point in going on since we are forcing a full screen refresh
-		//
-
-		return;
-	}
-
-	if (guiDirtyRegionCount < MAX_DIRTY_REGIONS)
-	{
-		//
-		// Well we haven't broken the MAX_DIRTY_REGIONS limit yet, so we register the new region
-		//
-
-		// DO SOME PREMIMARY CHECKS FOR VALID RECTS
-		if ( iLeft < 0 )
-			iLeft = 0;
-
-		if ( iTop < 0 )
-			iTop = 0;
-
-		if ( iRight > SCREEN_WIDTH )
-			iRight = SCREEN_WIDTH;
-
-		if ( iBottom > SCREEN_HEIGHT )
-			iBottom = SCREEN_HEIGHT;
-
-		if (	( iRight - iLeft ) <= 0 )
-			return;
-
-		if (	( iBottom - iTop ) <= 0 )
-			return;
-
-		gListOfDirtyRegions[guiDirtyRegionCount].iLeft	= iLeft;
-		gListOfDirtyRegions[guiDirtyRegionCount].iTop	= iTop;
-		gListOfDirtyRegions[guiDirtyRegionCount].iRight	= iRight;
-		gListOfDirtyRegions[guiDirtyRegionCount].iBottom = iBottom;
-
-		//		gDirtyRegionFlags[ guiDirtyRegionCount ] = TRUE;
-
-		guiDirtyRegionCount++;
-
-	}
-	else
-	{
-		//
-		// The MAX_DIRTY_REGIONS limit has been exceeded. Therefore we arbitrarely invalidate the entire
-		// screen and force a full screen refresh
-		//
-		guiDirtyRegionExCount = 0;
-		guiDirtyRegionCount = 0;
-		gfForceFullScreenRefresh = TRUE;
-	}
+	gDirtyRegionTracker.invalidate(iLeft, iTop, iRight, iBottom);
 }
 
 
 void InvalidateRegionEx(INT32 iLeft, INT32 iTop, INT32 iRight, INT32 iBottom, UINT32 uiFlags )
 {
-	INT32 iOldBottom;
-
-	iOldBottom = iBottom;
-
-	// Check if we are spanning the rectangle - if so slit it up!
-	if ( iTop <= gsVIEWPORT_WINDOW_END_Y && iBottom > gsVIEWPORT_WINDOW_END_Y )
-	{
-		// Add new top region
-		iBottom				= gsVIEWPORT_WINDOW_END_Y;
-		AddRegionEx( iLeft, iTop, iRight, iBottom, uiFlags );
-
-		// Add new bottom region
-		iTop	= gsVIEWPORT_WINDOW_END_Y;
-		iBottom	= iOldBottom;
-		AddRegionEx( iLeft, iTop, iRight, iBottom, uiFlags );
-
-	}
-	else
-	{
-		AddRegionEx( iLeft, iTop, iRight, iBottom, uiFlags );
-	}
-}
-
-
-void AddRegionEx(INT32 iLeft, INT32 iTop, INT32 iRight, INT32 iBottom, UINT32 uiFlags )
-{
-
-	if (guiDirtyRegionExCount < MAX_DIRTY_REGIONS)
-	{
-
-		// DO SOME PREMIMARY CHECKS FOR VALID RECTS
-		if ( iLeft < 0 )
-			iLeft = 0;
-
-		if ( iTop < 0 )
-			iTop = 0;
-
-		if ( iRight > SCREEN_WIDTH )
-			iRight = SCREEN_WIDTH;
-
-		if ( iBottom > SCREEN_HEIGHT )
-			iBottom = SCREEN_HEIGHT;
-
-		if (	( iRight - iLeft ) <= 0 )
-			return;
-
-		if (	( iBottom - iTop ) <= 0 )
-			return;
-
-
-
-		gDirtyRegionsEx[ guiDirtyRegionExCount ].iLeft	= iLeft;
-		gDirtyRegionsEx[ guiDirtyRegionExCount ].iTop	= iTop;
-		gDirtyRegionsEx[ guiDirtyRegionExCount ].iRight	= iRight;
-		gDirtyRegionsEx[ guiDirtyRegionExCount ].iBottom = iBottom;
-
-		gDirtyRegionsFlagsEx[ guiDirtyRegionExCount ] = uiFlags;
-
-		guiDirtyRegionExCount++;
-
-	}
-	else
-	{
-		guiDirtyRegionExCount = 0;
-		guiDirtyRegionCount = 0;
-		gfForceFullScreenRefresh = TRUE;
-
-	}
+	gDirtyRegionTracker.invalidateExtended(iLeft, iTop, iRight, iBottom,
+		uiFlags, gsVIEWPORT_WINDOW_END_Y);
 }
 
 
@@ -971,38 +846,7 @@ void AddRegionEx(INT32 iLeft, INT32 iTop, INT32 iRight, INT32 iBottom, UINT32 ui
 
 void InvalidateRegions(SGPRect *pArrayOfRegions, UINT32 uiRegionCount)
 {
-	if (gfForceFullScreenRefresh == TRUE)
-	{
-		//
-		// There's no point in going on since we are forcing a full screen refresh
-		//
-
-		return;
-	}
-
-	if ((guiDirtyRegionCount + uiRegionCount) < MAX_DIRTY_REGIONS)
-	{
-		UINT32 uiIndex;
-
-		for (uiIndex = 0; uiIndex < uiRegionCount; uiIndex++)
-		{
-			//
-			// Well we haven't broken the MAX_DIRTY_REGIONS limit yet, so we register the new region
-			//
-
-			gListOfDirtyRegions[guiDirtyRegionCount].iLeft	= pArrayOfRegions[uiIndex].iLeft;
-			gListOfDirtyRegions[guiDirtyRegionCount].iTop	= pArrayOfRegions[uiIndex].iTop;
-			gListOfDirtyRegions[guiDirtyRegionCount].iRight	= pArrayOfRegions[uiIndex].iRight;
-			gListOfDirtyRegions[guiDirtyRegionCount].iBottom = pArrayOfRegions[uiIndex].iBottom;
-
-			guiDirtyRegionCount++;
-		}
-	}
-	else
-	{
-		guiDirtyRegionCount = 0;
-		gfForceFullScreenRefresh = TRUE;
-	}
+	gDirtyRegionTracker.invalidateMany(pArrayOfRegions, uiRegionCount);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1017,9 +861,7 @@ void InvalidateScreen(void)
 	// yack
 	//
 
-	guiDirtyRegionCount = 0;
-	guiDirtyRegionExCount = 0;
-	gfForceFullScreenRefresh = TRUE;
+	gDirtyRegionTracker.invalidateScreen();
 	guiFrameBufferState = BUFFER_DIRTY;
 }
 
@@ -1619,7 +1461,7 @@ void RefreshScreen(void *DummyVariable)
 	HRESULT ReturnCode;
 	static RECT	Region;
 	static INT16	sx, sy;
-	static POINT	MousePos;
+	static SGPPoint MousePos;
 	static BOOLEAN fFirstTime = TRUE;
 	UINT32						uiTime;
 	INT32 iDXLoopCount = 0; 
@@ -1689,8 +1531,7 @@ void RefreshScreen(void *DummyVariable)
 	// Get the current mouse position
 	//
 
-	GetCursorPos(&MousePos);
-	ScreenToClient(ghWindow, &MousePos); // In window coords!
+	GetMousePos(&MousePos);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -1759,7 +1600,7 @@ void RefreshScreen(void *DummyVariable)
 			// Either Method (1) or (2)
 			//
 		{
-			if (gfForceFullScreenRefresh == TRUE)
+			if (gDirtyRegionTracker.fullRefresh())
 			{
 				//
 				// Method (1) - We will be refreshing the entire screen
@@ -1792,12 +1633,14 @@ void RefreshScreen(void *DummyVariable)
 			}
 			else
 			{
-				for (uiIndex = 0; uiIndex < guiDirtyRegionCount; uiIndex++)
+				const std::vector<SGPRect>& dirtyRegions =
+					gDirtyRegionTracker.regions();
+				for (uiIndex = 0; uiIndex < dirtyRegions.size(); uiIndex++)
 				{
-					Region.left	= gListOfDirtyRegions[uiIndex].iLeft;
-					Region.top	= gListOfDirtyRegions[uiIndex].iTop;
-					Region.right	= gListOfDirtyRegions[uiIndex].iRight;
-					Region.bottom = gListOfDirtyRegions[uiIndex].iBottom;
+					Region.left	= dirtyRegions[uiIndex].iLeft;
+					Region.top	= dirtyRegions[uiIndex].iTop;
+					Region.right	= dirtyRegions[uiIndex].iRight;
+					Region.bottom = dirtyRegions[uiIndex].iBottom;
 
 					do
 					{
@@ -1816,12 +1659,14 @@ void RefreshScreen(void *DummyVariable)
 				}
 
 				// Now do new, extended dirty regions
-				for (uiIndex = 0; uiIndex < guiDirtyRegionExCount; uiIndex++)
+				const std::vector<ja2::presentation::ExtendedDirtyRegion>&
+					extendedDirtyRegions = gDirtyRegionTracker.extendedRegions();
+				for (uiIndex = 0; uiIndex < extendedDirtyRegions.size(); uiIndex++)
 				{
-					Region.left	= gDirtyRegionsEx[uiIndex].iLeft;
-					Region.top	= gDirtyRegionsEx[uiIndex].iTop;
-					Region.right	= gDirtyRegionsEx[uiIndex].iRight;
-					Region.bottom = gDirtyRegionsEx[uiIndex].iBottom;
+					Region.left	= extendedDirtyRegions[uiIndex].bounds.iLeft;
+					Region.top	= extendedDirtyRegions[uiIndex].bounds.iTop;
+					Region.right	= extendedDirtyRegions[uiIndex].bounds.iRight;
+					Region.bottom = extendedDirtyRegions[uiIndex].bounds.iBottom;
 
 					// Do some checks if we are in the process of scrolling!
 					if ( gfRenderScroll )
@@ -2100,8 +1945,8 @@ void RefreshScreen(void *DummyVariable)
 		// Step (1) - Save mouse background
 		//
 
-		Region.left	= MousePos.x - gsMouseCursorXOffset;
-		Region.top	= MousePos.y - gsMouseCursorYOffset;
+		Region.left	= MousePos.iX - gsMouseCursorXOffset;
+		Region.top	= MousePos.iY - gsMouseCursorYOffset;
 		Region.right	= Region.left + gusMouseCursorWidth;
 		Region.bottom = Region.top + gusMouseCursorHeight;
 
@@ -2133,7 +1978,7 @@ void RefreshScreen(void *DummyVariable)
 			}
 			else
 			{
-				gMouseCursorBackground[CURRENT_MOUSE_DATA].usMouseXPos = (UINT16) MousePos.x - gsMouseCursorXOffset;
+				gMouseCursorBackground[CURRENT_MOUSE_DATA].usMouseXPos = (UINT16) MousePos.iX - gsMouseCursorXOffset;
 				gMouseCursorBackground[CURRENT_MOUSE_DATA].usLeft = 0;
 			}
 			if (Region.top < 0)
@@ -2144,7 +1989,7 @@ void RefreshScreen(void *DummyVariable)
 			}
 			else
 			{
-				gMouseCursorBackground[CURRENT_MOUSE_DATA].usMouseYPos = (UINT16) MousePos.y - gsMouseCursorYOffset;
+				gMouseCursorBackground[CURRENT_MOUSE_DATA].usMouseYPos = (UINT16) MousePos.iY - gsMouseCursorYOffset;
 				gMouseCursorBackground[CURRENT_MOUSE_DATA].usTop = 0;
 			}
 
@@ -2296,9 +2141,7 @@ void RefreshScreen(void *DummyVariable)
 
 		gfRenderScroll = FALSE;
 		gfScrollStart	= FALSE;
-		guiDirtyRegionCount = 0;
-		guiDirtyRegionExCount = 0;
-		gfForceFullScreenRefresh = FALSE;
+		gDirtyRegionTracker.clearAfterPresent();
 	}
 	else
 	{
@@ -2407,7 +2250,7 @@ void RefreshScreen(void *DummyVariable)
 			} while (ReturnCode != DD_OK);
 		}
 
-		if (gfForceFullScreenRefresh == TRUE)
+		if (gDirtyRegionTracker.fullRefresh())
 		{
 			//
 			// Method (1) - We will be refreshing the entire screen
@@ -2432,22 +2275,22 @@ void RefreshScreen(void *DummyVariable)
 				}
 			} while (ReturnCode != DD_OK);
 
-			guiDirtyRegionCount = 0;
-			guiDirtyRegionExCount = 0;
-			gfForceFullScreenRefresh = FALSE;
+			gDirtyRegionTracker.clearAfterPresent();
 		}
 		else
 		{
-			for (uiIndex = 0; uiIndex < guiDirtyRegionCount; uiIndex++)
+			const std::vector<SGPRect>& dirtyRegions =
+				gDirtyRegionTracker.regions();
+			for (uiIndex = 0; uiIndex < dirtyRegions.size(); uiIndex++)
 			{
-				Region.left	= gListOfDirtyRegions[uiIndex].iLeft;
-				Region.top	= gListOfDirtyRegions[uiIndex].iTop;
-				Region.right	= gListOfDirtyRegions[uiIndex].iRight;
-				Region.bottom = gListOfDirtyRegions[uiIndex].iBottom;
+				Region.left	= dirtyRegions[uiIndex].iLeft;
+				Region.top	= dirtyRegions[uiIndex].iTop;
+				Region.right	= dirtyRegions[uiIndex].iRight;
+				Region.bottom = dirtyRegions[uiIndex].iBottom;
 
 				do
 				{
-					ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, gListOfDirtyRegions[uiIndex].iLeft, gListOfDirtyRegions[uiIndex].iTop, gpPrimarySurface, (LPRECT)&Region, DDBLTFAST_NOCOLORKEY);
+					ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, dirtyRegions[uiIndex].iLeft, dirtyRegions[uiIndex].iTop, gpPrimarySurface, (LPRECT)&Region, DDBLTFAST_NOCOLORKEY);
 					if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
 					{
 						DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
@@ -2460,18 +2303,17 @@ void RefreshScreen(void *DummyVariable)
 				} while (ReturnCode != DD_OK);
 			}
 
-			guiDirtyRegionCount = 0;
-			gfForceFullScreenRefresh = FALSE;
-
 		}
 
 		// Do extended dirty regions!
-		for (uiIndex = 0; uiIndex < guiDirtyRegionExCount; uiIndex++)
+		const std::vector<ja2::presentation::ExtendedDirtyRegion>&
+			extendedDirtyRegions = gDirtyRegionTracker.extendedRegions();
+		for (uiIndex = 0; uiIndex < extendedDirtyRegions.size(); uiIndex++)
 		{
-			Region.left	= gDirtyRegionsEx[uiIndex].iLeft;
-			Region.top	= gDirtyRegionsEx[uiIndex].iTop;
-			Region.right	= gDirtyRegionsEx[uiIndex].iRight;
-			Region.bottom = gDirtyRegionsEx[uiIndex].iBottom;
+			Region.left	= extendedDirtyRegions[uiIndex].bounds.iLeft;
+			Region.top	= extendedDirtyRegions[uiIndex].bounds.iTop;
+			Region.right	= extendedDirtyRegions[uiIndex].bounds.iRight;
+			Region.bottom = extendedDirtyRegions[uiIndex].bounds.iBottom;
 
 			if ( ( Region.top < gsVIEWPORT_WINDOW_END_Y ) && gfRenderScroll )
 			{
@@ -2480,7 +2322,7 @@ void RefreshScreen(void *DummyVariable)
 
 			do
 			{
-				ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, gDirtyRegionsEx[uiIndex].iLeft, gDirtyRegionsEx[uiIndex].iTop, gpPrimarySurface, (LPRECT)&Region, DDBLTFAST_NOCOLORKEY);
+				ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, extendedDirtyRegions[uiIndex].bounds.iLeft, extendedDirtyRegions[uiIndex].bounds.iTop, gpPrimarySurface, (LPRECT)&Region, DDBLTFAST_NOCOLORKEY);
 				if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
 				{
 					DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
@@ -2493,7 +2335,7 @@ void RefreshScreen(void *DummyVariable)
 			} while (ReturnCode != DD_OK);
 		}
 	}
-	guiDirtyRegionExCount = 0;
+	gDirtyRegionTracker.clearAfterPresent();
 
 
 ENDOFLOOP:

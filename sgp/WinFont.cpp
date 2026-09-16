@@ -27,6 +27,7 @@
 #include <vfs/Tools/vfs_property_container.h>
 
 INT32 FindFreeWinFont( void );
+INT32 CreateWinFont(LOGFONT& logfont);
 
 // Private struct not to be exported
 // to other modules

@@ -306,7 +306,7 @@ extern UINT16 MAP_LEVEL_STRING_Y;
 
 
 // number of units wide
-#define	 WORLD_MAP_X			18	// WANNE: 18 darf nicht ge‰ndert werden!
+#define	 WORLD_MAP_X			18	// WANNE: 18 darf nicht ge√§ndert werden!
 
 // Orta position on the map
 #define ORTA_SECTOR_X 4
@@ -420,7 +420,7 @@ extern BOOLEAN fFoundTixa;
 extern UINT32 guiSubLevel1, guiSubLevel2, guiSubLevel3;
 
 extern INT16 sBaseSectorList[ MAX_TOWNS - 1 ];
-extern POINT pTownPoints[ MAX_TOWNS ];
+extern SGPPoint pTownPoints[ MAX_TOWNS ];
 
 #ifdef JA2UB
 extern void SetUpValidCampaignSectors( void );
