@@ -64,16 +64,22 @@ acquiring a GDI context and marks the mirror authoritative after drawing.
 
 This makes a useful generic-surface slice portable without breaking the many
 copies between generic and reserved surfaces. Default/video-memory generic
-surfaces and the reserved primary/back/frame/cursor surfaces remain DirectDraw
-owned. The next slice should convert the reserved logical frame/cursor buffers,
-then make final presentation the only DirectDraw consumer. The compatibility
-mirror can be deleted after WinFont and all mixed paths have portable owners.
+surfaces and the reserved primary/back/cursor surfaces remain DirectDraw owned.
+The reserved frame buffer is now PixelSurface-canonical: engine locks and all
+software rendering use its portable allocation. The Windows refresh and tactical
+scroll paths synchronize its compatibility mirror immediately before their raw
+DirectDraw copies. DirectDraw still performs final presentation and cursor
+composition. The next slice should move cursor save/compose/restore onto portable
+storage, then make final presentation the only DirectDraw consumer. The
+compatibility mirror can be deleted after WinFont and all mixed paths have
+portable owners.
 
 ## Replacement sequence
 
 1. Give every generic and reserved logical surface one project-owned storage
    representation; preserve existing numeric handles and lock/pitch behavior.
-   Explicit system-memory generic surfaces are complete behind a lazy mirror.
+   Explicit system-memory generic surfaces and the reserved frame buffer are
+   complete behind a lazy mirror.
 2. Route fills and cross-surface copies through it. The lazy mirror keeps mixed
    generic/reserved copies valid while the reserved surfaces are converted.
 3. Keep the existing software blitters, including `vobject_blitters.cpp`, on

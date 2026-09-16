@@ -531,7 +531,8 @@ BYTE *LockVideoSurface( UINT32 uiVSurface, UINT32 *puiPitch )
 
 	if ( uiVSurface == FRAME_BUFFER )
 	{
-		return SurfaceData::SetSurfaceData(uiVSurface, (BYTE *)LockFrameBuffer( puiPitch ));
+		return SurfaceData::SetSurfaceData(uiVSurface,
+			LockVideoSurfaceBuffer(ghFrameBuffer, puiPitch));
 	}
 
 	if ( uiVSurface == MOUSE_BUFFER )
@@ -587,7 +588,7 @@ void UnLockVideoSurface( UINT32 uiVSurface )
 
 	if ( uiVSurface == FRAME_BUFFER )
 	{
-		UnlockFrameBuffer();
+		UnLockVideoSurfaceBuffer(ghFrameBuffer);
 		return;
 	}
 
@@ -780,6 +781,12 @@ BOOLEAN SetPrimaryVideoSurfaces( )
 
 	ghFrameBuffer = CreateVideoSurfaceFromDDSurface( pSurface );
 	CHECKF( ghFrameBuffer != NULL );
+	ghFrameBuffer->pixelSurface =
+		std::make_unique<ja2::presentation::PixelSurface>(
+			ghFrameBuffer->usWidth, ghFrameBuffer->usHeight,
+			PixelFormatForSurface(ghFrameBuffer), 4);
+	ghFrameBuffer->directDrawSurfaceDirty = true;
+	CHECKF(SyncPixelSurfaceFromDirectDraw(ghFrameBuffer));
 	SurfaceData::RegisterSurface(FRAME_BUFFER,ghFrameBuffer);
 
 	return( TRUE );

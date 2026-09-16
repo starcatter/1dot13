@@ -1,6 +1,7 @@
 #include "types.h"
 #include "video.h"
 #include "video_windows.h"
+#include "vsurface_private.h"
 #include "DirectDraw Calls.h"
 #include "vobject_blitters.h"
 #include "LegacySGP.h"
@@ -200,6 +201,7 @@ extern INT16	gusGreenShift;
 void SnapshotSmall( void );
 void VideoMovieCapture( BOOLEAN fEnable );
 void RefreshMovieCache( );
+static BOOLEAN SynchronizeFrameBufferForDirectDraw(void);
 
 
 
@@ -1345,6 +1347,10 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement, INT16 sScr
 			RenderStaticWorldRect( (INT16)StripRegions[ cnt ].left , (INT16)StripRegions[ cnt ].top , (INT16)StripRegions[ cnt ].right, (INT16)StripRegions[ cnt ].bottom , TRUE );
 			// Optimize Redundent tiles too!
 			//ExamineZBufferRect( (INT16)StripRegions[ cnt ].left, (INT16)StripRegions[ cnt ].top, (INT16)StripRegions[ cnt ].right, (INT16)StripRegions[ cnt ].bottom );
+			if (!SynchronizeFrameBufferForDirectDraw())
+			{
+				break;
+			}
 
 			do
 			{
@@ -1452,6 +1458,13 @@ extern UINT32 guiRainRenderSurface;
 
 BOOLEAN gfNextRefreshFullScreen = FALSE;
 //end rain
+
+static BOOLEAN SynchronizeFrameBufferForDirectDraw(void)
+{
+	HVSURFACE frameBuffer;
+	return GetVideoSurface(&frameBuffer, FRAME_BUFFER) &&
+		GetVideoSurfaceDDSurface(frameBuffer) != NULL;
+}
 
 void RefreshScreen(void *DummyVariable)
 {
@@ -1600,6 +1613,10 @@ void RefreshScreen(void *DummyVariable)
 			// Either Method (1) or (2)
 			//
 		{
+			if (!SynchronizeFrameBufferForDirectDraw())
+			{
+				goto ENDOFLOOP;
+			}
 			if (gDirtyRegionTracker.fullRefresh())
 			{
 				//

@@ -13,6 +13,7 @@ namespace
 using ja2::presentation::BlitOptions;
 using ja2::presentation::ConstPixelBuffer;
 using ja2::presentation::DirtyRegionTracker;
+using ja2::presentation::MutablePixelBuffer;
 using ja2::presentation::PixelFormat;
 using ja2::presentation::PixelSurface;
 using ja2::presentation::PresentFrame;
@@ -164,6 +165,43 @@ void testExternalPixelTransferWithDifferentPitch()
 		{source.data(), 5, 3, 2, PixelFormat::rgb565}));
 	assert(!surface.copyPixelsTo(
 		{destination.data(), destinationPitch, 3, 2, PixelFormat::indexed8}));
+}
+
+void testCompatibilityMirrorRoundTrip()
+{
+	constexpr UINT32 mirrorPitch = 12;
+	PixelSurface canonical(2, 2, PixelFormat::rgb565, 8);
+	canonical.fill(0x1234);
+
+	std::array<BYTE, mirrorPitch * 2> mirror{};
+	mirror.fill(0xcc);
+	assert(canonical.copyPixelsTo(
+		{mirror.data(), mirrorPitch, 2, 2, PixelFormat::rgb565}));
+
+	const UINT16 compatibilityWrite = 0xabcd;
+	std::memcpy(mirror.data() + mirrorPitch + sizeof(UINT16),
+		&compatibilityWrite, sizeof(compatibilityWrite));
+	assert(canonical.replacePixelsFrom(
+		{mirror.data(), mirrorPitch, 2, 2, PixelFormat::rgb565}));
+	assertVisibleEquals(canonical,
+		std::array<UINT16, 4>{{0x1234, 0x1234, 0x1234, 0xabcd}});
+
+	MutablePixelBuffer pixels = canonical.lock();
+	const UINT16 portableWrite = 0x5678;
+	std::memcpy(pixels.pixels, &portableWrite, sizeof(portableWrite));
+	canonical.unlock();
+	assert(canonical.copyPixelsTo(
+		{mirror.data(), mirrorPitch, 2, 2, PixelFormat::rgb565}));
+	UINT16 mirroredPixel = 0;
+	std::memcpy(&mirroredPixel, mirror.data(), sizeof(mirroredPixel));
+	assert(mirroredPixel == portableWrite);
+	for (std::size_t y = 0; y < 2; ++y)
+	{
+		for (std::size_t byte = 4; byte < mirrorPitch; ++byte)
+		{
+			assert(mirror[y * mirrorPitch + byte] == 0xcc);
+		}
+	}
 }
 
 void testBlits()
@@ -342,6 +380,7 @@ int main()
 	testDirtyRegions();
 	testPixelStorageAndPalette();
 	testExternalPixelTransferWithDifferentPitch();
+	testCompatibilityMirrorRoundTrip();
 	testBlits();
 	testNearestStretch();
 	testGoldenFramebufferCompositionAndBackupRestore();
