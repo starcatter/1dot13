@@ -55,10 +55,11 @@ must remain testable while the replacement is developed.
 
 ## Conversion status
 
-Explicit system-memory `SGPVSurface` objects now use `PixelSurface` as their
-canonical pixel storage. Lock/unlock, fills, same-format copies, color keys,
-palettes, and nearest-neighbor stretch operate on that storage. Their existing
-DirectDraw allocation is retained temporarily as a lazy compatibility mirror:
+All engine-created `SGPVSurface` objects now use `PixelSurface` as their
+canonical pixel storage, regardless of their legacy memory-placement request.
+Lock/unlock, fills, same-format copies, color keys, palettes, and
+nearest-neighbor stretch operate on that storage. Their existing DirectDraw
+allocation is retained temporarily as a compatibility mirror:
 portable-to-portable operations never cross it, while mixed blits synchronize
 only the participant that changed. Windows WinFont similarly synchronizes before
 acquiring a GDI context and marks the mirror authoritative after drawing.
@@ -91,8 +92,8 @@ and default/video-memory generic surfaces have portable owners.
 
 1. Give every generic and reserved logical surface one project-owned storage
    representation; preserve existing numeric handles and lock/pitch behavior.
-   Explicit system-memory generic surfaces plus the reserved frame, back, and
-   cursor buffers are complete behind a lazy mirror.
+   All engine-created generic surfaces plus the reserved frame, back, and
+   cursor buffers are complete behind a compatibility mirror.
 2. Route fills and cross-surface copies through it. The lazy mirror keeps mixed
    generic/reserved copies valid while the reserved surfaces are converted.
 3. Keep the existing software blitters, including `vobject_blitters.cpp`, on

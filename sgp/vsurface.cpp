@@ -1288,17 +1288,14 @@ HVSURFACE CreateVideoSurface( VSURFACE_DESC *VSurfaceDesc )
 		hVSurface->fFlags |= VSURFACE_VIDEO_MEM_USAGE;
 	}
 
-	// Explicit system-memory surfaces are now backed canonically by portable
-	// PixelSurface storage. DirectDraw remains a lazy compatibility mirror while
-	// reserved presentation surfaces and mixed blits are being migrated.
-	if (VSurfaceDesc->fCreateFlags & VSURFACE_SYSTEM_MEM_USAGE)
-	{
-		hVSurface->pixelSurface =
-			std::make_unique<ja2::presentation::PixelSurface>(
-				hVSurface->usWidth, hVSurface->usHeight,
-				PixelFormatForSurface(hVSurface), 4);
-		hVSurface->pixelSurfaceDirty = true;
-	}
+	// Every engine-created logical surface now has portable canonical storage.
+	// DirectDraw remains a compatibility mirror until WinFont and the last mixed
+	// presentation paths are isolated.
+	hVSurface->pixelSurface =
+		std::make_unique<ja2::presentation::PixelSurface>(
+			hVSurface->usWidth, hVSurface->usHeight,
+			PixelFormatForSurface(hVSurface), 4);
+	hVSurface->pixelSurfaceDirty = true;
 
 	//
 	// If in video memory, create backup surface
