@@ -7,8 +7,8 @@ the legacy COM lifetime is correct.
 ## Surface roles and ownership
 
 `DirectDrawPresenter` now owns the DirectDraw device, cooperative/display mode,
-primary surface, and windowed or fullscreen back buffer. `sgp/video.cpp` still
-creates the frame and legacy cursor compatibility surfaces directly:
+primary surface, and windowed or fullscreen back buffer. The surface manager
+owns any remaining logical-surface compatibility mirrors:
 
 | Role | Creation/reference path | Current shutdown |
 | --- | --- | --- |
@@ -16,8 +16,8 @@ creates the frame and legacy cursor compatibility surfaces directly:
 | Primary | presenter creates and retains both interfaces | presenter releases both interfaces |
 | Back buffer, windowed | presenter creates and retains both interfaces | presenter releases both interfaces |
 | Back buffer, fullscreen | presenter obtains the attached surface | presenter releases the attached reference |
-| Frame buffer | `CreateSurface` gives `_gpFrameBuffer`; `QueryInterface` gives `gpFrameBuffer` | neither reference is visibly released |
-| Cursor and cursor original | each has a creator-side `_gp*` reference and a queried `gp*` reference | releases only queried references |
+| Frame buffer | its canonical PixelSurface has one ordinary system-memory compatibility mirror | released with the logical surface |
+| Logical cursor | its canonical PixelSurface has one ordinary system-memory compatibility mirror | released with the logical surface |
 | Cursor background | one shared project-owned `PixelSurface` used by both metadata slots | released automatically |
 | Window clipper | local `clip`, attached to the windowed primary | no local release after attachment is visible |
 | 8-bit palette | global `gpDirectDrawPalette` | no explicit release is visible |
@@ -28,11 +28,10 @@ backup in `pSavedSurfaceData1`/`pSavedSurfaceData`. Unlike reserved surfaces,
 `DeleteVideoSurface` releases both interfaces and the backup pair through
 `DDReleaseSurface`.
 
-The missing releases above should not be copied into the portable renderer.
-They should also not be repaired casually in the DirectDraw oracle: attached
-surfaces, palettes, clippers, queried interfaces, and creator references have
-different COM ownership rules, and cnc-ddraw behavior must remain testable while
-the replacement is developed.
+The remaining palette ownership should not be copied into the portable
+renderer. Attached surfaces, palettes, clippers, queried interfaces, and
+creator references have different COM ownership rules, and cnc-ddraw behavior
+must remain testable while the replacement is developed.
 
 ## Behavioral invariants
 

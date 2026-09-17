@@ -18,8 +18,6 @@ BOOLEAN InitializeVideoManager(
 LPDIRECTDRAW2 GetDirectDraw2Object(void);
 LPDIRECTDRAWSURFACE2 GetPrimarySurfaceObject(void);
 LPDIRECTDRAWSURFACE2 GetBackBufferObject(void);
-LPDIRECTDRAWSURFACE2 GetFrameBufferObject(void);
-LPDIRECTDRAWSURFACE2 GetMouseBufferObject(void);
 
 #endif
 

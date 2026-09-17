@@ -738,27 +738,18 @@ BOOLEAN GetVideoSurface( HVSURFACE *hVSurface, UINT32 uiIndex )
 BOOLEAN SetPrimaryVideoSurfaces( )
 {
 	LPDIRECTDRAWSURFACE2 pSurface;
+	VSURFACE_DESC surfaceDescription{};
 
-	// Delete surfaces if they exist
 	DeletePrimaryVideoSurfaces( );
 
-	//
-	// Get Primary surface
-	//
 	pSurface = GetPrimarySurfaceObject();
 	CHECKF( pSurface != NULL );
-
 	ghPrimary = CreateVideoSurfaceFromDDSurface( pSurface );
 	CHECKF( ghPrimary != NULL );
-	SurfaceData::RegisterSurface(PRIMARY_SURFACE,ghPrimary);
-
-	//
-	// Get Backbuffer surface
-	//
+	SurfaceData::RegisterSurface(PRIMARY_SURFACE, ghPrimary);
 
 	pSurface = GetBackBufferObject( );
 	CHECKF( pSurface != NULL );
-
 	ghBackBuffer = CreateVideoSurfaceFromDDSurface( pSurface );
 	CHECKF( ghBackBuffer != NULL );
 	ghBackBuffer->pixelSurface =
@@ -767,44 +758,31 @@ BOOLEAN SetPrimaryVideoSurfaces( )
 			PixelFormatForSurface(ghBackBuffer), 4);
 	ghBackBuffer->directDrawSurfaceDirty = true;
 	CHECKF(SyncPixelSurfaceFromDirectDraw(ghBackBuffer));
-	SurfaceData::RegisterSurface(BACKBUFFER,ghBackBuffer);
+	SurfaceData::RegisterSurface(BACKBUFFER, ghBackBuffer);
 
-	//
-	// Get mouse buffer surface
-	//
-	pSurface = GetMouseBufferObject( );
-	CHECKF( pSurface != NULL );
-
-	ghMouseBuffer = CreateVideoSurfaceFromDDSurface( pSurface );
+	// Frame and cursor pixels are portable canonical storage. Create their
+	// DirectDraw allocations here only as compatibility mirrors for mixed
+	// surfaces and Windows WinFont.
+	surfaceDescription.fCreateFlags = VSURFACE_SYSTEM_MEM_USAGE;
+	surfaceDescription.usWidth = MAX_CURSOR_WIDTH;
+	surfaceDescription.usHeight = MAX_CURSOR_HEIGHT;
+	surfaceDescription.ubBitDepth = 16;
+	ghMouseBuffer = CreateVideoSurface(&surfaceDescription);
 	CHECKF( ghMouseBuffer != NULL );
-	ghMouseBuffer->pixelSurface =
-		std::make_unique<ja2::presentation::PixelSurface>(
-			ghMouseBuffer->usWidth, ghMouseBuffer->usHeight,
-			PixelFormatForSurface(ghMouseBuffer), 4);
 	ghMouseBuffer->pixelSurface->setColorKey(0);
-	ghMouseBuffer->directDrawSurfaceDirty = true;
-	CHECKF(SyncPixelSurfaceFromDirectDraw(ghMouseBuffer));
-	SurfaceData::RegisterSurface(MOUSE_BUFFER,ghMouseBuffer);
+	if (!iUseWinFonts)
+	{
+		CHECKF(SetVideoSurfaceTransparencyColor(ghMouseBuffer, 0));
+	}
+	SurfaceData::RegisterSurface(MOUSE_BUFFER, ghMouseBuffer);
 
-
-	//
-	// Get frame buffer surface
-	//
-
-	pSurface = GetFrameBufferObject( );
-	CHECKF( pSurface != NULL );
-
-	ghFrameBuffer = CreateVideoSurfaceFromDDSurface( pSurface );
+	surfaceDescription.usWidth = SCREEN_WIDTH;
+	surfaceDescription.usHeight = SCREEN_HEIGHT;
+	ghFrameBuffer = CreateVideoSurface(&surfaceDescription);
 	CHECKF( ghFrameBuffer != NULL );
-	ghFrameBuffer->pixelSurface =
-		std::make_unique<ja2::presentation::PixelSurface>(
-			ghFrameBuffer->usWidth, ghFrameBuffer->usHeight,
-			PixelFormatForSurface(ghFrameBuffer), 4);
-	ghFrameBuffer->directDrawSurfaceDirty = true;
-	CHECKF(SyncPixelSurfaceFromDirectDraw(ghFrameBuffer));
-	SurfaceData::RegisterSurface(FRAME_BUFFER,ghFrameBuffer);
+	SurfaceData::RegisterSurface(FRAME_BUFFER, ghFrameBuffer);
 
-	return( TRUE );
+	return TRUE;
 }
 
 void DeletePrimaryVideoSurfaces( )
