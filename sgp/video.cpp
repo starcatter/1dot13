@@ -2456,7 +2456,7 @@ void FatalError( const STR8 pError, ...)
 /*********************************************************************************
 * SnapshotSmall
 *
-*		Grabs a screen from the [rimary surface, and stuffs it into a 16-bit (RGB 5,5,5),
+*		Grabs the canonical back buffer and stores it in the movie-frame cache.
 * uncompressed Targa file. Each time the routine is called, it increments the
 * file number by one. The files are create in the current directory, usually the
 * EXE directory. This routine produces 1/4 sized images.
@@ -2487,59 +2487,28 @@ typedef struct {
 
 void SnapshotSmall(void)
 {
-	INT32 iCountX, iCountY;
-	DDSURFACEDESC SurfaceDescription;
-	UINT16 *pVideo, *pDest;
-
-	HRESULT		ReturnCode;
-
-
-	ZEROMEM(SurfaceDescription);
-	SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-	ReturnCode = IDirectDrawSurface2_Lock( gpPrimarySurface, NULL, &SurfaceDescription, 0, NULL);
-	if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
+	HVSURFACE backBuffer;
+	ja2::presentation::PixelSurface* surface =
+		GetVideoSurface(&backBuffer, BACKBUFFER) ?
+		GetVideoSurfacePixelSurface(backBuffer) : NULL;
+	if (surface == NULL ||
+		surface->format() != ja2::presentation::PixelFormat::rgb565 ||
+		surface->width() != SCREEN_WIDTH || surface->height() != SCREEN_HEIGHT ||
+		giNumFrames < 0 || giNumFrames >= MAX_NUM_FRAMES ||
+		gpFrameData[giNumFrames] == NULL)
 	{
 		return;
 	}
 
-	//	sprintf( cFilename, "JA%5.5d.TGA", uiPicNum++ );
-
-	//	if( ( disk = fopen(cFilename, "wb"))==NULL )
-	//		return;
-
-	//	memset(&Header, 0, sizeof(TARGA_HEADER));
-
-	//	Header.ubTargaType=2;			// Uncompressed 16/24/32 bit
-	//	Header.usImageWidth=320;
-	//	Header.usImageHeight=240;
-	//	Header.ubBitsPerPixel=16;
-
-	//	fwrite(&Header, sizeof(TARGA_HEADER), 1, disk);
-
-	// Get the write pointer
-	pVideo = (UINT16*)SurfaceDescription.lpSurface;
-
-	pDest = gpFrameData[ giNumFrames ];
-
-	for(iCountY=SCREEN_HEIGHT-1; iCountY >=0 ; iCountY-=1)
+	const ja2::presentation::ConstPixelBuffer pixels = surface->pixels();
+	const std::size_t rowBytes =
+		static_cast<std::size_t>(pixels.width) * sizeof(UINT16);
+	UINT16* destination = gpFrameData[giNumFrames];
+	for (UINT16 y = 0; y < pixels.height; ++y)
 	{
-		for(iCountX=0; iCountX < SCREEN_WIDTH; iCountX+= 1)
-		{
-			//		uiData=(UINT16)*(pVideo+(iCountY*SCREEN_WIDTH*2)+ ( iCountX * 2 ) );
-
-			//				1111 1111 1100 0000
-			//				f		f		c
-			//		usPixel555=	(UINT16)(uiData&0xffff);
-			//			usPixel555= ((usPixel555 & 0xffc0) >> 1) | (usPixel555 & 0x1f);
-
-			//		usPixel555=	(UINT16)(uiData);
-
-			//	fwrite( &usPixel555, sizeof(UINT16), 1, disk);
-			//		fwrite(	(void *)(((UINT8 *)SurfaceDescription.lpSurface) + ( iCountY * SCREEN_WIDTH * 2) + ( iCountX * 2 ) ), 2 * sizeof( BYTE ), 1, disk );
-
-			*( pDest + ( iCountY * SCREEN_WIDTH ) + ( iCountX ) ) = *( pVideo + ( iCountY * SCREEN_WIDTH ) + ( iCountX ) );
-		}
-
+		memcpy(destination + static_cast<std::size_t>(y) * pixels.width,
+			pixels.pixels + static_cast<std::size_t>(y) * pixels.pitchBytes,
+			rowBytes);
 	}
 
 	giNumFrames++;
@@ -2548,18 +2517,6 @@ void SnapshotSmall(void)
 	{
 		RefreshMovieCache( );
 	}
-
-
-	ZEROMEM(SurfaceDescription);
-	SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-	ReturnCode = IDirectDrawSurface2_Unlock(gpPrimarySurface, &SurfaceDescription);
-	if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-	{
-		DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-	}
-
-	//	fclose(disk);
-
 }
 
 

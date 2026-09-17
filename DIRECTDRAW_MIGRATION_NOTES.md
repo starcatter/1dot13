@@ -77,8 +77,8 @@ are coalesced to the legacy 16 ms cadence without sleeping the game thread,
 preserving blocking transition animations without flooding the wrapper. The
 old fullscreen primary-to-back-buffer recovery copies are gone: the canonical
 PixelSurface retains the complete frame and is uploaded before each flip.
-Screenshot capture also reads this canonical storage instead of allocating and
-reading back a temporary DirectDraw surface.
+Screenshot and optional movie-frame capture also read this canonical storage
+instead of locking or reading back DirectDraw surfaces.
 The compatibility mirrors can be deleted after WinFont, remaining mixed paths,
 and default/video-memory generic surfaces have portable owners.
 
