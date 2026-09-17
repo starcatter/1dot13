@@ -6,6 +6,7 @@ namespace Platform
 // Requests a host-window state change without exposing a native window handle
 // to engine input policy. Hosts without a window treat the request as a no-op.
 void MinimizeMainWindow() noexcept;
+void HideMainWindow() noexcept;
 }
 
 #endif

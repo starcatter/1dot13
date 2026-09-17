@@ -11,4 +11,12 @@ void MinimizeMainWindow() noexcept
 		ShowWindow(ghWindow, SW_MINIMIZE);
 	}
 }
+
+void HideMainWindow() noexcept
+{
+	if (ghWindow != nullptr)
+	{
+		ShowWindow(ghWindow, SW_HIDE);
+	}
+}
 }

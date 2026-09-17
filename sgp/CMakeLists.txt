@@ -61,6 +61,7 @@ if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/NativeFonts.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Process.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/VideoBootstrap.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Window.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/presentation/windows/DirectDrawPresenter.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/presentation/windows/WindowsPresenterFactory.cpp")

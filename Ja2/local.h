@@ -1,6 +1,7 @@
 #ifndef __LOCAL_DEFINES_
 #define __LOCAL_DEFINES_
 
+#include "ScreenGeometry.h"
 #include "Screens.h"
 
 
@@ -17,9 +18,6 @@
 //
 // Basic defines for the video manager. These represent the starting values
 //
-
-extern UINT16	SCREEN_WIDTH;
-extern UINT16	SCREEN_HEIGHT;
 
 extern int iResolution;			// Resolution id from the ini file
 extern int iPlayIntro;
@@ -73,6 +71,6 @@ typedef enum
 
 extern BOOLEAN fDisplayOverheadMap;
 
-#define PIXEL_DEPTH			16
+#define PIXEL_DEPTH			SGP_SCREEN_PIXEL_DEPTH
 
 #endif

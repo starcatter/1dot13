@@ -27,6 +27,7 @@ extern "C" {
 */
 
 extern void				 ShutdownVideoManager(void);
+extern void SetPresentationVerticalSync(BOOLEAN enabled);
 extern void				 SuspendVideoManager(void);
 extern BOOLEAN				RestoreVideoManager(void);
 extern void				 GetCurrentVideoSettings(UINT16 *usWidth, UINT16 *usHeight, UINT8 *ubBitDepth);

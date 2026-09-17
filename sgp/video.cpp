@@ -1,11 +1,12 @@
 #include "types.h"
+#include "ScreenGeometry.h"
+#include "screenids.h"
+#include "sgp.h"
 #include "video.h"
-#include "video_windows.h"
+#include "video_init.h"
 #include "vsurface_private.h"
 #include "vobject_blitters.h"
-#include "LegacySGP.h"
 #include <stdio.h>
-#include <io.h>
 #include "renderworld.h"
 #include "Render Dirty.h"
 #include "Fade Screen.h"
@@ -13,30 +14,25 @@
 #include "Timer Control.h"
 #include "FileMan.h"
 #include "input.h"
-#include "GameSettings.h"
 #include "sgp_logger.h"
 #include "fileio/FileIO.h"
 #include "fileio/FileServices.h"
 #include "fileio/StoreRouter.h"
 #include "platform/Clock.h"
 #include "platform/Dialog.h"
+#include "platform/Window.h"
 #include "presentation/DirtyRegionTracker.h"
 #include "presentation/PixelSurface.h"
 #include "presentation/Presenter.h"
-#include "presentation/windows/WindowsPresenterFactory.h"
-#include "UtfConversion.h"
 
+#include <cstdarg>
+#include <cstring>
 #include <memory>
 #include <vector>
 
-#include "resource.h"
 #include <vfs/Core/vfs_string.h>
 
-#include "local.h"
-#include "Text.h"
-
-
-extern int iScreenMode;
+extern UINT32 guiCurrentScreen;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -63,13 +59,20 @@ extern int iScreenMode;
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+struct VideoRect
+{
+	INT32 left;
+	INT32 top;
+	INT32 right;
+	INT32 bottom;
+};
+
 typedef struct
 {
-	BOOLEAN				 fRestore;
-	INT16					usMouseXPos, usMouseYPos;
-	INT16					usLeft, usTop, usRight, usBottom;
-	RECT										Region;
-
+	BOOLEAN fRestore;
+	INT16 usMouseXPos, usMouseYPos;
+	INT16 usLeft, usTop, usRight, usBottom;
+	VideoRect Region;
 } MouseCursorBackground;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,8 +89,6 @@ static UINT16				 gusScreenWidth;
 static UINT16				 gusScreenHeight;
 static UINT8					gubScreenPixelDepth;
 
-static RECT	gScrollRegion;
-
 #define			MAX_NUM_FRAMES			25
 
 BOOLEAN												gfVideoCapture=FALSE;
@@ -103,9 +104,6 @@ INT32													giNumFrames = 0;
 
 
 //
-extern RECT									rcWindow;
-extern POINT									ptWindowSize;
-
 UINT32 CurrentSurface = BACKBUFFER;
 
 //
@@ -122,6 +120,7 @@ static std::unique_ptr<ja2::presentation::PixelSurface>
 	gMouseCursorBackgroundSurface;
 static std::unique_ptr<ja2::presentation::Presenter> gPresenter;
 static std::uint64_t gNextPresentationMicroseconds = 0;
+static BOOLEAN gVerticalSyncEnabled = FALSE;
 
 static HVOBJECT				gpCursorStore;
 
@@ -131,12 +130,6 @@ char				gFatalErrorString[ 512 ];
 // 8-bit palette stuff
 
 SGPPaletteEntry								gSgpPalette[256];
-
-//
-// Make sure we record the value of the hWindow (main window frame for the application)
-//
-
-HWND							ghWindow;
 
 //
 // Refresh thread based variables
@@ -187,7 +180,7 @@ void SnapshotSmall( void );
 void VideoMovieCapture( BOOLEAN fEnable );
 void RefreshMovieCache( );
 static BOOLEAN BlitSurfaceRegion(UINT32 destination, UINT32 source,
-	INT32 destinationX, INT32 destinationY, const RECT& sourceRegion);
+	INT32 destinationX, INT32 destinationY, const VideoRect& sourceRegion);
 static BOOLEAN RestoreMouseBackground(const MouseCursorBackground& background);
 static BOOLEAN SaveMouseBackground(const MouseCursorBackground& background);
 static BOOLEAN DrawMouseCursor(const MouseCursorBackground& background);
@@ -198,12 +191,9 @@ static BOOLEAN PresentBackBuffer(void);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *WindowProc)
+BOOLEAN InitializeVideoManagerWithPresenter(
+	std::unique_ptr<ja2::presentation::Presenter> presenter)
 {
-	HWND			hWindow;
-	WNDCLASS		WindowClass;
-	UINT8		 ClassName[] = APPLICATION_NAME;
-
 	//
 	// Register debug topics
 	//
@@ -211,111 +201,16 @@ BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *
 	RegisterDebugTopic(TOPIC_VIDEO, "Video");
 	DebugMsg(TOPIC_VIDEO, DBG_LEVEL_0, "Initializing the video manager");
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//
-	// Register and Realize our display window. The DirectX surface will eventually overlay on top
-	// of this surface.
-	//
-	// <<<<<<<<< Don't change this >>>>>>>>
-	//
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-
-	WindowClass.style = CS_HREDRAW | CS_VREDRAW;
-	WindowClass.lpfnWndProc = (WNDPROC) WindowProc;
-	WindowClass.cbClsExtra = 0;
-	WindowClass.cbWndExtra = 0;
-	WindowClass.hInstance = hInstance;
-	WindowClass.hIcon = LoadIcon(hInstance,	MAKEINTRESOURCE( IDI_ICON1 ) );
-	WindowClass.hCursor = NULL;
-	WindowClass.hbrBackground = NULL;
-	WindowClass.lpszMenuName = NULL;
-	WindowClass.lpszClassName = (LPCSTR) ClassName;
-	RegisterClass(&WindowClass);
-
-	//
-	// Get a window handle for our application (gotta have on of those)
-	// Don't change this
-	//
-	if( 1==iScreenMode )	// windowed mode
-	{
-		RECT window;
-		DWORD style;
-		DWORD exstyle;
-
-		window.top = 0;
-		window.left = 0;
-		window.right = SCREEN_WIDTH;
-		window.bottom = SCREEN_HEIGHT;
-
-		exstyle = WS_EX_APPWINDOW;
-		style = WS_OVERLAPPEDWINDOW & (~(WS_MAXIMIZEBOX | WS_SYSMENU));
-
-		AdjustWindowRectEx( &window, style, FALSE, exstyle);
-		OffsetRect( &window, -window.left, -window.top);
-
-		ptWindowSize.x = window.right;
-		ptWindowSize.y = window.bottom;
-
-		hWindow = CreateWindowEx(exstyle, (LPCSTR) ClassName, "Jagged Alliance 2", style, window.left, window.top, window.right, window.bottom, NULL, NULL, hInstance, NULL);
-		GetClientRect( hWindow, &window);
-		window.top = window.top;
-	}
-	else	// fullscreen mode
-	{
-		hWindow = CreateWindowEx(WS_EX_TOPMOST, (LPCSTR) ClassName, "Jagged Alliance 2", WS_POPUP | WS_VISIBLE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL, NULL, hInstance, NULL);
-	}
-	if (hWindow == NULL)
-	{
-		DebugMsg(TOPIC_VIDEO, DBG_LEVEL_0, "Failed to create window frame for Direct Draw");
-		return FALSE;
-	}
-
-	//
-	// Okay, now hide the cursor for the window.
-	//
-	SetCursor( NULL);
-
-	//
-	// Excellent. Now we record the hWindow variable for posterity (not)
-	//
-
 	memset( gpFrameData, 0, sizeof( gpFrameData ) );
-
-
-	ghWindow = hWindow;
-
-	//
-	// Display our full screen window
-	//
-
-	//	ShowCursor(FALSE);
-	ShowWindow(hWindow, usCommandShow);
-	UpdateWindow(hWindow);
-	SetFocus(hWindow);
-
-	ja2::presentation::PresenterCreateResult presenterResult;
-	gPresenter = ja2::presentation::createWindowsPresenter(
-		ghWindow, &rcWindow, iScreenMode == 1, SCREEN_WIDTH, SCREEN_HEIGHT,
-		PIXEL_DEPTH, presenterResult);
+	gPresenter = std::move(presenter);
 	if (!gPresenter)
 	{
-		if (presenterResult ==
-			ja2::presentation::PresenterCreateResult::displayModeFailure)
-		{
-			CHAR16 message[256];
-			swprintf(message, Additional113Text[ADDTEXT_DIFFRES_REQUIRED],
-				SCREEN_WIDTH, SCREEN_HEIGHT);
-			Platform::ShowDialog(APPLICATION_NAME,
-				ja2::text::utf16ToUtf8ReplacingInvalid(message),
-				Platform::DialogKind::warning);
-			PostQuitMessage(1);
-		}
 		return FALSE;
 	}
 
 	gusScreenWidth = SCREEN_WIDTH;
 	gusScreenHeight = SCREEN_HEIGHT;
-	gubScreenPixelDepth = PIXEL_DEPTH;
+	gubScreenPixelDepth = SGP_SCREEN_PIXEL_DEPTH;
 
 
 	//
@@ -387,6 +282,11 @@ void ShutdownVideoManager(void)
 	FreeMouseCursor( FALSE );
 
 	UnRegisterDebugTopic(TOPIC_VIDEO, "Video");
+}
+
+void SetPresentationVerticalSync(BOOLEAN enabled)
+{
+	gVerticalSyncEnabled = enabled;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -550,7 +450,8 @@ void InvalidateFrameBuffer(void)
 void SetFrameBufferRefreshOverride(PTR pFrameBufferRefreshOverride)
 {
 
-	gpFrameBufferRefreshOverride = (void (__cdecl *)(void))pFrameBufferRefreshOverride;
+	gpFrameBufferRefreshOverride = reinterpret_cast<void (*)(void)>(
+		pFrameBufferRefreshOverride);
 }
 
 //#define SCROLL_TEST
@@ -560,11 +461,11 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 	INT16 sScrollYIncrement, BOOLEAN fRenderStrip,
 	UINT32 uiCurrentMouseBackbuffer )
 {
+	(void)uiCurrentMouseBackbuffer;
 	UINT16 usWidth, usHeight;
 	UINT8	ubBitDepth;
-	static RECT	Region;
-	static UINT16	usMouseXPos, usMouseYPos;
-	static RECT		StripRegions[ 2 ], MouseRegion;
+	static VideoRect Region;
+	static VideoRect StripRegions[2];
 	UINT16				usNumStrips = 0;
 	INT32					cnt;
 	INT16					sShiftX, sShiftY;
@@ -586,14 +487,6 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 	StripRegions[ 1 ].top	= gsVIEWPORT_WINDOW_START_Y;
 	StripRegions[ 1 ].bottom = gsVIEWPORT_WINDOW_END_Y;
 
-	MouseRegion.left		= gMouseCursorBackground[ uiCurrentMouseBackbuffer ].usLeft;
-	MouseRegion.top			= gMouseCursorBackground[ uiCurrentMouseBackbuffer ].usTop;
-	MouseRegion.right		= gMouseCursorBackground[ uiCurrentMouseBackbuffer ].usRight;
-	MouseRegion.bottom	= gMouseCursorBackground[ uiCurrentMouseBackbuffer ].usBottom;
-
-	usMouseXPos					= gMouseCursorBackground[ uiCurrentMouseBackbuffer ].usMouseXPos;
-	usMouseYPos					= gMouseCursorBackground[ uiCurrentMouseBackbuffer ].usMouseYPos;
-
 	switch (uiDirection)
 	{
 	case SCROLL_LEFT:
@@ -613,7 +506,6 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 		}
 
 		StripRegions[ 0 ].right =(INT16)(gsVIEWPORT_START_X+sScrollXIncrement);
-		usMouseXPos += sScrollXIncrement;
 
 		usNumStrips = 1;
 		break;
@@ -650,7 +542,6 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 		//}
 
 		StripRegions[ 0 ].left =(INT16)(gsVIEWPORT_END_X-sScrollXIncrement);
-		usMouseXPos -= sScrollXIncrement;
 
 		usNumStrips = 1;
 		break;
@@ -681,7 +572,6 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 		StripRegions[ 0 ].bottom =(INT16)(gsVIEWPORT_WINDOW_START_Y+sScrollYIncrement);
 		usNumStrips = 1;
 
-		usMouseYPos += sScrollYIncrement;
 
 		break;
 
@@ -712,7 +602,6 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 		StripRegions[ 0 ].top = (INT16)(gsVIEWPORT_WINDOW_END_Y-sScrollYIncrement);
 		usNumStrips = 1;
 
-		usMouseYPos -= sScrollYIncrement;
 
 		break;
 
@@ -743,8 +632,6 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 		StripRegions[ 1 ].left	= (INT16)(gsVIEWPORT_START_X+sScrollXIncrement);
 		usNumStrips = 2;
 
-		usMouseYPos += sScrollYIncrement;
-		usMouseXPos += sScrollXIncrement;
 
 		break;
 
@@ -775,8 +662,6 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 		StripRegions[ 1 ].right	= (INT16)(gsVIEWPORT_END_X-sScrollXIncrement);
 		usNumStrips = 2;
 
-		usMouseYPos += sScrollYIncrement;
-		usMouseXPos -= sScrollXIncrement;
 
 		break;
 
@@ -808,8 +693,6 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 		StripRegions[ 1 ].left	= (INT16)(gsVIEWPORT_START_X+sScrollXIncrement);
 		usNumStrips = 2;
 
-		usMouseYPos -= sScrollYIncrement;
-		usMouseXPos += sScrollXIncrement;
 
 		break;
 
@@ -840,8 +723,6 @@ void ScrollJA2Background(UINT32 uiDirection, INT16 sScrollXIncrement,
 		StripRegions[ 1 ].right = (INT16)(gsVIEWPORT_END_X-sScrollXIncrement);
 		usNumStrips = 2;
 
-		usMouseYPos -= sScrollYIncrement;
-		usMouseXPos -= sScrollXIncrement;
 
 		break;
 
@@ -957,7 +838,7 @@ BOOLEAN gfNextRefreshFullScreen = FALSE;
 //end rain
 
 static BOOLEAN BlitSurfaceRegion(UINT32 destination, UINT32 source,
-	INT32 destinationX, INT32 destinationY, const RECT& sourceRegion)
+	INT32 destinationX, INT32 destinationY, const VideoRect& sourceRegion)
 {
 	blt_vs_fx effects;
 	effects.SrcRect = {sourceRegion.left, sourceRegion.top,
@@ -1070,17 +951,17 @@ static BOOLEAN PresentBackBuffer(void)
 	frame.dirtyRegions = gDirtyRegionTracker.regions().data();
 	frame.dirtyRegionCount = gDirtyRegionTracker.regions().size();
 	frame.fullRefresh = gDirtyRegionTracker.fullRefresh();
-	frame.verticalSync = gGameExternalOptions.gfVSync;
+	frame.verticalSync = gVerticalSyncEnabled != FALSE;
 	return gPresenter->present(frame) ? TRUE : FALSE;
 }
 
 void RefreshScreen(void *DummyVariable)
 {
-	static UINT32	uiRefreshThreadState, uiIndex;
+	(void)DummyVariable;
+	static UINT32 uiIndex;
 	UINT16	usScreenWidth, usScreenHeight;
 	static BOOLEAN fShowMouse;
-	static RECT	Region;
-	static INT16	sx, sy;
+	static VideoRect Region;
 	static SGPPoint MousePos;
 	static BOOLEAN fFirstTime = TRUE;
 	UINT32						uiTime;
@@ -1118,7 +999,7 @@ void RefreshScreen(void *DummyVariable)
 			: //
 				// Excellent, everything is cosher, we continue on
 				//
-				uiRefreshThreadState = guiRefreshThreadState = THREAD_ON;
+				guiRefreshThreadState = THREAD_ON;
 				usScreenWidth = gusScreenWidth;
 				usScreenHeight = gusScreenHeight;
 				break;
@@ -1134,7 +1015,7 @@ void RefreshScreen(void *DummyVariable)
 								// This are suspended. Make sure the refresh function does try to access any of the direct
 								// draw surfaces
 								//
-								uiRefreshThreadState = guiRefreshThreadState = THREAD_SUSPENDED;
+								guiRefreshThreadState = THREAD_SUSPENDED;
 								break;
 								case VIDEO_SHUTTING_DOWN
 									: //
@@ -1334,10 +1215,10 @@ void RefreshScreen(void *DummyVariable)
 				std::unique_ptr<ja2::fileio::File> output =
 					ja2::fileio::storeRouter().create(fileName);
 				char head[] = {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-					static_cast<char>(LOBYTE(pixels.width)),
-					static_cast<char>(HIBYTE(pixels.width)),
-					static_cast<char>(LOBYTE(pixels.height)),
-					static_cast<char>(HIBYTE(pixels.height)), 0x10, 0};
+					static_cast<char>(pixels.width & 0xffU),
+					static_cast<char>((pixels.width >> 8) & 0xffU),
+					static_cast<char>(pixels.height & 0xffU),
+					static_cast<char>((pixels.height >> 8) & 0xffU), 0x10, 0};
 				output->writeExact(head, sizeof(head));
 
 				const std::size_t rowBytes =
@@ -1566,16 +1447,6 @@ void RefreshScreen(void *DummyVariable)
 	{
 		goto ENDOFLOOP;
 	}
-	if (iScreenMode != 1)
-	{
-		// A flip changes which allocation DirectDraw calls the back buffer. Keep
-		// the compatibility mirror dirty; the retained PixelSurface is canonical
-		// and the presenter uploads it again before the next flip.
-		HVSURFACE backBuffer;
-		if (GetVideoSurface(&backBuffer, BACKBUFFER))
-		{
-		}
-	}
 	gfRenderScroll = FALSE;
 	gfScrollStart = FALSE;
 	gDirtyRegionTracker.clearAfterPresent();
@@ -1663,10 +1534,9 @@ BOOLEAN GetRGBDistribution(void)
 
 	if (!gusRedMask)
 	{
-		Platform::ShowDialog(APPLICATION_NAME,
-			ja2::text::utf16ToUtf8ReplacingInvalid(Additional113Text[ADDTEXT_16BPP_REQUIRED]),
+		Platform::ShowDialog("Jagged Alliance 2 v1.13",
+			"This game requires a 16-bit RGB display format.",
 			Platform::DialogKind::warning);
-		PostQuitMessage(1);
 		return FALSE;
 	}
 
@@ -1973,7 +1843,7 @@ void FatalError( const STR8 pError, ...)
 	{
 		gPresenter->shutdown();
 	}
-	ShowWindow( ghWindow, SW_HIDE );
+	Platform::HideMainWindow();
 
 	// destroy the window
 	// DestroyWindow( ghWindow );
@@ -2091,7 +1961,7 @@ void RefreshMovieCache( )
 {
 	TARGA_HEADER Header;
 	INT32 iCountX, iCountY;
-	CHAR8 cFilename[_MAX_PATH];
+	CHAR8 cFilename[64];
 	static UINT32 uiPicNum=0;
 	UINT16 *pDest;
 	INT32	cnt;

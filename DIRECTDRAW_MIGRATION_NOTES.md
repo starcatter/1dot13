@@ -108,6 +108,11 @@ surface accessor remains in the video or logical-surface interfaces.
    the existing input manager, maintains physical-key state, and synthesizes
    releases on focus loss. Selecting the SDL host for the production game loop
    is still pending.
+7. Completed: Win32 class/window creation and DirectDraw presenter construction
+   live in `platform/windows/VideoBootstrap.cpp`. The common `video.cpp` accepts
+   an already-created presenter, contains no Win32 types or APIs, and is built
+   by GCC and Clang as a strict native object target. SDL production bootstrap
+   and full-game linkage remain pending.
 
 The replacement shutdown invariant is strict: stop presentation, destroy
 cursor/font consumers, destroy logical surfaces and palettes, then destroy the

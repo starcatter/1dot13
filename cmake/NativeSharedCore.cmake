@@ -66,6 +66,17 @@ target_include_directories(ja2_sdl3_backend PUBLIC "${CMAKE_SOURCE_DIR}/sgp")
 target_link_libraries(ja2_sdl3_backend PUBLIC SDL3::SDL3)
 target_compile_options(ja2_sdl3_backend PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
+# Compile the real framebuffer/video-manager policy natively without yet
+# pretending the complete game link is available. Its many gameplay callbacks
+# remain resolved by the eventual game target; this gate keeps host APIs out of
+# the translation unit while that target is assembled incrementally.
+add_library(ja2_native_video_manager OBJECT sgp/video.cpp)
+target_include_directories(ja2_native_video_manager PUBLIC
+  "${CMAKE_SOURCE_DIR}/sgp")
+target_link_libraries(ja2_native_video_manager PRIVATE ja2_shared_core)
+target_compile_options(ja2_native_video_manager PRIVATE
+  -Wall -Wextra -Wpedantic -Werror)
+
 enable_testing()
 add_executable(ja2_shared_core_smoke tests/native/shared_core_smoke.cpp)
 target_link_libraries(ja2_shared_core_smoke PRIVATE ja2_shared_core)
