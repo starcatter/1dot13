@@ -93,8 +93,12 @@ surface accessor remains in the video or logical-surface interfaces.
 5. Completed: final upload, windowed blit, fullscreen flip, and presentation
    recovery live behind `Presenter`; Windows/cnc-ddraw remains the runnable
    comparison oracle until the SDL presenter is equivalent.
-6. Add an SDL host/event adapter only after surface ownership no longer depends
-   on DirectDraw. SDL types stay out of engine-facing headers.
+6. Started: the native `Sdl3Presenter` uploads the retained RGB565 framebuffer
+   to a streaming texture, applies dirty-region updates, and uses SDL logical
+   letterboxing with nearest-neighbor scaling. A dummy-video test covers full
+   and partial upload, suspend/resume, and format rejection. SDL types remain
+   confined to the backend header; the SDL application host/event adapter and
+   production wiring are still pending.
 
 The replacement shutdown invariant is strict: stop presentation, destroy
 cursor/font consumers, destroy logical surfaces and palettes, then destroy the

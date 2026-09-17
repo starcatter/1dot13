@@ -3,6 +3,7 @@
 # production audio backend; grow it as those boundaries become portable.
 
 find_package(Threads REQUIRED)
+find_package(SDL3 3.2 REQUIRED CONFIG)
 
 include(cmake/dependencies/LzmaSdk.cmake)
 include(cmake/dependencies/Utf8cpp.cmake)
@@ -54,6 +55,13 @@ add_library(ja2_shared_core STATIC
 target_include_directories(ja2_shared_core PUBLIC "${CMAKE_SOURCE_DIR}/sgp")
 target_link_libraries(ja2_shared_core PUBLIC JA2::bfVFS Threads::Threads ZLIB::ZLIB PRIVATE JA2::utf8cpp)
 target_compile_options(ja2_shared_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
+
+add_library(ja2_sdl3_presenter STATIC
+  sgp/presentation/sdl/Sdl3Presenter.cpp
+)
+target_include_directories(ja2_sdl3_presenter PUBLIC "${CMAKE_SOURCE_DIR}/sgp")
+target_link_libraries(ja2_sdl3_presenter PUBLIC SDL3::SDL3)
+target_compile_options(ja2_sdl3_presenter PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 enable_testing()
 add_executable(ja2_shared_core_smoke tests/native/shared_core_smoke.cpp)
@@ -137,6 +145,16 @@ add_executable(ja2_presentation_foundation_tests
 target_link_libraries(ja2_presentation_foundation_tests PRIVATE ja2_shared_core)
 target_compile_options(ja2_presentation_foundation_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 add_test(NAME ja2_presentation_foundation_tests COMMAND ja2_presentation_foundation_tests)
+
+add_executable(ja2_sdl3_presenter_tests
+  tests/native/sdl3_presenter_tests.cpp)
+target_link_libraries(ja2_sdl3_presenter_tests PRIVATE
+  ja2_shared_core ja2_sdl3_presenter)
+target_compile_options(ja2_sdl3_presenter_tests PRIVATE
+  -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_sdl3_presenter_tests COMMAND ja2_sdl3_presenter_tests)
+set_tests_properties(ja2_sdl3_presenter_tests PROPERTIES
+  ENVIRONMENT "SDL_VIDEODRIVER=dummy;SDL_RENDER_DRIVER=software")
 
 # Keep the focused characterization suites independently linkable while also
 # making the complete native checkpoint available through one root CTest run.
