@@ -8,7 +8,6 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/Cursor Control.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/DEBUG.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/crash_report.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/DirectDraw Calls.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/DirectX Common.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/English.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/FileMan.cpp"

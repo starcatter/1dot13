@@ -528,7 +528,6 @@ void PrintWinFont( UINT32 uiDestBuf, INT32 iFont, INT32 x, INT32 y, STR16 pFontS
 			static_cast<const BYTE*>(dibPixels) + row * dibPitch, rowBytes);
 	}
 	pixelSurface->unlock();
-	NotifyVideoSurfacePixelModified(hVSurface);
 
 	SelectObject(hdc, previousFont);
 	SelectObject(hdc, previousBitmap);

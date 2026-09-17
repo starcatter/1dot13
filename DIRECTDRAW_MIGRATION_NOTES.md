@@ -7,8 +7,8 @@ the legacy COM lifetime is correct.
 ## Surface roles and ownership
 
 `DirectDrawPresenter` now owns the DirectDraw device, cooperative/display mode,
-primary surface, and windowed or fullscreen back buffer. The surface manager
-owns any remaining logical-surface compatibility mirrors:
+primary surface, and windowed or fullscreen back buffer. The logical surface
+manager owns only project-memory `PixelSurface` objects:
 
 | Role | Creation/reference path | Current shutdown |
 | --- | --- | --- |
@@ -16,17 +16,17 @@ owns any remaining logical-surface compatibility mirrors:
 | Primary | presenter creates and retains both interfaces | presenter releases both interfaces |
 | Back buffer, windowed | presenter creates and retains both interfaces | presenter releases both interfaces |
 | Back buffer, fullscreen | presenter obtains the attached surface | presenter releases the attached reference |
+| Logical primary/back/frame surfaces | project-owned `PixelSurface` objects | released with the logical surfaces |
 | Frame buffer | project-owned `PixelSurface`; no eager DirectDraw allocation | released with the logical surface |
 | Logical cursor | project-owned `PixelSurface`; no eager DirectDraw allocation | released with the logical surface |
 | Cursor background | one shared project-owned `PixelSurface` used by both metadata slots | released automatically |
 | Window clipper | local `clip`, attached to the windowed primary | no local release after attachment is visible |
 | 8-bit presentation palette | created and attached by `DirectDrawPresenter` | presenter releases its reference; attached surfaces release theirs |
 
-Legacy native `SGPVSurface` wrappers use the two-reference convention in
-`pSurfaceData1`/`pSurfaceData`, and old video-memory wrappers may own a backup
-in `pSavedSurfaceData1`/`pSavedSurfaceData`. Engine-created surfaces no longer
-enter either ownership path; `DeleteVideoSurface` retains the release logic for
-the reserved wrappers and remaining compatibility fallback.
+`SGPVSurface` no longer contains DirectDraw pointers, palettes, clippers, dirty
+mirror state, or video-memory backup ownership. The obsolete shared DirectDraw
+wrapper is no longer part of the build. DirectDraw ownership is confined to
+the Windows presenter.
 
 The remaining palette ownership should not be copied into the portable
 renderer. Attached surfaces, palettes, clippers, queried interfaces, and
@@ -43,10 +43,6 @@ must remain testable while the replacement is developed.
 - The frame buffer is copied to the back buffer using either a full refresh or
   dirty-region lists. Cursor composition occurs on the back buffer, with the
   previous background restored before the new cursor is drawn.
-- `UpdateBackupSurface` copies primary surface data into its backup.
-  `RestoreVideoSurface` restores the allocation and copies backup data into the
-  primary. The previously reversed arguments were corrected and the direction
-  is locked down by the golden composition/restore test.
 - Lost-surface recovery restores presenter-owned surfaces, marks frame and
   cursor state dirty, and forces a full refresh. Engine-created logical
   surfaces retain their pixels independently and need no DirectDraw backup.
@@ -59,15 +55,12 @@ All engine-created `SGPVSurface` objects now use `PixelSurface` as their
 canonical pixel storage, regardless of their legacy memory-placement request.
 Lock/unlock, fills, same-format copies, color keys, palettes, and
 nearest-neighbor stretch operate on that storage. They no longer allocate a
-DirectDraw surface or video-memory backup at creation. A system-memory mirror
-can still be created lazily by the last mixed compatibility paths. Windows
-WinFont renders through a GDI DIB and copies directly to canonical storage, so
+DirectDraw surface or video-memory backup at creation. Windows WinFont renders
+through a GDI DIB and copies directly to canonical storage, so
 it no longer requests a DirectDraw surface or exposes native drawing authority.
 
-This makes generic-surface creation portable without breaking the remaining
-copies between generic and reserved surfaces. The reserved primary surface is
-still DirectDraw-owned; all engine-created generic surfaces and the reserved
-frame, back, and logical cursor buffers are PixelSurface-canonical. Frame
+All generic and reserved logical surfaces, including primary, back, frame, and
+cursor handles, are now PixelSurface-canonical. Frame
 refresh, tactical scrolling in all eight
 directions, overlays, fades, rain, and cursor save/compose/restore operate on
 portable storage. Unkeyed copies use row memcpy and overlap-safe directional
@@ -83,20 +76,16 @@ Screenshot and optional movie-frame capture also read this canonical storage
 instead of locking or reading back DirectDraw surfaces.
 `sgp/video.cpp` and `sgp/WinFont.cpp` now contain no DirectDraw API calls:
 device creation, mode and surface queries, palette attachment, upload, present,
-suspend/resume, and shutdown are presenter operations. The video manager's
-Windows-only native accessors remain a temporary bridge for reserved and lazy
-`SGPVSurface` compatibility paths. Those paths can be deleted after the
-portable primary placeholder and dormant clip-list code are resolved.
+suspend/resume, and shutdown are presenter operations. No native DirectDraw
+surface accessor remains in the video or logical-surface interfaces.
 
 ## Replacement sequence
 
-1. Give every generic and reserved logical surface one project-owned storage
-   representation; preserve existing numeric handles and lock/pitch behavior.
-   All engine-created generic surfaces plus the reserved frame, back, and
-   cursor buffers are canonical; generic mirrors are now allocated only by a
-   remaining mixed native path.
-2. Route fills and cross-surface copies through it. The lazy mirror keeps mixed
-   generic/reserved copies valid while the reserved surfaces are converted.
+1. Completed: every generic and reserved logical surface has one project-owned
+   storage representation while preserving numeric handles and lock/pitch
+   behavior.
+2. Completed: fills, cross-surface copies, color keys, palettes, and stretching
+   use portable storage; the mixed DirectDraw mirror path is gone.
 3. Keep the existing software blitters, including `vobject_blitters.cpp`, on
    their raw pixel-buffer interface.
 4. Completed: cursor save/compose/restore operates on the project-owned back

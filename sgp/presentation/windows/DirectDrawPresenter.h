@@ -36,10 +36,6 @@ public:
 	bool getRgbMasks(UINT16& red, UINT16& green, UINT16& blue) const;
 	bool setPalette(const SGPPaletteEntry* entries);
 
-	LPDIRECTDRAW2 directDrawObject() const noexcept { return directDrawObject2_; }
-	LPDIRECTDRAWSURFACE2 primarySurface() const noexcept { return primarySurface2_; }
-	LPDIRECTDRAWSURFACE2 backBuffer() const noexcept { return backBuffer2_; }
-
 private:
 	DirectDrawPresenter() = default;
 	bool initialize(HWND window, const RECT* windowRect, bool windowed,

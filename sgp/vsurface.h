@@ -96,20 +96,10 @@ typedef struct SGPVSurface
 	UINT16					usHeight;							// Height of Video Surface
 	UINT16					usWidth;							// Width of Video Surface
 	UINT8						ubBitDepth;						// BPP ALWAYS 16!
-	PTR							pSurfaceData;					// A void pointer, but for this implementation, is really a lpDirectDrawSurface;
-	PTR							pSurfaceData1;				// Direct Draw One Interface
-	PTR							pSavedSurfaceData1;		// A void pointer, but for this implementation, is really a lpDirectDrawSurface;
-																				// pSavedSurfaceData is used to hold all video memory Surfaces so that they my be restored
-	PTR							pSavedSurfaceData;		// A void pointer, but for this implementation, is really a lpDirectDrawSurface;
-																				// pSavedSurfaceData is used to hold all video memory Surfaces so that they my be restored
 	UINT32					fFlags;								// Used to describe memory usage, etc
-	PTR							pPalette;						// A void pointer, but for this implementation a DDPalette
 	UINT16					*p16BPPPalette;				// A 16BPP palette used for 8->16 blits
 	COLORVAL				TransparentColor;			// Defaults to 0,0,0
-	PTR							pClipper;							// A void pointer encapsolated as a clipper Surface
 	std::unique_ptr<ja2::presentation::PixelSurface> pixelSurface;
-	bool pixelSurfaceDirty;						// PixelSurface is newer than compatibility mirror
-	bool directDrawSurfaceDirty;				// compatibility mirror is newer than PixelSurface
 	std::vector<VSURFACE_REGION> RegionList; // A List of regions within the video Surface
 		
 } SGPVSurface, *HVSURFACE;
@@ -257,7 +247,6 @@ BOOLEAN DeleteVideoSurfaceFromIndex( UINT32 uiIndex );
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-BOOLEAN SetClipList( HVSURFACE hVSurface, SGPRect *RegionData, UINT16 usNumRegions );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -265,10 +254,13 @@ BOOLEAN SetClipList( HVSURFACE hVSurface, SGPRect *RegionData, UINT16 usNumRegio
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-// These blitting functions more-or less encapsolate all of the functionality of DirectDraw
+// These blitting functions preserve the legacy logical-surface API.
 // Blitting, giving an API layer for portability. 
 
 BOOLEAN BltVideoSurfaceToVideoSurface( HVSURFACE hDestVSurface, HVSURFACE hSrcVSurface, UINT16 usIndex, INT32 iDestX, INT32 iDestY, INT32 fBltFlags, blt_vs_fx *pBltFx );
+BOOLEAN BltVSurfaceUsingPixelSurface( HVSURFACE hDestVSurface,
+	HVSURFACE hSrcVSurface, UINT32 fBltFlags, INT32 iDestX,
+	INT32 iDestY, SGPRect *SrcRect );
 
 HVSURFACE GetPrimaryVideoSurface( );
 HVSURFACE GetBackBufferVideoSurface( );

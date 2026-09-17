@@ -6,18 +6,13 @@
 #include "types.h"
 
 #include <windows.h>
-#include <ddraw.h>
 
-// Native host and DirectDraw access needed only by the current Windows
-// implementation. Engine-facing presentation operations belong in video.h.
+// Native host access needed only by the current Windows implementation.
+// Engine-facing presentation operations belong in video.h.
 extern HWND ghWindow;
 
 BOOLEAN InitializeVideoManager(
 	HINSTANCE instance, UINT16 commandShow, void* windowProcedure);
-
-LPDIRECTDRAW2 GetDirectDraw2Object(void);
-LPDIRECTDRAWSURFACE2 GetPrimarySurfaceObject(void);
-LPDIRECTDRAWSURFACE2 GetBackBufferObject(void);
 
 #endif
 

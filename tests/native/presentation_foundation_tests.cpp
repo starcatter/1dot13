@@ -316,8 +316,8 @@ void testGoldenFramebufferCompositionAndBackupRestore()
 	}};
 	assertVisibleEquals(frame, withoutCursor);
 
-	// Preserve the exact direction expected by UpdateBackupSurface and
-	// RestoreVideoSurface: primary -> backup, then backup -> primary.
+	// Preserve the legacy save/restore direction: primary -> backup, then
+	// backup -> primary, independent of the retired DirectDraw backup path.
 	PixelSurface cursorBackup(2, 2, PixelFormat::rgb565);
 	assert(cursorBackup.blitFrom(frame, {4, 2, 6, 4}, 0, 0));
 	PixelSurface cursor(2, 2, PixelFormat::rgb565);

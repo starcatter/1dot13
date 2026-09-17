@@ -5,13 +5,10 @@
 // 
 // PRIVATE, INTERNAL Header used by other SGP Internal modules
 //
-// Allows direct access to underlying Direct Draw Implementation
+// Allows internal modules to access canonical logical-surface storage.
 //
 // ***********************************************************************
 
 ja2::presentation::PixelSurface *GetVideoSurfacePixelSurface( HVSURFACE hVSurface );
-void NotifyVideoSurfacePixelModified( HVSURFACE hVSurface );
-
-HVSURFACE CreateVideoSurfaceFromDDSurface( LPDIRECTDRAWSURFACE2 lpDDSurface );
 
 #endif

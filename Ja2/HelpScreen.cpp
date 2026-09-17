@@ -33,9 +33,6 @@ extern		BOOLEAN fMapPanelDirty;
 extern		BOOLEAN	gfGamePaused;
 extern		BOOLEAN fShowMapInventoryPool;
 
-extern		BOOLEAN BltVSurfaceUsingDD( HVSURFACE hDestVSurface, HVSURFACE hSrcVSurface, UINT32 fBltFlags, INT32 iDestX, INT32 iDestY, RECT *SrcRect );
-
-
 
 #define			HELP_SCREEN_ACTIVE			0x00000001
 
@@ -2149,7 +2146,9 @@ void RenderTextBufferToScreen()
 	SrcRect.iRight = HLP_SCRN__WIDTH_OF_TEXT_BUFFER;
 	SrcRect.iBottom = SrcRect.iTop + HLP_SCRN__HEIGHT_OF_TEXT_AREA - ( 2 * 8 );
 
-	BltVSurfaceUsingDD( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, gHelpScreen.usLeftMarginPosX, ( gHelpScreen.usScreenLocY + HELP_SCREEN_TEXT_OFFSET_Y ), (RECT*)&SrcRect );
+	BltVSurfaceUsingPixelSurface( hDestVSurface, hSrcVSurface,
+		VO_BLT_SRCTRANSPARENCY, gHelpScreen.usLeftMarginPosX,
+		( gHelpScreen.usScreenLocY + HELP_SCREEN_TEXT_OFFSET_Y ), &SrcRect );
 
 	DisplayHelpScreenTextBufferScrollBox();
 }

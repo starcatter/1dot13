@@ -1,4 +1,3 @@
-#include "DirectDraw Calls.h"
 #include <stdio.h>
 #include "DEBUG.H"
 #include "video.h"
@@ -15,10 +14,9 @@
 // Video Object SGP Module
 //
 // Video Objects are used to contain any imagery which requires blitting. The data
-// is contained within a Direct Draw surface. Palette information is in both
-// a Direct Draw Palette and a 16BPP palette structure for 8->16 BPP Blits.
-// Blitting is done via Direct Draw as well as custum blitters. Regions are
-// used to define local coordinates within the surface
+// is stored in project-owned memory. Palette information includes a 16BPP
+// palette structure for 8->16 BPP blits. Regions define local coordinates
+// within the object.
 //
 // Second Revision: Dec 10, 1996, Andrew Emmons
 //

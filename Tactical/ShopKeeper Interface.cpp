@@ -383,8 +383,6 @@ extern		void				HandleShortCutExitState( void );
 extern		SoldierID		gubSelectSMPanelToMerc;
 extern		INT32			giItemDescAmmoButton;
 
-extern		BOOLEAN BltVSurfaceUsingDD( HVSURFACE hDestVSurface, HVSURFACE hSrcVSurface, UINT32 fBltFlags, INT32 iDestX, INT32 iDestY, RECT *SrcRect );
-
 extern		UINT8 gubLastSpecialItemAddedAtElement;
 
 // Enums for possible evaluation results
@@ -1573,12 +1571,12 @@ BOOLEAN RenderShopKeeperInterface()
 		//SrcRect.iTop = SKI_TACTICAL_BACKGROUND_START_Y;
 		//SrcRect.iRight = SKI_TACTICAL_BACKGROUND_START_X + SKI_TACTICAL_BACKGROUND_START_WIDTH;
 		//SrcRect.iBottom = SKI_TACTICAL_BACKGROUND_START_Y + SKI_TACTICAL_BACKGROUND_START_HEIGHT;
-		//BltVSurfaceUsingDD( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SKI_TACTICAL_BACKGROUND_START_X, SKI_TACTICAL_BACKGROUND_START_Y, (RECT*)&SrcRect );
+		//BltVSurfaceUsingPixelSurface( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SKI_TACTICAL_BACKGROUND_START_X, SKI_TACTICAL_BACKGROUND_START_Y, &SrcRect );
 		SrcRect.iLeft = 0;
 		SrcRect.iTop = 0;
 		SrcRect.iRight = SCREEN_WIDTH;
 		SrcRect.iBottom = SCREEN_HEIGHT;
-		BltVSurfaceUsingDD( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, 0, 0, (RECT*)&SrcRect );
+		BltVSurfaceUsingPixelSurface( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, 0, 0, &SrcRect );
 
 		gfRenderScreenOnNextLoop = FALSE;
 	}
@@ -1616,28 +1614,28 @@ void RestoreTacticalBackGround()
 	SrcRect.iTop = 0; 
 	SrcRect.iRight = SCREEN_WIDTH; 
 	SrcRect.iBottom = SKI_TOTAL_BEGIN_Y;
-	BltVSurfaceUsingDD( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SrcRect.iLeft, SrcRect.iTop, (RECT*)&SrcRect );
+	BltVSurfaceUsingPixelSurface( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SrcRect.iLeft, SrcRect.iTop, &SrcRect );
 
 	// Bottom
 	SrcRect.iLeft = 0; 
 	SrcRect.iTop = SKI_TOTAL_END_Y;
 	SrcRect.iRight = SCREEN_WIDTH; 
 	SrcRect.iBottom = SCREEN_HEIGHT - INV_INTERFACE_HEIGHT; 
-	BltVSurfaceUsingDD( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SrcRect.iLeft, SrcRect.iTop, (RECT*)&SrcRect );
+	BltVSurfaceUsingPixelSurface( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SrcRect.iLeft, SrcRect.iTop, &SrcRect );
 
 	// Left
 	SrcRect.iLeft = 0; 
 	SrcRect.iTop = SKI_TOTAL_BEGIN_Y;
 	SrcRect.iRight = SKI_TOTAL_BEGIN_X;
 	SrcRect.iBottom = SKI_TOTAL_END_Y;
-	BltVSurfaceUsingDD( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SrcRect.iLeft, SrcRect.iTop, (RECT*)&SrcRect );
+	BltVSurfaceUsingPixelSurface( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SrcRect.iLeft, SrcRect.iTop, &SrcRect );
 
 	// Right
 	SrcRect.iLeft = SKI_TOTAL_END_X;
 	SrcRect.iTop = SKI_TOTAL_BEGIN_Y;
 	SrcRect.iRight = SCREEN_WIDTH; 
 	SrcRect.iBottom = SKI_TOTAL_END_Y;
-	BltVSurfaceUsingDD( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SrcRect.iLeft, SrcRect.iTop, (RECT*)&SrcRect );
+	BltVSurfaceUsingPixelSurface( hDestVSurface, hSrcVSurface, VO_BLT_SRCTRANSPARENCY, SrcRect.iLeft, SrcRect.iTop, &SrcRect );
 }
 
 void		GetShopKeeperInterfaceUserInput()

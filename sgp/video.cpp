@@ -997,7 +997,6 @@ static BOOLEAN RestoreMouseBackground(const MouseCursorBackground& background)
 	{
 		return FALSE;
 	}
-	NotifyVideoSurfacePixelModified(backBuffer);
 	return TRUE;
 }
 
@@ -1033,7 +1032,6 @@ static BOOLEAN DrawMouseCursor(const MouseCursorBackground& background)
 	{
 		return FALSE;
 	}
-	NotifyVideoSurfacePixelModified(backBuffer);
 	return TRUE;
 }
 
@@ -1576,7 +1574,6 @@ void RefreshScreen(void *DummyVariable)
 		HVSURFACE backBuffer;
 		if (GetVideoSurface(&backBuffer, BACKBUFFER))
 		{
-			NotifyVideoSurfacePixelModified(backBuffer);
 		}
 	}
 	gfRenderScroll = FALSE;
@@ -1595,30 +1592,6 @@ ENDOFLOOP:
 //
 // Direct X object access functions
 //
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-LPDIRECTDRAW2 GetDirectDraw2Object(void)
-{
-	Assert(gPresenter != NULL);
-	return gPresenter->directDrawObject();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-LPDIRECTDRAWSURFACE2 GetPrimarySurfaceObject(void)
-{
-	Assert(gPresenter != NULL);
-	return gPresenter->primarySurface();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-LPDIRECTDRAWSURFACE2 GetBackBufferObject(void)
-{
-	Assert(gPresenter != NULL);
-	return gPresenter->backBuffer();
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Buffer access functions

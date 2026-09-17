@@ -1,5 +1,5 @@
-	#include "DirectDraw Calls.h"
 	#include <stdio.h>
+	#include "local.h"
 	#include "DEBUG.H"
 		#include "video.h"													// JA2
 	#include "himage.h"
