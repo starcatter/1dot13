@@ -62,7 +62,8 @@ if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/NativeFonts.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Process.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Sleep.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Window.cpp")
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/windows/Window.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/presentation/windows/DirectDrawPresenter.cpp")
 elseif(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
 	list(APPEND sgpSrc
 		"${CMAKE_CURRENT_SOURCE_DIR}/audio/portable/NullAudioBackend.cpp"

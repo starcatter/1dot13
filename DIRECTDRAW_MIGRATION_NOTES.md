@@ -70,11 +70,15 @@ PixelSurface-canonical. Frame refresh, tactical scrolling in all eight
 directions, overlays, fades, rain, and cursor save/compose/restore operate on
 portable storage. Unkeyed copies use row memcpy and overlap-safe directional
 memmove, avoiding per-pixel full-frame and scrolling costs. DirectDraw receives
-the completed back buffer only at the Windows presentation boundary. Host
-submissions are coalesced to the legacy 16 ms cadence without sleeping the game
-thread, preserving blocking transition animations without flooding the wrapper.
-The
-fullscreen presenter retains its legacy post-flip page-recovery bookkeeping.
+the completed back buffer only through the Windows `DirectDrawPresenter`. That
+adapter owns framebuffer upload, the windowed primary blit, fullscreen flip,
+retry handling, and reserved presentation-surface recovery. Host submissions
+are coalesced to the legacy 16 ms cadence without sleeping the game thread,
+preserving blocking transition animations without flooding the wrapper. The
+old fullscreen primary-to-back-buffer recovery copies are gone: the canonical
+PixelSurface retains the complete frame and is uploaded before each flip.
+Screenshot capture also reads this canonical storage instead of allocating and
+reading back a temporary DirectDraw surface.
 The compatibility mirrors can be deleted after WinFont, remaining mixed paths,
 and default/video-memory generic surfaces have portable owners.
 
@@ -90,8 +94,9 @@ and default/video-memory generic surfaces have portable owners.
    their raw pixel-buffer interface.
 4. Completed: cursor save/compose/restore operates on the project-owned back
    buffer and a shared portable background surface.
-5. Implement final upload behind `Presenter`; keep Windows/cnc-ddraw as the
-   runnable comparison oracle until the SDL presenter is equivalent.
+5. Completed: final upload, windowed blit, fullscreen flip, and presentation
+   recovery live behind `Presenter`; Windows/cnc-ddraw remains the runnable
+   comparison oracle until the SDL presenter is equivalent.
 6. Add an SDL host/event adapter only after surface ownership no longer depends
    on DirectDraw. SDL types stay out of engine-facing headers.
 

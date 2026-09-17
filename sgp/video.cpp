@@ -23,9 +23,12 @@
 #include "platform/Dialog.h"
 #include "presentation/DirtyRegionTracker.h"
 #include "presentation/PixelSurface.h"
+#include "presentation/Presenter.h"
+#include "presentation/windows/DirectDrawPresenter.h"
 #include "UtfConversion.h"
 
 #include <memory>
+#include <vector>
 
 #include "resource.h"
 #include <vfs/Core/vfs_string.h>
@@ -135,6 +138,7 @@ static LPDIRECTDRAWSURFACE2	gpMouseCursorOriginal = NULL;
 static MouseCursorBackground	gMouseCursorBackground[2];
 static std::unique_ptr<ja2::presentation::PixelSurface>
 	gMouseCursorBackgroundSurface;
+static std::unique_ptr<ja2::presentation::Presenter> gPresenter;
 static std::uint64_t gNextPresentationMicroseconds = 0;
 
 static HVOBJECT				gpCursorStore;
@@ -179,10 +183,6 @@ static ja2::presentation::DirtyRegionTracker gDirtyRegionTracker(1, 1);
 BOOLEAN						gfPrintFrameBuffer;
 UINT32						guiPrintFrameBufferIndex;
 
-// DX Loop Error Count Limiter
-const INT32					iMaxDXLoopCount = 10; 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // External Variables
@@ -211,7 +211,7 @@ static BOOLEAN RestoreMouseBackground(const MouseCursorBackground& background);
 static BOOLEAN SaveMouseBackground(const MouseCursorBackground& background);
 static BOOLEAN DrawMouseCursor(const MouseCursorBackground& background);
 static BOOLEAN IsPresentationDue(void);
-static BOOLEAN SynchronizeBackBufferForDirectDraw(void);
+static BOOLEAN PresentBackBuffer(void);
 
 
 
@@ -590,6 +590,10 @@ BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *
 		std::make_unique<ja2::presentation::PixelSurface>(
 			MAX_CURSOR_WIDTH, MAX_CURSOR_HEIGHT,
 			ja2::presentation::PixelFormat::rgb565, 4);
+	gPresenter =
+		std::make_unique<ja2::presentation::DirectDrawPresenter>(
+			_gpPrimarySurface, gpPrimarySurface, gpBackBuffer, &rcWindow,
+			iScreenMode == 1);
 
 	//
 	// Initialize state variables
@@ -631,6 +635,7 @@ void ShutdownVideoManager(void)
 	// down
 	//
 
+	gPresenter.reset();
 	if(gpMouseCursorOriginal)
 	{
 		IDirectDrawSurface2_Release(gpMouseCursorOriginal);
@@ -682,6 +687,10 @@ void ShutdownVideoManager(void)
 
 void SuspendVideoManager(void)
 {
+	if (gPresenter)
+	{
+		gPresenter->suspend();
+	}
 	guiVideoManagerState = VIDEO_SUSPENDED;
 
 }
@@ -709,17 +718,8 @@ BOOLEAN RestoreVideoManager(void)
 		// Restore the Primary and Backbuffer
 		//
 
-		ReturnCode = IDirectDrawSurface2_Restore( gpPrimarySurface );
-		if (ReturnCode != DD_OK)
+		if (!gPresenter || !gPresenter->resume())
 		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-
-		ReturnCode = IDirectDrawSurface2_Restore( gpBackBuffer );
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
 			return FALSE;
 		}
 
@@ -1361,11 +1361,27 @@ static BOOLEAN IsPresentationDue(void)
 	return TRUE;
 }
 
-static BOOLEAN SynchronizeBackBufferForDirectDraw(void)
+static BOOLEAN PresentBackBuffer(void)
 {
 	HVSURFACE backBuffer;
-	return GetVideoSurface(&backBuffer, BACKBUFFER) &&
-		GetVideoSurfaceDDSurface(backBuffer) != NULL;
+	if (!gPresenter || !GetVideoSurface(&backBuffer, BACKBUFFER))
+	{
+		return FALSE;
+	}
+	ja2::presentation::PixelSurface* pixels =
+		GetVideoSurfacePixelSurface(backBuffer);
+	if (pixels == NULL)
+	{
+		return FALSE;
+	}
+
+	ja2::presentation::PresentFrame frame;
+	frame.buffer = pixels->pixels();
+	frame.dirtyRegions = gDirtyRegionTracker.regions().data();
+	frame.dirtyRegionCount = gDirtyRegionTracker.regions().size();
+	frame.fullRefresh = gDirtyRegionTracker.fullRefresh();
+	frame.verticalSync = gGameExternalOptions.gfVSync;
+	return gPresenter->present(frame) ? TRUE : FALSE;
 }
 
 void RefreshScreen(void *DummyVariable)
@@ -1373,13 +1389,11 @@ void RefreshScreen(void *DummyVariable)
 	static UINT32	uiRefreshThreadState, uiIndex;
 	UINT16	usScreenWidth, usScreenHeight;
 	static BOOLEAN fShowMouse;
-	HRESULT ReturnCode;
 	static RECT	Region;
 	static INT16	sx, sy;
 	static SGPPoint MousePos;
 	static BOOLEAN fFirstTime = TRUE;
 	UINT32						uiTime;
-	INT32 iDXLoopCount = 0; 
 
 	usScreenWidth = usScreenHeight = 0;
 
@@ -1609,144 +1623,62 @@ void RefreshScreen(void *DummyVariable)
 
 	if (gfPrintFrameBuffer == TRUE)
 	{
-		LPDIRECTDRAWSURFACE	_pTmpBuffer;
-		LPDIRECTDRAWSURFACE2	pTmpBuffer;
-		DDSURFACEDESC			SurfaceDescription;
-		CHAR8					FileName[64];
-		INT32					iIndex;
-		UINT16				 *p16BPPData;
-
-		//
-		// Create temporary system memory surface. This is used to correct problems with the backbuffer
-		// surface which can be interlaced or have a funky pitch
-		//
-
-		ZEROMEM(SurfaceDescription);
-		SurfaceDescription.dwSize		 = sizeof(DDSURFACEDESC);
-		SurfaceDescription.dwFlags		= DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
-		SurfaceDescription.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-		SurfaceDescription.dwWidth		= SCREEN_WIDTH;
-		SurfaceDescription.dwHeight		= SCREEN_HEIGHT;
-		ReturnCode = IDirectDraw2_CreateSurface ( gpDirectDrawObject, &SurfaceDescription, &_pTmpBuffer, NULL );
-		if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
+		HVSURFACE backBuffer;
+		ja2::presentation::PixelSurface* surface =
+			GetVideoSurface(&backBuffer, BACKBUFFER) ?
+			GetVideoSurfacePixelSurface(backBuffer) : NULL;
+		if (surface != NULL &&
+			surface->format() == ja2::presentation::PixelFormat::rgb565)
 		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-		}
-
-		ReturnCode = IDirectDrawSurface_QueryInterface(_pTmpBuffer, /*&*/IID_IDirectDrawSurface2, (LPVOID *)&pTmpBuffer); // (jonathanl)
-		if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-		}
-
-		//
-		// Copy the primary surface to the temporary surface
-		//
-
-		Region.left = 0;
-		Region.top = 0;
-		Region.right = SCREEN_WIDTH;
-		Region.bottom = SCREEN_HEIGHT;
-
-		do
-		{
-			ReturnCode = IDirectDrawSurface2_SGPBltFast(pTmpBuffer, 0, 0, gpPrimarySurface, &rcWindow, DDBLTFAST_NOCOLORKEY);
-			if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
+			CHAR8 fileName[64];
+			do
 			{
-				DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
+				sprintf(fileName, "SCREEN%03d.TGA", guiPrintFrameBufferIndex++);
 			}
-		} while (ReturnCode != DD_OK);
+			while (FileExists(fileName));
 
-		//
-		// Ok now that temp surface has contents of backbuffer, copy temp surface to disk
-		//
-
-		do
-		{
-			sprintf( FileName, "SCREEN%03d.TGA", guiPrintFrameBufferIndex++);
-		}
-		while(FileExists(FileName));
-
-		try
-		{
-			std::unique_ptr<ja2::fileio::File> output =
-				ja2::fileio::storeRouter().create(FileName);
-			char head[] = {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, static_cast<char>(LOBYTE(SCREEN_WIDTH)), static_cast<char>(HIBYTE(SCREEN_WIDTH)), static_cast<char>(LOBYTE(SCREEN_HEIGHT)), static_cast<char>(HIBYTE(SCREEN_HEIGHT)), 0x10, 0};
-			output->writeExact(head, sizeof(head));
-
-			//
-			// Lock temp surface
-			//
-
-			ZEROMEM(SurfaceDescription);
-			SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-			ReturnCode = IDirectDrawSurface2_Lock(pTmpBuffer, NULL, &SurfaceDescription, 0, NULL);
-			if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
+			try
 			{
-				DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			}
+				const ja2::presentation::ConstPixelBuffer pixels =
+					surface->pixels();
+				std::unique_ptr<ja2::fileio::File> output =
+					ja2::fileio::storeRouter().create(fileName);
+				char head[] = {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					static_cast<char>(LOBYTE(pixels.width)),
+					static_cast<char>(HIBYTE(pixels.width)),
+					static_cast<char>(LOBYTE(pixels.height)),
+					static_cast<char>(HIBYTE(pixels.height)), 0x10, 0};
+				output->writeExact(head, sizeof(head));
 
-			//
-			// Copy 16 bit buffer to file
-			//
-
-			// 5/6/5.. create buffer...
-			if (gusRedMask == 0xF800 && gusGreenMask == 0x07E0 && gusBlueMask == 0x001F)
-			{
-				p16BPPData = (UINT16 *)MemAlloc( SCREEN_WIDTH * 2 );
-			}
-
-			for (iIndex = SCREEN_HEIGHT - 1; iIndex >= 0; iIndex--)
-			{
-				// ATE: OK, fix this such that it converts pixel format to 5/5/5
-				// if current settings are 5/6/5....
-				if (gusRedMask == 0xF800 && gusGreenMask == 0x07E0 && gusBlueMask == 0x001F)
+				const std::size_t rowBytes =
+					static_cast<std::size_t>(pixels.width) * sizeof(UINT16);
+				const bool convert565 = gusRedMask == 0xF800 &&
+					gusGreenMask == 0x07E0 && gusBlueMask == 0x001F;
+				std::vector<UINT16> convertedRow(
+					convert565 ? pixels.width : 0);
+				for (INT32 y = pixels.height - 1; y >= 0; --y)
 				{
-					// Read into a buffer...
-					memcpy( p16BPPData, ( ((UINT8 *)SurfaceDescription.lpSurface) + (iIndex * SCREEN_WIDTH * 2) ), SCREEN_WIDTH * 2 );
-
-					// Convert....
-					ConvertRGBDistribution565To555( p16BPPData, SCREEN_WIDTH );
-
-					// Write
-					output->writeExact(p16BPPData, SCREEN_WIDTH * 2);
-				}
-				else
-				{
-					output->writeExact(((UINT8 *)SurfaceDescription.lpSurface) +
-						(iIndex * SCREEN_WIDTH * 2), SCREEN_WIDTH * 2);
+					const BYTE* row = pixels.pixels +
+						static_cast<std::size_t>(y) * pixels.pitchBytes;
+					if (convert565)
+					{
+						memcpy(convertedRow.data(), row, rowBytes);
+						ConvertRGBDistribution565To555(
+							convertedRow.data(), pixels.width);
+						output->writeExact(convertedRow.data(), rowBytes);
+					}
+					else
+					{
+						output->writeExact(row, rowBytes);
+					}
 				}
 			}
-
-			// 5/6/5.. Delete buffer...
-			if (gusRedMask == 0xF800 && gusGreenMask == 0x07E0 && gusBlueMask == 0x001F)
+			catch(std::exception& ex)
 			{
-				MemFree( p16BPPData );
-			}
-			//
-			// Unlock temp surface
-			//
-
-			ZEROMEM(SurfaceDescription);
-			SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-			ReturnCode = IDirectDrawSurface2_Unlock(pTmpBuffer, &SurfaceDescription);
-			if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-			{
-				DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
+				SGP_RETHROW(L"", ex);
 			}
 		}
-
-		catch(std::exception& ex)
-		{
-			SGP_RETHROW(L"", ex);
-		}
-
-		//
-		// Release temp surface
-		//
-
 		gfPrintFrameBuffer = FALSE;
-		IDirectDrawSurface2_Release(pTmpBuffer);
 	}
 
 	//
@@ -1937,255 +1869,26 @@ void RefreshScreen(void *DummyVariable)
 		goto ENDOFLOOP;
 	}
 
-	// DirectDraw is now only the Windows presentation mirror. Publish the
-	// completed portable composition immediately before the host blit/flip.
-	if (!SynchronizeBackBufferForDirectDraw())
+	// The engine hands the completed portable framebuffer to the host adapter.
+	// DirectDraw upload, windowed blit, fullscreen flip, and retry handling stay
+	// behind Presenter.
+	if (!PresentBackBuffer())
 	{
 		goto ENDOFLOOP;
 	}
-
-
-
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	//
-	// (1) Flip Pages
-	// (2) If the page flipping worked, then we copy the contents of the primary surface back
-	//	 to the backbuffer
-	// (3) If step (2) was successfull we then restore the mouse background onto the backbuffer
-	//	 if fShowMouse is TRUE
-	//
-	///////////////////////////////////////////////////////////////////////////////////////////////
-
-	//
-	// Step (1) - Flip pages
-	//
-	Region.top = 0;
-	Region.left = 0;
-	Region.right = rcWindow.right - rcWindow.left;
-	Region.bottom = rcWindow.bottom - rcWindow.top;
-	if( 1==iScreenMode ) /* Windowed mode */
+	if (iScreenMode != 1)
 	{
-		do
+		// A flip changes which allocation DirectDraw calls the back buffer. Keep
+		// the compatibility mirror dirty; the retained PixelSurface is canonical
+		// and the presenter uploads it again before the next flip.
+		HVSURFACE backBuffer;
+		if (GetVideoSurface(&backBuffer, BACKBUFFER))
 		{
-			ReturnCode = IDirectDrawSurface_Blt(
-				gpPrimarySurface,		// dest surface
-				&rcWindow,				// dest rect
-				gpBackBuffer,			// src surface
-				NULL,					// src rect (all of it)
-				DDBLT_WAIT,
-				NULL);
-			if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-			{
-				// Prevent the minimizing bug
-				if (ReturnCode == DDERR_INVALIDRECT)
-				{
-					return;
-				}
-				DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-
-				if (ReturnCode == DDERR_SURFACELOST || (IS_ERROR(ReturnCode) && ++iDXLoopCount > iMaxDXLoopCount))
-				{
-					goto ENDOFLOOP;
-				}
-			}
-		} while (ReturnCode != DD_OK);
-
-		gfRenderScroll = FALSE;
-		gfScrollStart	= FALSE;
-		gDirtyRegionTracker.clearAfterPresent();
-	}
-	else
-	{
-		do
-		{
-			ReturnCode = IDirectDrawSurface_Flip(
-				_gpPrimarySurface,
-				NULL,
-				gGameExternalOptions.gfVSync ? DDFLIP_WAIT : 0x00000008l
-				);
-
-			if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-			{
-				// Prevent the minimizing bug
-				if (ReturnCode == DDERR_INVALIDRECT)
-				{
-					return;
-				}
-				DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-
-				if (ReturnCode == DDERR_SURFACELOST || (IS_ERROR(ReturnCode) && ++iDXLoopCount > iMaxDXLoopCount))
-				{
-					goto ENDOFLOOP;
-				}
-			}
-		} while (ReturnCode != DD_OK);
-
-		//
-		// Step (2) - Copy Primary Surface to the Back Buffer
-		//
-
-		if ( gfRenderScroll )
-		{
-			Region.left = 0;
-			Region.top = 0;
-			Region.right = gsVIEWPORT_END_X; //ods1 640;
-			Region.bottom = gsVIEWPORT_END_Y;
-
-			do
-			{
-				ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, 0, 0, gpPrimarySurface, &Region, DDBLTFAST_NOCOLORKEY);
-				if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-				{
-					DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-
-					if (ReturnCode == DDERR_SURFACELOST || (IS_ERROR(ReturnCode) && ++iDXLoopCount > iMaxDXLoopCount))
-					{
-						goto ENDOFLOOP;
-					}
-
-				}
-			} while (ReturnCode != DD_OK);
-
-			//Get new background for mouse
-			//
-			// Ok, do the actual data save to the mouse background
-
-			//
-
-
-			gfRenderScroll = FALSE;
-			gfScrollStart	= FALSE;
-
-		}
-
-
-		// COPY MOUSE AREAS FROM PRIMARY BACK!
-
-		// FIRST OLD ERASED POSITION
-		if (gMouseCursorBackground[PREVIOUS_MOUSE_DATA].fRestore == TRUE )
-		{
-			Region = 	gMouseCursorBackground[PREVIOUS_MOUSE_DATA].Region;
-
-			do
-			{
-				ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, gMouseCursorBackground[PREVIOUS_MOUSE_DATA].usMouseXPos, gMouseCursorBackground[PREVIOUS_MOUSE_DATA].usMouseYPos, gpPrimarySurface, (LPRECT)&Region, DDBLTFAST_NOCOLORKEY);
-				if (ReturnCode != DD_OK && ReturnCode != DDERR_WASSTILLDRAWING )
-				{
-					DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-
-					if (ReturnCode == DDERR_SURFACELOST || (IS_ERROR(ReturnCode) && ++iDXLoopCount > iMaxDXLoopCount))
-					{
-						goto ENDOFLOOP;
-					}
-				}
-			} while (ReturnCode != DD_OK);
-		}
-
-		// NOW NEW MOUSE AREA
-		if (gMouseCursorBackground[CURRENT_MOUSE_DATA].fRestore == TRUE )
-		{
-			Region = 	gMouseCursorBackground[CURRENT_MOUSE_DATA].Region;
-
-			do
-			{
-				ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, gMouseCursorBackground[CURRENT_MOUSE_DATA].usMouseXPos, gMouseCursorBackground[CURRENT_MOUSE_DATA].usMouseYPos, gpPrimarySurface, (LPRECT)&Region, DDBLTFAST_NOCOLORKEY);
-				if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-				{
-					DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-
-					if (ReturnCode == DDERR_SURFACELOST || (IS_ERROR(ReturnCode) && ++iDXLoopCount > iMaxDXLoopCount))
-					{
-						goto ENDOFLOOP;
-					}
-				}
-			} while (ReturnCode != DD_OK);
-		}
-
-		if (gDirtyRegionTracker.fullRefresh())
-		{
-			//
-			// Method (1) - We will be refreshing the entire screen
-			//
-			Region.left = 0;
-			Region.top = 0;
-			Region.right = SCREEN_WIDTH;
-			Region.bottom = SCREEN_HEIGHT;
-
-			do
-			{
-				ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, 0, 0, gpPrimarySurface, &Region, DDBLTFAST_NOCOLORKEY);
-				if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-				{
-					DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-
-					if (ReturnCode == DDERR_SURFACELOST || (IS_ERROR(ReturnCode) && ++iDXLoopCount > iMaxDXLoopCount))
-					{
-						goto ENDOFLOOP;
-					}
-
-				}
-			} while (ReturnCode != DD_OK);
-
-			gDirtyRegionTracker.clearAfterPresent();
-		}
-		else
-		{
-			const std::vector<SGPRect>& dirtyRegions =
-				gDirtyRegionTracker.regions();
-			for (uiIndex = 0; uiIndex < dirtyRegions.size(); uiIndex++)
-			{
-				Region.left	= dirtyRegions[uiIndex].iLeft;
-				Region.top	= dirtyRegions[uiIndex].iTop;
-				Region.right	= dirtyRegions[uiIndex].iRight;
-				Region.bottom = dirtyRegions[uiIndex].iBottom;
-
-				do
-				{
-					ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, dirtyRegions[uiIndex].iLeft, dirtyRegions[uiIndex].iTop, gpPrimarySurface, (LPRECT)&Region, DDBLTFAST_NOCOLORKEY);
-					if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-					{
-						DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-					}
-
-					if (ReturnCode == DDERR_SURFACELOST || (IS_ERROR(ReturnCode) && ++iDXLoopCount > iMaxDXLoopCount))
-					{
-						goto ENDOFLOOP;
-					}
-				} while (ReturnCode != DD_OK);
-			}
-
-		}
-
-		// Do extended dirty regions!
-		const std::vector<ja2::presentation::ExtendedDirtyRegion>&
-			extendedDirtyRegions = gDirtyRegionTracker.extendedRegions();
-		for (uiIndex = 0; uiIndex < extendedDirtyRegions.size(); uiIndex++)
-		{
-			Region.left	= extendedDirtyRegions[uiIndex].bounds.iLeft;
-			Region.top	= extendedDirtyRegions[uiIndex].bounds.iTop;
-			Region.right	= extendedDirtyRegions[uiIndex].bounds.iRight;
-			Region.bottom = extendedDirtyRegions[uiIndex].bounds.iBottom;
-
-			if ( ( Region.top < gsVIEWPORT_WINDOW_END_Y ) && gfRenderScroll )
-			{
-				continue;
-			}
-
-			do
-			{
-				ReturnCode = IDirectDrawSurface2_SGPBltFast(gpBackBuffer, extendedDirtyRegions[uiIndex].bounds.iLeft, extendedDirtyRegions[uiIndex].bounds.iTop, gpPrimarySurface, (LPRECT)&Region, DDBLTFAST_NOCOLORKEY);
-				if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-				{
-					DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-				}
-
-				if (ReturnCode == DDERR_SURFACELOST || (IS_ERROR(ReturnCode) && ++iDXLoopCount > iMaxDXLoopCount))
-				{
-					goto ENDOFLOOP;
-				}
-			} while (ReturnCode != DD_OK);
+			NotifyVideoSurfacePixelModified(backBuffer);
 		}
 	}
+	gfRenderScroll = FALSE;
+	gfScrollStart = FALSE;
 	gDirtyRegionTracker.clearAfterPresent();
 
 

@@ -29,6 +29,7 @@ struct PresentFrame
 	const SGPRect* dirtyRegions = nullptr;
 	std::size_t dirtyRegionCount = 0;
 	bool fullRefresh = false;
+	bool verticalSync = false;
 };
 
 }
