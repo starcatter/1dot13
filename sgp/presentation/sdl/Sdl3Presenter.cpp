@@ -199,4 +199,10 @@ void Sdl3Presenter::leaveDisplayMode()
 {
 }
 
+bool Sdl3Presenter::convertEventToLogical(SDL_Event& event) const noexcept
+{
+	return renderer_ != nullptr &&
+		SDL_ConvertEventToRenderCoordinates(renderer_, &event);
+}
+
 }

@@ -58,6 +58,7 @@ target_compile_options(ja2_shared_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 add_library(ja2_sdl3_backend STATIC
   sgp/platform/sdl/Sdl3ApplicationHost.cpp
+  sgp/platform/sdl/Sdl3InputTranslator.cpp
   sgp/presentation/sdl/Sdl3Presenter.cpp
 )
 target_include_directories(ja2_sdl3_backend PUBLIC "${CMAKE_SOURCE_DIR}/sgp")
@@ -166,6 +167,17 @@ target_compile_options(ja2_sdl3_application_host_tests PRIVATE
 add_test(NAME ja2_sdl3_application_host_tests
   COMMAND ja2_sdl3_application_host_tests)
 set_tests_properties(ja2_sdl3_application_host_tests PROPERTIES
+  ENVIRONMENT "SDL_VIDEODRIVER=dummy;SDL_RENDER_DRIVER=software")
+
+add_executable(ja2_sdl3_input_translator_tests
+  tests/native/sdl3_input_translator_tests.cpp)
+target_link_libraries(ja2_sdl3_input_translator_tests PRIVATE
+  ja2_shared_core ja2_sdl3_backend)
+target_compile_options(ja2_sdl3_input_translator_tests PRIVATE
+  -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_sdl3_input_translator_tests
+  COMMAND ja2_sdl3_input_translator_tests)
+set_tests_properties(ja2_sdl3_input_translator_tests PROPERTIES
   ENVIRONMENT "SDL_VIDEODRIVER=dummy;SDL_RENDER_DRIVER=software")
 
 # Keep the focused characterization suites independently linkable while also

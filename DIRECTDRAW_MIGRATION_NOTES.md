@@ -101,8 +101,11 @@ surface accessor remains in the video or logical-surface interfaces.
    and partial upload, suspend/resume, and format rejection. The native SDL
    application host now owns subsystem/window lifetime and maps one waited
    event per scheduler iteration into dispatch, quit, or deadline results.
-   SDL types remain confined to backend headers; gameplay-event translation
-   and production wiring are still pending.
+   SDL types remain confined to backend headers. A tested SDL input translator
+   converts letterboxed pointer coordinates and maps keyboard, mouse, wheel,
+   and focus events into the existing logical/Win32-compatible input
+   vocabulary; the small sink that connects those events to the production
+   game state is still pending.
 
 The replacement shutdown invariant is strict: stop presentation, destroy
 cursor/font consumers, destroy logical surfaces and palettes, then destroy the

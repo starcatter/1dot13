@@ -28,6 +28,7 @@ public:
 	bool setPalette(const SGPPaletteEntry* entries) override;
 	void leaveDisplayMode() override;
 	void shutdown() override;
+	bool convertEventToLogical(SDL_Event& event) const noexcept;
 
 private:
 	Sdl3Presenter() = default;
