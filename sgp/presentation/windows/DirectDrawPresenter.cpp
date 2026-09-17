@@ -346,8 +346,7 @@ bool DirectDrawPresenter::getRgbMasks(
 	return true;
 }
 
-bool DirectDrawPresenter::setPalette(const SGPPaletteEntry* entries,
-	LPDIRECTDRAWSURFACE2 auxiliarySurface)
+bool DirectDrawPresenter::setPalette(const SGPPaletteEntry* entries)
 {
 	if (directDrawObject2_ == nullptr || primarySurface2_ == nullptr ||
 		backBuffer2_ == nullptr || entries == nullptr)
@@ -371,10 +370,6 @@ bool DirectDrawPresenter::setPalette(const SGPPaletteEntry* entries,
 	if (result == DD_OK)
 	{
 		result = IDirectDrawSurface2_SetPalette(backBuffer2_, palette_);
-	}
-	if (result == DD_OK && auxiliarySurface != nullptr)
-	{
-		result = IDirectDrawSurface2_SetPalette(auxiliarySurface, palette_);
 	}
 	if (result != DD_OK)
 	{

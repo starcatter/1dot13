@@ -34,8 +34,7 @@ public:
 	void leaveDisplayMode();
 	void shutdown();
 	bool getRgbMasks(UINT16& red, UINT16& green, UINT16& blue) const;
-	bool setPalette(const SGPPaletteEntry* entries,
-		LPDIRECTDRAWSURFACE2 auxiliarySurface);
+	bool setPalette(const SGPPaletteEntry* entries);
 
 	LPDIRECTDRAW2 directDrawObject() const noexcept { return directDrawObject2_; }
 	LPDIRECTDRAWSURFACE2 primarySurface() const noexcept { return primarySurface2_; }

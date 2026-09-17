@@ -16,13 +16,13 @@
 #include "DEBUG.H"
 #include "vsurface.h"
 #include "vsurface_private.h"
-#include "DirectX Common.h"
-#include <ddraw.h>
 #include "WinFont.h"
 #include "Font.h"
 #include "Font Control.h"
 #include "GameSettings.h"
 #include <language.hpp>
+
+#include <vector>
 
 #include <vfs/Tools/vfs_property_container.h>
 
@@ -416,8 +416,6 @@ void PrintWinFont( UINT32 uiDestBuf, INT32 iFont, INT32 x, INT32 y, STR16 pFontS
 	va_list				 argptr;
 	CHAR16									string[512];
 	HVSURFACE				hVSurface;
-	LPDIRECTDRAWSURFACE2	pDDSurface;
-	HDC					 hdc;
 	HWINFONT				*pWinFont;
 	int					 len;
 	
@@ -433,13 +431,86 @@ void PrintWinFont( UINT32 uiDestBuf, INT32 iFont, INT32 x, INT32 y, STR16 pFontS
 	va_end(argptr);
 
 	// Get surface...
-	GetVideoSurface( &hVSurface, uiDestBuf );
+	if (!GetVideoSurface(&hVSurface, uiDestBuf))
+	{
+		return;
+	}
+	ja2::presentation::PixelSurface* pixelSurface =
+		GetVideoSurfacePixelSurface(hVSurface);
+	if (pixelSurface == NULL)
+	{
+		return;
+	}
 
-	pDDSurface = GetVideoSurfaceDDSurface( hVSurface );
+	const UINT32 bytesPerPixel = hVSurface->ubBitDepth / 8;
+	if (bytesPerPixel != 1 && bytesPerPixel != 2)
+	{
+		return;
+	}
+	const UINT32 dibPitch =
+		((hVSurface->usWidth * hVSurface->ubBitDepth + 31) / 32) * 4;
+	const size_t colorTableBytes = hVSurface->ubBitDepth == 8
+		? 256 * sizeof(RGBQUAD)
+		: 3 * sizeof(DWORD);
+	std::vector<BYTE> bitmapInfoStorage(
+		sizeof(BITMAPINFOHEADER) + colorTableBytes, 0);
+	BITMAPINFO* bitmapInfo =
+		reinterpret_cast<BITMAPINFO*>(bitmapInfoStorage.data());
+	bitmapInfo->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bitmapInfo->bmiHeader.biWidth = hVSurface->usWidth;
+	bitmapInfo->bmiHeader.biHeight = -static_cast<LONG>(hVSurface->usHeight);
+	bitmapInfo->bmiHeader.biPlanes = 1;
+	bitmapInfo->bmiHeader.biBitCount = hVSurface->ubBitDepth;
+	bitmapInfo->bmiHeader.biCompression = hVSurface->ubBitDepth == 8
+		? BI_RGB : BI_BITFIELDS;
+	if (hVSurface->ubBitDepth == 8)
+	{
+		bitmapInfo->bmiHeader.biClrUsed = 256;
+		const SGPPaletteEntry* palette = pixelSurface->palette();
+		if (palette != NULL)
+		{
+			for (UINT32 index = 0; index < 256; ++index)
+			{
+				bitmapInfo->bmiColors[index].rgbRed = palette[index].peRed;
+				bitmapInfo->bmiColors[index].rgbGreen = palette[index].peGreen;
+				bitmapInfo->bmiColors[index].rgbBlue = palette[index].peBlue;
+			}
+		}
+	}
+	else
+	{
+		DWORD* masks = reinterpret_cast<DWORD*>(bitmapInfo->bmiColors);
+		masks[0] = 0xf800;
+		masks[1] = 0x07e0;
+		masks[2] = 0x001f;
+	}
 
-	IDirectDrawSurface2_GetDC( pDDSurface, &hdc );
+	HDC hdc = CreateCompatibleDC(NULL);
+	if (hdc == NULL)
+	{
+		return;
+	}
+	void* dibPixels = NULL;
+	HBITMAP bitmap = CreateDIBSection(hdc, bitmapInfo, DIB_RGB_COLORS,
+		&dibPixels, NULL, 0);
+	if (bitmap == NULL || dibPixels == NULL)
+	{
+		DeleteDC(hdc);
+		return;
+	}
 
-	SelectObject(hdc, pWinFont->hFont );
+	const ja2::presentation::MutablePixelBuffer pixels = pixelSurface->lock();
+	const size_t rowBytes =
+		static_cast<size_t>(hVSurface->usWidth) * bytesPerPixel;
+	for (UINT32 row = 0; row < hVSurface->usHeight; ++row)
+	{
+		memcpy(static_cast<BYTE*>(dibPixels) + row * dibPitch,
+			pixels.pixels + row * pixels.pitchBytes, rowBytes);
+	}
+
+	HGDIOBJ previousBitmap = SelectObject(hdc, bitmap);
+	HGDIOBJ previousFont = SelectObject(hdc, pWinFont->hFont);
+
 	SetTextColor( hdc, pWinFont->ForeColor );
 	SetBkColor(hdc, pWinFont->BackColor );
 	SetBkMode(hdc, TRANSPARENT);
@@ -451,8 +522,18 @@ void PrintWinFont( UINT32 uiDestBuf, INT32 iFont, INT32 x, INT32 y, STR16 pFontS
 	}
 	TextOutW( hdc, x, y, string, len );
 
-	IDirectDrawSurface2_ReleaseDC( pDDSurface, hdc );
-	NotifyVideoSurfaceDirectDrawModified(hVSurface);
+	for (UINT32 row = 0; row < hVSurface->usHeight; ++row)
+	{
+		memcpy(pixels.pixels + row * pixels.pitchBytes,
+			static_cast<const BYTE*>(dibPixels) + row * dibPitch, rowBytes);
+	}
+	pixelSurface->unlock();
+	NotifyVideoSurfacePixelModified(hVSurface);
+
+	SelectObject(hdc, previousFont);
+	SelectObject(hdc, previousBitmap);
+	DeleteObject(bitmap);
+	DeleteDC(hdc);
 
 }
 

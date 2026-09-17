@@ -115,6 +115,49 @@ ja2::presentation::PixelFormat PixelFormatForSurface(const HVSURFACE surface)
 
 BOOLEAN SyncPixelSurfaceToDirectDraw(HVSURFACE surface)
 {
+	if (surface == NULL)
+	{
+		return FALSE;
+	}
+	if (surface->pSurfaceData == NULL)
+	{
+		LPDIRECTDRAW2 directDraw = GetDirectDraw2Object();
+		DDSURFACEDESC description{};
+		description.dwSize = sizeof(description);
+		description.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH |
+			DDSD_PIXELFORMAT;
+		description.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN |
+			DDSCAPS_SYSTEMMEMORY;
+		description.dwWidth = surface->usWidth;
+		description.dwHeight = surface->usHeight;
+		description.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
+		description.ddpfPixelFormat.dwFlags = DDPF_RGB;
+		description.ddpfPixelFormat.dwRGBBitCount = surface->ubBitDepth;
+		if (surface->ubBitDepth == 8)
+		{
+			description.ddpfPixelFormat.dwFlags |= DDPF_PALETTEINDEXED8;
+		}
+		else
+		{
+			description.ddpfPixelFormat.dwRBitMask = 0xf800;
+			description.ddpfPixelFormat.dwGBitMask = 0x07e0;
+			description.ddpfPixelFormat.dwBBitMask = 0x001f;
+		}
+
+		LPDIRECTDRAWSURFACE surface1 = NULL;
+		LPDIRECTDRAWSURFACE2 surface2 = NULL;
+		DDCreateSurface(directDraw, &description, &surface1, &surface2);
+		surface->pSurfaceData1 = surface1;
+		surface->pSurfaceData = surface2;
+		surface->pixelSurfaceDirty = true;
+
+		DDCOLORKEY colorKey{};
+		colorKey.dwColorSpaceLowValue = surface->ubBitDepth == 8
+			? surface->TransparentColor
+			: Get16BPPColor(surface->TransparentColor);
+		colorKey.dwColorSpaceHighValue = colorKey.dwColorSpaceLowValue;
+		DDSetSurfaceColorKey(surface2, DDCKEY_SRCBLT, &colorKey);
+	}
 	if (!surface->pixelSurface || !surface->pixelSurfaceDirty)
 	{
 		return TRUE;
@@ -141,6 +184,10 @@ BOOLEAN SyncPixelSurfaceFromDirectDraw(HVSURFACE surface)
 	if (!surface->pixelSurface || !surface->directDrawSurfaceDirty)
 	{
 		return TRUE;
+	}
+	if (surface->pSurfaceData == NULL)
+	{
+		return FALSE;
 	}
 
 	DDSURFACEDESC description;
@@ -761,9 +808,8 @@ BOOLEAN SetPrimaryVideoSurfaces( )
 	CHECKF(SyncPixelSurfaceFromDirectDraw(ghBackBuffer));
 	SurfaceData::RegisterSurface(BACKBUFFER, ghBackBuffer);
 
-	// Frame and cursor pixels are portable canonical storage. Create their
-	// DirectDraw allocations here only as compatibility mirrors for mixed
-	// surfaces and Windows WinFont.
+	// Frame and cursor pixels are portable canonical storage. Native mirrors are
+	// no longer allocated during logical-surface creation.
 	surfaceDescription.fCreateFlags = VSURFACE_SYSTEM_MEM_USAGE;
 	surfaceDescription.usWidth = MAX_CURSOR_WIDTH;
 	surfaceDescription.usHeight = MAX_CURSOR_HEIGHT;
@@ -1038,36 +1084,12 @@ BOOLEAN ImageFillVideoSurfaceArea(UINT32 uiDestVSurface, INT32 iDestX1, INT32 iD
 
 HVSURFACE CreateVideoSurface( VSURFACE_DESC *VSurfaceDesc )
 {
-	LPDIRECTDRAW2				lpDD2Object;
-	DDSURFACEDESC				SurfaceDescription;
-	DDPIXELFORMAT			  PixelFormat;
-	LPDIRECTDRAWSURFACE  lpDDS;
-	LPDIRECTDRAWSURFACE2  lpDDS2;
 	HVSURFACE						hVSurface;
 	HIMAGE							hImage = NULL;
 	SGPRect							tempRect;
 	UINT16							usHeight;
 	UINT16							usWidth;
 	UINT8								ubBitDepth;
-	UINT32							fMemUsage;
-
-	UINT32							uiRBitMask;
-	UINT32							uiGBitMask;
-	UINT32							uiBBitMask;
-
-	//Clear the memory
-	memset( &SurfaceDescription, 0, sizeof( DDSURFACEDESC ) );
-
-	//
-	// Get Direct Draw Object
-	//
-
-	lpDD2Object = GetDirectDraw2Object( );
-
-	//
-	// The description structure contains memory usage flag
-	//
-	fMemUsage = VSurfaceDesc->fCreateFlags;
 
 	//
 	// Check creation options
@@ -1134,41 +1156,15 @@ HVSURFACE CreateVideoSurface( VSURFACE_DESC *VSurfaceDesc )
 	Assert ( usHeight > 0 );
 	Assert ( usWidth > 0 );
 
-	//
-	// Setup Direct Draw Description
-	// First do Pixel Format
-	//
-
-	memset( &PixelFormat, 0, sizeof( PixelFormat ) );
-	PixelFormat.dwSize = sizeof( DDPIXELFORMAT );
-
 	switch( ubBitDepth )
 	{
-
 	case 8:
-
-		PixelFormat.dwFlags = DDPF_RGB | DDPF_PALETTEINDEXED8;
-		PixelFormat.dwRGBBitCount = 8;
 		break;
 
 	case 16:
 	// BF: handle 24 bpp and 32 bpp images as 16 bpp ones = convert larger color space to the smaller one
 	case 24:
 	case 32:
-
-		PixelFormat.dwFlags = DDPF_RGB;
-		PixelFormat.dwRGBBitCount = 16;
-
-		//
-		// Get current Pixel Format from DirectDraw
-		//
-
-		// We're using pixel formats too -- DB/Wiz
-
-		CHECKF( GetPrimaryRGBDistributionMasks( &uiRBitMask, &uiGBitMask, &uiBBitMask ) );
-		PixelFormat.dwRBitMask = uiRBitMask;
-		PixelFormat.dwGBitMask = uiGBitMask;
-		PixelFormat.dwBBitMask = uiBBitMask;
 		break;
 
 	default:
@@ -1181,54 +1177,6 @@ HVSURFACE CreateVideoSurface( VSURFACE_DESC *VSurfaceDesc )
 		return( FALSE );
 	}
 
-	SurfaceDescription.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-
-	//
-	// Do memory description, based on specified flags
-	//
-
-	do
-	{
-		if ( fMemUsage & VSURFACE_DEFAULT_MEM_USAGE )
-		{
-			SurfaceDescription.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
-			break;
-		}
-		if ( fMemUsage & VSURFACE_VIDEO_MEM_USAGE )
-		{
-			SurfaceDescription.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
-			break;
-		}
-
-		if ( fMemUsage & VSURFACE_SYSTEM_MEM_USAGE )
-		{
-			SurfaceDescription.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-			break;
-		}
-
-		//
-		// Once here, no mem flags were given, use default
-		//
-
-		SurfaceDescription.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
-
-	} while( FALSE );
-
-	//
-	// Set other, common structure elements
-	//
-
-	SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-	SurfaceDescription.dwWidth = usWidth;
-	SurfaceDescription.dwHeight = usHeight;
-	SurfaceDescription.ddpfPixelFormat = PixelFormat;
-
-	//
-	// Create Surface
-	//
-
-	DDCreateSurface (	lpDD2Object, &SurfaceDescription, &lpDDS, &lpDDS2 );
-
 	//
 	// Allocate memory for Video Surface data and initialize
 	//
@@ -1238,91 +1186,26 @@ HVSURFACE CreateVideoSurface( VSURFACE_DESC *VSurfaceDesc )
 	// BF : since we use a 16bpp framebuffer and images are converted to that format, 
 	//      there is no need to set the surface bit depth to a higher value than 16
 	hVSurface->ubBitDepth			= ubBitDepth > 16 ? 16 : ubBitDepth;
-	hVSurface->pSurfaceData1		= (PTR)lpDDS;
-	hVSurface->pSurfaceData			= (PTR)lpDDS2;
+	hVSurface->pSurfaceData1		= NULL;
+	hVSurface->pSurfaceData			= NULL;
 	hVSurface->pSavedSurfaceData1	= NULL;
 	hVSurface->pSavedSurfaceData	= NULL;
 	hVSurface->pPalette				= NULL;
 	hVSurface->p16BPPPalette		= NULL;
 	hVSurface->TransparentColor		= FROMRGB( 0, 0, 0 );
-	hVSurface->fFlags				= 0;
+	// Legacy memory-placement flags no longer select the canonical storage.
+	// Engine-created surfaces live in project-owned heap memory.
+	hVSurface->fFlags				= VSURFACE_SYSTEM_MEM_USAGE;
 	hVSurface->pClipper				= NULL;
 
-	//
-	// Determine memory and other attributes of newly created surface
-	//
-
-	DDGetSurfaceDescription ( lpDDS2, &SurfaceDescription );
-
-	//
-	// Fail if create tried for video but it's in system
-	//
-
-	if ( VSurfaceDesc->fCreateFlags & VSURFACE_VIDEO_MEM_USAGE && SurfaceDescription.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY )
-	{
-		//
-		// Return failure due to not in video
-		//
-
-		DbgMessage( TOPIC_VIDEOSURFACE, DBG_LEVEL_2, String( "Failed to create Video Surface in video memory" ) );
-		DDReleaseSurface ( &lpDDS, &lpDDS2 );
-		delete hVSurface;
-		return( NULL );
-	}
-
-	//
-	// Look for system memory
-	//
-
-	if ( SurfaceDescription.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY )
-	{
-		hVSurface->fFlags |= VSURFACE_SYSTEM_MEM_USAGE;
-	}
-
-	//
-	// Look for video memory
-	//
-
-	if ( SurfaceDescription.ddsCaps.dwCaps & DDSCAPS_VIDEOMEMORY )
-	{
-		hVSurface->fFlags |= VSURFACE_VIDEO_MEM_USAGE;
-	}
-
 	// Every engine-created logical surface now has portable canonical storage.
-	// DirectDraw remains a compatibility mirror until WinFont and the last mixed
-	// presentation paths are isolated.
+	// A DirectDraw mirror is created only by a remaining mixed native path.
 	hVSurface->pixelSurface =
 		std::make_unique<ja2::presentation::PixelSurface>(
 			hVSurface->usWidth, hVSurface->usHeight,
 			PixelFormatForSurface(hVSurface), 4);
 	hVSurface->pixelSurfaceDirty = true;
 
-	//
-	// If in video memory, create backup surface
-	//
-
-	if ( hVSurface->fFlags & VSURFACE_VIDEO_MEM_USAGE )
-	{
-		SurfaceDescription.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-		SurfaceDescription.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-		SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-		SurfaceDescription.dwWidth = usWidth;
-		SurfaceDescription.dwHeight = usHeight;
-		SurfaceDescription.ddpfPixelFormat = PixelFormat;
-
-		//
-		// Create Surface
-		//
-
-		DDCreateSurface (	lpDD2Object, &SurfaceDescription, &lpDDS, &lpDDS2 );
-
-		//
-		// Save surface to backup
-		//
-
-		hVSurface->pSavedSurfaceData1 = lpDDS;
-		hVSurface->pSavedSurfaceData = lpDDS2;
-	}
 
 	//
 	// Initialize surface with hImage , if given
@@ -1381,6 +1264,18 @@ BOOLEAN RestoreVideoSurface( HVSURFACE hVSurface )
 	RECT										aRect;
 
 	Assert( hVSurface != NULL );
+	if (hVSurface->pixelSurface)
+	{
+		// PixelSurface is the restore copy. System-memory compatibility mirrors
+		// normally survive display loss; if one exists, restore and repopulate it.
+		if (hVSurface->pSurfaceData != NULL)
+		{
+			DDRestoreSurface(
+				static_cast<LPDIRECTDRAWSURFACE2>(hVSurface->pSurfaceData));
+			MarkPixelSurfaceModified(hVSurface);
+		}
+		return TRUE;
+	}
 
 	//
 	// Restore is only for VIDEO MEMORY - should check if VIDEO and QUIT if not
@@ -1603,8 +1498,9 @@ BOOLEAN SetVideoSurfacePalette( HVSURFACE hVSurface, SGPPaletteEntry *pSrcPalett
 		hVSurface->pixelSurface->setPalette(pSrcPalette, 256);
 	}
 
-	// Create palette object if not already done so
-	if ( hVSurface->pPalette == NULL )
+	// DirectDraw palettes are retained only for native surfaces. Portable
+	// logical surfaces keep their palette with their PixelSurface.
+	if (!hVSurface->pixelSurface && hVSurface->pPalette == NULL)
 	{
 		DDCreatePalette( GetDirectDraw2Object(), (DDPCAPS_8BIT | DDPCAPS_ALLOW256), (LPPALETTEENTRY)(&pSrcPalette[0]), (LPDIRECTDRAWPALETTE*)&(hVSurface->pPalette), NULL);
 
@@ -1612,7 +1508,7 @@ BOOLEAN SetVideoSurfacePalette( HVSURFACE hVSurface, SGPPaletteEntry *pSrcPalett
 		//DDSetSurfacePalette( (LPDIRECTDRAWSURFACE2)hVSurface->pSurfaceData, (LPDIRECTDRAWPALETTE)hVSurface->pPalette );
 
 	}
-	else
+	else if (!hVSurface->pixelSurface)
 	{
 		// Just Change entries
 		DDSetPaletteEntries( (LPDIRECTDRAWPALETTE)hVSurface->pPalette, 0, 0, 256, ( PALETTEENTRY*)pSrcPalette );
@@ -1652,9 +1548,13 @@ BOOLEAN SetVideoSurfaceTransparencyColor( HVSURFACE hVSurface, COLORVAL TransCol
 			: Get16BPPColor(TransColor));
 	}
 
-	// Get surface pointer
+	// Update an existing native compatibility surface, but do not allocate one
+	// merely to carry a color key.
 	lpDDSurface = (LPDIRECTDRAWSURFACE2)hVSurface->pSurfaceData;
-	CHECKF( lpDDSurface != NULL );
+	if (lpDDSurface == NULL)
+	{
+		return TRUE;
+	}
 
 	// Get right pixel format, based on bit depth
 
@@ -1828,6 +1728,7 @@ BOOLEAN SetClipList( HVSURFACE hVSurface, SGPRect *RegionData, UINT16 usNumRegio
 
 	// Varifications
 	CHECKF( usNumRegions > 0 );
+	CHECKF(SyncPixelSurfaceToDirectDraw(hVSurface));
 
 	// If Clipper already created, release
 	if ( hVSurface->pClipper != NULL )
@@ -2205,6 +2106,11 @@ BOOLEAN UpdateBackupSurface( HVSURFACE hVSurface )
 
 	// Assertions
 	Assert( hVSurface != NULL );
+	if (hVSurface->pixelSurface)
+	{
+		// The project-owned pixels are already the authoritative restore copy.
+		return TRUE;
+	}
 
 	// Validations
 	CHECKF( hVSurface->pSavedSurfaceData != NULL );
@@ -2221,48 +2127,6 @@ BOOLEAN UpdateBackupSurface( HVSURFACE hVSurface )
 
 }
 
-
-// *****************************************************************************
-//
-// Private DirectDraw manipulation functions
-//
-// *****************************************************************************
-
-LPDIRECTDRAWSURFACE2 GetVideoSurfaceDDSurface( HVSURFACE hVSurface )
-{
-	Assert( hVSurface != NULL );
-	if (!SyncPixelSurfaceToDirectDraw(hVSurface))
-	{
-		return NULL;
-	}
-
-	return( (LPDIRECTDRAWSURFACE2) hVSurface->pSurfaceData );
-}
-
-LPDIRECTDRAWSURFACE GetVideoSurfaceDDSurfaceOne( HVSURFACE hVSurface )
-{
-	Assert( hVSurface != NULL );
-	if (!SyncPixelSurfaceToDirectDraw(hVSurface))
-	{
-		return NULL;
-	}
-
-	return( (LPDIRECTDRAWSURFACE) hVSurface->pSurfaceData1 );
-}
-
-void NotifyVideoSurfaceDirectDrawModified(HVSURFACE hVSurface)
-{
-	Assert(hVSurface != NULL);
-	MarkDirectDrawSurfaceModified(hVSurface);
-}
-
-
-LPDIRECTDRAWPALETTE  GetVideoSurfaceDDPalette( HVSURFACE hVSurface )
-{
-	Assert( hVSurface != NULL );
-
-	return( (LPDIRECTDRAWPALETTE) hVSurface->pPalette );
-}
 
 HVSURFACE CreateVideoSurfaceFromDDSurface( LPDIRECTDRAWSURFACE2 lpDDSurface )
 {

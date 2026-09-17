@@ -1975,15 +1975,7 @@ BOOLEAN Set8BPPPalette(SGPPaletteEntry *pPalette)
 	// If we are in 256 colors, then we have to initialize the palette system to 0 (faded out)
 	memcpy(gSgpPalette, pPalette, sizeof(SGPPaletteEntry)*256);
 
-	HVSURFACE frameBuffer;
-	LPDIRECTDRAWSURFACE2 frameBufferMirror =
-		GetVideoSurface(&frameBuffer, FRAME_BUFFER) ?
-		GetVideoSurfaceDDSurface(frameBuffer) : NULL;
-	if (frameBufferMirror == NULL)
-	{
-		return(FALSE);
-	}
-	if (!gPresenter || !gPresenter->setPalette(gSgpPalette, frameBufferMirror))
+	if (!gPresenter || !gPresenter->setPalette(gSgpPalette))
 	{
 		return(FALSE);
 	}
