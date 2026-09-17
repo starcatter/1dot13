@@ -2,6 +2,7 @@
 #define JA2_DIRECT_DRAW_PRESENTER_H
 
 #include "presentation/Presenter.h"
+#include "himage.h"
 
 #include <ddraw.h>
 #include <memory>
@@ -32,6 +33,9 @@ public:
 	bool resume() override;
 	void leaveDisplayMode();
 	void shutdown();
+	bool getRgbMasks(UINT16& red, UINT16& green, UINT16& blue) const;
+	bool setPalette(const SGPPaletteEntry* entries,
+		LPDIRECTDRAWSURFACE2 auxiliarySurface);
 
 	LPDIRECTDRAW2 directDrawObject() const noexcept { return directDrawObject2_; }
 	LPDIRECTDRAWSURFACE2 primarySurface() const noexcept { return primarySurface2_; }
@@ -53,6 +57,7 @@ private:
 	LPDIRECTDRAWSURFACE2 primarySurface2_ = nullptr;
 	LPDIRECTDRAWSURFACE backBuffer1_ = nullptr;
 	LPDIRECTDRAWSURFACE2 backBuffer2_ = nullptr;
+	LPDIRECTDRAWPALETTE palette_ = nullptr;
 	HWND window_ = nullptr;
 	const RECT* windowRect_ = nullptr;
 	bool windowed_ = false;

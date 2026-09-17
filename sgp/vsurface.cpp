@@ -521,7 +521,8 @@ BYTE *LockVideoSurface( UINT32 uiVSurface, UINT32 *puiPitch )
 	//
 	if ( uiVSurface == PRIMARY_SURFACE )
 	{
-		return SurfaceData::SetSurfaceData(uiVSurface, (BYTE *)LockPrimarySurface( puiPitch ));
+		return SurfaceData::SetSurfaceData(uiVSurface,
+			LockVideoSurfaceBuffer(ghPrimary, puiPitch));
 	}
 
 	if ( uiVSurface == BACKBUFFER )
@@ -578,7 +579,7 @@ void UnLockVideoSurface( UINT32 uiVSurface )
 	//
 	if ( uiVSurface == PRIMARY_SURFACE )
 	{
-		UnlockPrimarySurface();
+		UnLockVideoSurfaceBuffer(ghPrimary);
 		return;
 	}
 

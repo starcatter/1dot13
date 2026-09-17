@@ -20,7 +20,7 @@ owns any remaining logical-surface compatibility mirrors:
 | Logical cursor | its canonical PixelSurface has one ordinary system-memory compatibility mirror | released with the logical surface |
 | Cursor background | one shared project-owned `PixelSurface` used by both metadata slots | released automatically |
 | Window clipper | local `clip`, attached to the windowed primary | no local release after attachment is visible |
-| 8-bit palette | global `gpDirectDrawPalette` | no explicit release is visible |
+| 8-bit presentation palette | created and attached by `DirectDrawPresenter` | presenter releases its reference; attached surfaces release theirs |
 
 Generic `SGPVSurface` objects use the same two-reference convention in
 `pSurfaceData1`/`pSurfaceData`. Video-memory surfaces also own a system-memory
@@ -80,6 +80,10 @@ old fullscreen primary-to-back-buffer recovery copies are gone: the canonical
 PixelSurface retains the complete frame and is uploaded before each flip.
 Screenshot and optional movie-frame capture also read this canonical storage
 instead of locking or reading back DirectDraw surfaces.
+`sgp/video.cpp` now contains no DirectDraw API calls: device creation, mode and
+surface queries, palette attachment, upload, present, suspend/resume, and
+shutdown are presenter operations. Its Windows-only native accessors remain a
+temporary bridge for `SGPVSurface` compatibility mirrors.
 The compatibility mirrors can be deleted after WinFont, remaining mixed paths,
 and default/video-memory generic surfaces have portable owners.
 

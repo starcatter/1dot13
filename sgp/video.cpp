@@ -2,7 +2,6 @@
 #include "video.h"
 #include "video_windows.h"
 #include "vsurface_private.h"
-#include "DirectDraw Calls.h"
 #include "vobject_blitters.h"
 #include "LegacySGP.h"
 #include <stdio.h>
@@ -101,10 +100,7 @@ INT32													giNumFrames = 0;
 // Direct Draw objects for both the Primary and Backbuffer surfaces
 //
 
-static LPDIRECTDRAW2			gpDirectDrawObject = NULL;
 
-static LPDIRECTDRAWSURFACE2	gpPrimarySurface = NULL;
-static LPDIRECTDRAWSURFACE2	gpBackBuffer = NULL;
 
 //
 extern RECT									rcWindow;
@@ -135,7 +131,6 @@ char				gFatalErrorString[ 512 ];
 // 8-bit palette stuff
 
 SGPPaletteEntry								gSgpPalette[256];
-LPDIRECTDRAWPALETTE						gpDirectDrawPalette;
 
 //
 // Make sure we record the value of the hWindow (main window frame for the application)
@@ -317,9 +312,6 @@ BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *
 		}
 		return FALSE;
 	}
-	gpDirectDrawObject = gPresenter->directDrawObject();
-	gpPrimarySurface = gPresenter->primarySurface();
-	gpBackBuffer = gPresenter->backBuffer();
 
 	gusScreenWidth = SCREEN_WIDTH;
 	gusScreenHeight = SCREEN_HEIGHT;
@@ -379,9 +371,6 @@ void ShutdownVideoManager(void)
 
 	gMouseCursorBackgroundSurface.reset();
 	gPresenter.reset();
-	gpBackBuffer = NULL;
-	gpPrimarySurface = NULL;
-	gpDirectDrawObject = NULL;
 
 	// destroy the window
 	// DestroyWindow( ghWindow );
@@ -1430,8 +1419,8 @@ void RefreshScreen(void *DummyVariable)
 	//
 	// If fMouseState == TRUE
 	//
-	// (1) Save mouse background from gpBackBuffer to gpMouseCursorBackground
-	// (2) If step (1) is successfull blit mouse cursor onto gpBackBuffer
+	// (1) Save the mouse background from the back buffer.
+	// (2) If step (1) succeeds, blit the mouse cursor onto the back buffer.
 	//
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1610,75 +1599,29 @@ ENDOFLOOP:
 
 LPDIRECTDRAW2 GetDirectDraw2Object(void)
 {
-	Assert( gpDirectDrawObject != NULL );
-
-	return gpDirectDrawObject;
+	Assert(gPresenter != NULL);
+	return gPresenter->directDrawObject();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 LPDIRECTDRAWSURFACE2 GetPrimarySurfaceObject(void)
 {
-	Assert( gpPrimarySurface != NULL );
-
-	return gpPrimarySurface;
+	Assert(gPresenter != NULL);
+	return gPresenter->primarySurface();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 LPDIRECTDRAWSURFACE2 GetBackBufferObject(void)
 {
-	Assert( gpPrimarySurface != NULL );
-
-	return gpBackBuffer;
+	Assert(gPresenter != NULL);
+	return gPresenter->backBuffer();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Buffer access functions
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-PTR LockPrimarySurface(UINT32 *uiPitch)
-{
-	HRESULT		ReturnCode;
-	DDSURFACEDESC SurfaceDescription;
-
-
-	ZEROMEM(SurfaceDescription);
-	SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-
-	do
-	{
-		ReturnCode = IDirectDrawSurface2_Lock(gpPrimarySurface, NULL, &SurfaceDescription, 0, NULL);
-		if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-		{
-			DebugMsg(TOPIC_VIDEO, DBG_LEVEL_0, "Failed to lock backbuffer");
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return NULL;
-		}
-
-	} while (ReturnCode != DD_OK);
-
-	*uiPitch = SurfaceDescription.lPitch;
-	return SurfaceDescription.lpSurface;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-void UnlockPrimarySurface(void)
-{
-	DDSURFACEDESC SurfaceDescription;
-	HRESULT		ReturnCode;
-
-	ZEROMEM(SurfaceDescription);
-	SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-	ReturnCode = IDirectDrawSurface2_Unlock(gpPrimarySurface, &SurfaceDescription);
-	if ((ReturnCode != DD_OK)&&(ReturnCode != DDERR_WASSTILLDRAWING))
-	{
-		DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 PTR LockFrameBuffer(UINT32 *uiPitch)
@@ -1733,30 +1676,17 @@ void UnlockMouseBuffer(void)
 
 BOOLEAN GetRGBDistribution(void)
 {
-	DDSURFACEDESC SurfaceDescription;
 	UINT16		usBit;
-	HRESULT		ReturnCode;
 
-	Assert ( gpPrimarySurface != NULL );
-
-
-	ZEROMEM(SurfaceDescription);
-	SurfaceDescription.dwSize = sizeof (DDSURFACEDESC);
-	SurfaceDescription.dwFlags = DDSD_PIXELFORMAT;
-	ReturnCode = IDirectDrawSurface2_GetSurfaceDesc ( gpPrimarySurface, &SurfaceDescription );
-	if (ReturnCode != DD_OK)
+	if (!gPresenter || !gPresenter->getRgbMasks(
+		gusRedMask, gusGreenMask, gusBlueMask))
 	{
-		DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
 		return FALSE;
 	}
 
 	//
 	// Ok we now have the surface description, we now can get the information that we need
 	//
-
-	gusRedMask	= (UINT16) SurfaceDescription.ddpfPixelFormat.dwRBitMask;
-	gusGreenMask = (UINT16) SurfaceDescription.ddpfPixelFormat.dwGBitMask;
-	gusBlueMask	= (UINT16) SurfaceDescription.ddpfPixelFormat.dwBBitMask;
 
 	if (!gusRedMask)
 	{
@@ -2042,31 +1972,8 @@ void PrintScreen(void)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 BOOLEAN Set8BPPPalette(SGPPaletteEntry *pPalette)
 {
-	HRESULT		ReturnCode;
-
 	// If we are in 256 colors, then we have to initialize the palette system to 0 (faded out)
 	memcpy(gSgpPalette, pPalette, sizeof(SGPPaletteEntry)*256);
-
-	ReturnCode = IDirectDraw_CreatePalette(gpDirectDrawObject, (DDPCAPS_8BIT | DDPCAPS_ALLOW256), (LPPALETTEENTRY)(&gSgpPalette[0]), &gpDirectDrawPalette, NULL);
-	if (ReturnCode != DD_OK)
-	{
-		DebugMsg(TOPIC_VIDEO, DBG_LEVEL_0, String("Failed to create palette (Rc = %d)", ReturnCode));
-		return(FALSE);
-	}
-	// Apply the palette to the surfaces
-	ReturnCode = IDirectDrawSurface_SetPalette(gpPrimarySurface, gpDirectDrawPalette);
-	if (ReturnCode != DD_OK)
-	{
-		DebugMsg(TOPIC_VIDEO, DBG_LEVEL_0, String("Failed to apply 8-bit palette to primary surface"));
-		return(FALSE);
-	}
-
-	ReturnCode = IDirectDrawSurface_SetPalette(gpBackBuffer, gpDirectDrawPalette);
-	if (ReturnCode != DD_OK)
-	{
-		DebugMsg(TOPIC_VIDEO, DBG_LEVEL_0, String("Failed to apply 8-bit palette to back buffer"));
-		return(FALSE);
-	}
 
 	HVSURFACE frameBuffer;
 	LPDIRECTDRAWSURFACE2 frameBufferMirror =
@@ -2076,11 +1983,8 @@ BOOLEAN Set8BPPPalette(SGPPaletteEntry *pPalette)
 	{
 		return(FALSE);
 	}
-	ReturnCode = IDirectDrawSurface_SetPalette(
-		frameBufferMirror, gpDirectDrawPalette);
-	if (ReturnCode != DD_OK)
+	if (!gPresenter || !gPresenter->setPalette(gSgpPalette, frameBufferMirror))
 	{
-		DebugMsg(TOPIC_VIDEO, DBG_LEVEL_0, String("Failed to apply 8-bit palette to frame buffer"));
 		return(FALSE);
 	}
 
@@ -2103,9 +2007,6 @@ void FatalError( const STR8 pError, ...)
 	if(gPresenter)
 	{
 		gPresenter->shutdown();
-		gpBackBuffer = NULL;
-		gpPrimarySurface = NULL;
-		gpDirectDrawObject = NULL;
 	}
 	ShowWindow( ghWindow, SW_HIDE );
 

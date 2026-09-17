@@ -37,8 +37,6 @@ extern void				 InvalidateRegions(SGPRect *pArrayOfRegions, UINT32 uiRegionCount
 extern void				 InvalidateScreen(void);
 extern void				 InvalidateFrameBuffer(void);
 extern void				 SetFrameBufferRefreshOverride(PTR pFrameBufferRefreshOverride);
-extern PTR					LockPrimarySurface(UINT32 *uiPitch);
-extern void				 UnlockPrimarySurface(void);
 extern PTR					LockFrameBuffer(UINT32 *uiPitch);
 extern void				 UnlockFrameBuffer(void);
 extern PTR					LockMouseBuffer(UINT32 *uiPitch);

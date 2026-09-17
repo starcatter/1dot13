@@ -323,6 +323,67 @@ bool DirectDrawPresenter::resume()
 	return true;
 }
 
+bool DirectDrawPresenter::getRgbMasks(
+	UINT16& red, UINT16& green, UINT16& blue) const
+{
+	if (primarySurface2_ == nullptr)
+	{
+		return false;
+	}
+	DDSURFACEDESC description{};
+	description.dwSize = sizeof(description);
+	description.dwFlags = DDSD_PIXELFORMAT;
+	const HRESULT result = IDirectDrawSurface2_GetSurfaceDesc(
+		primarySurface2_, &description);
+	if (result != DD_OK)
+	{
+		DirectXAttempt(result, __LINE__, __FILE__);
+		return false;
+	}
+	red = static_cast<UINT16>(description.ddpfPixelFormat.dwRBitMask);
+	green = static_cast<UINT16>(description.ddpfPixelFormat.dwGBitMask);
+	blue = static_cast<UINT16>(description.ddpfPixelFormat.dwBBitMask);
+	return true;
+}
+
+bool DirectDrawPresenter::setPalette(const SGPPaletteEntry* entries,
+	LPDIRECTDRAWSURFACE2 auxiliarySurface)
+{
+	if (directDrawObject2_ == nullptr || primarySurface2_ == nullptr ||
+		backBuffer2_ == nullptr || entries == nullptr)
+	{
+		return false;
+	}
+	if (palette_ != nullptr)
+	{
+		IDirectDrawPalette_Release(palette_);
+		palette_ = nullptr;
+	}
+	HRESULT result = IDirectDraw2_CreatePalette(directDrawObject2_,
+		DDPCAPS_8BIT | DDPCAPS_ALLOW256,
+		reinterpret_cast<PALETTEENTRY*>(
+			const_cast<SGPPaletteEntry*>(entries)),
+		&palette_, nullptr);
+	if (result == DD_OK)
+	{
+		result = IDirectDrawSurface2_SetPalette(primarySurface2_, palette_);
+	}
+	if (result == DD_OK)
+	{
+		result = IDirectDrawSurface2_SetPalette(backBuffer2_, palette_);
+	}
+	if (result == DD_OK && auxiliarySurface != nullptr)
+	{
+		result = IDirectDrawSurface2_SetPalette(auxiliarySurface, palette_);
+	}
+	if (result != DD_OK)
+	{
+		DirectXAttempt(result, __LINE__, __FILE__);
+		return false;
+	}
+	return true;
+}
+
 void DirectDrawPresenter::leaveDisplayMode()
 {
 	if (directDrawObject2_ != nullptr)
@@ -338,6 +399,11 @@ void DirectDrawPresenter::leaveDisplayMode()
 
 void DirectDrawPresenter::shutdown()
 {
+	if (palette_ != nullptr)
+	{
+		IDirectDrawPalette_Release(palette_);
+		palette_ = nullptr;
+	}
 	if (backBuffer2_ != nullptr)
 	{
 		IDirectDrawSurface2_Release(backBuffer2_);
