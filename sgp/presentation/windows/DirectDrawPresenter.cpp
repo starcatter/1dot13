@@ -27,7 +27,7 @@ bool shouldStopRetrying(HRESULT result, INT32& errorCount) noexcept
 
 std::unique_ptr<DirectDrawPresenter> DirectDrawPresenter::create(HWND window,
 	const RECT* windowRect, bool windowed, UINT16 width, UINT16 height,
-	UINT8 pixelDepth, DirectDrawPresenterCreateResult& result)
+	UINT8 pixelDepth, PresenterCreateResult& result)
 {
 	std::unique_ptr<DirectDrawPresenter> presenter(new DirectDrawPresenter);
 	if (!presenter->initialize(window, windowRect, windowed, width, height,
@@ -40,9 +40,9 @@ std::unique_ptr<DirectDrawPresenter> DirectDrawPresenter::create(HWND window,
 
 bool DirectDrawPresenter::initialize(HWND window, const RECT* windowRect,
 	bool windowed, UINT16 width, UINT16 height, UINT8 pixelDepth,
-	DirectDrawPresenterCreateResult& result)
+	PresenterCreateResult& result)
 {
-	result = DirectDrawPresenterCreateResult::directDrawFailure;
+	result = PresenterCreateResult::backendFailure;
 	window_ = window;
 	windowRect_ = windowRect;
 	windowed_ = windowed;
@@ -76,7 +76,7 @@ bool DirectDrawPresenter::initialize(HWND window, const RECT* windowRect,
 		{
 			IDirectDraw2_SetCooperativeLevel(
 				directDrawObject2_, window_, DDSCL_NORMAL);
-			result = DirectDrawPresenterCreateResult::displayModeFailure;
+			result = PresenterCreateResult::displayModeFailure;
 			DirectXAttempt(code, __LINE__, __FILE__);
 			return false;
 		}
@@ -172,7 +172,7 @@ bool DirectDrawPresenter::initialize(HWND window, const RECT* windowRect,
 		DirectXAttempt(code, __LINE__, __FILE__);
 		return false;
 	}
-	result = DirectDrawPresenterCreateResult::success;
+	result = PresenterCreateResult::success;
 	return true;
 }
 

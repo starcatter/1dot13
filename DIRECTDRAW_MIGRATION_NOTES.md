@@ -26,7 +26,9 @@ manager owns only project-memory `PixelSurface` objects:
 `SGPVSurface` no longer contains DirectDraw pointers, palettes, clippers, dirty
 mirror state, or video-memory backup ownership. The obsolete shared DirectDraw
 wrapper is no longer part of the build. DirectDraw ownership is confined to
-the Windows presenter.
+the Windows presenter. The video manager owns only the neutral `Presenter`
+interface; a Windows factory performs concrete DirectDraw construction, and
+the shared palette contract no longer includes `ddraw.h`.
 
 The remaining palette ownership should not be copied into the portable
 renderer. Attached surfaces, palettes, clippers, queried interfaces, and

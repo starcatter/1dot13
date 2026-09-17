@@ -363,6 +363,19 @@ public:
 		suspended = false;
 		return true;
 	}
+	bool getRgbMasks(UINT16& red, UINT16& green, UINT16& blue) const override
+	{
+		red = 0xf800;
+		green = 0x07e0;
+		blue = 0x001f;
+		return true;
+	}
+	bool setPalette(const SGPPaletteEntry* entries) override
+	{
+		return entries != nullptr;
+	}
+	void leaveDisplayMode() override {}
+	void shutdown() override {}
 
 	PresentFrame lastFrame{};
 	int presentCount = 0;

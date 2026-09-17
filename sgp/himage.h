@@ -3,6 +3,7 @@
 
 #include "MemMan.h"
 #include "imgfmt.h"
+#include "presentation/Palette.h"
 
 #include <cstddef>
 
@@ -37,16 +38,6 @@
 #define IMAGE_APPDATA						0x0010
 #define IMAGE_ALLIMAGEDATA			0x000C
 #define IMAGE_ALLDATA						0x001C
-
-// Palette structure, mimics that of Win32
-typedef struct tagSGPPaletteEntry
-{  
-  UINT8 peRed; 
-  UINT8 peGreen; 
-  UINT8 peBlue; 
-  UINT8 peFlags; 
-
-} SGPPaletteEntry; 
 
 #define AUX_FULL_TILE					0x01
 #define AUX_ANIMATED_TILE			0x02

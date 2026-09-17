@@ -77,13 +77,20 @@ bool Sdl3Presenter::initialize(
 
 Sdl3Presenter::~Sdl3Presenter()
 {
+	shutdown();
+}
+
+void Sdl3Presenter::shutdown()
+{
 	if (texture_ != nullptr)
 	{
 		SDL_DestroyTexture(texture_);
+		texture_ = nullptr;
 	}
 	if (renderer_ != nullptr)
 	{
 		SDL_DestroyRenderer(renderer_);
+		renderer_ = nullptr;
 	}
 }
 
@@ -170,6 +177,26 @@ bool Sdl3Presenter::resume()
 	}
 	suspended_ = false;
 	return true;
+}
+
+bool Sdl3Presenter::getRgbMasks(
+	UINT16& red, UINT16& green, UINT16& blue) const
+{
+	red = 0xf800;
+	green = 0x07e0;
+	blue = 0x001f;
+	return true;
+}
+
+bool Sdl3Presenter::setPalette(const SGPPaletteEntry* entries)
+{
+	// The final framebuffer is RGB565. Indexed palettes are consumed while the
+	// engine converts indexed art into that framebuffer, not by SDL.
+	return entries != nullptr;
+}
+
+void Sdl3Presenter::leaveDisplayMode()
+{
 }
 
 }

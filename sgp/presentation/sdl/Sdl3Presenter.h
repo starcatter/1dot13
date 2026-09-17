@@ -23,6 +23,11 @@ public:
 	bool present(const PresentFrame& frame) override;
 	void suspend() override;
 	bool resume() override;
+	bool getRgbMasks(
+		UINT16& red, UINT16& green, UINT16& blue) const override;
+	bool setPalette(const SGPPaletteEntry* entries) override;
+	void leaveDisplayMode() override;
+	void shutdown() override;
 
 private:
 	Sdl3Presenter() = default;

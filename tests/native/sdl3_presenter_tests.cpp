@@ -19,6 +19,13 @@ int main()
 	auto presenter = Sdl3Presenter::create(window, 4, 3, error);
 	assert(presenter != nullptr);
 	assert(error.empty());
+	UINT16 red = 0;
+	UINT16 green = 0;
+	UINT16 blue = 0;
+	assert(presenter->getRgbMasks(red, green, blue));
+	assert(red == 0xf800 && green == 0x07e0 && blue == 0x001f);
+	SGPPaletteEntry palette[256]{};
+	assert(presenter->setPalette(palette));
 
 	PixelSurface frame(4, 3, PixelFormat::rgb565);
 	frame.fill(0x1234);
@@ -36,6 +43,9 @@ int main()
 	PixelSurface indexed(4, 3, PixelFormat::indexed8);
 	assert(!presenter->present({indexed.pixels(), nullptr, 0, true, false}));
 
+	presenter->leaveDisplayMode();
+	presenter->shutdown();
+	assert(!presenter->resume());
 	presenter.reset();
 	SDL_DestroyWindow(window);
 	SDL_Quit();

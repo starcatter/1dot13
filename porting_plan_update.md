@@ -353,7 +353,7 @@ The Windows `DirectDrawPresenter` still creates DirectDraw, requests cooperative
 
 On contemporary Windows, cnc-ddraw supplies much of the behavior users perceive as modern compatibility. Detection in `sgp/sgp.cpp:939-945` and `1221-1226` alters the engine path, while `gamedir/ddraw.ini:8-68` configures scaling, borderless/windowed behavior, presentation, and mouse adjustment. The native engine itself has not yet been modernized beyond this wrapper strategy.
 
-DirectDraw has been removed from the engine-facing video and surface interfaces. `SGPVSurface` stores no DirectDraw pointers or mirror state, the video manager exposes no native DirectDraw object accessors, and the obsolete shared DirectDraw wrapper is no longer compiled. `sgp/WinFont.cpp` renders through a GDI DIB and copies the result into portable storage. Native DirectDraw types and calls are confined to the Windows presenter.
+DirectDraw has been removed from the engine-facing video and surface interfaces. `SGPVSurface` stores no DirectDraw pointers or mirror state, the video manager exposes no native DirectDraw object accessors, and the obsolete shared DirectDraw wrapper is no longer compiled. `sgp/video.cpp` owns the neutral `Presenter` interface and obtains its compatibility backend through a Windows factory, so it no longer includes or names `DirectDrawPresenter`. The palette entry ABI is defined in a neutral presentation header. `sgp/WinFont.cpp` renders through a GDI DIB and copies the result into portable storage. Native DirectDraw types and calls are confined to the Windows presenter implementation.
 
 ### What Can Be Preserved
 

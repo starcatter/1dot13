@@ -23,7 +23,7 @@
 #include "presentation/DirtyRegionTracker.h"
 #include "presentation/PixelSurface.h"
 #include "presentation/Presenter.h"
-#include "presentation/windows/DirectDrawPresenter.h"
+#include "presentation/windows/WindowsPresenterFactory.h"
 #include "UtfConversion.h"
 
 #include <memory>
@@ -120,7 +120,7 @@ static INT16					gsMouseCursorYOffset;
 static MouseCursorBackground	gMouseCursorBackground[2];
 static std::unique_ptr<ja2::presentation::PixelSurface>
 	gMouseCursorBackgroundSurface;
-static std::unique_ptr<ja2::presentation::DirectDrawPresenter> gPresenter;
+static std::unique_ptr<ja2::presentation::Presenter> gPresenter;
 static std::uint64_t gNextPresentationMicroseconds = 0;
 
 static HVOBJECT				gpCursorStore;
@@ -293,14 +293,14 @@ BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *
 	UpdateWindow(hWindow);
 	SetFocus(hWindow);
 
-	ja2::presentation::DirectDrawPresenterCreateResult presenterResult;
-	gPresenter = ja2::presentation::DirectDrawPresenter::create(
+	ja2::presentation::PresenterCreateResult presenterResult;
+	gPresenter = ja2::presentation::createWindowsPresenter(
 		ghWindow, &rcWindow, iScreenMode == 1, SCREEN_WIDTH, SCREEN_HEIGHT,
 		PIXEL_DEPTH, presenterResult);
 	if (!gPresenter)
 	{
 		if (presenterResult ==
-			ja2::presentation::DirectDrawPresenterCreateResult::displayModeFailure)
+			ja2::presentation::PresenterCreateResult::displayModeFailure)
 		{
 			CHAR16 message[256];
 			swprintf(message, Additional113Text[ADDTEXT_DIFFRES_REQUIRED],
