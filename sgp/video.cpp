@@ -101,10 +101,8 @@ INT32													giNumFrames = 0;
 // Direct Draw objects for both the Primary and Backbuffer surfaces
 //
 
-static LPDIRECTDRAW			_gpDirectDrawObject = NULL;
 static LPDIRECTDRAW2			gpDirectDrawObject = NULL;
 
-static LPDIRECTDRAWSURFACE	_gpPrimarySurface = NULL;
 static LPDIRECTDRAWSURFACE2	gpPrimarySurface = NULL;
 static LPDIRECTDRAWSURFACE2	gpBackBuffer = NULL;
 
@@ -114,7 +112,6 @@ static LPDIRECTDRAWSURFACE2	gpBackBuffer = NULL;
 
 static LPDIRECTDRAWSURFACE	_gpFrameBuffer = NULL;
 static LPDIRECTDRAWSURFACE2	gpFrameBuffer = NULL;
-static LPDIRECTDRAWSURFACE	_gpBackBuffer = NULL;
 extern RECT									rcWindow;
 extern POINT									ptWindowSize;
 
@@ -138,7 +135,7 @@ static LPDIRECTDRAWSURFACE2	gpMouseCursorOriginal = NULL;
 static MouseCursorBackground	gMouseCursorBackground[2];
 static std::unique_ptr<ja2::presentation::PixelSurface>
 	gMouseCursorBackgroundSurface;
-static std::unique_ptr<ja2::presentation::Presenter> gPresenter;
+static std::unique_ptr<ja2::presentation::DirectDrawPresenter> gPresenter;
 static std::uint64_t gNextPresentationMicroseconds = 0;
 
 static HVOBJECT				gpCursorStore;
@@ -227,7 +224,6 @@ BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *
 	DDSURFACEDESC SurfaceDescription;
 	DDCOLORKEY	ColorKey;
 	PTR			pTmpPointer;
-	DDSCAPS		SurfaceCaps;
 
 	//
 	// Register debug topics
@@ -318,175 +314,33 @@ BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *
 	UpdateWindow(hWindow);
 	SetFocus(hWindow);
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//
-	// Start up Direct Draw
-	//
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-
-	//
-	// Create the Direct Draw Object
-	//
-
-	ReturnCode = DirectDrawCreate(NULL, &_gpDirectDrawObject, NULL);
-	if (ReturnCode != DD_OK)
+	ja2::presentation::DirectDrawPresenterCreateResult presenterResult;
+	gPresenter = ja2::presentation::DirectDrawPresenter::create(
+		ghWindow, &rcWindow, iScreenMode == 1, SCREEN_WIDTH, SCREEN_HEIGHT,
+		PIXEL_DEPTH, presenterResult);
+	if (!gPresenter)
 	{
-		DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-		return FALSE;
-	}
-
-	ReturnCode = IDirectDraw_QueryInterface( _gpDirectDrawObject, /*&*/IID_IDirectDraw2, (LPVOID *) &gpDirectDrawObject ); // (jonathanl)
-	if (ReturnCode != DD_OK)
-	{
-		DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-		return FALSE;
-	}
-
-	//
-	// Set the exclusive mode
-	//
-	if( 1==iScreenMode ) /* Windowed mode */
-		ReturnCode = IDirectDraw2_SetCooperativeLevel(gpDirectDrawObject, ghWindow, DDSCL_NORMAL );
-	else
-		ReturnCode = IDirectDraw2_SetCooperativeLevel(gpDirectDrawObject, ghWindow, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN );
-
-	if (ReturnCode != DD_OK)
-	{
-		DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-		return FALSE;
-	}
-
-	//
-	// Set the display mode
-	//
-	if( 0==iScreenMode ) /* Fullscreen mode */
-	{
-		ReturnCode = IDirectDraw2_SetDisplayMode( gpDirectDrawObject, SCREEN_WIDTH, SCREEN_HEIGHT, PIXEL_DEPTH, 0, 0 );
-		if (ReturnCode != DD_OK)
+		if (presenterResult ==
+			ja2::presentation::DirectDrawPresenterCreateResult::displayModeFailure)
 		{
-			IDirectDraw2_SetCooperativeLevel(gpDirectDrawObject, ghWindow, DDSCL_NORMAL);
-
-			CHAR16 sString[256];
-			swprintf(sString, Additional113Text[ADDTEXT_DIFFRES_REQUIRED], SCREEN_WIDTH, SCREEN_HEIGHT);
+			CHAR16 message[256];
+			swprintf(message, Additional113Text[ADDTEXT_DIFFRES_REQUIRED],
+				SCREEN_WIDTH, SCREEN_HEIGHT);
 			Platform::ShowDialog(APPLICATION_NAME,
-				ja2::text::utf16ToUtf8ReplacingInvalid(sString), Platform::DialogKind::warning);
+				ja2::text::utf16ToUtf8ReplacingInvalid(message),
+				Platform::DialogKind::warning);
 			PostQuitMessage(1);
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
 		}
+		return FALSE;
 	}
+	gpDirectDrawObject = gPresenter->directDrawObject();
+	gpPrimarySurface = gPresenter->primarySurface();
+	gpBackBuffer = gPresenter->backBuffer();
 
 	gusScreenWidth = SCREEN_WIDTH;
 	gusScreenHeight = SCREEN_HEIGHT;
 	gubScreenPixelDepth = PIXEL_DEPTH;
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//
-	// Setup all the surfaces
-	//
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-
-	//
-	// Initialize Primary Surface along with BackBuffer
-	//
-
-	ZEROMEM(SurfaceDescription);
-	if( 1==iScreenMode ) /* Windowed mode */
-	{
-		LPDIRECTDRAWCLIPPER clip;
-
-		// Create a primary surface and a backbuffer in system memory
-		SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-		SurfaceDescription.dwFlags = DDSD_CAPS;
-		SurfaceDescription.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-
-		ReturnCode = IDirectDraw2_CreateSurface ( gpDirectDrawObject, &SurfaceDescription, &_gpPrimarySurface, NULL );
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-
-		ReturnCode = DirectDrawCreateClipper ( 0, &clip, NULL );
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-
-		ReturnCode = IDirectDrawClipper_SetHWnd( clip, 0, ghWindow);
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-
-		ReturnCode = IDirectDrawSurface_SetClipper( _gpPrimarySurface, clip);
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-
-		ReturnCode = IDirectDrawSurface_QueryInterface(_gpPrimarySurface, /*&*/IID_IDirectDrawSurface2, (LPVOID *)&gpPrimarySurface); // (jonathanl)
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-
-		// Backbuffer
-		ZEROMEM(SurfaceDescription);
-		SurfaceDescription.dwSize		 = sizeof(DDSURFACEDESC);
-		SurfaceDescription.dwFlags		= DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
-		SurfaceDescription.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-		SurfaceDescription.dwWidth		= SCREEN_WIDTH;
-		SurfaceDescription.dwHeight		= SCREEN_HEIGHT;
-		ReturnCode = IDirectDraw2_CreateSurface ( gpDirectDrawObject, &SurfaceDescription, &_gpBackBuffer, NULL );
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-
-
-		ReturnCode = IDirectDrawSurface_QueryInterface(_gpBackBuffer, /*&*/IID_IDirectDrawSurface2, (LPVOID *)&gpBackBuffer); // (jonathanl)
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-	}
-	else /* iScreenMode = FULLSCREEN */
-	{
-		SurfaceDescription.dwSize = sizeof(DDSURFACEDESC);
-		SurfaceDescription.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-		SurfaceDescription.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
-		SurfaceDescription.dwBackBufferCount = 1;
-
-		ReturnCode = IDirectDraw2_CreateSurface ( gpDirectDrawObject, &SurfaceDescription, &_gpPrimarySurface, NULL );
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-
-
-		ReturnCode = IDirectDrawSurface_QueryInterface(_gpPrimarySurface, /*&*/IID_IDirectDrawSurface2, (LPVOID *) &gpPrimarySurface);
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-
-		SurfaceCaps.dwCaps = DDSCAPS_BACKBUFFER;
-		ReturnCode = IDirectDrawSurface2_GetAttachedSurface( gpPrimarySurface, &SurfaceCaps, &gpBackBuffer );
-		if (ReturnCode != DD_OK)
-		{
-			DirectXAttempt ( ReturnCode, __LINE__, __FILE__ );
-			return FALSE;
-		}
-	} /* endif iScreenMode */
 
 	//
 	// Initialize the frame buffer
@@ -590,10 +444,6 @@ BOOLEAN InitializeVideoManager(HINSTANCE hInstance, UINT16 usCommandShow, void *
 		std::make_unique<ja2::presentation::PixelSurface>(
 			MAX_CURSOR_WIDTH, MAX_CURSOR_HEIGHT,
 			ja2::presentation::PixelFormat::rgb565, 4);
-	gPresenter =
-		std::make_unique<ja2::presentation::DirectDrawPresenter>(
-			_gpPrimarySurface, gpPrimarySurface, gpBackBuffer, &rcWindow,
-			iScreenMode == 1);
 
 	//
 	// Initialize state variables
@@ -635,7 +485,6 @@ void ShutdownVideoManager(void)
 	// down
 	//
 
-	gPresenter.reset();
 	if(gpMouseCursorOriginal)
 	{
 		IDirectDrawSurface2_Release(gpMouseCursorOriginal);
@@ -647,24 +496,10 @@ void ShutdownVideoManager(void)
 		gpMouseCursor = NULL;
 	}
 	gMouseCursorBackgroundSurface.reset();
-	if(gpBackBuffer)
-	{
-		IDirectDrawSurface2_Release(gpBackBuffer);
-		gpBackBuffer = NULL;
-	}
-	if(gpPrimarySurface)
-	{
-		IDirectDrawSurface2_Release(gpPrimarySurface);
-		gpPrimarySurface = NULL;
-	}
-
-	if(gpDirectDrawObject)
-	{
-		IDirectDraw2_RestoreDisplayMode( gpDirectDrawObject );
-		IDirectDraw2_SetCooperativeLevel(gpDirectDrawObject, ghWindow, DDSCL_NORMAL );
-		IDirectDraw2_Release( gpDirectDrawObject );
-		gpDirectDrawObject = NULL;
-	}
+	gPresenter.reset();
+	gpBackBuffer = NULL;
+	gpPrimarySurface = NULL;
+	gpDirectDrawObject = NULL;
 
 	// destroy the window
 	// DestroyWindow( ghWindow );
@@ -697,8 +532,10 @@ void SuspendVideoManager(void)
 
 void DoTester( )
 {
-	IDirectDraw2_RestoreDisplayMode( gpDirectDrawObject );
-	IDirectDraw2_SetCooperativeLevel(gpDirectDrawObject, ghWindow, DDSCL_NORMAL );
+	if (gPresenter)
+	{
+		gPresenter->leaveDisplayMode();
+	}
 	//	ShowCursor(TRUE);
 }
 
@@ -2434,11 +2271,12 @@ void FatalError( const STR8 pError, ...)
 
 	gfFatalError = TRUE;
 
-	// Release DDraw
-	if(gpDirectDrawObject)
+	// Release the active presentation backend.
+	if(gPresenter)
 	{
-		IDirectDraw2_RestoreDisplayMode( gpDirectDrawObject );
-		IDirectDraw2_Release( gpDirectDrawObject );
+		gPresenter->shutdown();
+		gpBackBuffer = NULL;
+		gpPrimarySurface = NULL;
 		gpDirectDrawObject = NULL;
 	}
 	ShowWindow( ghWindow, SW_HIDE );
@@ -2457,9 +2295,6 @@ void FatalError( const STR8 pError, ...)
 * SnapshotSmall
 *
 *		Grabs the canonical back buffer and stores it in the movie-frame cache.
-* uncompressed Targa file. Each time the routine is called, it increments the
-* file number by one. The files are create in the current directory, usually the
-* EXE directory. This routine produces 1/4 sized images.
 *
 *********************************************************************************/
 

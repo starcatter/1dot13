@@ -6,14 +6,16 @@ the legacy COM lifetime is correct.
 
 ## Surface roles and ownership
 
-`sgp/video.cpp` creates the reserved renderer surfaces directly:
+`DirectDrawPresenter` now owns the DirectDraw device, cooperative/display mode,
+primary surface, and windowed or fullscreen back buffer. `sgp/video.cpp` still
+creates the frame and legacy cursor compatibility surfaces directly:
 
 | Role | Creation/reference path | Current shutdown |
 | --- | --- | --- |
-| DirectDraw object | `DirectDrawCreate` gives `_gpDirectDrawObject`; `QueryInterface` gives `gpDirectDrawObject` | releases only `gpDirectDrawObject` |
-| Primary | `CreateSurface` gives `_gpPrimarySurface`; `QueryInterface` gives `gpPrimarySurface` | releases only `gpPrimarySurface` |
-| Back buffer, windowed | `CreateSurface` gives `_gpBackBuffer`; `QueryInterface` gives `gpBackBuffer` | releases only `gpBackBuffer` |
-| Back buffer, fullscreen | `GetAttachedSurface` gives `gpBackBuffer` | releases `gpBackBuffer` |
+| DirectDraw object | `DirectDrawPresenter::create` creates both interfaces | presenter releases both interfaces |
+| Primary | presenter creates and retains both interfaces | presenter releases both interfaces |
+| Back buffer, windowed | presenter creates and retains both interfaces | presenter releases both interfaces |
+| Back buffer, fullscreen | presenter obtains the attached surface | presenter releases the attached reference |
 | Frame buffer | `CreateSurface` gives `_gpFrameBuffer`; `QueryInterface` gives `gpFrameBuffer` | neither reference is visibly released |
 | Cursor and cursor original | each has a creator-side `_gp*` reference and a queried `gp*` reference | releases only queried references |
 | Cursor background | one shared project-owned `PixelSurface` used by both metadata slots | released automatically |
