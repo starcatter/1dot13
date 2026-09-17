@@ -106,8 +106,10 @@ surface accessor remains in the video or logical-surface interfaces.
    and focus events into the existing logical/Win32-compatible input
    vocabulary. A concrete native-tested sink now delivers that vocabulary to
    the existing input manager, maintains physical-key state, and synthesizes
-   releases on focus loss. Selecting the SDL host for the production game loop
-   is still pending.
+   releases on focus loss. The complete legacy input manager now compiles
+   natively, and an end-to-end test carries SDL keyboard/mouse events through
+   the translator and sink into its real `InputAtom` queue. Selecting the SDL
+   host for the production game loop is still pending.
 7. Completed: Win32 class/window creation and DirectDraw presenter construction
    live in `platform/windows/VideoBootstrap.cpp`. The common `video.cpp` accepts
    an already-created presenter, contains no Win32 types or APIs, and is built

@@ -1,16 +1,16 @@
-	#include "types.h"
-	#include <stdio.h>
-	#include <memory.h>
-	#include <mutex>
-	#include "DEBUG.H"
-	#include "input.h"
-	#include "MemMan.h"
-	#include "english.h"
-		#include "video.h"
-	#include "local.h"
-	#include "platform/Clock.h"
-	#include "platform/Input.h"
-	#include "platform/Window.h"
+#include "types.h"
+#include <stdio.h>
+#include <memory.h>
+#include <mutex>
+#include "DEBUG.H"
+#include "input.h"
+#include "MemMan.h"
+#include "english.h"
+#include "ScreenGeometry.h"
+#include "video.h"
+#include "platform/Clock.h"
+#include "platform/Input.h"
+#include "platform/Window.h"
 
 
 // Make sure to refer to the translation table which is within one of the following files (depending
@@ -172,6 +172,7 @@ BOOLEAN InitializeInputManager(void)
 	const bool eventSourceReady = Platform::Input::InitializeEventSource();
 	DbgMessage(TOPIC_INPUT, DBG_LEVEL_2,
 		String("Input event source initialized: %d", eventSourceReady ? 1 : 0));
+	(void)eventSourceReady;
 	return TRUE;
 }
 
@@ -260,7 +261,7 @@ void InternalQueueEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam)
 		guiX2ButtonRepeatTimer = 0;
 
 
-	if ( (ubInputEvent == LEFT_BUTTON_UP) )
+	if (ubInputEvent == LEFT_BUTTON_UP)
 	{
 		// Do we have a double click
 		if ( ( uiTimer - guiSingleClickTimer ) < DBL_CLK_TIME )
@@ -1097,11 +1098,10 @@ void	LinkNextString(StringInput *pCurrentString, StringInput *pNextString)
 
 BOOLEAN CharacterIsValid(UINT16 usCharacter, UINT16 *pFilter)
 {
-	UINT32 uiIndex, uiEndIndex;
+	UINT32 uiIndex;
 
 	if (pFilter != NULL)
 	{
-		uiEndIndex = *pFilter;
 		for (uiIndex = 1; uiIndex <= *pFilter; uiIndex++)
 		{
 			if (usCharacter == *(pFilter + uiIndex))

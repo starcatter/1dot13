@@ -77,6 +77,13 @@ target_link_libraries(ja2_native_video_manager PRIVATE ja2_shared_core)
 target_compile_options(ja2_native_video_manager PRIVATE
   -Wall -Wextra -Wpedantic -Werror)
 
+add_library(ja2_native_input_manager OBJECT sgp/input.cpp)
+target_include_directories(ja2_native_input_manager PUBLIC
+  "${CMAKE_SOURCE_DIR}/sgp")
+target_link_libraries(ja2_native_input_manager PRIVATE ja2_shared_core)
+target_compile_options(ja2_native_input_manager PRIVATE
+  -Wall -Wextra -Wpedantic -Werror)
+
 enable_testing()
 add_executable(ja2_shared_core_smoke tests/native/shared_core_smoke.cpp)
 target_link_libraries(ja2_shared_core_smoke PRIVATE ja2_shared_core)
@@ -200,6 +207,18 @@ target_compile_options(ja2_sdl3_legacy_input_sink_tests PRIVATE
   -Wall -Wextra -Wpedantic -Werror)
 add_test(NAME ja2_sdl3_legacy_input_sink_tests
   COMMAND ja2_sdl3_legacy_input_sink_tests)
+
+add_executable(ja2_sdl3_input_pipeline_tests
+  tests/native/sdl3_input_pipeline_tests.cpp
+  $<TARGET_OBJECTS:ja2_native_input_manager>)
+target_link_libraries(ja2_sdl3_input_pipeline_tests PRIVATE
+  ja2_shared_core ja2_sdl3_backend)
+target_compile_options(ja2_sdl3_input_pipeline_tests PRIVATE
+  -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_sdl3_input_pipeline_tests
+  COMMAND ja2_sdl3_input_pipeline_tests)
+set_tests_properties(ja2_sdl3_input_pipeline_tests PROPERTIES
+  ENVIRONMENT "SDL_VIDEODRIVER=dummy;SDL_RENDER_DRIVER=software")
 
 # Keep the focused characterization suites independently linkable while also
 # making the complete native checkpoint available through one root CTest run.

@@ -34,6 +34,21 @@ void Sdl3LegacyInputSink::keyUp(
 void Sdl3LegacyInputSink::mouse(UINT16 event, SGPPoint position,
 	INT16 wheelDelta, bool updateWheelState)
 {
+	lastMousePosition_ = position;
+	switch (event)
+	{
+		case LEFT_BUTTON_DOWN: pressedMouseButtons_[0] = true; break;
+		case LEFT_BUTTON_UP: pressedMouseButtons_[0] = false; break;
+		case RIGHT_BUTTON_DOWN: pressedMouseButtons_[1] = true; break;
+		case RIGHT_BUTTON_UP: pressedMouseButtons_[1] = false; break;
+		case MIDDLE_BUTTON_DOWN: pressedMouseButtons_[2] = true; break;
+		case MIDDLE_BUTTON_UP: pressedMouseButtons_[2] = false; break;
+		case X1_BUTTON_DOWN: pressedMouseButtons_[3] = true; break;
+		case X1_BUTTON_UP: pressedMouseButtons_[3] = false; break;
+		case X2_BUTTON_DOWN: pressedMouseButtons_[4] = true; break;
+		case X2_BUTTON_UP: pressedMouseButtons_[4] = false; break;
+		default: break;
+	}
 	Input::SetCursorPosition(position);
 	InputInjectMouseEvent(event, position, wheelDelta,
 		updateWheelState ? TRUE : FALSE);
@@ -54,6 +69,19 @@ void Sdl3LegacyInputSink::focusChanged(bool active)
 			}
 		}
 		Input::ClearLegacyKeyState();
+		constexpr std::array<UINT16, 5> releaseEvents{
+			LEFT_BUTTON_UP, RIGHT_BUTTON_UP, MIDDLE_BUTTON_UP,
+			X1_BUTTON_UP, X2_BUTTON_UP};
+		for (std::size_t button = 0;
+			button < pressedMouseButtons_.size(); ++button)
+		{
+			if (pressedMouseButtons_[button])
+			{
+				InputInjectMouseEvent(releaseEvents[button],
+					lastMousePosition_, 0, FALSE);
+				pressedMouseButtons_[button] = false;
+			}
+		}
 	}
 	if (focusChangedHandler_ != nullptr)
 	{

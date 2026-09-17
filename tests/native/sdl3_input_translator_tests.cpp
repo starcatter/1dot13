@@ -79,7 +79,7 @@ int main()
 	assert(sink.keys.size() == 1);
 	assert(sink.keys.back().down);
 	assert(sink.keys.back().virtualKey == 0x41);
-	assert(sink.keys.back().keyData == (4U << 16));
+	assert(sink.keys.back().keyData == (0x1EU << 16));
 
 	event.key.repeat = true;
 	translator.dispatch(event);

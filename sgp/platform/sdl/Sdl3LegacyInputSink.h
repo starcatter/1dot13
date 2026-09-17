@@ -27,6 +27,8 @@ public:
 private:
 	FocusChangedHandler focusChangedHandler_;
 	std::array<UINT32, 256> pressedKeyData_{};
+	std::array<bool, 5> pressedMouseButtons_{};
+	SGPPoint lastMousePosition_{};
 };
 
 }
