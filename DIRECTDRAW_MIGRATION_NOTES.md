@@ -104,8 +104,10 @@ surface accessor remains in the video or logical-surface interfaces.
    SDL types remain confined to backend headers. A tested SDL input translator
    converts letterboxed pointer coordinates and maps keyboard, mouse, wheel,
    and focus events into the existing logical/Win32-compatible input
-   vocabulary; the small sink that connects those events to the production
-   game state is still pending.
+   vocabulary. A concrete native-tested sink now delivers that vocabulary to
+   the existing input manager, maintains physical-key state, and synthesizes
+   releases on focus loss. Selecting the SDL host for the production game loop
+   is still pending.
 
 The replacement shutdown invariant is strict: stop presentation, destroy
 cursor/font consumers, destroy logical surfaces and palettes, then destroy the

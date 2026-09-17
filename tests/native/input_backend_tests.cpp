@@ -34,6 +34,15 @@ int main()
 	assert(!Platform::Input::IsCursorRestricted());
 
 	assert(!Platform::Input::IsLegacyKeyPressed(0x41));
+	Platform::Input::SetLegacyKeyPressed(0x41, true);
+	Platform::Input::SetLegacyKeyPressed(0x10, true);
+	assert(Platform::Input::IsLegacyKeyPressed(0x41));
+	assert(Platform::Input::IsLegacyKeyPressed(0x10));
+	Platform::Input::SetLegacyKeyPressed(0x41, false);
+	assert(!Platform::Input::IsLegacyKeyPressed(0x41));
+	assert(Platform::Input::IsLegacyKeyPressed(0x10));
+	Platform::Input::ClearLegacyKeyState();
+	assert(!Platform::Input::IsLegacyKeyPressed(0x10));
 	Platform::Input::FlushPendingKeyboardEvents();
 	Platform::Input::ShutdownEventSource();
 }

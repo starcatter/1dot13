@@ -24,6 +24,11 @@ namespace Platform::Input
 	// Legacy configurable keys retain their Win32 virtual-key numeric values.
 	bool IsLegacyKeyPressed(UINT8 key) noexcept;
 
+	// Event-driven hosts maintain the physical-key snapshot used by configurable
+	// key bindings. Polling hosts may implement these as no-ops.
+	void SetLegacyKeyPressed(UINT8 key, bool pressed) noexcept;
+	void ClearLegacyKeyState() noexcept;
+
 	// Flushes queued native keyboard events before the engine queue is cleared.
 	void FlushPendingKeyboardEvents() noexcept;
 }

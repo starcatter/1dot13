@@ -163,6 +163,16 @@ bool IsLegacyKeyPressed(UINT8 key) noexcept
 	return GetAsyncKeyState(static_cast<int>(key)) != 0;
 }
 
+void SetLegacyKeyPressed(UINT8, bool) noexcept
+{
+	// The Windows backend polls the operating system's live key state.
+}
+
+void ClearLegacyKeyState() noexcept
+{
+	// The Windows backend polls the operating system's live key state.
+}
+
 void FlushPendingKeyboardEvents() noexcept
 {
 	MSG message{};
