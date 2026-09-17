@@ -16,7 +16,7 @@ the legacy COM lifetime is correct.
 | Back buffer, fullscreen | `GetAttachedSurface` gives `gpBackBuffer` | releases `gpBackBuffer` |
 | Frame buffer | `CreateSurface` gives `_gpFrameBuffer`; `QueryInterface` gives `gpFrameBuffer` | neither reference is visibly released |
 | Cursor and cursor original | each has a creator-side `_gp*` reference and a queried `gp*` reference | releases only queried references |
-| Cursor background 0 | `_pSurface` creator reference plus queried `pSurface` | releases only queried reference |
+| Cursor background | one shared project-owned `PixelSurface` used by both metadata slots | released automatically |
 | Window clipper | local `clip`, attached to the windowed primary | no local release after attachment is visible |
 | 8-bit palette | global `gpDirectDrawPalette` | no explicit release is visible |
 
@@ -64,27 +64,32 @@ acquiring a GDI context and marks the mirror authoritative after drawing.
 
 This makes a useful generic-surface slice portable without breaking the many
 copies between generic and reserved surfaces. Default/video-memory generic
-surfaces and the reserved primary/back/cursor surfaces remain DirectDraw owned.
-The reserved frame buffer is now PixelSurface-canonical: engine locks and all
-software rendering use its portable allocation. The Windows refresh and tactical
-scroll paths synchronize its compatibility mirror immediately before their raw
-DirectDraw copies. DirectDraw still performs final presentation and cursor
-composition. The next slice should move cursor save/compose/restore onto portable
-storage, then make final presentation the only DirectDraw consumer. The
-compatibility mirror can be deleted after WinFont and all mixed paths have
-portable owners.
+surfaces and the reserved primary surface remain DirectDraw owned. The reserved
+frame buffer, back buffer, and logical cursor buffer are now
+PixelSurface-canonical. Frame refresh, tactical scrolling in all eight
+directions, overlays, fades, rain, and cursor save/compose/restore operate on
+portable storage. Unkeyed copies use row memcpy and overlap-safe directional
+memmove, avoiding per-pixel full-frame and scrolling costs. DirectDraw receives
+the completed back buffer only at the Windows presentation boundary. Host
+submissions are coalesced to the legacy 16 ms cadence without sleeping the game
+thread, preserving blocking transition animations without flooding the wrapper.
+The
+fullscreen presenter retains its legacy post-flip page-recovery bookkeeping.
+The compatibility mirrors can be deleted after WinFont, remaining mixed paths,
+and default/video-memory generic surfaces have portable owners.
 
 ## Replacement sequence
 
 1. Give every generic and reserved logical surface one project-owned storage
    representation; preserve existing numeric handles and lock/pitch behavior.
-   Explicit system-memory generic surfaces and the reserved frame buffer are
-   complete behind a lazy mirror.
+   Explicit system-memory generic surfaces plus the reserved frame, back, and
+   cursor buffers are complete behind a lazy mirror.
 2. Route fills and cross-surface copies through it. The lazy mirror keeps mixed
    generic/reserved copies valid while the reserved surfaces are converted.
 3. Keep the existing software blitters, including `vobject_blitters.cpp`, on
    their raw pixel-buffer interface.
-4. Make cursor save/compose/restore operate on the project-owned back buffer.
+4. Completed: cursor save/compose/restore operates on the project-owned back
+   buffer and a shared portable background surface.
 5. Implement final upload behind `Presenter`; keep Windows/cnc-ddraw as the
    runnable comparison oracle until the SDL presenter is equivalent.
 6. Add an SDL host/event adapter only after surface ownership no longer depends

@@ -1980,21 +1980,20 @@ void ContractListRegionBoxGlow( UINT16 usCount )
 		return;
 	}
 
-	// if not ready to change glow phase yet, leave
-	if ( !gfGlowTimerExpired )
-		return;
-
-	// change direction of glow?
-	if((iColorNum==0)||(iColorNum==10))
+	if ( gfGlowTimerExpired )
 	{
-		fDelta=!fDelta;
-	}
+		// change direction of glow?
+		if((iColorNum==0)||(iColorNum==10))
+		{
+			fDelta=!fDelta;
+		}
 
-	// increment color
-	if(!fDelta)
-		iColorNum++;
-	else
-		iColorNum--;
+		// increment color
+		if(!fDelta)
+			iColorNum++;
+		else
+			iColorNum--;
+	}
 
 	sYAdd = 0;
 
@@ -3699,11 +3698,6 @@ void HighLightAssignLine()
 		return;
 	}
 
-	// if not ready to change glow phase yet, leave
-	if ( !gfGlowTimerExpired )
-		return;
-
-
 	// check if we have moved lines, if so, reset
 	if( uiOldHighlight != giAssignHighLine )
 	{
@@ -3714,14 +3708,17 @@ void HighLightAssignLine()
 	}
 
 
-	if((iColorNum==0)||(iColorNum==10))
+	if ( gfGlowTimerExpired )
 	{
-	fDelta=!fDelta;
+		if((iColorNum==0)||(iColorNum==10))
+		{
+			fDelta=!fDelta;
+		}
+		if(!fDelta)
+			iColorNum++;
+		else
+			iColorNum--;
 	}
-	if(!fDelta)
-		iColorNum++;
-	else
-		iColorNum--;
 
 	const auto yStart = UI_CHARLIST.y;
 	const auto yOffset = UI_CHARLIST.yOffset;
@@ -3780,11 +3777,6 @@ void HighLightDestLine()
 		return;
 	}
 
-	// if not ready to change glow phase yet, leave
-	if ( !gfGlowTimerExpired )
-		return;
-
-
 	// check if we have moved lines, if so, reset
 	if( uiOldHighlight != giDestHighLine )
 	{
@@ -3795,14 +3787,17 @@ void HighLightDestLine()
 	}
 
 
-	if((iColorNum==0)||(iColorNum==10))
+	if ( gfGlowTimerExpired )
 	{
-	fDelta=!fDelta;
+		if((iColorNum==0)||(iColorNum==10))
+		{
+			fDelta=!fDelta;
+		}
+		if(!fDelta)
+			iColorNum++;
+		else
+			iColorNum--;
 	}
-	if(!fDelta)
-		iColorNum++;
-	else
-		iColorNum--;
 
 
 	pDestBuf = LockVideoSurface( FRAME_BUFFER, &uiDestPitchBYTES );
@@ -3862,11 +3857,6 @@ void HighLightSleepLine()
 		return;
 	}
 
-	// if not ready to change glow phase yet, leave
-	if ( !gfGlowTimerExpired )
-		return;
-
-
 	// check if we have moved lines, if so, reset
 	if( uiOldHighlight != giSleepHighLine )
 	{
@@ -3877,14 +3867,17 @@ void HighLightSleepLine()
 	}
 
 
-	if((iColorNum==0)||(iColorNum==10))
+	if ( gfGlowTimerExpired )
 	{
-	fDelta=!fDelta;
+		if((iColorNum==0)||(iColorNum==10))
+		{
+			fDelta=!fDelta;
+		}
+		if(!fDelta)
+			iColorNum++;
+		else
+			iColorNum--;
 	}
-	if(!fDelta)
-		iColorNum++;
-	else
-		iColorNum--;
 
 
 	pDestBuf = LockVideoSurface( FRAME_BUFFER, &uiDestPitchBYTES );

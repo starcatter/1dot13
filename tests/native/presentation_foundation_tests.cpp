@@ -248,6 +248,17 @@ void testBlits()
 	assert(pixelAt(overlap, 1, 0) == 1);
 	assert(pixelAt(overlap, 2, 0) == 2);
 	assert(pixelAt(overlap, 3, 0) == 3);
+
+	PixelSurface vertical(2, 4, PixelFormat::rgb565, 8);
+	vertical.fillRect({0, 0, 2, 1}, 1);
+	vertical.fillRect({0, 1, 2, 2}, 2);
+	vertical.fillRect({0, 2, 2, 3}, 3);
+	vertical.fillRect({0, 3, 2, 4}, 4);
+	assert(vertical.blitFrom(vertical, {0, 0, 2, 3}, 0, 1));
+	assert(pixelAt(vertical, 0, 0) == 1);
+	assert(pixelAt(vertical, 0, 1) == 1);
+	assert(pixelAt(vertical, 0, 2) == 2);
+	assert(pixelAt(vertical, 0, 3) == 3);
 }
 
 void testNearestStretch()

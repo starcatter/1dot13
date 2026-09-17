@@ -39,8 +39,6 @@ extern void				 InvalidateFrameBuffer(void);
 extern void				 SetFrameBufferRefreshOverride(PTR pFrameBufferRefreshOverride);
 extern PTR					LockPrimarySurface(UINT32 *uiPitch);
 extern void				 UnlockPrimarySurface(void);
-extern PTR					LockBackBuffer(UINT32 *uiPitch);
-extern void				 UnlockBackBuffer(void);
 extern PTR					LockFrameBuffer(UINT32 *uiPitch);
 extern void				 UnlockFrameBuffer(void);
 extern PTR					LockMouseBuffer(UINT32 *uiPitch);

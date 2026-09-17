@@ -526,7 +526,8 @@ BYTE *LockVideoSurface( UINT32 uiVSurface, UINT32 *puiPitch )
 
 	if ( uiVSurface == BACKBUFFER )
 	{
-		return SurfaceData::SetSurfaceData(uiVSurface, (BYTE *)LockBackBuffer( puiPitch ));
+		return SurfaceData::SetSurfaceData(uiVSurface,
+			LockVideoSurfaceBuffer(ghBackBuffer, puiPitch));
 	}
 
 	if ( uiVSurface == FRAME_BUFFER )
@@ -537,7 +538,8 @@ BYTE *LockVideoSurface( UINT32 uiVSurface, UINT32 *puiPitch )
 
 	if ( uiVSurface == MOUSE_BUFFER )
 	{
-		return SurfaceData::SetSurfaceData(uiVSurface, (BYTE *)LockMouseBuffer( puiPitch ));
+		return SurfaceData::SetSurfaceData(uiVSurface,
+			LockVideoSurfaceBuffer(ghMouseBuffer, puiPitch));
 	}
 
 	//
@@ -582,7 +584,7 @@ void UnLockVideoSurface( UINT32 uiVSurface )
 
 	if ( uiVSurface == BACKBUFFER )
 	{
-		UnlockBackBuffer();
+		UnLockVideoSurfaceBuffer(ghBackBuffer);
 		return;
 	}
 
@@ -594,7 +596,7 @@ void UnLockVideoSurface( UINT32 uiVSurface )
 
 	if ( uiVSurface == MOUSE_BUFFER )
 	{
-		UnlockMouseBuffer();
+		UnLockVideoSurfaceBuffer(ghMouseBuffer);
 		return;
 	}
 
@@ -759,6 +761,12 @@ BOOLEAN SetPrimaryVideoSurfaces( )
 
 	ghBackBuffer = CreateVideoSurfaceFromDDSurface( pSurface );
 	CHECKF( ghBackBuffer != NULL );
+	ghBackBuffer->pixelSurface =
+		std::make_unique<ja2::presentation::PixelSurface>(
+			ghBackBuffer->usWidth, ghBackBuffer->usHeight,
+			PixelFormatForSurface(ghBackBuffer), 4);
+	ghBackBuffer->directDrawSurfaceDirty = true;
+	CHECKF(SyncPixelSurfaceFromDirectDraw(ghBackBuffer));
 	SurfaceData::RegisterSurface(BACKBUFFER,ghBackBuffer);
 
 	//
@@ -769,6 +777,13 @@ BOOLEAN SetPrimaryVideoSurfaces( )
 
 	ghMouseBuffer = CreateVideoSurfaceFromDDSurface( pSurface );
 	CHECKF( ghMouseBuffer != NULL );
+	ghMouseBuffer->pixelSurface =
+		std::make_unique<ja2::presentation::PixelSurface>(
+			ghMouseBuffer->usWidth, ghMouseBuffer->usHeight,
+			PixelFormatForSurface(ghMouseBuffer), 4);
+	ghMouseBuffer->pixelSurface->setColorKey(0);
+	ghMouseBuffer->directDrawSurfaceDirty = true;
+	CHECKF(SyncPixelSurfaceFromDirectDraw(ghMouseBuffer));
 	SurfaceData::RegisterSurface(MOUSE_BUFFER,ghMouseBuffer);
 
 
@@ -1492,6 +1507,23 @@ void UnLockVideoSurfaceBuffer( HVSURFACE hVSurface )
 	{
 		UpdateBackupSurface( hVSurface );
 	}
+}
+
+ja2::presentation::PixelSurface *GetVideoSurfacePixelSurface(
+	HVSURFACE hVSurface )
+{
+	Assert(hVSurface != NULL);
+	if (!hVSurface->pixelSurface || !SyncPixelSurfaceFromDirectDraw(hVSurface))
+	{
+		return NULL;
+	}
+	return hVSurface->pixelSurface.get();
+}
+
+void NotifyVideoSurfacePixelModified( HVSURFACE hVSurface )
+{
+	Assert(hVSurface != NULL);
+	MarkPixelSurfaceModified(hVSurface);
 }
 
 // Given an HIMAGE object, blit imagery into existing Video Surface. Can be from 8->16 BPP

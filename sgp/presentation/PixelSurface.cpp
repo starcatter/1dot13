@@ -226,6 +226,46 @@ bool PixelSurface::blitFrom(
 		return true;
 	}
 
+	if (!options.useSourceColorKey && !options.useDestinationColorKey)
+	{
+		const std::size_t pixelBytes = bytesPerPixel();
+		const std::size_t copyBytes =
+			static_cast<std::size_t>(copyWidth) * pixelBytes;
+		const auto copyRow = [&](INT32 row)
+		{
+			BYTE* destination = pixels_.data() +
+				static_cast<std::size_t>(destinationY + row) * pitchBytes_ +
+				static_cast<std::size_t>(destinationX) * pixelBytes;
+			const BYTE* sourceRow = source.pixels_.data() +
+				static_cast<std::size_t>(src.iTop + row) * source.pitchBytes_ +
+				static_cast<std::size_t>(src.iLeft) * pixelBytes;
+			if (this == &source)
+			{
+				std::memmove(destination, sourceRow, copyBytes);
+			}
+			else
+			{
+				std::memcpy(destination, sourceRow, copyBytes);
+			}
+		};
+
+		if (this == &source && destinationY > src.iTop)
+		{
+			for (INT32 y = copyHeight; y-- > 0;)
+			{
+				copyRow(y);
+			}
+		}
+		else
+		{
+			for (INT32 y = 0; y < copyHeight; ++y)
+			{
+				copyRow(y);
+			}
+		}
+		return true;
+	}
+
 	const std::vector<BYTE>* sourcePixels = &source.pixels_;
 	std::vector<BYTE> snapshot;
 	if (this == &source)
