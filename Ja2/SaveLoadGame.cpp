@@ -8154,6 +8154,11 @@ BOOLEAN LoadWatchedLocsFromSavedGame( HWFILE hFile )
 
 void CreateSavedGameFileNameFromNumber( UINT8 ubSaveGameID, STR pzNewFileName )
 {
+	const std::string quickSaveName = ja2::text::utf16ToUtf8( pMessageStrings[ MSG_QUICKSAVE_NAME ] );
+	const std::string autoSaveName = ja2::text::utf16ToUtf8( pMessageStrings[ MSG_SAVE_AUTOSAVE_FILENAME ] );
+	const std::string saveName = ja2::text::utf16ToUtf8( pMessageStrings[ MSG_SAVE_NAME ] );
+	const std::string extension = ja2::text::utf16ToUtf8( pMessageStrings[ MSG_SAVEEXTENSION ] );
+
 	//if we are creating the QuickSave file
 	if( ubSaveGameID == 0 )
 	{
@@ -8163,32 +8168,32 @@ void CreateSavedGameFileNameFromNumber( UINT8 ubSaveGameID, STR pzNewFileName )
 		{
 			//if we are loading a game, and the user hasnt saved any consecutinve saves, load the defualt save
 			if( guiCurrentQuickSaveNumber == 0 )
-				sprintf( pzNewFileName , "%s\\%S.%S", gSaveDir, pMessageStrings[ MSG_QUICKSAVE_NAME ], pMessageStrings[ MSG_SAVEEXTENSION ] );
+				sprintf( pzNewFileName , "%s\\%s.%s", gSaveDir, quickSaveName.c_str(), extension.c_str() );
 			else
-				sprintf( pzNewFileName , "%s\\%S%02d.%S", gSaveDir, pMessageStrings[ MSG_QUICKSAVE_NAME ], guiCurrentQuickSaveNumber, pMessageStrings[ MSG_SAVEEXTENSION ] );
+				sprintf( pzNewFileName , "%s\\%s%02d.%s", gSaveDir, quickSaveName.c_str(), guiCurrentQuickSaveNumber, extension.c_str() );
 		}
 		else
 #endif
-			sprintf( pzNewFileName , "%s\\%S.%S", gSaveDir, pMessageStrings[ MSG_QUICKSAVE_NAME ], pMessageStrings[ MSG_SAVEEXTENSION ] );
+			sprintf( pzNewFileName , "%s\\%s.%s", gSaveDir, quickSaveName.c_str(), extension.c_str() );
 	}
 	else if( ubSaveGameID>= SAVE__TIMED_AUTOSAVE_SLOT1 && ubSaveGameID < SAVE__TIMED_AUTOSAVE_SLOT5 + 1 )
 	{
-		sprintf( pzNewFileName , "%s\\%S%02d.%S", gSaveDir, pMessageStrings[ MSG_SAVE_AUTOSAVE_FILENAME ], ubSaveGameID, pMessageStrings[ MSG_SAVEEXTENSION ] );
+		sprintf( pzNewFileName , "%s\\%s%02d.%s", gSaveDir, autoSaveName.c_str(), ubSaveGameID, extension.c_str() );
 	}
 	else if( ubSaveGameID == SAVE__END_TURN_NUM_1 || ubSaveGameID == SAVE__END_TURN_NUM_2 )
 	{
 		if ( ubSaveGameID == SAVE__END_TURN_NUM_1 ) 
-			sprintf( pzNewFileName , "%s\\Auto%02d.%S", gSaveDir, 0, pMessageStrings[ MSG_SAVEEXTENSION ] );
-		else if ( ubSaveGameID == SAVE__END_TURN_NUM_2 ) 
-			sprintf( pzNewFileName , "%s\\Auto%02d.%S", gSaveDir, 1, pMessageStrings[ MSG_SAVEEXTENSION ] );
+			sprintf( pzNewFileName , "%s\\Auto%02d.%s", gSaveDir, 0, extension.c_str() );
+		else if ( ubSaveGameID == SAVE__END_TURN_NUM_2 )
+			sprintf( pzNewFileName , "%s\\Auto%02d.%s", gSaveDir, 1, extension.c_str() );
 	}
 	else if( ubSaveGameID == SAVE__END_TURN_NUM  )
 	{
 			//The name of the file
-			sprintf( pzNewFileName , "%s\\Auto%02d.%S", gSaveDir, guiLastSaveGameNum, pMessageStrings[ MSG_SAVEEXTENSION ] );
+			sprintf( pzNewFileName , "%s\\Auto%02d.%s", gSaveDir, guiLastSaveGameNum, extension.c_str() );
 	}
 	else
-		sprintf( pzNewFileName , "%s\\%S%02d.%S", gSaveDir, pMessageStrings[ MSG_SAVE_NAME ], ubSaveGameID - SAVE__END_TURN_NUM_2, pMessageStrings[ MSG_SAVEEXTENSION ] );
+		sprintf( pzNewFileName , "%s\\%s%02d.%s", gSaveDir, saveName.c_str(), ubSaveGameID - SAVE__END_TURN_NUM_2, extension.c_str() );
 }
 
 
