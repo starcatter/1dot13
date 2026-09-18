@@ -130,8 +130,9 @@ PaintedPixel paintPixel(UINT8 source, UINT16 destination, const BlitPolicy& poli
 			else result.color = policy.palette[source];
 			break;
 		case Paint::OutlineShadow:
-			result.color = source == 254 ? ShadeTable[destination] : policy.palette[source];
-			result.applyAlpha = source != 254;
+			result.draw = source != 254;
+			if (result.draw) result.color = ShadeTable[destination];
+			result.applyAlpha = false;
 			break;
 		case Paint::Solid:
 			result.color = policy.solidColor;
@@ -179,7 +180,7 @@ BOOLEAN blitEtrle(UINT16* buffer, UINT32 pitchBytes, HVOBJECT object, INT32 x, I
 	const INT32 originY = y + frame.sOffsetY;
 	if (!policy.clip && (originX < 0 || originY < 0)) return FALSE;
 	if (!policy.palette) policy.palette = object->pShadeCurrent;
-	if ((policy.paint == Paint::Palette || policy.paint == Paint::Outline || policy.paint == Paint::OutlineShadow) && !policy.palette)
+	if ((policy.paint == Paint::Palette || policy.paint == Paint::Outline) && !policy.palette)
 		return FALSE;
 
 	const SGPRect* clip = policy.clip;

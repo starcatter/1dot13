@@ -81,6 +81,21 @@ bool paletteShadowAndIgnore()
 	return buffer[kWidth + 2] == 0x100a && buffer[kWidth + 3] == 0x2222 && buffer[kWidth + 4] == 0x1014;
 }
 
+bool outlineShadowShadesSilhouette()
+{
+	UINT8 data[]{3, 7, 254, 8, 0};
+	TestObject sprite(data, sizeof(data), 3, 1);
+	Buffer buffer{};
+	buffer.fill(0x2222);
+	ShadeTable[0x2222] = 0x0111;
+
+	if (!Blt8BPPDataTo16BPPBufferOutlineShadow(
+		buffer.data(), kPitchBytes, &sprite.object, 2, 1, 0)) return false;
+	return buffer[kWidth + 2] == 0x0111 &&
+		buffer[kWidth + 3] == 0x2222 &&
+		buffer[kWidth + 4] == 0x0111;
+}
+
 bool depthRulesAndIgnoredShadowWrite()
 {
 	UINT8 colorData[]{1, 7, 0};
@@ -237,13 +252,14 @@ int main()
 	std::iota(std::begin(ShadeTable), std::end(ShadeTable), static_cast<UINT16>(0));
 	std::iota(std::begin(IntensityTable), std::end(IntensityTable), static_cast<UINT16>(0));
 	if (!paletteShadowAndIgnore()) return 1;
-	if (!depthRulesAndIgnoredShadowWrite()) return 2;
-	if (!obscuredColorAndOutlineDepthRules()) return 3;
-	if (!clippingAndMirroring()) return 4;
-	if (!monoTransparentRuns()) return 5;
-	if (!alphaAndShadowMarker()) return 6;
-	if (!obscuredPixelationDoesNotLeakShadow()) return 7;
-	if (!zStripDepthAndBurnThrough()) return 8;
-	if (!worldRenderUtilityPolicies()) return 9;
+	if (!outlineShadowShadesSilhouette()) return 2;
+	if (!depthRulesAndIgnoredShadowWrite()) return 3;
+	if (!obscuredColorAndOutlineDepthRules()) return 4;
+	if (!clippingAndMirroring()) return 5;
+	if (!monoTransparentRuns()) return 6;
+	if (!alphaAndShadowMarker()) return 7;
+	if (!obscuredPixelationDoesNotLeakShadow()) return 8;
+	if (!zStripDepthAndBurnThrough()) return 9;
+	if (!worldRenderUtilityPolicies()) return 10;
 	return 0;
 }
