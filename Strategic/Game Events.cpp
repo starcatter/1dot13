@@ -692,10 +692,29 @@ std::vector< std::pair<UINT32, UINT32> > GetAllStrategicEventsOfType( UINT8 ubCa
 }
 
 //part of the game.sav files (not map files)
+namespace
+{
+	// The legacy save format stored the linked-list pointer as a 32-bit value.
+	// It was never meaningful on load, but it is part of the established 28-byte
+	// Windows record layout.
+	struct SavedStrategicEvent
+	{
+		UINT32 legacyNext;
+		UINT32 uiTimeStamp;
+		UINT32 uiParam;
+		UINT32 uiTimeOffset;
+		UINT8 ubEventType;
+		UINT8 ubCallbackID;
+		UINT8 ubFlags;
+		INT8 bPadding[6];
+	};
+
+	static_assert( sizeof(SavedStrategicEvent) == 28 );
+}
+
 BOOLEAN SaveStrategicEventsToSavedGame( HWFILE hFile )
 {
 	UINT32	uiNumBytesWritten=0;
-	STRATEGICEVENT sGameEvent;
 
 	UINT32	uiNumGameEvents=0;
 	STRATEGICEVENT *pTempEvent = gpEventList;
@@ -720,12 +739,18 @@ BOOLEAN SaveStrategicEventsToSavedGame( HWFILE hFile )
 	pTempEvent = gpEventList;
 	while( pTempEvent )
 	{
-		//save the current structure
-		memcpy( &sGameEvent, pTempEvent, sizeof( STRATEGICEVENT ) );
+		SavedStrategicEvent savedEvent{};
+		savedEvent.uiTimeStamp = pTempEvent->uiTimeStamp;
+		savedEvent.uiParam = pTempEvent->uiParam;
+		savedEvent.uiTimeOffset = pTempEvent->uiTimeOffset;
+		savedEvent.ubEventType = pTempEvent->ubEventType;
+		savedEvent.ubCallbackID = pTempEvent->ubCallbackID;
+		savedEvent.ubFlags = pTempEvent->ubFlags;
+		memcpy( savedEvent.bPadding, pTempEvent->bPadding, sizeof(savedEvent.bPadding) );
 
 		//write the current strategic event
-		FileWrite( hFile, &sGameEvent, sizeof( STRATEGICEVENT ), &uiNumBytesWritten );
-		if( uiNumBytesWritten != sizeof( STRATEGICEVENT ) )
+		FileWrite( hFile, &savedEvent, sizeof(savedEvent), &uiNumBytesWritten );
+		if( uiNumBytesWritten != sizeof(savedEvent) )
 		{
 			return(FALSE);
 		}
@@ -741,7 +766,6 @@ BOOLEAN SaveStrategicEventsToSavedGame( HWFILE hFile )
 BOOLEAN LoadStrategicEventsFromSavedGame( HWFILE hFile )
 {
 	UINT32		uiNumGameEvents;
-	STRATEGICEVENT sGameEvent;
 	UINT32		cnt;
 	UINT32		uiNumBytesRead=0;
 	STRATEGICEVENT *pTemp = NULL;
@@ -771,15 +795,21 @@ BOOLEAN LoadStrategicEventsFromSavedGame( HWFILE hFile )
 		if( pTempEvent == NULL )
 			return( FALSE );
 
-		//Read the current strategic event
-		FileRead( hFile, &sGameEvent, sizeof( STRATEGICEVENT ), &uiNumBytesRead );
-		if( uiNumBytesRead != sizeof( STRATEGICEVENT ) )
+		SavedStrategicEvent savedEvent{};
+		FileRead( hFile, &savedEvent, sizeof(savedEvent), &uiNumBytesRead );
+		if( uiNumBytesRead != sizeof(savedEvent) )
 		{
 			return(FALSE);
 		}
 
-
-		memcpy( pTempEvent, &sGameEvent, sizeof( STRATEGICEVENT ) );
+		pTempEvent->next = NULL;
+		pTempEvent->uiTimeStamp = savedEvent.uiTimeStamp;
+		pTempEvent->uiParam = savedEvent.uiParam;
+		pTempEvent->uiTimeOffset = savedEvent.uiTimeOffset;
+		pTempEvent->ubEventType = savedEvent.ubEventType;
+		pTempEvent->ubCallbackID = savedEvent.ubCallbackID;
+		pTempEvent->ubFlags = savedEvent.ubFlags;
+		memcpy( pTempEvent->bPadding, savedEvent.bPadding, sizeof(savedEvent.bPadding) );
 
 		// Add the new node to the list
 

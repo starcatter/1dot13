@@ -1089,6 +1089,7 @@ public:
 
 	BOOLEAN Load(HWFILE hFile);
 	BOOLEAN Save(HWFILE hFile);
+	BOOLEAN Serialize(HWFILE hFile, BOOLEAN writing);
 	UINT32	GetChecksum();
 
 	// Initialize the soldier.	
@@ -1145,7 +1146,7 @@ public:
 	INT32			iHealableInjury; 
 	BOOLEAN			fDoingSurgery; 
 	// value for unregainable breath feature (for Martial Arts)
-	signed long		lUnregainableBreath;
+	INT32			lUnregainableBreath;
 	// this stores possible stats lost due to critical hits
 	UINT8			ubCriticalStatDamage[ NUM_DAMAGABLE_STATS ];
 	/////////////////////////////////////////////////////////////////////////////////

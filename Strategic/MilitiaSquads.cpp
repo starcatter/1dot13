@@ -1583,6 +1583,23 @@ UINT16 MilitiaUpgradeSlotsCheck( INT16 sMapX, INT16 sMapY )
 	return (usNumUpgradeSlots);
 }
 
+namespace
+{
+	// PathSt contains native pointers.  Save the stable 20-byte Win32 record
+	// used by existing 1.13 saves instead of the host compiler's layout.
+	struct SavedMilitiaPathNode
+	{
+		UINT32 uiSectorId;
+		UINT32 uiEta;
+		UINT8  fSpeed;
+		UINT8  padding[3];
+		UINT32 legacyNext;
+		UINT32 legacyPrev;
+	};
+
+	static_assert(sizeof(SavedMilitiaPathNode) == 20, "Unexpected militia path save layout");
+}
+
 // Flugente: militia movement
 BOOLEAN SaveMilitiaMovementInformationToSaveGameFile( HWFILE hFile )
 {
@@ -1624,9 +1641,13 @@ BOOLEAN SaveMilitiaMovementInformationToSaveGameFile( HWFILE hFile )
 		//loop through nodes and save all the nodes
 		while ( pTempPath )
 		{
-			//Save the number of the nodes
-			FileWrite( hFile, pTempPath, sizeof(PathSt), &uiNumBytesWritten );
-			if ( uiNumBytesWritten != sizeof(PathSt) )
+			SavedMilitiaPathNode savedNode = {};
+			savedNode.uiSectorId = pTempPath->uiSectorId;
+			savedNode.uiEta = pTempPath->uiEta;
+			savedNode.fSpeed = pTempPath->fSpeed;
+
+			FileWrite( hFile, &savedNode, sizeof(savedNode), &uiNumBytesWritten );
+			if ( uiNumBytesWritten != sizeof(savedNode) )
 			{
 				return(FALSE);
 			}
@@ -1699,15 +1720,18 @@ BOOLEAN LoadMilitiaMovementInformationFromSavedGameFile( HWFILE hFile, UINT32 ui
 
 			memset( pTemp, 0, sizeof(PathSt) );
 
-			//Load the node
-			FileRead( hFile, pTemp, sizeof(PathSt), &uiNumBytesRead );
-			if ( uiNumBytesRead != sizeof(PathSt) )
+			SavedMilitiaPathNode savedNode = {};
+			FileRead( hFile, &savedNode, sizeof(savedNode), &uiNumBytesRead );
+			if ( uiNumBytesRead != sizeof(savedNode) )
 			{
 				MemFree( pTemp );
 				pTempPath = MoveToBeginningOfPathList( pTempPath );
 				ClearStrategicPathList( pTempPath, -1 );
 				return(FALSE);
 			}
+			pTemp->uiSectorId = savedNode.uiSectorId;
+			pTemp->uiEta = savedNode.uiEta;
+			pTemp->fSpeed = savedNode.fSpeed;
 
 			//Put the node into the list 
 			if ( cnt2 == 0 )

@@ -26,6 +26,9 @@
 #include "fileio/FileServices.h"
 #include "fileio/FileIO.h"
 
+#include <cstdio>
+#include <cstdlib>
+
 #ifdef JA2UB
 #include "ub_config.h"
 #endif
@@ -100,6 +103,36 @@ UINT32	MainMenuScreenHandle( )
 {
 	UINT32 cnt;
 	UINT32 uiTime;
+	static BOOLEAN saveCompatibilityProbeRan = FALSE;
+	if (!saveCompatibilityProbeRan)
+	{
+		saveCompatibilityProbeRan = TRUE;
+		if (const char* slotText = std::getenv("JA2_TEST_LOAD_SLOT"))
+		{
+			const long slot = std::strtol(slotText, NULL, 10);
+			const BOOLEAN validSlot = slot >= 0 && slot < NUM_SAVE_GAMES;
+			if (validSlot)
+				gbSaveGameArray[slot] = TRUE;
+			const BOOLEAN loaded = validSlot && LoadSavedGame(static_cast<int>(slot));
+			std::fprintf(stderr, "JA2_TEST_LOAD_SLOT=%ld result=%d\n", slot, loaded ? 1 : 0);
+			BOOLEAN saved = TRUE;
+			if (loaded)
+			{
+				if (const char* saveSlotText = std::getenv("JA2_TEST_SAVE_SLOT"))
+				{
+					const long saveSlot = std::strtol(saveSlotText, NULL, 10);
+					const BOOLEAN validSaveSlot = saveSlot >= 0 && saveSlot < EARLIST_SPECIAL_SAVE;
+					CHAR16 description[] = JA2_TEXT("native-x64-compatibility");
+					saved = validSaveSlot && SaveGame(static_cast<int>(saveSlot), description);
+					std::fprintf(stderr, "JA2_TEST_SAVE_SLOT=%ld result=%d\n", saveSlot, saved ? 1 : 0);
+				}
+			}
+			std::fflush(stderr);
+			// The compatibility probe stops before the normal post-load screen
+			// transition, so normal teardown is not valid for a tactical world.
+			std::_Exit(loaded && saved ? 0 : 2);
+		}
+	}
 
 	if( guiSplashStartTime + 4000 > GetJA2Clock() )
 	{

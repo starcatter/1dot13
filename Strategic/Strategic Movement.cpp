@@ -1,4 +1,5 @@
 	#include <stdlib.h>
+	#include <cstddef>
 	#include "Strategic Movement.h"
 	#include "MemMan.h"
 	#include "DEBUG.H"
@@ -4024,6 +4025,135 @@ void SetGroupPosition( UINT8 ubNextX, UINT8 ubNextY, UINT8 ubPrevX, UINT8 ubPrev
 	}
 }
 
+namespace
+{
+	// The original save format wrote GROUP directly.  Its three pointers were
+	// four bytes in the Win32 build, making the on-disk record exactly 88 bytes.
+	// Keep that layout on every host without coupling runtime pointers to disk.
+	struct SavedStrategicGroup
+	{
+		BOOLEAN fDebugGroup;
+		UINT8 usGroupTeam;
+		BOOLEAN fVehicle;
+		BOOLEAN fPersistant;
+		UINT8 ubGroupID;
+		UINT8 legacyPadding05;
+		UINT16 ubGroupSize;
+		UINT8 ubSectorX;
+		UINT8 ubSectorY;
+		UINT8 ubSectorZ;
+		UINT8 ubNextX;
+		UINT8 ubNextY;
+		UINT8 ubPrevX;
+		UINT8 ubPrevY;
+		UINT8 ubOriginalSector;
+		BOOLEAN fBetweenSectors;
+		UINT8 ubMoveType;
+		UINT8 ubNextWaypointID;
+		UINT8 ubFatigueLevel;
+		UINT8 ubRestAtFatigueLevel;
+		UINT8 ubRestToFatigueLevel;
+		UINT8 legacyPadding16[2];
+		UINT32 uiArrivalTime;
+		UINT32 uiTraverseTime;
+		BOOLEAN fRestAtNight;
+		BOOLEAN fWaypointsCancelled;
+		UINT8 legacyPadding22[2];
+		UINT32 legacyWaypoints;
+		UINT8 ubTransportationMask;
+		UINT8 legacyPadding29[3];
+		UINT32 uiFlags;
+		UINT8 ubCreatedSectorID;
+		UINT8 ubSectorIDOfLastReassignment;
+		INT8 bPadding[29];
+		UINT8 legacyPadding4f;
+		UINT32 legacyPlayerOrEnemyGroup;
+		UINT32 legacyNext;
+	};
+
+	struct SavedStrategicWaypoint
+	{
+		UINT8 x;
+		UINT8 y;
+		UINT8 legacyPadding[2];
+		UINT32 legacyNext;
+	};
+
+	static_assert( sizeof(SavedStrategicGroup) == 88 );
+	static_assert( offsetof(SavedStrategicGroup, uiArrivalTime) == 0x18 );
+	static_assert( offsetof(SavedStrategicGroup, legacyWaypoints) == 0x24 );
+	static_assert( offsetof(SavedStrategicGroup, legacyPlayerOrEnemyGroup) == 0x50 );
+	static_assert( sizeof(SavedStrategicWaypoint) == 8 );
+
+	SavedStrategicGroup MakeSavedStrategicGroup( const GROUP& group )
+	{
+		SavedStrategicGroup saved{};
+		saved.fDebugGroup = group.fDebugGroup;
+		saved.usGroupTeam = group.usGroupTeam;
+		saved.fVehicle = group.fVehicle;
+		saved.fPersistant = group.fPersistant;
+		saved.ubGroupID = group.ubGroupID;
+		saved.ubGroupSize = group.ubGroupSize;
+		saved.ubSectorX = group.ubSectorX;
+		saved.ubSectorY = group.ubSectorY;
+		saved.ubSectorZ = group.ubSectorZ;
+		saved.ubNextX = group.ubNextX;
+		saved.ubNextY = group.ubNextY;
+		saved.ubPrevX = group.ubPrevX;
+		saved.ubPrevY = group.ubPrevY;
+		saved.ubOriginalSector = group.ubOriginalSector;
+		saved.fBetweenSectors = group.fBetweenSectors;
+		saved.ubMoveType = group.ubMoveType;
+		saved.ubNextWaypointID = group.ubNextWaypointID;
+		saved.ubFatigueLevel = group.ubFatigueLevel;
+		saved.ubRestAtFatigueLevel = group.ubRestAtFatigueLevel;
+		saved.ubRestToFatigueLevel = group.ubRestToFatigueLevel;
+		saved.uiArrivalTime = group.uiArrivalTime;
+		saved.uiTraverseTime = group.uiTraverseTime;
+		saved.fRestAtNight = group.fRestAtNight;
+		saved.fWaypointsCancelled = group.fWaypointsCancelled;
+		saved.ubTransportationMask = group.ubTransportationMask;
+		saved.uiFlags = group.uiFlags;
+		saved.ubCreatedSectorID = group.ubCreatedSectorID;
+		saved.ubSectorIDOfLastReassignment = group.ubSectorIDOfLastReassignment;
+		memcpy( saved.bPadding, group.bPadding, sizeof(saved.bPadding) );
+		return saved;
+	}
+
+	void RestoreStrategicGroup( const SavedStrategicGroup& saved, GROUP& group )
+	{
+		group.fDebugGroup = saved.fDebugGroup;
+		group.usGroupTeam = saved.usGroupTeam;
+		group.fVehicle = saved.fVehicle;
+		group.fPersistant = saved.fPersistant;
+		group.ubGroupID = saved.ubGroupID;
+		group.ubGroupSize = saved.ubGroupSize;
+		group.ubSectorX = saved.ubSectorX;
+		group.ubSectorY = saved.ubSectorY;
+		group.ubSectorZ = saved.ubSectorZ;
+		group.ubNextX = saved.ubNextX;
+		group.ubNextY = saved.ubNextY;
+		group.ubPrevX = saved.ubPrevX;
+		group.ubPrevY = saved.ubPrevY;
+		group.ubOriginalSector = saved.ubOriginalSector;
+		group.fBetweenSectors = saved.fBetweenSectors;
+		group.ubMoveType = saved.ubMoveType;
+		group.ubNextWaypointID = saved.ubNextWaypointID;
+		group.ubFatigueLevel = saved.ubFatigueLevel;
+		group.ubRestAtFatigueLevel = saved.ubRestAtFatigueLevel;
+		group.ubRestToFatigueLevel = saved.ubRestToFatigueLevel;
+		group.uiArrivalTime = saved.uiArrivalTime;
+		group.uiTraverseTime = saved.uiTraverseTime;
+		group.fRestAtNight = saved.fRestAtNight;
+		group.fWaypointsCancelled = saved.fWaypointsCancelled;
+		group.ubTransportationMask = saved.ubTransportationMask;
+		group.uiFlags = saved.uiFlags;
+		group.ubCreatedSectorID = saved.ubCreatedSectorID;
+		group.ubSectorIDOfLastReassignment = saved.ubSectorIDOfLastReassignment;
+		memcpy( group.bPadding, saved.bPadding, sizeof(group.bPadding) );
+	}
+}
+
 BOOLEAN SaveStrategicMovementGroupsToSaveGameFile( HWFILE hFile )
 {
 	GROUP *pGroup=NULL;
@@ -4052,9 +4182,9 @@ BOOLEAN SaveStrategicMovementGroupsToSaveGameFile( HWFILE hFile )
 	//Loop through the linked lists and add each node
 	while( pGroup )
 	{
-		// Save each node in the LL
-		FileWrite( hFile, pGroup, sizeof( GROUP ), &uiNumBytesWritten );
-		if( uiNumBytesWritten != sizeof( GROUP ) )
+		const SavedStrategicGroup savedGroup = MakeSavedStrategicGroup( *pGroup );
+		FileWrite( hFile, &savedGroup, sizeof(savedGroup), &uiNumBytesWritten );
+		if( uiNumBytesWritten != sizeof(savedGroup) )
 		{
 			//Error Writing group node to disk
 			return( FALSE );
@@ -4140,13 +4270,14 @@ BOOLEAN LoadStrategicMovementGroupsFromSavedGameFile( HWFILE hFile )
 			return( FALSE );
 		memset( pTemp, 0, sizeof( GROUP ) );
 
-		//Read in the node
-		FileRead( hFile, pTemp, sizeof( GROUP ), &uiNumBytesRead );
-		if( uiNumBytesRead != sizeof( GROUP ) )
+		SavedStrategicGroup savedGroup{};
+		FileRead( hFile, &savedGroup, sizeof(savedGroup), &uiNumBytesRead );
+		if( uiNumBytesRead != sizeof(savedGroup) )
 		{
 			//Error Writing size of L.L. to disk
 			return( FALSE );
 		}
+		RestoreStrategicGroup( savedGroup, *pTemp );
 
 		// Flugente: Up to now, GROUPs were either player-controlled (fPlayer = TRUE) or enemy-controlled (fPlayer = FALSE).
 		// As a result, no other team could have any travelling groups (militia, civilians, creatures...)
@@ -4491,9 +4622,9 @@ BOOLEAN SaveWayPointList( HWFILE hFile, GROUP *pGroup )
 		pWayPoints = pGroup->pWaypoints;
 		for(cnt=0; cnt<uiNumberOfWayPoints; ++cnt)
 		{
-			//Save the waypoint node
-			FileWrite( hFile, pWayPoints, sizeof( WAYPOINT ), &uiNumBytesWritten );
-			if( uiNumBytesWritten != sizeof( WAYPOINT ) )
+			const SavedStrategicWaypoint savedWaypoint{ pWayPoints->x, pWayPoints->y, {}, 0 };
+			FileWrite( hFile, &savedWaypoint, sizeof(savedWaypoint), &uiNumBytesWritten );
+			if( uiNumBytesWritten != sizeof(savedWaypoint) )
 			{
 				//Error Writing size of L.L. to disk
 				return( FALSE );
@@ -4536,13 +4667,15 @@ BOOLEAN LoadWayPointList(HWFILE hFile, GROUP *pGroup )
 				return( FALSE );
 			memset( pTemp, 0, sizeof( WAYPOINT ) );
 
-			//Load the waypoint node
-			FileRead( hFile, pTemp, sizeof( WAYPOINT ), &uiNumBytesRead );
-			if( uiNumBytesRead != sizeof( WAYPOINT ) )
+			SavedStrategicWaypoint savedWaypoint{};
+			FileRead( hFile, &savedWaypoint, sizeof(savedWaypoint), &uiNumBytesRead );
+			if( uiNumBytesRead != sizeof(savedWaypoint) )
 			{
 				//Error Writing size of L.L. to disk
 				return( FALSE );
 			}
+			pTemp->x = savedWaypoint.x;
+			pTemp->y = savedWaypoint.y;
 
 			pTemp->next = NULL;
 

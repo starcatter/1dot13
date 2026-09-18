@@ -8,7 +8,9 @@
 #include "fileio/PhysicalWritableStore.h"
 #include "fileio/SaveTransaction.h"
 #include "fileio/StoreRouter.h"
+#include <cstdlib>
 #include <exception>
+#include <cstring>
 #include <optional>
 #include <string>
 #include <vector>
@@ -504,6 +506,174 @@ BOOLEAN		LoadSavedMercProfiles( HWFILE hwFile );
 
 BOOLEAN		SaveSoldierStructure( HWFILE hFile );
 BOOLEAN		LoadSoldierStructure( HWFILE hFile );
+
+static void LogSaveLoadFailureAt( const char* stage, HWFILE hFile, int index = -1 )
+{
+	std::string message = std::string("failed during ") + stage;
+	if( index >= 0 )
+		message += " at index " + std::to_string( index );
+	if( hFile )
+		message += ", file offset " + std::to_string( FileGetPos( hFile ) );
+	(void)ja2::fileio::logStore().appendLine( "save-load-fileio.log", message );
+}
+
+static void LogSaveLayoutMismatch( const char* stage, INT32 actual, UINT32 expected, HWFILE hFile )
+{
+	std::string message = std::string(stage) + " transferred " + std::to_string( actual ) +
+		" bytes; expected " + std::to_string( expected );
+	if( hFile )
+		message += ", file offset " + std::to_string( FileGetPos( hFile ) );
+	(void)ja2::fileio::logStore().appendLine( "save-load-fileio.log", message );
+}
+
+static void LogSaveLoadPositionAt( const char* stage, HWFILE hFile )
+{
+	static const bool enabled = std::getenv("JA2_SAVE_DIAGNOSTICS") != NULL;
+	if( !enabled )
+		return;
+	fprintf( stderr, "save diagnostic: %s completed at %d\n", stage, FileGetPos( hFile ) );
+	(void)ja2::fileio::logStore().appendLine( "save-load-fileio.log",
+		std::string(stage) + " completed at " + std::to_string( FileGetPos( hFile ) ) );
+}
+
+namespace
+{
+	constexpr size_t WIN32_POINTER_SIZE = 4;
+	constexpr size_t WIN32_OLD_SOLDIERCREATE_101_POINTER_OFFSET = 912;
+	constexpr size_t WIN32_OLD_SOLDIERCREATE_101_POD_SIZE = 1040;
+	constexpr size_t WIN32_OLD_SOLDIERCREATE_POINTER_OFFSET = 228;
+	constexpr size_t WIN32_OLD_SOLDIERCREATE_POD_SIZE = 239;
+	constexpr size_t WIN32_SOLDIERCREATE_POINTER_OFFSET = 252;
+	constexpr size_t WIN32_SOLDIERCREATE_POD_SIZE = 263;
+	constexpr size_t WIN32_OBJECT_DATA_PREFIX_SIZE = 36;
+
+	struct SavedObjectData
+	{
+		UINT8 prefix[WIN32_OBJECT_DATA_PREFIX_SIZE];
+		UINT8 objectFlagAlignmentPadding[4];
+		UINT64 objectFlag;
+	};
+
+	static_assert( sizeof(SavedObjectData) == 48,
+		"The Win32 ObjectData save record must remain 48 bytes" );
+	static_assert( offsetof(SavedObjectData, objectFlag) == 40,
+		"The Win32 ObjectData flag must remain at offset 40" );
+	static_assert( offsetof(ObjectData, sObjectFlag) >= WIN32_OBJECT_DATA_PREFIX_SIZE,
+		"ObjectData fields before sObjectFlag no longer match the legacy save layout" );
+
+	void DecodeSavedObjectData( ObjectData& destination,
+		const SavedObjectData& source )
+	{
+		destination.initialize();
+		std::memcpy( &destination, source.prefix, sizeof(source.prefix) );
+		destination.sObjectFlag = source.objectFlag;
+	}
+
+	SavedObjectData EncodeSavedObjectData( const ObjectData& source )
+	{
+		SavedObjectData destination{};
+		std::memcpy( destination.prefix, &source, sizeof(destination.prefix) );
+		destination.objectFlag = source.sObjectFlag;
+		return destination;
+	}
+
+	BOOLEAN ReadSavedObjectData( HWFILE file, ObjectData& destination )
+	{
+		SavedObjectData saved{};
+		UINT32 bytesRead = 0;
+		if( !FileRead( file, &saved, sizeof(saved), &bytesRead ) ||
+			bytesRead != sizeof(saved) )
+		{
+			return FALSE;
+		}
+		DecodeSavedObjectData( destination, saved );
+		return TRUE;
+	}
+
+	BOOLEAN WriteSavedObjectData( HWFILE file, const ObjectData& source )
+	{
+		const SavedObjectData saved = EncodeSavedObjectData( source );
+		UINT32 bytesWritten = 0;
+		return FileWrite( file, &saved, sizeof(saved), &bytesWritten ) &&
+			bytesWritten == sizeof(saved);
+	}
+
+	void LoadSavedObjectDataFromBuffer( INT8** buffer, ObjectData& destination )
+	{
+		SavedObjectData saved{};
+		std::memcpy( &saved, *buffer, sizeof(saved) );
+		*buffer += sizeof(saved);
+		DecodeSavedObjectData( destination, saved );
+	}
+
+	void DecodeWin32PointerPod( void* destination, size_t destinationSize,
+		size_t destinationPointerOffset, size_t destinationTailOffset,
+		const void* source, size_t sourcePointerOffset, size_t sourceSize )
+	{
+		Assert( destinationPointerOffset >= sourcePointerOffset );
+		Assert( sourceSize >= sourcePointerOffset + WIN32_POINTER_SIZE );
+		Assert( destinationSize >= destinationTailOffset +
+			(sourceSize - sourcePointerOffset - WIN32_POINTER_SIZE) );
+
+		std::memset( destination, 0, destinationSize );
+		std::memcpy( destination, source, sourcePointerOffset );
+		std::memcpy( static_cast<UINT8*>(destination) + destinationTailOffset,
+			static_cast<const UINT8*>(source) + sourcePointerOffset + WIN32_POINTER_SIZE,
+			sourceSize - sourcePointerOffset - WIN32_POINTER_SIZE );
+	}
+
+	void EncodeWin32PointerPod( void* destination, size_t destinationSize,
+		const void* source, size_t sourcePointerOffset, size_t sourceTailOffset,
+		size_t sourceSize )
+	{
+		Assert( destinationSize >= sourcePointerOffset + WIN32_POINTER_SIZE );
+		Assert( sourceSize >= sourceTailOffset +
+			(destinationSize - sourcePointerOffset - WIN32_POINTER_SIZE) );
+
+		std::memset( destination, 0, destinationSize );
+		std::memcpy( destination, source, sourcePointerOffset );
+		std::memcpy( static_cast<UINT8*>(destination) + sourcePointerOffset + WIN32_POINTER_SIZE,
+			static_cast<const UINT8*>(source) + sourceTailOffset,
+			destinationSize - sourcePointerOffset - WIN32_POINTER_SIZE );
+	}
+
+	template <size_t DiskSize>
+	BOOLEAN ReadWin32PointerPod( HWFILE file, void* destination, size_t destinationSize,
+		size_t destinationPointerOffset, size_t destinationTailOffset,
+		size_t diskPointerOffset )
+	{
+		UINT8 diskData[DiskSize];
+		UINT32 bytesRead = 0;
+		if( !FileRead( file, diskData, DiskSize, &bytesRead ) || bytesRead != DiskSize )
+			return FALSE;
+		DecodeWin32PointerPod( destination, destinationSize, destinationPointerOffset,
+			destinationTailOffset, diskData, diskPointerOffset, DiskSize );
+		return TRUE;
+	}
+
+	template <size_t DiskSize>
+	BOOLEAN WriteWin32PointerPod( HWFILE file, const void* source, size_t sourceSize,
+		size_t sourcePointerOffset, size_t sourceTailOffset,
+		size_t diskPointerOffset )
+	{
+		Assert( sourcePointerOffset >= diskPointerOffset );
+		UINT8 diskData[DiskSize];
+		EncodeWin32PointerPod( diskData, DiskSize, source, diskPointerOffset,
+			sourceTailOffset, sourceSize );
+		UINT32 bytesWritten = 0;
+		return FileWrite( file, diskData, DiskSize, &bytesWritten ) && bytesWritten == DiskSize;
+	}
+
+	template <size_t DiskSize>
+	void LoadWin32PointerPodFromBuffer( INT8** buffer, void* destination, size_t destinationSize,
+		size_t destinationPointerOffset, size_t destinationTailOffset,
+		size_t diskPointerOffset )
+	{
+		DecodeWin32PointerPod( destination, destinationSize, destinationPointerOffset,
+			destinationTailOffset, *buffer, diskPointerOffset, DiskSize );
+		*buffer += DiskSize;
+	}
+}
 
 //BOOLEAN		SavePtrInfo( PTR *pData, UINT32 uiSizeOfObject, HWFILE hFile );
 //BOOLEAN		LoadPtrInfo( PTR *pData, UINT32 uiSizeOfObject, HWFILE hFile );
@@ -1021,11 +1191,17 @@ BOOLEAN ITEM_CURSOR_SAVE_INFO::Load(HWFILE hFile)
 	//if we are at the most current version, then fine
 	if ( guiCurrentSaveGameVersion >= NIV_SAVEGAME_DATATYPE_CHANGE )
 	{
-		//3 bytes of info, screw being neat
-		if ( !FileRead( hFile, this, SIZEOF_ITEM_CURSOR_SAVE_INFO_POD, &uiNumBytesRead ) )
+		// The Win32 save format stores this prefix as exactly four bytes.  On
+		// 64-bit hosts OBJECTTYPE has stricter alignment, so offsetof() includes
+		// another four bytes of in-memory padding which are not part of the file.
+		UINT8 prefix[4];
+		if ( !FileRead( hFile, prefix, sizeof(prefix), &uiNumBytesRead ) || uiNumBytesRead != sizeof(prefix) )
 		{
 			return FALSE;
 		}
+		ubSoldierID = static_cast<UINT16>(prefix[0] | (static_cast<UINT16>(prefix[1]) << 8));
+		ubInvSlot = prefix[2];
+		fCursorActive = prefix[3];
 		if ( !this->ItemPointerInfo.Load(hFile) )
 		{
 			return FALSE;
@@ -1050,8 +1226,14 @@ BOOLEAN ITEM_CURSOR_SAVE_INFO::Load(HWFILE hFile)
 BOOLEAN ITEM_CURSOR_SAVE_INFO::Save(HWFILE hFile)
 {
 	UINT32 uiNumBytesWritten;
-	//3 bytes of info, screw being neat
-	if ( !FileWrite( hFile, this, SIZEOF_ITEM_CURSOR_SAVE_INFO_POD, &uiNumBytesWritten ) )
+	const UINT16 soldierID = ubSoldierID;
+	const UINT8 prefix[4] = {
+		static_cast<UINT8>(soldierID & 0xff),
+		static_cast<UINT8>(soldierID >> 8),
+		ubInvSlot,
+		fCursorActive
+	};
+	if ( !FileWrite( hFile, prefix, sizeof(prefix), &uiNumBytesWritten ) || uiNumBytesWritten != sizeof(prefix) )
 	{
 		return FALSE;
 	}
@@ -1065,25 +1247,21 @@ BOOLEAN ITEM_CURSOR_SAVE_INFO::Save(HWFILE hFile)
 //dnl ch42 250909
 BOOLEAN SOLDIERCREATE_STRUCT::Save(HWFILE hFile, bool fSavingMap, FLOAT dMajorMapVersion, UINT8 ubMinorMapVersion)
 {
-	PTR pData = this;
-	UINT32 uiBytesToWrite = SIZEOF_SOLDIERCREATE_STRUCT_POD;
 	OLD_SOLDIERCREATE_STRUCT_101 OldSoldierCreateStruct;
 	if(dMajorMapVersion == VANILLA_MAJOR_MAP_VERSION && ubMinorMapVersion == VANILLA_MINOR_MAP_VERSION)
 	{
 		OldSoldierCreateStruct = *this;
-		pData = &OldSoldierCreateStruct;
-		uiBytesToWrite = SIZEOF_OLD_SOLDIERCREATE_STRUCT_101_POD;
+		return WriteWin32PointerPod<WIN32_OLD_SOLDIERCREATE_101_POD_SIZE>( hFile,
+			&OldSoldierCreateStruct, SIZEOF_OLD_SOLDIERCREATE_STRUCT_101_POD,
+			offsetof(OLD_SOLDIERCREATE_STRUCT_101, pExistingSoldier),
+			offsetof(OLD_SOLDIERCREATE_STRUCT_101, fUseExistingSoldier),
+			WIN32_OLD_SOLDIERCREATE_101_POINTER_OFFSET );
 	}
-	UINT32 uiBytesWritten = 0;
-	FileWrite(hFile, pData, uiBytesToWrite, &uiBytesWritten);
-	if(uiBytesToWrite == uiBytesWritten)
-	{
-		if(dMajorMapVersion == VANILLA_MAJOR_MAP_VERSION && ubMinorMapVersion == VANILLA_MINOR_MAP_VERSION)
-			return(TRUE);
-		if(Inv.Save(hFile, fSavingMap))
-			return(TRUE);
-	}
-	return(FALSE);
+	if( !WriteWin32PointerPod<WIN32_SOLDIERCREATE_POD_SIZE>( hFile, this,
+		SIZEOF_SOLDIERCREATE_STRUCT_POD, offsetof(SOLDIERCREATE_STRUCT, pExistingSoldier),
+		offsetof(SOLDIERCREATE_STRUCT, fUseExistingSoldier), WIN32_SOLDIERCREATE_POINTER_OFFSET ) )
+		return FALSE;
+	return Inv.Save(hFile, fSavingMap);
 }
 
 BOOLEAN SOLDIERCREATE_STRUCT::Load(INT8 **hBuffer, FLOAT dMajorMapVersion, UINT8 ubMinorMapVersion)
@@ -1093,18 +1271,28 @@ BOOLEAN SOLDIERCREATE_STRUCT::Load(INT8 **hBuffer, FLOAT dMajorMapVersion, UINT8
 		if(dMajorMapVersion < 7.0)
 		{
 			_OLD_SOLDIERCREATE_STRUCT OldSoldierCreateStruct;
-			LOADDATA(&OldSoldierCreateStruct, *hBuffer, _OLD_SIZEOF_SOLDIERCREATE_STRUCT_POD);
+			LoadWin32PointerPodFromBuffer<WIN32_OLD_SOLDIERCREATE_POD_SIZE>( hBuffer,
+				&OldSoldierCreateStruct, _OLD_SIZEOF_SOLDIERCREATE_STRUCT_POD,
+				offsetof(_OLD_SOLDIERCREATE_STRUCT, pExistingSoldier),
+				offsetof(_OLD_SOLDIERCREATE_STRUCT, fUseExistingSoldier),
+				WIN32_OLD_SOLDIERCREATE_POINTER_OFFSET );
 			*this = OldSoldierCreateStruct;
 		}
 		else
-			LOADDATA(this, *hBuffer, SIZEOF_SOLDIERCREATE_STRUCT_POD);
+			LoadWin32PointerPodFromBuffer<WIN32_SOLDIERCREATE_POD_SIZE>( hBuffer, this,
+				SIZEOF_SOLDIERCREATE_STRUCT_POD, offsetof(SOLDIERCREATE_STRUCT, pExistingSoldier),
+				offsetof(SOLDIERCREATE_STRUCT, fUseExistingSoldier), WIN32_SOLDIERCREATE_POINTER_OFFSET );
 		this->Inv.Load(hBuffer, dMajorMapVersion, ubMinorMapVersion);
 	}
 	else 
 	{
 		//ADB checksum was not saved under these circumstances!
 		OLD_SOLDIERCREATE_STRUCT_101 OldSavedSoldierInfo101;
-		LOADDATA(&OldSavedSoldierInfo101, *hBuffer, SIZEOF_OLD_SOLDIERCREATE_STRUCT_101_POD);
+		LoadWin32PointerPodFromBuffer<WIN32_OLD_SOLDIERCREATE_101_POD_SIZE>( hBuffer,
+			&OldSavedSoldierInfo101, SIZEOF_OLD_SOLDIERCREATE_STRUCT_101_POD,
+			offsetof(OLD_SOLDIERCREATE_STRUCT_101, pExistingSoldier),
+			offsetof(OLD_SOLDIERCREATE_STRUCT_101, fUseExistingSoldier),
+			WIN32_OLD_SOLDIERCREATE_101_POINTER_OFFSET );
 		OldSavedSoldierInfo101.CopyOldInventoryToNew();
 		*this = OldSavedSoldierInfo101;
 	}
@@ -1124,7 +1312,9 @@ BOOLEAN SOLDIERCREATE_STRUCT::Load(HWFILE hFile, int versionToLoad, bool loadChe
 	{
 		//the info has changed at version 102
 		//first, load the POD
-		if ( !FileRead( hFile, this, SIZEOF_SOLDIERCREATE_STRUCT_POD, &uiNumBytesRead ) )
+		if ( !ReadWin32PointerPod<WIN32_SOLDIERCREATE_POD_SIZE>( hFile, this,
+			SIZEOF_SOLDIERCREATE_STRUCT_POD, offsetof(SOLDIERCREATE_STRUCT, pExistingSoldier),
+			offsetof(SOLDIERCREATE_STRUCT, fUseExistingSoldier), WIN32_SOLDIERCREATE_POINTER_OFFSET ) )
 		{
 			guiCurrentSaveGameVersion = tempVersion;
 			return(FALSE);
@@ -1144,7 +1334,11 @@ BOOLEAN SOLDIERCREATE_STRUCT::Load(HWFILE hFile, int versionToLoad, bool loadChe
 		//first load the data based on what version was stored
 		if ( guiCurrentSaveGameVersion < NIV_SAVEGAME_DATATYPE_CHANGE )
 		{
-			if ( !FileRead( hFile, &OldSavedSoldierInfo101, SIZEOF_OLD_SOLDIERCREATE_STRUCT_101_POD, &uiNumBytesRead ) )
+			if ( !ReadWin32PointerPod<WIN32_OLD_SOLDIERCREATE_101_POD_SIZE>( hFile,
+				&OldSavedSoldierInfo101, SIZEOF_OLD_SOLDIERCREATE_STRUCT_101_POD,
+				offsetof(OLD_SOLDIERCREATE_STRUCT_101, pExistingSoldier),
+				offsetof(OLD_SOLDIERCREATE_STRUCT_101, fUseExistingSoldier),
+				WIN32_OLD_SOLDIERCREATE_101_POINTER_OFFSET ) )
 			{
 				guiCurrentSaveGameVersion = tempVersion;
 				return FALSE;
@@ -1218,6 +1412,7 @@ BOOLEAN MERCPROFILESTRUCT::Load(HWFILE hFile, bool forceLoadOldVersion, bool for
 	UINT32	uiNumBytesRead;
 	INT32	numBytesRead = 0, temp = 0, buffer = 0;
 	UINT8	filler = 0;
+	const UINT32 profileStartOffset = FileGetPos( hFile );
 	this->initialize();
 
 	//if we are at the most current version, then fine
@@ -1674,8 +1869,15 @@ BOOLEAN MERCPROFILESTRUCT::Load(HWFILE hFile, bool forceLoadOldVersion, bool for
 			}
 		}
 
-		if ( this->uiProfileChecksum != this->GetChecksum() )
+		const UINT32 calculatedChecksum = this->GetChecksum();
+		if ( this->uiProfileChecksum != calculatedChecksum )
 		{
+			std::string message = "merc profile checksum mismatch: start=" +
+				std::to_string( profileStartOffset ) + ", end=" +
+				std::to_string( FileGetPos( hFile ) ) + ", stored=" +
+				std::to_string( this->uiProfileChecksum ) + ", calculated=" +
+				std::to_string( calculatedChecksum );
+			(void)ja2::fileio::logStore().appendLine( "save-load-fileio.log", message );
 			return( FALSE );
 		}
 	}
@@ -1840,62 +2042,62 @@ BOOLEAN MERCPROFILESTRUCT::Save(HWFILE hFile)
 
 BOOLEAN SOLDIERTYPE::Save(HWFILE hFile)
 {
-	UINT32 uiNumBytesWritten;
 	// calculate checksum for soldier
 	this->uiMercChecksum = this->GetChecksum();
-	if ( !FileWrite( hFile, this, SIZEOF_SOLDIERTYPE_POD, &uiNumBytesWritten ) )
-	{
-		return(FALSE);
-	}
-
-	//save OO data like inventory
-	if ( !this->inv.Save(hFile, FALSE) )
-	{
-		return(FALSE);
-	}
-
-	if ( !FileWrite( hFile, &this->aiData, sizeof(STRUCT_AIData), &uiNumBytesWritten ) )
-	{
-		return(FALSE);
-	}
-	if ( !FileWrite( hFile, &this->flags, sizeof(STRUCT_Flags), &uiNumBytesWritten ) )
-	{
-		return(FALSE);
-	}
-	if ( !FileWrite( hFile, &this->timeChanges, sizeof(STRUCT_TimeChanges), &uiNumBytesWritten ) )
-	{
-		return(FALSE);
-	}
-	if ( !FileWrite( hFile, &this->timeCounters, sizeof(STRUCT_TimeCounters), &uiNumBytesWritten ) )
-	{
-		return(FALSE);
-	}
-
-	// Flugente: changed drug structure
-	if ( !FileWrite( hFile, &this->newdrugs, sizeof(DRUGS), &uiNumBytesWritten ) )
-	{
-		return(FALSE);
-	}
-
-	if ( !FileWrite( hFile, &this->stats, sizeof(STRUCT_Statistics), &uiNumBytesWritten ) )
-	{
-		return(FALSE);
-	}
-	if ( !FileWrite( hFile, &this->pathing, sizeof(STRUCT_Pathing), &uiNumBytesWritten ) )
-	{
-		return(FALSE);
-	}
-	return TRUE;
+	return Serialize( hFile, TRUE );
 }
 
 /*CHRISL: This function is designed to allow reading the save game file one field at a time.  We currently save structures by saving a block of memory, 
 but variables are stored in memory so that they fit neatly into a WORD resulting in the program automatically adding some padding.  This padding is saved
 during the save game process and this function is designed to calculate where that padding is so that we can account for it during the load process.  The
 use of this function should allow changes to be made to various structures within the designated "POD", while still allowing for save game continuity.*/
+namespace
+{
+constexpr UINT32 SAVED_SOLDIER_POD_SIZE = 1508;
+constexpr UINT32 SAVED_SOLDIER_AI_DATA_SIZE = 2704;
+constexpr UINT32 SAVED_SOLDIER_FLAGS_SIZE = 88;
+constexpr UINT32 SAVED_SOLDIER_TIME_CHANGES_SIZE = 44;
+constexpr UINT32 SAVED_SOLDIER_TIME_COUNTERS_SIZE = 40;
+constexpr UINT32 SAVED_SOLDIER_DRUGS_SIZE = 92;
+constexpr UINT32 SAVED_SOLDIER_STATISTICS_SIZE = 43;
+constexpr UINT32 SAVED_SOLDIER_PATHING_SIZE = 92;
+
+static_assert( sizeof(CHAR16) == 2, "Save files require 16-bit CHAR16" );
+static_assert( sizeof(void*) != 4 || SIZEOF_SOLDIERTYPE_POD == SAVED_SOLDIER_POD_SIZE,
+	"32-bit SOLDIERTYPE no longer matches the established save layout" );
+static_assert( sizeof(STRUCT_AIData) == SAVED_SOLDIER_AI_DATA_SIZE, "STRUCT_AIData save layout changed" );
+static_assert( sizeof(STRUCT_Flags) == SAVED_SOLDIER_FLAGS_SIZE, "STRUCT_Flags save layout changed" );
+static_assert( sizeof(STRUCT_TimeChanges) == SAVED_SOLDIER_TIME_CHANGES_SIZE, "STRUCT_TimeChanges save layout changed" );
+static_assert( sizeof(STRUCT_TimeCounters) == SAVED_SOLDIER_TIME_COUNTERS_SIZE, "STRUCT_TimeCounters save layout changed" );
+static_assert( sizeof(DRUGS) == SAVED_SOLDIER_DRUGS_SIZE, "DRUGS save layout changed" );
+static_assert( sizeof(STRUCT_Statistics) == SAVED_SOLDIER_STATISTICS_SIZE, "STRUCT_Statistics save layout changed" );
+static_assert( sizeof(STRUCT_Pathing) == SAVED_SOLDIER_PATHING_SIZE, "STRUCT_Pathing save layout changed" );
+
+thread_local BOOLEAN gWritingSoldierFields = FALSE;
+
+class SoldierFieldIoScope
+{
+public:
+	explicit SoldierFieldIoScope( BOOLEAN writing )
+		: previous_( gWritingSoldierFields )
+	{
+		gWritingSoldierFields = writing;
+	}
+
+	~SoldierFieldIoScope()
+	{
+		gWritingSoldierFields = previous_;
+	}
+
+private:
+	BOOLEAN previous_;
+};
+}
+
 INT32 ReadFieldByField(HWFILE hFile, PTR pDest, UINT32 uiFieldSize, UINT32 uiElementSize, UINT32  uiCurByteCount)
 {
-	UINT32	uiNumBytesRead;
-	char		padding[10];
+	UINT32	uiNumBytesRead = 0;
+	char		padding[10]{};
 	UINT32	uiBytesRead = uiCurByteCount;	// used to track our new byte count
 	UINT32	sampleBytesRead = uiBytesRead;	// used to determine how much padding is needed
 
@@ -1904,22 +2106,59 @@ INT32 ReadFieldByField(HWFILE hFile, PTR pDest, UINT32 uiFieldSize, UINT32 uiEle
 
 	if(sampleBytesRead != uiBytesRead)	// if we need padding
 	{
-		FileRead(hFile, &padding, (sampleBytesRead-uiBytesRead), &uiNumBytesRead );
+		if( gWritingSoldierFields )
+			FileWrite(hFile, &padding, (sampleBytesRead-uiBytesRead), &uiNumBytesRead );
+		else
+			FileRead(hFile, &padding, (sampleBytesRead-uiBytesRead), &uiNumBytesRead );
 		uiBytesRead += uiNumBytesRead;
 	}
 
-	// the actual file read
-	FileRead(hFile, pDest, uiFieldSize, &uiNumBytesRead );
+	if( gWritingSoldierFields )
+		FileWrite(hFile, pDest, uiFieldSize, &uiNumBytesRead );
+	else
+		FileRead(hFile, pDest, uiFieldSize, &uiNumBytesRead );
 	uiBytesRead += uiNumBytesRead;
 
 	return uiBytesRead;
 }
 
+template<typename T>
+static INT32 TransferLegacyPointerField(HWFILE hFile, T& pointerStorage, UINT32 uiCurByteCount)
+{
+	static_assert( sizeof(T) % sizeof(void*) == 0 );
+	constexpr size_t pointerCount = sizeof(T) / sizeof(void*);
+	UINT32 diskPointers[pointerCount]{};
+	const INT32 result = ReadFieldByField( hFile, diskPointers,
+		sizeof(diskPointers), sizeof(UINT32), uiCurByteCount );
+	if( !gWritingSoldierFields )
+		memset( &pointerStorage, 0, sizeof(pointerStorage) );
+	return result;
+}
+
+static BOOLEAN TransferRawSoldierField(HWFILE hFile, PTR data, UINT32 size, UINT32* transferred)
+{
+	if( gWritingSoldierFields )
+		return FileWrite( hFile, data, size, transferred );
+	return FileRead( hFile, data, size, transferred );
+}
+
 BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 {
+	return Serialize( hFile, FALSE );
+}
+
+BOOLEAN SOLDIERTYPE::Serialize(HWFILE hFile, BOOLEAN writing)
+{
+	// There is one writable format: the current Win32-compatible save format.
+	// Older formats remain readable through the conversion branches below.
+	if( writing && guiCurrentSaveGameVersion != SAVE_GAME_VERSION )
+		return FALSE;
+
+	SoldierFieldIoScope ioScope( writing );
 	UINT32 uiNumBytesRead;
 	INT32	numBytesRead = 0, buffer = 0;
-	char	padding[10];
+	char	padding[10]{};
+	char	animationCachePadding[3]{};
 	FLOAT	temp;
 
 	//if we are at the most current version, then fine
@@ -1946,8 +2185,8 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->bVisible, sizeof(bVisible), sizeof(INT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bActive, sizeof(bActive), sizeof(INT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bTeam, sizeof(bTeam), sizeof(INT8), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pTempObject, sizeof(pTempObject), 1, numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pKeyRing, sizeof(pKeyRing), 1, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pTempObject, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pKeyRing, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bInSector, sizeof(bInSector), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bFlashPortraitFrame, sizeof(bFlashPortraitFrame), sizeof(INT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sFractLife, sizeof(sFractLife), sizeof(INT16), numBytesRead);
@@ -1966,7 +2205,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		if(guiCurrentSaveGameVersion >= STOMP12_SAVEGAME_DATATYPE_CHANGE){
 			numBytesRead = ReadFieldByField(hFile, &this->iHealableInjury, sizeof(iHealableInjury), sizeof(INT32), numBytesRead);
 			numBytesRead = ReadFieldByField(hFile, &this->fDoingSurgery, sizeof(fDoingSurgery), sizeof(BOOLEAN), numBytesRead);
-			numBytesRead = ReadFieldByField(hFile, &this->lUnregainableBreath, sizeof(lUnregainableBreath), sizeof(signed long), numBytesRead);
+			numBytesRead = ReadFieldByField(hFile, &this->lUnregainableBreath, sizeof(lUnregainableBreath), sizeof(INT32), numBytesRead);
 			numBytesRead = ReadFieldByField(hFile, &this->ubCriticalStatDamage, sizeof(ubCriticalStatDamage), sizeof(UINT8), numBytesRead);
 		} else {
 			buffer += 24;
@@ -2006,7 +2245,15 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->ubAttackerID, sizeof(ubAttackerID), sizeof(UINT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->ubPreviousAttackerID, sizeof(ubPreviousAttackerID), sizeof(UINT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sInsertionGridNo, sizeof(sInsertionGridNo), sizeof(INT32), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->AnimCache, sizeof(AnimCache), 1, numBytesRead);
+		// AnimationSurfaceCacheType is 12 bytes on Win32 and 24 bytes on 64-bit
+		// hosts. Its pointers are runtime cache state; persist only their legacy
+		// placeholders, the cache size byte, and the Win32 trailing padding.
+		numBytesRead = TransferLegacyPointerField(hFile, this->AnimCache.usCachedSurfaces, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->AnimCache.sCacheHits, numBytesRead);
+		numBytesRead = ReadFieldByField(hFile, &this->AnimCache.ubCacheSize,
+			sizeof(this->AnimCache.ubCacheSize), sizeof(UINT8), numBytesRead);
+		numBytesRead = ReadFieldByField(hFile, animationCachePadding,
+			sizeof(animationCachePadding), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bSide, sizeof(bSide), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bViewRange, sizeof(bViewRange), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bNewOppCnt, sizeof(bNewOppCnt), sizeof(INT8), numBytesRead);
@@ -2077,21 +2324,21 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->VestPal, sizeof(VestPal), 1, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->SkinPal, sizeof(SkinPal), 1, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->MiscPal, sizeof(MiscPal), 1, numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->p8BPPPalette, sizeof(p8BPPPalette), sizeof(SGPPaletteEntry), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->p16BPPPalette, sizeof(p16BPPPalette), sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pShades, sizeof(pShades), sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pGlowShades, sizeof(pGlowShades), sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pCurrentShade, sizeof(pCurrentShade), sizeof(UINT16), numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->p8BPPPalette, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->p16BPPPalette, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pShades, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pGlowShades, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pCurrentShade, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->ubFadeLevel, sizeof(ubFadeLevel), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->ubServiceCount, sizeof(ubServiceCount), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->ubServicePartner, sizeof(ubServicePartner), sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pThrowParams, sizeof(pThrowParams), 4, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pThrowParams, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bReverse, sizeof(bReverse), sizeof(INT8), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pLevelNode, sizeof(pLevelNode), 4, numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pExternShadowLevelNode, sizeof(pExternShadowLevelNode), 4, numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pRoofUILevelNode, sizeof(pRoofUILevelNode), 4, numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pBackGround, sizeof(pBackGround), sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pZBackground, sizeof(pZBackground), sizeof(UINT16), numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pLevelNode, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pExternShadowLevelNode, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pRoofUILevelNode, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pBackGround, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pZBackground, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->usUnblitX, sizeof(usUnblitX), sizeof(UINT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->usUnblitY, sizeof(usUnblitY), sizeof(UINT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->usUnblitWidth, sizeof(usUnblitWidth), sizeof(UINT16), numBytesRead);
@@ -2116,7 +2363,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->sWalkToAttackWalkToCost, sizeof(sWalkToAttackWalkToCost), sizeof(INT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sLocatorOffX, sizeof(sLocatorOffX), sizeof(INT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sLocatorOffY, sizeof(sLocatorOffY), sizeof(INT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pForcedShade, sizeof(pForcedShade), 4, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pForcedShade, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bDisplayDamageCount, sizeof(bDisplayDamageCount), sizeof(INT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sWalkToAttackEndDirection, sizeof(sWalkToAttackEndDirection), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sDamage, sizeof(sDamage), sizeof(INT16), numBytesRead);
@@ -2146,7 +2393,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->bAimShotLocation, sizeof(bAimShotLocation), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->ubHitLocation, sizeof(ubHitLocation), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bAimMeleeLocation, sizeof(bAimMeleeLocation), sizeof(UINT8), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pEffectShades, sizeof(pEffectShades), 4, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pEffectShades, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->ubPlannedUIAPCost, sizeof(ubPlannedUIAPCost), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sPlannedTargetX, sizeof(sPlannedTargetX), sizeof(INT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sPlannedTargetY, sizeof(sPlannedTargetY), sizeof(INT16), numBytesRead);
@@ -2168,7 +2415,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->sSectorY, sizeof(sSectorY), sizeof(INT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bSectorZ, sizeof(bSectorZ), sizeof(INT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->iVehicleId, sizeof(iVehicleId), sizeof(INT32), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pMercPath, sizeof(pMercPath), 1, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pMercPath, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->usMedicalDeposit, sizeof(usMedicalDeposit), sizeof(UINT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->usLifeInsurance, sizeof(usLifeInsurance), sizeof(UINT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->uiStartMovementTime, sizeof(uiStartMovementTime), sizeof(UINT32), numBytesRead);
@@ -2197,7 +2444,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->ubTargetID, sizeof(ubTargetID), sizeof(UINT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bAIScheduleProgress, sizeof(bAIScheduleProgress), sizeof(INT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sOffWorldGridNo, sizeof(sOffWorldGridNo), sizeof(INT32), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pAniTile, sizeof(pAniTile), 1, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pAniTile, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bCamo, sizeof(bCamo), sizeof(INT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->sAbsoluteFinalDestination, sizeof(sAbsoluteFinalDestination), sizeof(INT32), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->ubHiResDirection, sizeof(ubHiResDirection), sizeof(UINT8), numBytesRead);
@@ -2259,7 +2506,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->bPendingActionData5, sizeof(bPendingActionData5), sizeof(INT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bDelayedStrategicMoraleMod, sizeof(bDelayedStrategicMoraleMod), sizeof(INT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->ubDoorOpeningNoise, sizeof(ubDoorOpeningNoise), sizeof(UINT8), numBytesRead);
-		numBytesRead = ReadFieldByField(hFile, &this->pGroup, sizeof(pGroup), 1, numBytesRead);
+		numBytesRead = TransferLegacyPointerField(hFile, this->pGroup, numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->ubLeaveHistoryCode, sizeof(ubLeaveHistoryCode), sizeof(UINT8), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->bOverrideMoveSpeed, sizeof(bOverrideMoveSpeed), sizeof(UINT16), numBytesRead);
 		numBytesRead = ReadFieldByField(hFile, &this->uiTimeSoldierWillArrive, sizeof(uiTimeSoldierWillArrive), sizeof(UINT32), numBytesRead);
@@ -2289,7 +2536,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->wornSnowCamo, sizeof(wornSnowCamo), sizeof(INT8), numBytesRead);
 		// Preserve old savegames by detecting if the assignment is not saved as FACILITY_ but really should be
 		numBytesRead = ReadFieldByField(hFile, &this->sFacilityTypeOperated, sizeof(sFacilityTypeOperated), sizeof(INT16), numBytesRead);
-		if (this->sFacilityTypeOperated > 0)
+		if (!writing && this->sFacilityTypeOperated > 0)
 		{
 			if (this->bAssignment == DOCTOR)
 				this->bAssignment = FACILITY_DOCTOR;
@@ -2562,13 +2809,16 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		numBytesRead = ReadFieldByField(hFile, &this->ubPercentDamageInflictedByTeam, sizeof(ubPercentDamageInflictedByTeam), sizeof(UINT8), numBytesRead);
 #endif
 		numBytesRead += buffer;
-		const UINT32 PODsize = SIZEOF_SOLDIERTYPE_POD;
-		if(numBytesRead != PODsize)
-			return(FALSE);
-
-		//load the OO inventory
-		if ( !this->inv.Load(hFile) )
+		if(numBytesRead != SAVED_SOLDIER_POD_SIZE)
 		{
+			LogSaveLayoutMismatch( "soldier POD", numBytesRead, SAVED_SOLDIER_POD_SIZE, hFile );
+			return(FALSE);
+		}
+
+		// Transfer the OO inventory after the fixed-layout POD.
+		if ( writing ? !this->inv.Save(hFile, FALSE) : !this->inv.Load(hFile) )
+		{
+			LogSaveLoadFailureAt( "soldier inventory", hFile, ubID );
 			return(FALSE);
 		}
 
@@ -2656,7 +2906,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		//	padding bytes
 		while((numBytesRead%__alignof(STRUCT_AIData)) > 0)
 		{
-			FileRead( hFile, &padding, 1,  &uiNumBytesRead );
+			TransferRawSoldierField( hFile, &padding, 1, &uiNumBytesRead );
 			numBytesRead += uiNumBytesRead;
 		}
 		if ( guiCurrentSaveGameVersion < AP100_SAVEGAME_DATATYPE_CHANGE )
@@ -2666,19 +2916,22 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 			//	size of numBytesRead by another 2 so that the new structure alignment is accounted for.
 			numBytesRead += 4;
 		}
-		if(numBytesRead != sizeof(STRUCT_AIData))
+		if(numBytesRead != SAVED_SOLDIER_AI_DATA_SIZE)
+		{
+			LogSaveLayoutMismatch( "soldier AI data", numBytesRead, SAVED_SOLDIER_AI_DATA_SIZE, hFile );
 			return(FALSE);
+		}
 
 		//Load STRUCT_Flags
-		if ( !FileRead( hFile, &this->flags, sizeof(STRUCT_Flags), &uiNumBytesRead ) )
+		if ( !TransferRawSoldierField( hFile, &this->flags, sizeof(STRUCT_Flags), &uiNumBytesRead ) )
 		{
 			return(FALSE);
 		}
-		if ( !FileRead( hFile, &this->timeChanges, sizeof(STRUCT_TimeChanges), &uiNumBytesRead ) )
+		if ( !TransferRawSoldierField( hFile, &this->timeChanges, sizeof(STRUCT_TimeChanges), &uiNumBytesRead ) )
 		{
 			return(FALSE);
 		}
-		if ( !FileRead( hFile, &this->timeCounters, sizeof(STRUCT_TimeCounters), &uiNumBytesRead ) )
+		if ( !TransferRawSoldierField( hFile, &this->timeCounters, sizeof(STRUCT_TimeCounters), &uiNumBytesRead ) )
 		{
 			return(FALSE);
 		}
@@ -2687,7 +2940,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		{
 			// read old drugs with a dummy structure of the old structs size (192)
 			UINT8 tmp[192];
-			if ( !FileRead( hFile, &tmp, sizeof(tmp), &uiNumBytesRead ) )
+			if ( !TransferRawSoldierField( hFile, &tmp, sizeof(tmp), &uiNumBytesRead ) )
 			{
 				return(FALSE);
 			}
@@ -2702,7 +2955,7 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		}
 		else
 		{
-			if ( !FileRead( hFile, &this->newdrugs, sizeof(DRUGS), &uiNumBytesRead ) )
+			if ( !TransferRawSoldierField( hFile, &this->newdrugs, sizeof(DRUGS), &uiNumBytesRead ) )
 			{
 				return(FALSE);
 			}
@@ -2760,19 +3013,27 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 
 		INT32 sizestruct = sizeof(STRUCT_Statistics);
 
-		if(numBytesRead != sizeof(STRUCT_Statistics))
+		if(numBytesRead != SAVED_SOLDIER_STATISTICS_SIZE)
+		{
+			LogSaveLayoutMismatch( "soldier statistics", numBytesRead, SAVED_SOLDIER_STATISTICS_SIZE, hFile );
 			return(FALSE);
+		}
 //		if ( !FileRead( hFile, &this->stats, sizeof(STRUCT_Statistics), &uiNumBytesRead ) )
 //		{
 //			return(FALSE);
 //		}
-		if ( !FileRead( hFile, &this->pathing, sizeof(STRUCT_Pathing), &uiNumBytesRead ) )
+		if ( !TransferRawSoldierField( hFile, &this->pathing, sizeof(STRUCT_Pathing), &uiNumBytesRead ) )
 		{
 			return(FALSE);
 		}
 		// check checksum
-		if ( this->GetChecksum() != this->uiMercChecksum )
+		if ( !writing && this->GetChecksum() != this->uiMercChecksum )
 		{
+			(void)ja2::fileio::logStore().appendLine( "save-load-fileio.log",
+				"soldier checksum mismatch for " + std::to_string(static_cast<UINT16>(ubID)) +
+				", calculated " + std::to_string(GetChecksum()) +
+				", saved " + std::to_string(uiMercChecksum) +
+				", file offset " + std::to_string(FileGetPos(hFile)) );
 			return( FALSE );
 		}
 	}
@@ -2823,8 +3084,9 @@ BOOLEAN SOLDIERTYPE::Load(HWFILE hFile)
 		//assume checksum is ok
 	}
 
-	// sevenfm: initialize other SOLDIERTYPE data
-	this->InitializeExtraData();
+	// sevenfm: initialize other SOLDIERTYPE data after loading only.
+	if( !writing )
+		this->InitializeExtraData();
 
 	return TRUE;
 }
@@ -2979,7 +3241,7 @@ BOOLEAN StackedObjectData::Load( INT8** hBuffer, float dMajorMapVersion, UINT8 u
 		if (dMajorMapVersion >= 8 && ubMinorMapVersion >= MINOR_MAP_VERSION)
 		{
 			// Deal with Increased Team Sizes data
-			LOADDATA(&(this->data), *hBuffer, sizeof(ObjectData) );
+			LoadSavedObjectDataFromBuffer( hBuffer, this->data );
 		}
 		else if (dMajorMapVersion >= 7 && ubMinorMapVersion >= MINOR_MAP_VERSION)
 		{
@@ -3040,7 +3302,7 @@ BOOLEAN StackedObjectData::Load( HWFILE hFile )
 	//if we are at the most current version, then fine
 	if ( guiCurrentSaveGameVersion >= NIV_SAVEGAME_DATATYPE_CHANGE )
 	{
-		if ( !FileRead( hFile, &(this->data), sizeof(ObjectData), &uiNumBytesRead ) )
+		if ( !ReadSavedObjectData( hFile, this->data ) )
 		{
 			return(FALSE);
 		}
@@ -3078,7 +3340,7 @@ BOOLEAN StackedObjectData::Save( HWFILE hFile, bool fSavingMap )
 		}
 	}
 
-	if ( !FileWrite( hFile, &(this->data), sizeof(ObjectData), &uiNumBytesWritten ) )
+	if ( !WriteSavedObjectData( hFile, this->data ) )
 	{
 		return(FALSE);
 	}
@@ -4765,6 +5027,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	guiJA2EncryptionSet = CalcJA2EncryptionSet( &SaveGameHeader );
 	guiCurrentSaveGameVersion = SaveGameHeader.uiSavedGameVersion;
 	guiBrokenSaveGameVersion = SaveGameHeader.uiSavedGameVersion;
+	LogSaveLoadPositionAt( "header", hFile );
 
 	// WANNE: Store the info
 	lastLoadedSaveGameDay = SaveGameHeader.uiDay;
@@ -4783,6 +5046,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		gGameOptions.ubInventorySystem = SaveGameHeader.sInitialGameOptions.ubInventorySystem;
 		gGameOptions.ubAttachmentSystem = SaveGameHeader.sInitialGameOptions.ubAttachmentSystem;
 	}
+	LogSaveLoadPositionAt( "game options", hFile );
 
 	// Have to initialize map UI Coordinates, because inventory panel layout location depends on them.
 	initMapViewAndBorderCoordinates();
@@ -4851,6 +5115,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "tactical status", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Tactical Status" );
 	#endif
@@ -4870,6 +5135,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "game clock", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Game Clock" );
 	#endif
@@ -4956,6 +5222,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "strategic events", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Strategic Events" );
 	#endif
@@ -4971,12 +5238,21 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 
+	(void)ja2::fileio::logStore().appendLine( "save-load-fileio.log",
+		"laptop data starts at " + std::to_string( FileGetPos( hFile ) ) );
 	if( !LoadLaptopInfoFromSavedGame( hFile ) )
 	{
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("LoadLaptopInfoFromSavedGame failed" ) );
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "laptop info", hFile );
+	(void)ja2::fileio::logStore().appendLine( "save-load-fileio.log",
+		"laptop data ends at " + std::to_string( FileGetPos( hFile ) ) +
+		", orders=" + std::to_string( LaptopSaveInfo.usNumberOfBobbyRayOrderItems ) +
+		"/" + std::to_string( LaptopSaveInfo.usNumberOfBobbyRayOrderUsed ) +
+		", payouts=" + std::to_string( LaptopSaveInfo.ubNumberLifeInsurancePayouts ) +
+		"/" + std::to_string( LaptopSaveInfo.ubNumberLifeInsurancePayoutUsed ) );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Laptop Info" );
 	#endif
@@ -4996,9 +5272,14 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if( !LoadSavedMercProfiles( hFile ) )
 	{
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("LoadSavedMercProfiles failed" ) );
+		LogSaveLoadFailureAt( "merc profiles", hFile );
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "merc profiles", hFile );
+#if LOADSAVEGAME_LOGTIME
+	TimingLog("LoadSavedMercProfiles", 7);
+#endif
 
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Merc Profiles" );
@@ -5017,9 +5298,11 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if( !LoadSoldierStructure( hFile ) )
 	{
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("LoadSoldierStructure failed" ) );
+		LogSaveLoadFailureAt( "soldier structures", hFile );
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "soldier structures", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Soldier Structure" );
 	#endif
@@ -5043,6 +5326,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "finances", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Finances Data File" );
 	#endif
@@ -5065,6 +5349,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "history", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "History File" );
 	#endif
@@ -5087,6 +5372,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "laptop files", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "The Laptop FILES file" );
 	#endif
@@ -5106,6 +5392,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "email", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Email" );
 	#endif
@@ -5126,6 +5413,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "strategic info", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Strategic Information" );
 	#endif
@@ -5170,6 +5458,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "underground info", hFile );
 #ifdef JA2BETAVERSION
 	LoadGameFilePosition( FileGetPos( hFile ), "UnderGround Information" );
 #endif
@@ -5190,6 +5479,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "squad info", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Squad Info" );
 	#endif
@@ -5208,6 +5498,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "strategic movement", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Strategic Movement Groups" );
 	#endif
@@ -5230,6 +5521,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "map temp files", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "All the Map Temp files" );
 	#endif
@@ -5266,7 +5558,8 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		#ifdef JA2BETAVERSION
 			LoadGameFilePosition( FileGetPos( hFile ), "Quest Info" );
 		#endif
-	}
+		}
+	LogSaveLoadPositionAt( "quest info", hFile );
 
 	uiRelEndPerc += 1;
 	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("LUA Modder Data...") );
@@ -5290,6 +5583,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		//Init LUA Modder Data
 		InitLUAModderData();
 	}
+	LogSaveLoadPositionAt( "Lua modder data", hFile );
 
 	uiRelEndPerc += 1;
 	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("OppList Info...") );
@@ -5303,6 +5597,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "opponent list", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "OppList Info" );
 	#endif
@@ -5323,6 +5618,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "map messages", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "MapScreen Messages" );
 	#endif
@@ -5342,6 +5638,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "NPC info", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "NPC Info" );
 	#endif
@@ -5361,6 +5658,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "key table", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "KeyTable" );
 	#endif
@@ -5379,6 +5677,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "temporary NPC quotes", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Npc Temp Quote File" );
 	#endif
@@ -5398,6 +5697,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "pre-generated random numbers", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "PreGenerated Random Files" );
 	#endif
@@ -5418,6 +5718,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "smoke effects", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Smoke Effect Structures" );
 	#endif
@@ -5437,6 +5738,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return( FALSE );
 	}
+	LogSaveLoadPositionAt( "arms dealer inventory", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Arms Dealers Inventory" );
 	#endif
@@ -5453,6 +5755,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "general info", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Misc info" );
 	#endif
@@ -5469,6 +5772,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "mine status", hFile );
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Mine Status" );
 	#endif
@@ -5496,6 +5800,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Town Loyalty" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "town loyalty", hFile );
 
 
 	uiRelEndPerc += 1;
@@ -5516,6 +5821,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		LoadGameFilePosition( FileGetPos( hFile ), "Vehicle Information" );
 #endif
 	}
+	LogSaveLoadPositionAt( "vehicle information", hFile );
 
 	uiRelEndPerc += 1;
 	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Militia Movement...") );
@@ -5528,6 +5834,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "militia movement", hFile );
 
 #ifdef JA2BETAVERSION
 	LoadGameFilePosition( FileGetPos( hFile ), "Militia Movement" );
@@ -5554,6 +5861,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Bullet Information" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "bullet information", hFile );
 
 
 
@@ -5578,6 +5886,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Physics table" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "physics table", hFile );
 
 
 
@@ -5601,6 +5910,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Air Raid Info" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "air raid info", hFile );
 
 
 
@@ -5623,6 +5933,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Team Turn Info" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "team turn info", hFile );
 
 
 
@@ -5646,6 +5957,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Explosion Table" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "explosion table", hFile );
 
 
 
@@ -5670,6 +5982,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Creature Spreading" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "creature directives", hFile );
 
 
 
@@ -5694,6 +6007,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Strategic Status" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "strategic status", hFile );
 
 
 
@@ -5716,6 +6030,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Strategic AI" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "strategic AI", hFile );
 
 
 
@@ -5738,6 +6053,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Lighting Effects" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "lighting effects", hFile );
 
 
 
@@ -5760,6 +6076,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Watched Locs Info" );
 	#endif
+	LogSaveLoadPositionAt( "watched locations", hFile );
 
 
 
@@ -5782,6 +6099,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Item cursor Info" );
 	#endif
+	LogSaveLoadPositionAt( "item cursor", hFile );
 
 
 
@@ -5804,6 +6122,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Civ Quote System" );
 	#endif
+	LogSaveLoadPositionAt( "civilian quotes", hFile );
 
 
 
@@ -5827,6 +6146,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Backed up NPC Info" );
 	#endif
+	LogSaveLoadPositionAt( "backup NPC info", hFile );
 
 
 
@@ -5853,6 +6173,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	{
 		memcpy( &gMeanwhileDef[gCurrentMeanwhileDef.ubMeanwhileID], &gCurrentMeanwhileDef, sizeof( MEANWHILE_DEFINITION ) );
 	}
+	LogSaveLoadPositionAt( "meanwhile definitions", hFile );
 
 
 
@@ -5878,6 +6199,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Schedules" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "schedules", hFile );
 
 
 
@@ -5915,6 +6237,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		#endif
 	}
 	}
+	LogSaveLoadPositionAt( "vehicle movement", hFile );
 
 	uiRelEndPerc += 1;
 	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Contract renewal sequence stuff...") );
@@ -5941,6 +6264,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Contract renewal sequence stuff" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "contract renewal", hFile );
 
 
 	if( guiCurrentSaveGameVersion >= 70 )
@@ -5955,6 +6279,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "Leave List" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "leave-item list", hFile );
 
 	if( guiCurrentSaveGameVersion <= 73 )
 	{
@@ -5975,6 +6300,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			LoadGameFilePosition( FileGetPos( hFile ), "New way of loading Bobby R mailorders" );
 		#endif
 	}
+	LogSaveLoadPositionAt( "Bobby Ray mail orders", hFile );
 
 	//If there are any old Bobby R Mail orders, tranfer them to the new system
 	if( guiCurrentSaveGameVersion < 85 )
@@ -5992,6 +6318,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			return( FALSE );
 		}
 	}
+	LogSaveLoadPositionAt( "postal shipments", hFile );
 
 
 
@@ -6048,6 +6375,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Load Mercs Prfiles" );
 	#endif
+	LogSaveLoadPositionAt( "new merc profiles", hFile );
 	
 	uiRelEndPerc += 1;
 	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load New Sytem Mercs Prfiles...") );
@@ -6067,6 +6395,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Load New Sytem Mercs Prfiles" );
 	#endif
+	LogSaveLoadPositionAt( "new-system merc profiles", hFile );
 
 	uiRelEndPerc += 1;
 	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Final Checks...") );
@@ -6092,6 +6421,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Lua Global System" );
 	#endif
+	LogSaveLoadPositionAt( "Lua globals", hFile );
 
 #if LOADSAVEGAME_LOGTIME
 	TimingLog("LoadLuaGlobalFromLoadGameFile", 6);
@@ -6116,6 +6446,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "New Vehicles" );
 	#endif
+	LogSaveLoadPositionAt( "new vehicles", hFile );
 	
 	if( guiCurrentSaveGameVersion >= NEW_SAVE_GAME_GENERAL_SAVE_INFO_DATA)
 	{
@@ -6133,10 +6464,11 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Load Save Data" );
-	#endif		
-		
+	#endif
+
 	}
-	
+	LogSaveLoadPositionAt( "general save data", hFile );
+
 	if( guiCurrentSaveGameVersion >= NEW_EMAIL_SAVE_GAME)
 	{
 		uiRelEndPerc += 1;
@@ -6153,9 +6485,10 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		
 	#ifdef JA2BETAVERSION
 		LoadGameFilePosition( FileGetPos( hFile ), "Load New Email Data" );
-	#endif		
-		
+	#endif
+
 	}
+	LogSaveLoadPositionAt( "new email data", hFile );
 
 	if( guiCurrentSaveGameVersion >= HIDDENTOWN_DATATYPE_CHANGE)
 	{
@@ -6176,6 +6509,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#endif
 
 	}
+	LogSaveLoadPositionAt( "hidden towns", hFile );
 
 	if( guiCurrentSaveGameVersion > ENCYCLOPEDIA_SAVEGAME_CHANGE)
 	{
@@ -6196,6 +6530,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#endif
 
 	}
+	LogSaveLoadPositionAt( "briefing room", hFile );
 
 	if ( guiCurrentSaveGameVersion >= ENCYCLOPEDIA_ITEM_VISIBILITY )
 	{
@@ -6214,6 +6549,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	else
 		EncyclopediaInitItemsVisibility();
 #endif
+	LogSaveLoadPositionAt( "encyclopedia visibility", hFile );
 
 	if( guiCurrentSaveGameVersion >= CAMPAIGNSTATS )
 	{
@@ -6237,6 +6573,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			return( FALSE );
 		}
 	}
+	LogSaveLoadPositionAt( "campaign stats", hFile );
 
 	if ( guiCurrentSaveGameVersion >= DYNAMIC_DIALOGUE )
 	{
@@ -6252,6 +6589,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 			return(FALSE);
 		}
 	}
+	LogSaveLoadPositionAt( "dynamic dialogue", hFile );
 		
 	uiRelEndPerc += 1;
 	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load PMC data ...") );
@@ -6264,6 +6602,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "PMC data", hFile );
 
 	if ( guiCurrentSaveGameVersion >= ENEMY_HELICOPTERS )
 	{
@@ -6284,6 +6623,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		// if loading an old savegame that did not have this feature, initialise
 		InitASD();
 	}
+	LogSaveLoadPositionAt( "ASD data", hFile );
 
 	// Flugente: in campaigns started before ENEMY_HELICOPTERS, the periodic ASD update routine was not properly initialised. To be sure, we definetly set it up here
 	if ( guiCurrentSaveGameVersion < ASD_INIT_FIX )
@@ -6312,6 +6652,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	{
 		InitIndividualMilitiaData();
 	}
+	LogSaveLoadPositionAt( "individual militia", hFile );
 
 	uiRelEndPerc += 1;
 	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load rebel command data...") );
@@ -6324,6 +6665,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		FileClose( hFile );
 		return(FALSE);
 	}
+	LogSaveLoadPositionAt( "rebel command", hFile );
 
 #if LOADSAVEGAME_LOGTIME
 	TimingLog("File read done", 10);
@@ -6819,6 +7161,7 @@ BOOLEAN	LoadSavedMercProfiles( HWFILE hFile )
 		//if ( !gMercProfiles[cnt].Load(hFile, false) )
 		if ( !gMercProfiles[cnt].Load(hFile, false, false, true) )
 		{
+			LogSaveLoadFailureAt( "merc profile", hFile, cnt );
 			return(FALSE);
 		}
 		// now check if we loaded a valid merc profile
@@ -6896,6 +7239,7 @@ BOOLEAN SaveSoldierStructure( HWFILE hFile )
 			// Save the soldier structure
 			if ( !Menptr[ cnt ].Save(hFile) )
 			{
+				LogSaveLoadFailureAt( "soldier save", hFile, cnt );
 				return FALSE;
 			}
 
@@ -6978,6 +7322,7 @@ BOOLEAN LoadSoldierStructure( HWFILE hFile )
 			//Read in the saved soldier info into a Temp structure
 			if ( !SavedSoldierInfo.Load(hFile) )
 			{
+				LogSaveLoadFailureAt( "soldier data", hFile, cnt );
 				return FALSE;
 			}
 
@@ -7007,11 +7352,17 @@ BOOLEAN LoadSoldierStructure( HWFILE hFile )
 			CreateStruct.pExistingSoldier			= &SavedSoldierInfo;
 
 			if( !TacticalCreateSoldier( &CreateStruct, &ubId ) )
+			{
+				LogSaveLoadFailureAt( "soldier creation", hFile, cnt );
 				return( FALSE );
+			}
 
 			// Load the pMercPath
 			if( !LoadMercPathToSoldierStruct( hFile, ubId ) )
+			{
+				LogSaveLoadFailureAt( "soldier path", hFile, cnt );
 				return( FALSE );
+			}
 			
 			//
 			//do we have a 	KEY_ON_RING									*pKeyRing;
@@ -7026,11 +7377,15 @@ BOOLEAN LoadSoldierStructure( HWFILE hFile )
 
 			if( ubOne )
 			{
-				// WANNE - BMP: Check -> We get an assert here!
+				if (Menptr[ubId].pKeyRing == NULL)
+				{
+					Menptr[ubId].pKeyRing = static_cast<KEY_ON_RING*>(MemAlloc(NUM_KEYS * sizeof(KEY_ON_RING)));
+					memset(Menptr[ubId].pKeyRing, 0, NUM_KEYS * sizeof(KEY_ON_RING));
+				}
 				// Now Load the ....
 				if( guiCurrentSaveGameVersion < MORE_LOCKS_AND_KEYS )
 				{
-					FileRead( hFile, Menptr[ cnt ].pKeyRing, NUM_KEYS_OLD * sizeof( KEY_ON_RING ), &uiNumBytesRead );
+					FileRead( hFile, Menptr[ ubId ].pKeyRing, NUM_KEYS_OLD * sizeof( KEY_ON_RING ), &uiNumBytesRead );
 					if( uiNumBytesRead != NUM_KEYS_OLD * sizeof( KEY_ON_RING ) )
 					{
 						return(FALSE);
@@ -7038,7 +7393,7 @@ BOOLEAN LoadSoldierStructure( HWFILE hFile )
 				}
 				else
 				{
-					FileRead( hFile, Menptr[ cnt ].pKeyRing, NUM_KEYS * sizeof( KEY_ON_RING ), &uiNumBytesRead );
+					FileRead( hFile, Menptr[ ubId ].pKeyRing, NUM_KEYS * sizeof( KEY_ON_RING ), &uiNumBytesRead );
 					if( uiNumBytesRead != NUM_KEYS * sizeof( KEY_ON_RING ) )
 					{
 						return(FALSE);
@@ -7047,7 +7402,14 @@ BOOLEAN LoadSoldierStructure( HWFILE hFile )
 			}
 			else
 			{
-				Assert( Menptr[ cnt ].pKeyRing == NULL );
+				// TacticalCreateSoldier allocates an empty key ring for player
+				// mercs.  The serialized flag is authoritative: older saves can
+				// legitimately say that no ring existed.
+				if (Menptr[ubId].pKeyRing != NULL)
+				{
+					MemFree(Menptr[ubId].pKeyRing);
+					Menptr[ubId].pKeyRing = NULL;
+				}
 			}
 
 			//if the soldier is an IMP character
@@ -8199,6 +8561,23 @@ void CreateSavedGameFileNameFromNumber( UINT8 ubSaveGameID, STR pzNewFileName )
 
 
 
+namespace
+{
+	// PathSt contains native pointers, but the save format is the 32-bit Windows
+	// memory layout.  Keep those legacy pointer slots as inert 32-bit values.
+	struct SavedPathNode
+	{
+		UINT32 uiSectorId;
+		UINT32 uiEta;
+		UINT8  fSpeed;
+		UINT8  padding[3];
+		UINT32 legacyNext;
+		UINT32 legacyPrev;
+	};
+
+	static_assert(sizeof(SavedPathNode) == 20, "Unexpected strategic path save layout");
+}
+
 BOOLEAN SaveMercPathFromSoldierStruct( HWFILE hFile, UINT16 ubID )
 {
 	UINT32	uiNumOfNodes=0;
@@ -8225,9 +8604,13 @@ BOOLEAN SaveMercPathFromSoldierStruct( HWFILE hFile, UINT16 ubID )
 		//loop through nodes and save all the nodes
 	while( pTempPath )
 	{
-		//Save the number of the nodes
-		FileWrite( hFile, pTempPath, sizeof( PathSt ), &uiNumBytesWritten );
-		if( uiNumBytesWritten != sizeof( PathSt ) )
+		SavedPathNode savedNode = {};
+		savedNode.uiSectorId = pTempPath->uiSectorId;
+		savedNode.uiEta = pTempPath->uiEta;
+		savedNode.fSpeed = pTempPath->fSpeed;
+
+		FileWrite( hFile, &savedNode, sizeof(savedNode), &uiNumBytesWritten );
+		if( uiNumBytesWritten != sizeof(savedNode) )
 		{
 			return(FALSE);
 		}
@@ -8288,15 +8671,18 @@ BOOLEAN LoadMercPathToSoldierStruct( HWFILE hFile, UINT16 ubID )
 
 		memset( pTemp, 0 , sizeof( PathSt ) );
 		
-		//Load the node
-		FileRead( hFile, pTemp, sizeof( PathSt ), &uiNumBytesRead );
-		if( uiNumBytesRead != sizeof( PathSt ) )
+		SavedPathNode savedNode = {};
+		FileRead( hFile, &savedNode, sizeof(savedNode), &uiNumBytesRead );
+		if( uiNumBytesRead != sizeof(savedNode) )
 		{
 			MemFree( pTemp);
 			pTempPath = MoveToBeginningOfPathList( pTempPath );
 			ClearStrategicPathList( pTempPath, -1 );
 			return(FALSE);
 		}
+		pTemp->uiSectorId = savedNode.uiSectorId;
+		pTemp->uiEta = savedNode.uiEta;
+		pTemp->fSpeed = savedNode.fSpeed;
 
 		//Put the node into the list 
 		if( cnt == 0 )

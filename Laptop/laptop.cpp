@@ -7142,11 +7142,35 @@ BOOLEAN SaveLaptopInfoToSavedGame( HWFILE hFile )
 	UINT32	uiNumBytesWritten=0;
 	UINT32	uiSize;
 
-	// Save The laptop information
-	FileWrite( hFile, &LaptopSaveInfo, sizeof( LaptopSaveInfoStruct ), &uiNumBytesWritten );
-	if( uiNumBytesWritten != sizeof( LaptopSaveInfoStruct ) )
+	// LaptopSaveInfoStruct contains two runtime pointers.  The established save
+	// format is the 32-bit Windows layout, so writing the native structure makes
+	// 64-bit saves 16 bytes too large and shifts every section which follows it.
+	constexpr UINT32 laptopPrefixSize = 257672;
+	constexpr UINT32 laptopTailSize = 156;
+	constexpr UINT32 legacyPointerSize = 4;
+	UINT32 legacyPointer = 0;
+	UINT8 alignmentPadding[2]{};
+	static_assert( offsetof(LaptopSaveInfoStruct, BobbyRayOrdersOnDeliveryArray) == laptopPrefixSize );
+	static_assert( offsetof(LaptopSaveInfoStruct, usNumberOfBobbyRayOrderItems) ==
+		offsetof(LaptopSaveInfoStruct, BobbyRayOrdersOnDeliveryArray) + sizeof(void*) );
+	static_assert( offsetof(LaptopSaveInfoStruct, ubNumberLifeInsurancePayouts) + laptopTailSize ==
+		offsetof(LaptopSaveInfoStruct, bPadding) + sizeof(LaptopSaveInfo.bPadding) );
+	static_assert( sizeof(BobbyRayOrderStruct) == 804 );
+	static_assert( sizeof(LIFE_INSURANCE_PAYOUT) == 12 );
+
+	auto writeExact = [&]( const void* data, UINT32 size ) -> BOOLEAN
 	{
-		return(FALSE);
+		return FileWrite( hFile, data, size, &uiNumBytesWritten ) && uiNumBytesWritten == size;
+	};
+
+	if( !writeExact( &LaptopSaveInfo, laptopPrefixSize ) ||
+		!writeExact( &legacyPointer, legacyPointerSize ) ||
+		!writeExact( &LaptopSaveInfo.usNumberOfBobbyRayOrderItems, 2 ) ||
+		!writeExact( alignmentPadding, sizeof(alignmentPadding) ) ||
+		!writeExact( &legacyPointer, legacyPointerSize ) ||
+		!writeExact( &LaptopSaveInfo.ubNumberLifeInsurancePayouts, laptopTailSize ) )
+	{
+		return FALSE;
 	}
 
 	//If there is anything in the Bobby Ray Orders on Delivery
@@ -7208,11 +7232,35 @@ BOOLEAN LoadLaptopInfoFromSavedGame( HWFILE hFile )
 		LaptopSaveInfo.pLifeInsurancePayouts = NULL;
 	}
 
-	// Load The laptop information
-	FileRead( hFile, &LaptopSaveInfo, sizeof( LaptopSaveInfoStruct ), &uiNumBytesRead );
-	if( uiNumBytesRead != sizeof( LaptopSaveInfoStruct ) )
+	LaptopSaveInfo.BobbyRayOrdersOnDeliveryArray = NULL;
+	LaptopSaveInfo.pLifeInsurancePayouts = NULL;
+
+	// Read the fixed 32-bit Windows representation used by existing 1.13 saves.
+	// The pointer slots are runtime-only placeholders and must never be restored.
+	constexpr UINT32 laptopPrefixSize = 257672;
+	constexpr UINT32 laptopTailSize = 156;
+	constexpr UINT32 legacyPointerSize = 4;
+	UINT32 legacyPointer = 0;
+	UINT8 alignmentPadding[2]{};
+	static_assert( offsetof(LaptopSaveInfoStruct, BobbyRayOrdersOnDeliveryArray) == laptopPrefixSize );
+	static_assert( offsetof(LaptopSaveInfoStruct, usNumberOfBobbyRayOrderItems) ==
+		offsetof(LaptopSaveInfoStruct, BobbyRayOrdersOnDeliveryArray) + sizeof(void*) );
+	static_assert( offsetof(LaptopSaveInfoStruct, ubNumberLifeInsurancePayouts) + laptopTailSize ==
+		offsetof(LaptopSaveInfoStruct, bPadding) + sizeof(LaptopSaveInfo.bPadding) );
+
+	auto readExact = [&]( void* data, UINT32 size ) -> BOOLEAN
 	{
-		return(FALSE);
+		return FileRead( hFile, data, size, &uiNumBytesRead ) && uiNumBytesRead == size;
+	};
+
+	if( !readExact( &LaptopSaveInfo, laptopPrefixSize ) ||
+		!readExact( &legacyPointer, legacyPointerSize ) ||
+		!readExact( &LaptopSaveInfo.usNumberOfBobbyRayOrderItems, 2 ) ||
+		!readExact( alignmentPadding, sizeof(alignmentPadding) ) ||
+		!readExact( &legacyPointer, legacyPointerSize ) ||
+		!readExact( &LaptopSaveInfo.ubNumberLifeInsurancePayouts, laptopTailSize ) )
+	{
+		return FALSE;
 	}
 
 	//If there is anything in the Bobby Ray Orders on Delivery

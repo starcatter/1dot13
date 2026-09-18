@@ -483,7 +483,7 @@ inline SoldierID operator-(const SoldierID lhs, const unsigned int rhs) { return
 inline SoldierID operator-(const SoldierID lhs, const UINT16 rhs) { return SoldierID{ static_cast<UINT16>(lhs.i - rhs) }; }
 inline SoldierID operator-(const int lhs, const SoldierID rhs) { return SoldierID{ static_cast<UINT16>(lhs - rhs.i) }; }
 inline SoldierID operator-(const unsigned int lhs, const SoldierID rhs) { return SoldierID{ static_cast<UINT16>(lhs - rhs.i) }; }
-#ifndef _WIN32
+#if !defined(_WIN32) && defined(__SIZEOF_SIZE_T__) && __SIZEOF_SIZE_T__ > __SIZEOF_INT__
 inline std::size_t operator-(const std::size_t lhs, const SoldierID rhs) { return lhs - rhs.i; }
 #endif
 
@@ -493,7 +493,7 @@ inline SoldierID operator+(const SoldierID lhs, const unsigned int rhs) { return
 inline SoldierID operator+(const SoldierID lhs, const UINT16 rhs) { return SoldierID{ static_cast<UINT16>(lhs.i + rhs) }; }
 inline SoldierID operator+(const unsigned int lhs, const SoldierID rhs) { return SoldierID{ static_cast<UINT16>(lhs + rhs.i) }; }
 inline SoldierID operator+(const INT16 lhs, const SoldierID rhs) { return SoldierID{ static_cast<UINT16>(lhs + rhs.i) }; }
-#ifndef _WIN32
+#if !defined(_WIN32) && defined(__SIZEOF_SIZE_T__) && __SIZEOF_SIZE_T__ > __SIZEOF_INT__
 inline std::size_t operator+(const std::size_t lhs, const SoldierID rhs) { return lhs + rhs.i; }
 #endif
 

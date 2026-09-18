@@ -21,6 +21,80 @@ Incident_Stats	gCurrentIncident;		// we might save during an incident, thus we h
 
 CAMPAIGNSTATSEVENT zCampaignStatsEvent[NUM_CAMPAIGNSTATSEVENTS];
 
+namespace
+{
+#pragma pack(push, 1)
+struct SavedIncidentStats
+{
+	UINT32 id;
+	UINT32 time;
+	UINT8 sector;
+	UINT8 level;
+	UINT8 interestAlignmentPadding[2];
+	UINT32 interestRating;
+	UINT8 npcDied;
+	UINT8 civFactionFought;
+	UINT8 flagsAlignmentPadding[6];
+	UINT64 incidentFlags;
+	UINT64 oneTimeEventFlags;
+	UINT16 kills[CAMPAIGNHISTORY_SD_MAX];
+	UINT16 wounds[CAMPAIGNHISTORY_SD_MAX];
+	UINT16 prisoners[CAMPAIGNHISTORY_SD_MAX];
+	UINT16 shots[CAMPAIGNHISTORY_SD_MAX];
+	UINT16 participants[CAMPAIGNHISTORY_SD_MAX];
+	UINT16 promotions[CAMPAIGNHISTORY_SD_MAX];
+	UINT8 filler[40];
+};
+#pragma pack(pop)
+
+static_assert( sizeof(SavedIncidentStats) == 212,
+	"The Win32 incident-stat save record must remain 212 bytes" );
+
+SavedIncidentStats EncodeIncidentStats( const Incident_Stats& source )
+{
+	SavedIncidentStats saved{};
+	saved.id = source.usID;
+	saved.time = source.usTime;
+	saved.sector = source.usSector;
+	saved.level = source.usLevel;
+	saved.interestRating = source.usInterestRating;
+	saved.npcDied = source.usNPCDied;
+	saved.civFactionFought = source.usCivFactionFought;
+	saved.incidentFlags = source.usIncidentFlags;
+	saved.oneTimeEventFlags = source.usOneTimeEventFlags;
+	memcpy( saved.kills, source.usKills, sizeof(saved.kills) );
+	memcpy( saved.wounds, source.usWounds, sizeof(saved.wounds) );
+	memcpy( saved.prisoners, source.usPrisoners, sizeof(saved.prisoners) );
+	memcpy( saved.shots, source.usShots, sizeof(saved.shots) );
+	memcpy( saved.participants, source.usParticipants, sizeof(saved.participants) );
+	memcpy( saved.promotions, source.usPromotions, sizeof(saved.promotions) );
+	memcpy( saved.filler, source.usFiller, sizeof(saved.filler) );
+	return saved;
+}
+
+void DecodeIncidentStats( Incident_Stats& destination,
+	const SavedIncidentStats& saved )
+{
+	destination.clear();
+	destination.usID = saved.id;
+	destination.usTime = saved.time;
+	destination.usSector = saved.sector;
+	destination.usLevel = saved.level;
+	destination.usInterestRating = saved.interestRating;
+	destination.usNPCDied = saved.npcDied;
+	destination.usCivFactionFought = saved.civFactionFought;
+	destination.usIncidentFlags = saved.incidentFlags;
+	destination.usOneTimeEventFlags = saved.oneTimeEventFlags;
+	memcpy( destination.usKills, saved.kills, sizeof(saved.kills) );
+	memcpy( destination.usWounds, saved.wounds, sizeof(saved.wounds) );
+	memcpy( destination.usPrisoners, saved.prisoners, sizeof(saved.prisoners) );
+	memcpy( destination.usShots, saved.shots, sizeof(saved.shots) );
+	memcpy( destination.usParticipants, saved.participants, sizeof(saved.participants) );
+	memcpy( destination.usPromotions, saved.promotions, sizeof(saved.promotions) );
+	memcpy( destination.usFiller, saved.filler, sizeof(saved.filler) );
+}
+}
+
 void
 Incident_Stats::clear()
 {
@@ -99,8 +173,10 @@ BOOLEAN
 Incident_Stats::Save( HWFILE hFile )
 {
 	UINT32 uiNumBytesWritten = 0;
+	const SavedIncidentStats saved = EncodeIncidentStats( *this );
 
-	if ( !FileWrite( hFile, this, SIZEOF_INCIDENT_STATS_POD, &uiNumBytesWritten ) )
+	if ( !FileWrite( hFile, &saved, sizeof(saved), &uiNumBytesWritten ) ||
+		uiNumBytesWritten != sizeof(saved) )
 	{
 		return(FALSE);
 	}
@@ -114,28 +190,11 @@ Incident_Stats::Load( HWFILE hwFile )
 	if(guiCurrentSaveGameVersion >= CAMPAIGNSTATS)
 	{
 		UINT32 numBytesRead = 0;
-		
-		numBytesRead = ReadFieldByField(hwFile, &usID,					sizeof(usID),				sizeof(UINT32), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usTime,				sizeof(usTime),				sizeof(UINT32), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usSector,				sizeof(usSector),			sizeof(UINT8), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usLevel,				sizeof(usLevel),			sizeof(UINT8), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usInterestRating,		sizeof(usInterestRating),	sizeof(UINT32), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usNPCDied,				sizeof(usNPCDied),			sizeof(UINT8), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usCivFactionFought,	sizeof(usCivFactionFought), sizeof(UINT8), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usIncidentFlags,		sizeof(usIncidentFlags),	sizeof(UINT64), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usOneTimeEventFlags,	sizeof(usOneTimeEventFlags),sizeof(UINT64), numBytesRead);
-		
-		numBytesRead = ReadFieldByField(hwFile, &usKills,				sizeof(usKills),			sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usWounds,				sizeof(usWounds),			sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usPrisoners,			sizeof(usPrisoners),		sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usShots,				sizeof(usShots),			sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usParticipants,		sizeof(usParticipants),		sizeof(UINT16), numBytesRead);
-		numBytesRead = ReadFieldByField(hwFile, &usPromotions,			sizeof(usPromotions),		sizeof(UINT16), numBytesRead);
-
-		numBytesRead = ReadFieldByField(hwFile, &usFiller,				sizeof(usFiller),			sizeof(UINT8), numBytesRead);
-		
-		if( numBytesRead != SIZEOF_INCIDENT_STATS_POD )
+		SavedIncidentStats saved{};
+		if( !FileRead( hwFile, &saved, sizeof(saved), &numBytesRead ) ||
+			numBytesRead != sizeof(saved) )
 			return(FALSE);
+		DecodeIncidentStats( *this, saved );
 	}
 
 	return( TRUE );

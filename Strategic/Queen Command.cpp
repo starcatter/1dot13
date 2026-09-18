@@ -1,6 +1,8 @@
 //Queen Command.c
 
 	#include "Queen Command.h"
+	#include <cstddef>
+	#include <cstring>
 	#include "Overhead Types.h"
 	#include "strategicmap.h"
 	#include "Soldier Init List.h"
@@ -2609,6 +2611,43 @@ void AddMilitiaToBattle( GROUP *pGroup, UINT8 ubStrategicInsertionCode, UINT16 u
 }
 
 
+namespace
+{
+	constexpr size_t SAVED_UNDERGROUND_PREFIX_SIZE = 24;
+	constexpr size_t SAVED_UNDERGROUND_TAIL_SIZE = 68;
+
+	struct SavedUndergroundSectorInfo
+	{
+		UINT8 prefix[SAVED_UNDERGROUND_PREFIX_SIZE];
+		UINT32 legacyNext;
+		UINT8 tail[SAVED_UNDERGROUND_TAIL_SIZE];
+	};
+
+	static_assert( sizeof(SavedUndergroundSectorInfo) == 96 );
+	static_assert( offsetof(UNDERGROUND_SECTORINFO, next) == SAVED_UNDERGROUND_PREFIX_SIZE );
+	static_assert( offsetof(UNDERGROUND_SECTORINFO, ubNumBloodcats) ==
+		offsetof(UNDERGROUND_SECTORINFO, next) + sizeof(void*) );
+	static_assert( offsetof(UNDERGROUND_SECTORINFO, bPadding) +
+		sizeof(UNDERGROUND_SECTORINFO::bPadding) -
+		offsetof(UNDERGROUND_SECTORINFO, ubNumBloodcats) == SAVED_UNDERGROUND_TAIL_SIZE );
+
+	SavedUndergroundSectorInfo MakeSavedUndergroundSectorInfo( const UNDERGROUND_SECTORINFO& sector )
+	{
+		SavedUndergroundSectorInfo saved{};
+		std::memcpy( saved.prefix, &sector, sizeof(saved.prefix) );
+		std::memcpy( saved.tail, &sector.ubNumBloodcats, sizeof(saved.tail) );
+		return saved;
+	}
+
+	void RestoreUndergroundSectorInfo( const SavedUndergroundSectorInfo& saved,
+		UNDERGROUND_SECTORINFO& sector )
+	{
+		std::memset( &sector, 0, sizeof(sector) );
+		std::memcpy( &sector, saved.prefix, sizeof(saved.prefix) );
+		std::memcpy( &sector.ubNumBloodcats, saved.tail, sizeof(saved.tail) );
+	}
+}
+
 BOOLEAN SaveUnderGroundSectorInfoToSaveGame( HWFILE hFile )
 {
 	UINT32	uiNumBytesWritten;
@@ -2635,8 +2674,9 @@ BOOLEAN SaveUnderGroundSectorInfoToSaveGame( HWFILE hFile )
 	//Go through each node and save it.
 	while( TempNode )
 	{
-		FileWrite( hFile, TempNode, sizeof( UNDERGROUND_SECTORINFO ), &uiNumBytesWritten );
-		if( uiNumBytesWritten != sizeof( UNDERGROUND_SECTORINFO ) )
+		const SavedUndergroundSectorInfo savedSector = MakeSavedUndergroundSectorInfo( *TempNode );
+		FileWrite( hFile, &savedSector, sizeof(savedSector), &uiNumBytesWritten );
+		if( uiNumBytesWritten != sizeof(savedSector) )
 		{
 			return(FALSE);
 		}
@@ -2674,12 +2714,13 @@ BOOLEAN LoadUnderGroundSectorInfoFromSavedGame( HWFILE hFile )
 			return( FALSE );
 
 
-		//read in the new node
-		FileRead( hFile, TempNode, sizeof( UNDERGROUND_SECTORINFO ), &uiNumBytesRead );
-		if( uiNumBytesRead != sizeof( UNDERGROUND_SECTORINFO ) )
+		SavedUndergroundSectorInfo savedSector{};
+		FileRead( hFile, &savedSector, sizeof(savedSector), &uiNumBytesRead );
+		if( uiNumBytesRead != sizeof(savedSector) )
 		{
 			return(FALSE);
 		}
+		RestoreUndergroundSectorInfo( savedSector, *TempNode );
 
 		//If its the first time in, assign the node to the list
 		if( cnt == 0 )

@@ -29,6 +29,52 @@
 class OBJECTTYPE;
 class SOLDIERTYPE;
 
+namespace
+{
+#pragma pack(push, 1)
+struct SavedScheduleNode
+{
+	UINT8 next[4];
+	UINT16 usTime[MAX_SCHEDULE_ACTIONS];
+	UINT32 usData1[MAX_SCHEDULE_ACTIONS];
+	UINT32 usData2[MAX_SCHEDULE_ACTIONS];
+	UINT8 ubAction[MAX_SCHEDULE_ACTIONS];
+	UINT8 ubScheduleID;
+	UINT8 alignmentPadding;
+	UINT16 ubSoldierID;
+	UINT16 usFlags;
+	UINT8 trailingPadding[2];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(SavedScheduleNode) == 56, "Win32 schedule save record size changed");
+
+SavedScheduleNode EncodeScheduleNode(const SCHEDULENODE& source)
+{
+	SavedScheduleNode saved{};
+	memcpy(saved.usTime, source.usTime, sizeof(saved.usTime));
+	memcpy(saved.usData1, source.usData1, sizeof(saved.usData1));
+	memcpy(saved.usData2, source.usData2, sizeof(saved.usData2));
+	memcpy(saved.ubAction, source.ubAction, sizeof(saved.ubAction));
+	saved.ubScheduleID = source.ubScheduleID;
+	saved.ubSoldierID = source.ubSoldierID;
+	saved.usFlags = source.usFlags;
+	return saved;
+}
+
+void DecodeScheduleNode(const SavedScheduleNode& saved, SCHEDULENODE& destination)
+{
+	destination.next = NULL;
+	memcpy(destination.usTime, saved.usTime, sizeof(saved.usTime));
+	memcpy(destination.usData1, saved.usData1, sizeof(saved.usData1));
+	memcpy(destination.usData2, saved.usData2, sizeof(saved.usData2));
+	memcpy(destination.ubAction, saved.ubAction, sizeof(saved.ubAction));
+	destination.ubScheduleID = saved.ubScheduleID;
+	destination.ubSoldierID = saved.ubSoldierID;
+	destination.usFlags = saved.usFlags;
+}
+}
+
 
 #ifdef JA2EDITOR
 extern CHAR16 (*gszScheduleActions)[20];	// NUM_SCHEDULE_ACTIONS entries
@@ -362,7 +408,7 @@ extern BOOLEAN gfSchedulesHosed;
 BOOLEAN LoadSchedulesFromSave( HWFILE hFile )
 {
 	SCHEDULENODE *pSchedule = NULL;
-	SCHEDULENODE temp;
+	SCHEDULENODE temp{};
 	UINT8 ubNum;
 	UINT32 ubRealNum;
 
@@ -383,13 +429,15 @@ BOOLEAN LoadSchedulesFromSave( HWFILE hFile )
 	gubScheduleID = 1;
 	while( ubRealNum )
 	{
-		uiNumBytesToRead = sizeof( SCHEDULENODE );
-		FileRead( hFile, &temp, uiNumBytesToRead, &uiNumBytesRead );
+		SavedScheduleNode saved{};
+		uiNumBytesToRead = sizeof(saved);
+		FileRead( hFile, &saved, uiNumBytesToRead, &uiNumBytesRead );
 		if( uiNumBytesRead != uiNumBytesToRead )
 		{
 			FileClose( hFile );
 			return( FALSE);
 		}
+		DecodeScheduleNode(saved, temp);
 		//LOADDATA( &temp, *hBuffer, sizeof( SCHEDULENODE ) );
 
 		if( gpScheduleList )
@@ -519,14 +567,19 @@ BOOLEAN SCHEDULENODE::Load(INT8** hBuffer, FLOAT dMajorMapVersion)
 		*this = OldScheduleNode;
 	}
 	else
-		LOADDATA(this, *hBuffer, sizeof(SCHEDULENODE));
+	{
+		SavedScheduleNode saved{};
+		LOADDATA(&saved, *hBuffer, sizeof(saved));
+		DecodeScheduleNode(saved, *this);
+	}
 	return(TRUE);
 }
 
 BOOLEAN SCHEDULENODE::Save(HWFILE hFile, FLOAT dMajorMapVersion, UINT8 ubMinorMapVersion)
 {
-	PTR pData = this;
-	UINT32 uiBytesToWrite = sizeof(SCHEDULENODE);
+	SavedScheduleNode saved = EncodeScheduleNode(*this);
+	PTR pData = &saved;
+	UINT32 uiBytesToWrite = sizeof(saved);
 	_OLD_SCHEDULENODE OldScheduleNode;
 	if(dMajorMapVersion == VANILLA_MAJOR_MAP_VERSION && ubMinorMapVersion == VANILLA_MINOR_MAP_VERSION)
 	{
