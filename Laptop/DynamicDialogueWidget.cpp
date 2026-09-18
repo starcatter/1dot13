@@ -6,11 +6,15 @@
 
 #include "DynamicDialogueWidget.h"
 
+#include <algorithm>
+
 #include "WCheck.h"
 #include "renderworld.h"
+#include "Render Dirty.h"
 #include "Font Control.h"
 #include "Utilities.h"
 #include "WordWrap.h"
+#include "video.h"
 
 #include "Soldier Profile.h"
 #include "Cursors.h"
@@ -97,11 +101,10 @@ DDBox::Destroy( )
 	mfDisplayed = FALSE;
 	mfFaceImageExists = FALSE;
 
-	SetRenderFlags( RENDER_FLAG_FULL );
-
-	Refresh( );
-	
-	RemoveDDBox( GetID( ) );
+	// Tactical rendering restores the single-frame background rectangle that
+	// Display registered.  The map screen redraws its panel when boxes change.
+	if ( guiCurrentScreen == MAP_SCREEN )
+		fMapPanelDirty = TRUE;
 }
 
 void
@@ -161,7 +164,26 @@ DDBox::Display( )
 
 	DrawTopEntry( );
 
-	SetRenderFlags( RENDER_FLAG_FULL );
+	const INT16 left = GetX( );
+	const INT16 top = GetY( );
+	const INT16 right = GetX_Text( ) + musWidth + 5;
+	const INT16 bottom = std::max<INT32>(GetY( ) + 43,
+		GetY_Text( ) + musHeight + 5);
+	if ( guiCurrentScreen == GAME_SCREEN )
+	{
+		const INT32 background = RegisterBackgroundRect(
+			BGND_FLAG_SINGLE, NULL, left, top, right, bottom);
+		if ( background != -1 )
+			SetBackgroundRectFilled( background );
+	}
+
+	// This box is drawn after the world and is therefore an overlay.  Asking
+	// RenderWorld for a full rebuild here made every following frame rebuild
+	// the entire tactical scene while dialogue was visible.  That was merely
+	// expensive with the old assembly blitters and can take seconds with the
+	// portable renderer at high resolutions.  Only the pixels touched by the
+	// overlay need to be copied to the presentation buffer.
+	InvalidateRegion( left, top, right, bottom );
 }
 
 void
@@ -183,7 +205,8 @@ DDBox::Refresh( )
 		// outdated -> destroy
 		else if ( musEndTime < GetJA2Clock( ) )
 		{
-			Destroy( );
+			RemoveDDBox( GetID( ) );
+			return;
 		}
 		else
 		{
@@ -296,7 +319,7 @@ BOOLEAN RemoveDDBox( UINT8 aID )
 		{
 			gDDBoxList[i]->Destroy( );
 
-			MemFree( gDDBoxList[i] );
+			delete gDDBoxList[i];
 
 			gDDBoxList[i] = NULL;
 			
@@ -498,7 +521,8 @@ IMPDialogueChooseBox::Destroy( )
 	mfInit = FALSE;
 	mfDisplayed = FALSE;
 
-	SetRenderFlags( RENDER_FLAG_FULL );
+	if ( guiCurrentScreen == MAP_SCREEN )
+		fMapPanelDirty = TRUE;
 
 	Refresh( );
 }
@@ -527,7 +551,23 @@ IMPDialogueChooseBox::Display( )
 
 	DrawTopEntry( );
 
-	SetRenderFlags( RENDER_FLAG_FULL );
+	const INT32 maxwidth = min( IMPDIALOGUECHOOSEBOX_BAR_MAXLENGTH, SCREEN_WIDTH / 2 );
+	const INT32 entriesHeight = static_cast<INT32>(mEntryVector.size( )) *
+		(musFontHeight + 2);
+	const INT16 left = GetX( ) - 4;
+	const INT16 top = GetY( );
+	const INT16 right = std::max<INT32>(GetX( ) + musWidth + 5,
+		GetX_Text( ) + maxwidth + 1);
+	const INT16 bottom = GetY( ) + IMPDIALOGUECHOOSEBOX_BAR_Y_OFFSET +
+		entriesHeight + 1;
+	if ( guiCurrentScreen == GAME_SCREEN )
+	{
+		const INT32 background = RegisterBackgroundRect(
+			BGND_FLAG_SINGLE, NULL, left, top, right, bottom);
+		if ( background != -1 )
+			SetBackgroundRectFilled( background );
+	}
+	InvalidateRegion( left, top, right, bottom );
 }
 
 void
@@ -687,7 +727,7 @@ void DestroyAllDynamicDialogueBoxes( )
 		{
 			gDDBoxList[i]->Destroy( );
 
-			MemFree( gDDBoxList[i] );
+			delete gDDBoxList[i];
 
 			gDDBoxList[i] = NULL;
 		}
