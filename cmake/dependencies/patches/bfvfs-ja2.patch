@@ -223,3 +223,108 @@ index dbd7c74bc..99c8e8204 100644
  }
  
  /*************************************************************************************/
+
+diff --git a/src/Core/File/vfs_file.cpp b/src/Core/File/vfs_file.cpp
+--- a/src/Core/File/vfs_file.cpp
++++ b/src/Core/File/vfs_file.cpp
+@@ -27,7 +27,75 @@
+ 
+ #include <vfs/Aspects/vfs_settings.h>
+ 
+-#include <sys/stat.h>
++#include <sys/stat.h>
++
++#ifndef WIN32
++#include <cctype>
++#include <dirent.h>
++#include <string>
++#include <unistd.h>
++
++namespace
++{
++bool equalPathComponentIgnoringAsciiCase(const char* left, const std::string& right)
++{
++	std::size_t index = 0;
++	for (; left[index] != '\0' && index < right.size(); ++index)
++	{
++		const unsigned char lhs = static_cast<unsigned char>(left[index]);
++		const unsigned char rhs = static_cast<unsigned char>(right[index]);
++		if (std::tolower(lhs) != std::tolower(rhs)) return false;
++	}
++	return left[index] == '\0' && index == right.size();
++}
++
++bool resolveExistingPathIgnoringAsciiCase(const std::string& requested, std::string& resolved)
++{
++	if (access(requested.c_str(), F_OK) == 0)
++	{
++		resolved = requested;
++		return true;
++	}
++
++	const bool absolute = !requested.empty() && requested[0] == '/';
++	std::string current = absolute ? "/" : ".";
++	std::size_t position = absolute ? 1 : 0;
++	while (position < requested.size())
++	{
++		const std::size_t separator = requested.find('/', position);
++		const std::string component = requested.substr(position, separator - position);
++		position = separator == std::string::npos ? requested.size() : separator + 1;
++		if (component.empty() || component == ".") continue;
++
++		const std::string exact = current == "/"
++			? current + component : current + "/" + component;
++		if (access(exact.c_str(), F_OK) == 0)
++		{
++			current = exact;
++			continue;
++		}
++
++		DIR* directory = opendir(current.c_str());
++		if (!directory) return false;
++		std::string actual;
++		while (dirent* entry = readdir(directory))
++		{
++			if (equalPathComponentIgnoringAsciiCase(entry->d_name, component))
++			{
++				actual = entry->d_name;
++				break;
++			}
++		}
++		closedir(directory);
++		if (actual.empty()) return false;
++		current = current == "/" ? current + actual : current + "/" + actual;
++	}
++
++	resolved = current;
++	return access(resolved.c_str(), F_OK) == 0;
++}
++}
++#endif
+ 
+ #define ERROR_FILE(msg)		(_BS(L"[") << this->getPath() << L"] - " << (msg) << _BS::wget)
+ 
+@@ -208,11 +276,18 @@
+ 		return m_isOpen_read = false;
+ 	}
+ 	return m_isOpen_read = true;
+-#else
+-	m_file = fopen(path.to_string().c_str(), "r");
+-	return m_isOpen_read = (m_file != NULL);
+-#endif
+-}
++#else
++	const std::string requested = path.to_string();
++	m_file = fopen(requested.c_str(), "r");
++	if (!m_file)
++	{
++		std::string resolved;
++		if (resolveExistingPathIgnoringAsciiCase(requested, resolved))
++			m_file = fopen(resolved.c_str(), "r");
++	}
++	return m_isOpen_read = (m_file != NULL);
++#endif
++}
+ 
+ template<typename WriteType>
+ bool vfs::TFile<WriteType>::openRead()

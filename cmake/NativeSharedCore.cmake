@@ -111,6 +111,11 @@ target_link_libraries(ja2_legacy_fileman_tests PRIVATE ja2_shared_core)
 target_compile_options(ja2_legacy_fileman_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 add_test(NAME ja2_legacy_fileman_tests COMMAND ja2_legacy_fileman_tests)
 
+add_executable(ja2_bfvfs_case_path_tests tests/native/bfvfs_case_path_tests.cpp)
+target_link_libraries(ja2_bfvfs_case_path_tests PRIVATE JA2::bfVFS)
+target_compile_options(ja2_bfvfs_case_path_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_bfvfs_case_path_tests COMMAND ja2_bfvfs_case_path_tests)
+
 add_executable(ja2_compression_tests tests/native/compression_tests.cpp)
 target_link_libraries(ja2_compression_tests PRIVATE ja2_shared_core)
 target_compile_options(ja2_compression_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
