@@ -248,7 +248,7 @@ void InternalIgniteExplosion( SoldierID ubOwner, INT16 sX, INT16 sY, INT16 sZ, I
 {
 #ifdef JA2BETAVERSION
 	if (is_networked) {
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString,"InternalIgniteExplosion ( ubOwner : %i , sX : %i , sY : %i , sZ : %i , sGridNo : %i , usItem : %i , fLocate : %i , bLevel : %i , ubDirection : %i )\n",ubOwner.i, sX , sY , sZ , sGridNo , usItem , (int)fLocate , bLevel, ubDirection );
 	MPDebugMsg(tmpMPDbgString);
 	}
@@ -654,7 +654,7 @@ INT8 ExplosiveDamageStructureAtGridNo( STRUCTURE * pCurrent, STRUCTURE **ppNextC
 {
 #ifdef JA2BETAVERSION
 	if (is_networked) {
-		CHAR tmpMPDbgString[512];
+		CHAR8 tmpMPDbgString[512];
 		sprintf(tmpMPDbgString,"ExplosiveDamageStructureAtGridNo ( sGridNo : %i , sWoundAmt : %i , uiDist : %i , fRecompMoveCosts : %i , fOnlyWalls : %i , SubsMulTilTransDmg :  %i , ubOwner : %i , bLevel : %i )\n", sGridNo, sWoundAmt , uiDist, (int)*pfRecompileMovementCosts , (int)fOnlyWalls , (int)fSubSequentMultiTilesTransitionDamage , ubOwner.i , bLevel );
 		MPDebugMsg(tmpMPDbgString);
 	}
@@ -1008,7 +1008,7 @@ INT8 ExplosiveDamageStructureAtGridNo( STRUCTURE * pCurrent, STRUCTURE **ppNextC
 								{
 									// error!
 #ifdef JA2BETAVERSION
-									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Problems removing structure attached to wall at %d", sNewGridNo );
+									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Problems removing structure attached to wall at %d"), sNewGridNo );
 #endif
 									break;
 								}
@@ -1017,7 +1017,7 @@ INT8 ExplosiveDamageStructureAtGridNo( STRUCTURE * pCurrent, STRUCTURE **ppNextC
 							{
 								// error!
 #ifdef JA2BETAVERSION
-								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Problems removing structure attached to wall at %d", sNewGridNo );
+								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Problems removing structure attached to wall at %d"), sNewGridNo );
 #endif
 								break;
 							}
@@ -1044,7 +1044,7 @@ INT8 ExplosiveDamageStructureAtGridNo( STRUCTURE * pCurrent, STRUCTURE **ppNextC
 								{
 									// error!
 #ifdef JA2BETAVERSION
-									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Problems removing structure attached to wall at %d", sNewGridNo );
+									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Problems removing structure attached to wall at %d"), sNewGridNo );
 #endif
 									break;
 								}
@@ -1053,7 +1053,7 @@ INT8 ExplosiveDamageStructureAtGridNo( STRUCTURE * pCurrent, STRUCTURE **ppNextC
 							{
 								// error!
 #ifdef JA2BETAVERSION
-								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Problems removing structure attached to wall at %d", sNewGridNo );
+								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Problems removing structure attached to wall at %d"), sNewGridNo );
 #endif
 								break;
 							}
@@ -1146,7 +1146,7 @@ INT8 ExplosiveDamageStructureAtGridNo( STRUCTURE * pCurrent, STRUCTURE **ppNextC
 								{
 									// error!
 #ifdef JA2BETAVERSION
-									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Problems removing structure attached to wall at %d", sNewGridNo );
+									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Problems removing structure attached to wall at %d"), sNewGridNo );
 #endif
 									break;
 								}
@@ -1155,7 +1155,7 @@ INT8 ExplosiveDamageStructureAtGridNo( STRUCTURE * pCurrent, STRUCTURE **ppNextC
 							{
 								// error!
 #ifdef JA2BETAVERSION
-								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Problems removing structure attached to wall at %d", sNewGridNo );
+								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Problems removing structure attached to wall at %d"), sNewGridNo );
 #endif
 								break;
 							}
@@ -1182,7 +1182,7 @@ INT8 ExplosiveDamageStructureAtGridNo( STRUCTURE * pCurrent, STRUCTURE **ppNextC
 								{
 									// error!
 #ifdef JA2BETAVERSION
-									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Problems removing structure attached to wall at %d", sNewGridNo );
+									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Problems removing structure attached to wall at %d"), sNewGridNo );
 #endif
 									break;
 								}
@@ -1191,7 +1191,7 @@ INT8 ExplosiveDamageStructureAtGridNo( STRUCTURE * pCurrent, STRUCTURE **ppNextC
 							{
 								// error!
 #ifdef JA2BETAVERSION
-								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Problems removing structure attached to wall at %d", sNewGridNo );
+								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Problems removing structure attached to wall at %d"), sNewGridNo );
 #endif
 								break;
 							}
@@ -1334,7 +1334,7 @@ void ExplosiveDamageGridNo( INT32 sGridNo, INT16 sWoundAmt, UINT32 uiDist,
 {
 #ifdef JA2BETAVERSION
 	if (is_networked) {
-		CHAR tmpMPDbgString[512];
+		CHAR8 tmpMPDbgString[512];
 		sprintf(tmpMPDbgString,"ExplosiveDamageGridNo ( sGridNo : %i , sWoundAmt : %i , uiDist : %i , fRecompileMoveCosts : %i , fOnlyWalls : %i , MultiStructSpecialFlag : %i ,fSubsequentMultiTilesTransDmg : %i , ubOwner : %i , bLevel : %i )\n", sGridNo, sWoundAmt ,uiDist, (int)*pfRecompileMovementCosts , (int)fOnlyWalls , bMultiStructSpecialFlag , (int)fSubSequentMultiTilesTransitionDamage , ubOwner.i , bLevel );
 		MPDebugMsg(tmpMPDbgString);
 	}
@@ -1510,7 +1510,7 @@ void ExplosiveDamageGridNo( INT32 sGridNo, INT16 sWoundAmt, UINT32 uiDist,
 }
 
 
-BOOLEAN DamageSoldierFromBlast( SoldierID ubPerson, SoldierID ubOwner, INT32 sBombGridNo, INT16 sWoundAmt, INT16 sBreathAmt, UINT32 uiDist, UINT16 usItem, INT16 sSubsequent, BOOL fFromRemoteClient )
+BOOLEAN DamageSoldierFromBlast( SoldierID ubPerson, SoldierID ubOwner, INT32 sBombGridNo, INT16 sWoundAmt, INT16 sBreathAmt, UINT32 uiDist, UINT16 usItem, INT16 sSubsequent, BOOLEAN fFromRemoteClient )
 {
 	// OJW - 20091028
 	if (is_networked && is_client)
@@ -1531,7 +1531,7 @@ BOOLEAN DamageSoldierFromBlast( SoldierID ubPerson, SoldierID ubOwner, INT32 sBo
 			}
 		}
 #ifdef JA2BETAVERSION
-		CHAR tmpMPDbgString[512];
+		CHAR8 tmpMPDbgString[512];
 		sprintf(tmpMPDbgString,"DamageSoldierFromBlast ( ubPerson : %i , ubOwner : %i , sBombGridNo : %i , sWoundAmt : %i , sBreathAmt : %i , uiDist : %i , usItem : %i , sSubs : %i , fFromRemoteClient : %i )\n",ubPerson.i, ubOwner.i , sBombGridNo , sWoundAmt , sBreathAmt , uiDist , usItem , sSubsequent , fFromRemoteClient );
 		MPDebugMsg(tmpMPDbgString);
 #endif
@@ -1897,7 +1897,7 @@ BOOLEAN DamageSoldierFromBlast( SoldierID ubPerson, SoldierID ubOwner, INT32 sBo
 	return( TRUE );
 }
 
-BOOLEAN DishOutGasDamage( SOLDIERTYPE * pSoldier, EXPLOSIVETYPE * pExplosive, INT16 sSubsequent, BOOLEAN fRecompileMovementCosts, INT16 sWoundAmt, INT16 sBreathAmt, SoldierID ubOwner, BOOL fFromRemoteClient )
+BOOLEAN DishOutGasDamage( SOLDIERTYPE * pSoldier, EXPLOSIVETYPE * pExplosive, INT16 sSubsequent, BOOLEAN fRecompileMovementCosts, INT16 sWoundAmt, INT16 sBreathAmt, SoldierID ubOwner, BOOLEAN fFromRemoteClient )
 {
 					// OJW - 20091028
 	if (is_networked && is_client)
@@ -1914,7 +1914,7 @@ BOOLEAN DishOutGasDamage( SOLDIERTYPE * pSoldier, EXPLOSIVETYPE * pExplosive, IN
 			return FALSE;
 		}
 #ifdef JA2BETAVERSION
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString,"DishOutGasDamage ( ubSoldierID : %i , ubExplosiveType : %i , sSubsequent : %i , recompileMoveCosts : %i , sWoundAmt : %i , sBreathAmt : %i , ubOwner : %i , fRemote : %i)\n", pSoldier->ubID.i , pExplosive->ubType , sSubsequent , fRecompileMovementCosts , sWoundAmt , sBreathAmt , ubOwner.i , fFromRemoteClient );
 	MPDebugMsg(tmpMPDbgString);
 #endif
@@ -2111,7 +2111,7 @@ BOOLEAN DishOutGasDamage( SOLDIERTYPE * pSoldier, EXPLOSIVETYPE * pExplosive, IN
 			break;
 		}
 
-		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"ExpControl pSoldier->flags.fHitByGasFlags: %d", pSoldier->flags.fHitByGasFlags );
+		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("ExpControl pSoldier->flags.fHitByGasFlags: %d"), pSoldier->flags.fHitByGasFlags );
 
 		// Flugente: if we're frozen, we take no gas damage at all (because I say so)
 		if ( pSoldier->usSkillCooldown[SOLDIER_COOLDOWN_CRYO] )
@@ -2166,7 +2166,7 @@ BOOLEAN ExpAffect( INT32 sBombGridNo, INT32 sGridNo, UINT32 uiDist, UINT16 usIte
 {
 #ifdef JA2BETAVERSION
 	if (is_networked) {
-		CHAR tmpMPDbgString[512];
+		CHAR8 tmpMPDbgString[512];
 		sprintf(tmpMPDbgString,"ExpAffect ( sBombGridNo : %i , sGridNo : %i , uiDist : %i , usItem : %i , ubOwner : %i , sSubsequent : %i , fMercHit : %i , bLevel : %i , iSmokeEffectID : %i )\n",sBombGridNo, sGridNo , uiDist , usItem , ubOwner.i , sSubsequent , (int)*pfMercHit , bLevel , iSmokeEffectID );
 		MPDebugMsg(tmpMPDbgString);
 	}
@@ -2917,7 +2917,7 @@ void GetRayStopInfo( UINT32 uiNewSpot, UINT8 ubDir, INT8 bLevel, BOOLEAN fSmokeE
 
 
 
-void SpreadEffect( INT32 sGridNo, UINT8 ubRadius, UINT16 usItem, SoldierID ubOwner, BOOLEAN fSubsequent, INT8 bLevel, INT32 iSmokeEffectID, BOOL fFromRemoteClient, BOOL fNewSmokeEffect  )
+void SpreadEffect( INT32 sGridNo, UINT8 ubRadius, UINT16 usItem, SoldierID ubOwner, BOOLEAN fSubsequent, INT8 bLevel, INT32 iSmokeEffectID, BOOLEAN fFromRemoteClient, BOOLEAN fNewSmokeEffect  )
 {
 	if (is_networked && is_client)
 	{
@@ -2951,7 +2951,7 @@ void SpreadEffect( INT32 sGridNo, UINT8 ubRadius, UINT16 usItem, SoldierID ubOwn
 			}
 		}
 #ifdef JA2BETAVERSION
-		CHAR tmpMPDbgString[512];
+		CHAR8 tmpMPDbgString[512];
 		sprintf(tmpMPDbgString,"SpreadEffect ( sGridNo : %i , ubRadius : %i , usItem : %i , ubOwner : %i , fSubsequent : %i , bLevel : %i , iSmokeEffectID : %i , fFromRemote : %i , fNewSmoke : %i )\n",sGridNo, ubRadius , usItem , ubOwner.i , (int)fSubsequent  , bLevel , iSmokeEffectID , fFromRemoteClient , fNewSmokeEffect );
 		MPDebugMsg(tmpMPDbgString);
 		gfMPDebugOutputRandoms = true;
@@ -3002,7 +3002,7 @@ void SpreadEffect( INT32 sGridNo, UINT8 ubRadius, UINT16 usItem, SoldierID ubOwn
 	}
 /*if(is_networked)
 {
-	ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, L"explosives not coded in MP");
+	ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, JA2_TEXT("explosives not coded in MP"));
 	return;
 }*/
 	// Set values for recompile region to optimize area we need to recompile for MPs
@@ -3344,7 +3344,7 @@ void PerformItemAction( INT32 sGridNo, OBJECTTYPE * pObj )
 		{
 			// error message here
 #ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Action item to open door in gridno %d but there is none!", sGridNo );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Action item to open door in gridno %d but there is none!"), sGridNo );
 #endif
 		}
 		break;
@@ -3374,7 +3374,7 @@ void PerformItemAction( INT32 sGridNo, OBJECTTYPE * pObj )
 		{
 			// error message here
 #ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Action item to close door in gridno %d but there is none!", sGridNo );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Action item to close door in gridno %d but there is none!"), sGridNo );
 #endif
 		}
 		break;
@@ -3396,7 +3396,7 @@ void PerformItemAction( INT32 sGridNo, OBJECTTYPE * pObj )
 		{
 			// error message here
 #ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Action item to toggle door in gridno %d but there is none!", sGridNo );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Action item to toggle door in gridno %d but there is none!"), sGridNo );
 #endif
 		}
 		break;
@@ -3752,7 +3752,7 @@ void PerformItemAction( INT32 sGridNo, OBJECTTYPE * pObj )
 	default:
 		// error message here
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Action item with invalid action in gridno %d!", sGridNo );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Action item with invalid action in gridno %d!"), sGridNo );
 #endif
 		break;
 	}
@@ -3762,7 +3762,7 @@ void PerformItemAction( INT32 sGridNo, OBJECTTYPE * pObj )
 
 }
 
-void AddBombToQueue( UINT32 uiWorldBombIndex, UINT32 uiTimeStamp, BOOL fFromRemoteClient )
+void AddBombToQueue( UINT32 uiWorldBombIndex, UINT32 uiTimeStamp, BOOLEAN fFromRemoteClient )
 {
 	if (gubElementsOnExplosionQueue == MAX_BOMB_QUEUE)
 	{
@@ -4067,7 +4067,7 @@ void HandleExplosionQueue( void )
 						// play additional 'hit' sound
 						PlayJA2SampleFromFile( "Sounds\\beartrap_fleshhit.wav", RATE_11025, SoundVolume( HIGHVOLUME, sGridNo ), 1, SoundDir( sGridNo ) );
 
-						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s activated %s!", pSoldier->GetName( ), Item[pObj->usItem].szItemName );
+						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s activated %s!"), pSoldier->GetName( ), Item[pObj->usItem].szItemName );
 
 						DeductPoints( pSoldier, 200, 0 );
 

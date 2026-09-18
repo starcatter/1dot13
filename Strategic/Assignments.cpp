@@ -3098,7 +3098,7 @@ void VerifyTownTrainingIsPaidFor( void )
 				// NOPE!	We've got a bug somewhere
 				StopTimeCompression();
 					// report the error
-				DoScreenIndependantMessageBox( L"ERROR: Unpaid militia training. Describe *how* you're re-assigning mercs, how many/where/when! Send *prior* save!", MSG_BOX_FLAG_OK, NULL );
+				DoScreenIndependantMessageBox( JA2_TEXT("ERROR: Unpaid militia training. Describe *how* you're re-assigning mercs, how many/where/when! Send *prior* save!"), MSG_BOX_FLAG_OK, NULL );
 					// avoid repeating this
 				break;
 			}
@@ -3832,7 +3832,7 @@ INT16 GetTrainWorkerPts(SOLDIERTYPE *pSoldier)
 }
 
 // anv: handle prisoners exposing snitch as a snitch
-static BOOL HandleSnitchExposition(SOLDIERTYPE *pSoldier)
+static BOOLEAN HandleSnitchExposition(SOLDIERTYPE *pSoldier)
 {
 	UINT32 uiSuspicion = 0;	
 	UINT32 uiCoverQuality = 0;
@@ -4171,7 +4171,7 @@ void HandleDoctorMilitia()
 				if ( !UseTotalMedicalKitPoints( pSoldier, max( 1, ( (healpointsused / gGameExternalOptions.dIndividualMilitiaDoctorHealModifier ) * bMedFactor ) / 100 ) ) )
 				{
 					// throw message if this went wrong for feedback on debugging
-					ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"Warning! UseTotalMedicalKitPoints returned false, not all points were probably used." );
+					ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("Warning! UseTotalMedicalKitPoints returned false, not all points were probably used.") );
 				}
 
 				if ( healpointsused < healpoints )
@@ -4698,13 +4698,13 @@ UINT16 HealPatient( SOLDIERTYPE *pPatient, SOLDIERTYPE * pDoctor, UINT16 usHealA
 	{
 		// throw message if this went wrong for feedback on debugging
 #ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"Warning! UseTotalMedicalKitPoints returned false, not all points were probably used." );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("Warning! UseTotalMedicalKitPoints returned false, not all points were probably used.") );
 #endif
 	}
 
 	// if ouput > input, then something's awry...
 	if ( (sHundredsToHeal_Used + sHundredsToRepair_Used + sHundredsToDiseaseCure_Used) > usHealAmount )
-		ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"Warning! HealPatient uses more points than it should!" );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("Warning! HealPatient uses more points than it should!") );
 
 	// if this patient is fully healed and cured
 	if ( !pDoctor && pPatient->stats.bLife == pPatient->stats.bLifeMax && !NumberOfDamagedStats( pPatient ) && !pPatient->HasDisease( TRUE, TRUE ) )
@@ -5530,7 +5530,7 @@ void HandleRepairBySoldier( SOLDIERTYPE *pSoldier )
 
 #ifdef _DEBUG
 					if (itemRepaired)
-						ScreenMsg(FONT_ORANGE, MSG_BETAVERSION, L"Repaired: %s's %s in item slot %d [Dur: %d]. %d points left.", 
+						ScreenMsg(FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("Repaired: %s's %s in item slot %d [Dur: %d]. %d points left."), 
 							object.owner->name, Item[object.item->usItem].szItemName, object.inventorySlot, GetMinimumStackDurability(object.item), ubRepairPtsLeft);
 #endif
 
@@ -6121,7 +6121,7 @@ void HandleTrainingInSector( INT16 sMapX, INT16 sMapY, INT8 bZ )
 	}
 
 	// check if we're doing a sector where militia can be trained
-	const BOOL canTrainMilitiaAnywhere = RebelCommand::CanTrainMilitiaAnywhere();
+	const BOOLEAN canTrainMilitiaAnywhere = RebelCommand::CanTrainMilitiaAnywhere();
 	if( (canTrainMilitiaAnywhere || (StrategicMap[CALCULATE_STRATEGIC_INDEX(sMapX, sMapY) ].bNameId != BLANK_SECTOR ) || ( fSamSiteInSector == TRUE ) ) && (bZ == 0) )
 	{
 		// init town trainer list
@@ -6671,7 +6671,7 @@ void HandleStrategicDiseaseAndBurial()
 				{
 					// throw message if this went wrong for feedback on debugging
 #ifdef JA2TESTVERSION
-					ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"Warning! UseTotalMedicalKitPoints returned false, not all points were probably used." );
+					ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("Warning! UseTotalMedicalKitPoints returned false, not all points were probably used.") );
 #endif
 				}
 
@@ -7362,7 +7362,7 @@ INT16 GetBonusTrainingPtsDueToInstructor( SOLDIERTYPE *pInstructor, SOLDIERTYPE 
 		default:
 			// BETA message
 			#ifdef JA2BETAVERSION
-				ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"GetBonusTrainingPtsDueToInstructor: ERROR - Unknown bTrainStat %d", bTrainStat);
+				ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("GetBonusTrainingPtsDueToInstructor: ERROR - Unknown bTrainStat %d"), bTrainStat);
 			#endif
 			return(0);
 	}
@@ -7416,7 +7416,7 @@ INT16 GetBonusTrainingPtsDueToInstructor( SOLDIERTYPE *pInstructor, SOLDIERTYPE 
 			default:
 				// BETA message
 				#ifdef JA2BETAVERSION
-					ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"GetBonusTrainingPtsDueToInstructor: ERROR - Unknown bTrainStat %d", bTrainStat);
+					ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("GetBonusTrainingPtsDueToInstructor: ERROR - Unknown bTrainStat %d"), bTrainStat);
 				#endif
 				return(0);
 		}
@@ -7567,7 +7567,7 @@ INT16 GetSoldierTrainingPts( SOLDIERTYPE *pSoldier, INT8 bTrainStat, UINT16 *pus
 		default:
 			// BETA message
 			#ifdef JA2BETAVERSION
-				ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"GetSoldierTrainingPts: ERROR - Unknown bTrainStat %d", bTrainStat);
+				ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("GetSoldierTrainingPts: ERROR - Unknown bTrainStat %d"), bTrainStat);
 			#endif
 				return(0);
 	}
@@ -7694,7 +7694,7 @@ INT16 GetSoldierStudentPts( SOLDIERTYPE *pSoldier, INT8 bTrainStat, UINT16 *pusM
 		default:
 			// BETA message
 			#ifdef JA2BETAVERSION
-		ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"GetSoldierTrainingPts: ERROR - Unknown bTrainStat %d", bTrainStat);
+		ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("GetSoldierTrainingPts: ERROR - Unknown bTrainStat %d"), bTrainStat);
 			#endif
 		return(0);
 	}
@@ -7856,7 +7856,7 @@ void TrainSoldierWithPts( SOLDIERTYPE *pSoldier, INT16 sTrainPts )
 		default:
 			// BETA message
 			#ifdef JA2BETAVERSION
-		ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"TrainSoldierWithPts: ERROR - Unknown bTrainStat %d", pSoldier->bTrainStat);
+		ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("TrainSoldierWithPts: ERROR - Unknown bTrainStat %d"), pSoldier->bTrainStat);
 			#endif
 		return;
 	}
@@ -8030,7 +8030,7 @@ static void Interrogateprisoner(UINT8 aPrisonerType, FLOAT aChanceModifier, INT8
 void DoInterrogation( INT16 sMapX, INT16 sMapY, FLOAT aChanceModifier, INT16 aPrisoners[] )
 {
 	CHAR16 sText[256];
-	swprintf( sText, L"Interrogated" );
+	swprintf( sText, JA2_TEXT("Interrogated") );
 
 	int numprisonersinterrogated = 0;
 	for ( int i = 0; i < PRISONER_MAX; ++i )
@@ -8040,13 +8040,13 @@ void DoInterrogation( INT16 sMapX, INT16 sMapY, FLOAT aChanceModifier, INT16 aPr
 			numprisonersinterrogated += aPrisoners[i];
 
 			CHAR16 wString[64];
-			swprintf( wString, L"" );
+			swprintf( wString, JA2_TEXT("") );
 			//AddMonoString( &hStringHandle, wString );
 			swprintf( wString, pwTownInfoStrings[14 + i], aPrisoners[i] );
 
 			//strcat( sText, wString );
 
-			swprintf( sText, L"%s %s", sText, wString );
+			swprintf( sText, JA2_TEXT("%s %s"), sText, wString );
 		}
 	}
 		
@@ -10028,7 +10028,7 @@ void HandleShadingOfLinesForRepairMenu( void )
 	}
 
 	pSoldier = GetSelectedAssignSoldier( FALSE );
-	BOOL bHasToolkit = (FindToolkit( pSoldier ) != NO_SLOT);
+	BOOLEAN bHasToolkit = (FindToolkit( pSoldier ) != NO_SLOT);
 
 	// PLEASE NOTE: make sure any changes you do here are reflected in all 3 routines which must remain in synch:
 	// CreateDestroyMouseRegionForRepairMenu(), DisplayRepairMenu(), and HandleShadingOfLinesForRepairMenu().
@@ -12121,7 +12121,7 @@ void CreateDestroyMouseRegionsForSnitchMenu( void )
 			MSYS_SetRegionUserData( &gSnitchMenuRegion[ iCounter ], 0, iCounter );
 
 			// Add tooltip for region
-			if (wcscmp(pSnitchToggleMenuDescStrings[ iCounter ], L"") != 0)
+			if (wcscmp(pSnitchToggleMenuDescStrings[ iCounter ], JA2_TEXT("")) != 0)
 			{
 				SetRegionFastHelpText( &gSnitchMenuRegion[ iCounter ], pSnitchMenuDescStrings[ iCounter ] );
 			}
@@ -12224,7 +12224,7 @@ void CreateDestroyMouseRegionsForSnitchToggleMenu( void )
 			MSYS_SetRegionUserData( &gSnitchToggleMenuRegion[ iCounter ], 0, iCounter );
 
 			// Add tooltip for region
-			if (wcscmp(pSnitchToggleMenuDescStrings[ iCounter ], L"") != 0)
+			if (wcscmp(pSnitchToggleMenuDescStrings[ iCounter ], JA2_TEXT("")) != 0)
 			{
 				SetRegionFastHelpText( &gSnitchToggleMenuRegion[ iCounter ], pSnitchToggleMenuDescStrings[ iCounter ] );
 			}
@@ -12332,7 +12332,7 @@ void CreateDestroyMouseRegionsForSnitchSectorMenu( void )
 			MSYS_SetRegionUserData( &gSnitchSectorMenuRegion[ iCounter ], 0, iCounter );
 
 			// Add tooltip for region
-			if (wcscmp(pSnitchSectorMenuDescStrings[ iCounter ], L"") != 0)
+			if (wcscmp(pSnitchSectorMenuDescStrings[ iCounter ], JA2_TEXT("")) != 0)
 			{
 				SetRegionFastHelpText( &gSnitchSectorMenuRegion[ iCounter ], pSnitchSectorMenuDescStrings[ iCounter ] );
 			}
@@ -12428,7 +12428,7 @@ void CreateDestroyMouseRegionsForPrisonerMenu( void )
 			MSYS_SetRegionUserData( &gPrisonerMenuRegion[iCounter], 0, iCounter );
 
 			// Add tooltip for region
-			if ( wcscmp( pPrisonerMenuDescStrings[iCounter], L"" ) != 0 )
+			if ( wcscmp( pPrisonerMenuDescStrings[iCounter], JA2_TEXT("") ) != 0 )
 			{
 				SetRegionFastHelpText( &gPrisonerMenuRegion[iCounter], pPrisonerMenuDescStrings[iCounter] );
 			}
@@ -14503,9 +14503,9 @@ void CreateSquadBox( void )
 	 // get info about current squad and put in	string
 	 //SQUAD10 FIX
 	 if ( gGameExternalOptions.fUseXMLSquadNames && uiCounter < gSquadNameVector.size() )
-		swprintf( sString, L"%s ( %d/%d )", gSquadNameVector[uiCounter].c_str(), NumberOfPeopleInSquad( ( INT8 )uiCounter ), gGameOptions.ubSquadSize );
+		swprintf( sString, JA2_TEXT("%s ( %d/%d )"), gSquadNameVector[uiCounter].c_str(), NumberOfPeopleInSquad( ( INT8 )uiCounter ), gGameOptions.ubSquadSize );
 	 else
-		swprintf( sString, L"%s ( %d/%d )", pSquadMenuStrings[uiCounter], NumberOfPeopleInSquad( ( INT8 )uiCounter ), gGameOptions.ubSquadSize );
+		swprintf( sString, JA2_TEXT("%s ( %d/%d )"), pSquadMenuStrings[uiCounter], NumberOfPeopleInSquad( ( INT8 )uiCounter ), gGameOptions.ubSquadSize );
 
 	 AddMonoString(&hStringHandle, sString );
 
@@ -15146,10 +15146,10 @@ void CreateContractBox( SOLDIERTYPE *pCharacter )
 			case( CONTRACT_MENU_CURRENT_FUNDS ):
 /*
 				// add current balance after title string
-				swprintf( sDollarString, L"%d", LaptopSaveInfo.iCurrentBalance);
+				swprintf( sDollarString, JA2_TEXT("%d"), LaptopSaveInfo.iCurrentBalance);
 				InsertCommasForDollarFigure( sDollarString );
 				InsertDollarSignInToString( sDollarString );
-				swprintf( sString, L"%s %s",	pContractStrings[uiCounter], sDollarString );
+				swprintf( sString, JA2_TEXT("%s %s"),	pContractStrings[uiCounter], sDollarString );
 				AddMonoString(&hStringHandle, sString);
 */
 				AddMonoString(&hStringHandle, pContractStrings[uiCounter]);
@@ -15158,42 +15158,42 @@ void CreateContractBox( SOLDIERTYPE *pCharacter )
 
 				if( pCharacter->ubWhatKindOfMercAmI != MERC_TYPE__AIM_MERC )
 				{
-					swprintf( sDollarString, L"%s", FormatMoney(0).data() );
+					swprintf( sDollarString, JA2_TEXT("%s"), FormatMoney(0).data() );
 				}
 				else
 				{
-					swprintf( sDollarString, L"%s", FormatMoney(gMercProfiles[ pCharacter->ubProfile ].sSalary).data() );
+					swprintf( sDollarString, JA2_TEXT("%s"), FormatMoney(gMercProfiles[ pCharacter->ubProfile ].sSalary).data() );
 				}
-				swprintf( sString, L"%s ( %s )",	pContractStrings[uiCounter], sDollarString);
+				swprintf( sString, JA2_TEXT("%s ( %s )"),	pContractStrings[uiCounter], sDollarString);
 				AddMonoString(&hStringHandle, sString);
 			break;
 			case( CONTRACT_MENU_WEEK ):
 
 				if( pCharacter->ubWhatKindOfMercAmI != MERC_TYPE__AIM_MERC )
 				{
-					swprintf( sDollarString, L"%s", FormatMoney(0).data() );
+					swprintf( sDollarString, JA2_TEXT("%s"), FormatMoney(0).data() );
 				}
 				else
 				{
-					swprintf( sDollarString, L"%s", FormatMoney(gMercProfiles[ pCharacter->ubProfile ].uiWeeklySalary).data() );
+					swprintf( sDollarString, JA2_TEXT("%s"), FormatMoney(gMercProfiles[ pCharacter->ubProfile ].uiWeeklySalary).data() );
 				}
 
-				swprintf( sString, L"%s ( %s )",	pContractStrings[uiCounter], sDollarString );
+				swprintf( sString, JA2_TEXT("%s ( %s )"),	pContractStrings[uiCounter], sDollarString );
 				AddMonoString(&hStringHandle, sString);
 			break;
 			case( CONTRACT_MENU_TWO_WEEKS ):
 
 				if( pCharacter->ubWhatKindOfMercAmI != MERC_TYPE__AIM_MERC )
 				{
-					swprintf( sDollarString, L"%s", FormatMoney(0).data() );
+					swprintf( sDollarString, JA2_TEXT("%s"), FormatMoney(0).data() );
 				}
 				else
 				{
-					swprintf( sDollarString, L"%s", FormatMoney(gMercProfiles[ pCharacter->ubProfile ].uiBiWeeklySalary).data() );
+					swprintf( sDollarString, JA2_TEXT("%s"), FormatMoney(gMercProfiles[ pCharacter->ubProfile ].uiBiWeeklySalary).data() );
 				}
 
 
-				swprintf( sString, L"%s ( %s )",	pContractStrings[uiCounter], sDollarString);
+				swprintf( sString, JA2_TEXT("%s ( %s )"),	pContractStrings[uiCounter], sDollarString);
 				AddMonoString(&hStringHandle, sString);
 			break;
 			default:
@@ -15266,10 +15266,10 @@ void CreateContractBoxMultiSelect(INT32 DailySalaries, INT32 WeeklySalaries, INT
 			case(CONTRACT_MENU_CURRENT_FUNDS):
 				/*
 								// add current balance after title string
-								swprintf( sDollarString, L"%d", LaptopSaveInfo.iCurrentBalance);
+								swprintf( sDollarString, JA2_TEXT("%d"), LaptopSaveInfo.iCurrentBalance);
 								InsertCommasForDollarFigure( sDollarString );
 								InsertDollarSignInToString( sDollarString );
-								swprintf( sString, L"%s %s",	pContractStrings[uiCounter], sDollarString );
+								swprintf( sString, JA2_TEXT("%s %s"),	pContractStrings[uiCounter], sDollarString );
 								AddMonoString(&hStringHandle, sString);
 				*/
 				AddMonoString(&hStringHandle, pContractStrings[uiCounter]);
@@ -15278,42 +15278,42 @@ void CreateContractBoxMultiSelect(INT32 DailySalaries, INT32 WeeklySalaries, INT
 
 				//if (pCharacter->ubWhatKindOfMercAmI != MERC_TYPE__AIM_MERC)
 				//{
-				//	swprintf(sDollarString, L"%d", 0);
+				//	swprintf(sDollarString, JA2_TEXT("%d"), 0);
 				//}
 				//else
 				{
-					swprintf(sDollarString, L"%s", FormatMoney(DailySalaries).data() );
+					swprintf(sDollarString, JA2_TEXT("%s"), FormatMoney(DailySalaries).data() );
 				}
-				swprintf(sString, L"%s ( %s )", pContractStrings[uiCounter], sDollarString);
+				swprintf(sString, JA2_TEXT("%s ( %s )"), pContractStrings[uiCounter], sDollarString);
 				AddMonoString(&hStringHandle, sString);
 				break;
 			case(CONTRACT_MENU_WEEK):
 
 				//if (pCharacter->ubWhatKindOfMercAmI != MERC_TYPE__AIM_MERC)
 				//{
-				//	swprintf(sDollarString, L"%d", 0);
+				//	swprintf(sDollarString, JA2_TEXT("%d"), 0);
 				//}
 				//else
 				{
-					swprintf(sDollarString, L"%s", FormatMoney(WeeklySalaries).data());
+					swprintf(sDollarString, JA2_TEXT("%s"), FormatMoney(WeeklySalaries).data());
 				}
 
-				swprintf(sString, L"%s ( %s )", pContractStrings[uiCounter], sDollarString);
+				swprintf(sString, JA2_TEXT("%s ( %s )"), pContractStrings[uiCounter], sDollarString);
 				AddMonoString(&hStringHandle, sString);
 				break;
 			case(CONTRACT_MENU_TWO_WEEKS):
 
 				//if (pCharacter->ubWhatKindOfMercAmI != MERC_TYPE__AIM_MERC)
 				//{
-				//	swprintf(sDollarString, L"%d", 0);
+				//	swprintf(sDollarString, JA2_TEXT("%d"), 0);
 				//}
 				//else
 				{
-					swprintf(sDollarString, L"%s", FormatMoney(BiweeklySalaries).data());
+					swprintf(sDollarString, JA2_TEXT("%s"), FormatMoney(BiweeklySalaries).data());
 				}
 
 
-				swprintf(sString, L"%s ( %s )", pContractStrings[uiCounter], sDollarString);
+				swprintf(sString, JA2_TEXT("%s ( %s )"), pContractStrings[uiCounter], sDollarString);
 				AddMonoString(&hStringHandle, sString);
 				break;
 			default:
@@ -15536,9 +15536,9 @@ void CreateAssignmentsBox( void )
 		{
 			// show his squad # in brackets
 			if ( gGameExternalOptions.fUseXMLSquadNames && pSoldier->bAssignment < gSquadNameVector.size() )
-				swprintf( sString, L"%s(%s)", pAssignMenuStrings[uiCounter], gSquadNameVector[uiCounter].c_str() );
+				swprintf( sString, JA2_TEXT("%s(%s)"), pAssignMenuStrings[uiCounter], gSquadNameVector[uiCounter].c_str() );
 			else
-				swprintf( sString, L"%s(%d)", pAssignMenuStrings[uiCounter], pSoldier->bAssignment + 1 );
+				swprintf( sString, JA2_TEXT("%s(%d)"), pAssignMenuStrings[uiCounter], pSoldier->bAssignment + 1 );
 		}
 		else
 		{
@@ -20412,7 +20412,7 @@ BOOLEAN DisplayFacilityAssignmentMenu( SOLDIERTYPE *pSoldier, UINT8 ubFacilityTy
 				if (fFoundVehicle == FALSE)
 				{
 					// Create line that says "Repair Vehicle", and will be shaded.
-					swprintf( sTempString, gzFacilityAssignmentStrings[ FAC_REPAIR_VEHICLE ], L"Vehicle" );
+					swprintf( sTempString, gzFacilityAssignmentStrings[ FAC_REPAIR_VEHICLE ], JA2_TEXT("Vehicle") );
 					AddMonoString((UINT32 *)&hStringHandle, sTempString );
 				}
 			}
@@ -21614,13 +21614,13 @@ void CreateDestroyMouseRegionsForFacilityAssignmentMenu( void )
 								MSYS_NO_CURSOR, FacilityAssignmentMenuMvtCallBack, FacilityAssignmentMenuBtnCallback );
 
 					// Add tooltip for region
-					if (wcscmp(gFacilityTypes[ ubFacilityType ].AssignmentData[iCounter].szTooltipText, L"") != 0)
+					if (wcscmp(gFacilityTypes[ ubFacilityType ].AssignmentData[iCounter].szTooltipText, JA2_TEXT("")) != 0)
 					{
 						CHAR16 szTextLeft[300];
 						CHAR16 szNewTextLeft[300];
 						CHAR16 szTooltipText[500];
 						wcscpy( szTextLeft, gFacilityTypes[ ubFacilityType ].AssignmentData[iCounter].szTooltipText );
-						swprintf( szTooltipText, L"" );
+						swprintf( szTooltipText, JA2_TEXT("") );
 						// Del First Part
 						BOOLEAN fLineSplit = TRUE;
 						
@@ -21628,7 +21628,7 @@ void CreateDestroyMouseRegionsForFacilityAssignmentMenu( void )
 						{
 							fLineSplit = WrapString( szTextLeft, szNewTextLeft, 250, FONT10ARIAL );
 							wcscat( szTooltipText, szTextLeft );
-							wcscat( szTooltipText, L"\n"); // Add line break.
+							wcscat( szTooltipText, JA2_TEXT("\n")); // Add line break.
 							wcscpy( szTextLeft, szNewTextLeft );
 						}
 
@@ -22155,11 +22155,11 @@ void SurgeryBeforeDoctoringRequesterCallback( UINT8 bExitValue )
 
 		if (MakeAutomaticSurgeryOnAllPatients( pAutomaticSurgeryDoctor ) > 0)
 		{
-			DoScreenIndependantMessageBox( L"Healed!" , MSG_BOX_FLAG_OK, NULL );
+			DoScreenIndependantMessageBox( JA2_TEXT("Healed!") , MSG_BOX_FLAG_OK, NULL );
 		}
 		else
 		{
-			DoScreenIndependantMessageBox( L"NOT Healed!" , MSG_BOX_FLAG_OK, NULL );
+			DoScreenIndependantMessageBox( JA2_TEXT("NOT Healed!") , MSG_BOX_FLAG_OK, NULL );
 		}
 
 		// Flugente: after surgery is done, remove the optional blood bag boosting
@@ -22199,11 +22199,11 @@ void SurgeryBeforePatientingRequesterCallback( UINT8 bExitValue )
 		if( (CanSoldierBeHealedByDoctor( pAutomaticSurgeryPatient, pAutomaticSurgeryDoctor, FALSE, HEALABLE_EVER, FALSE, FALSE, TRUE ) == TRUE ) &&
 				(MakeAutomaticSurgery( pAutomaticSurgeryPatient, pAutomaticSurgeryDoctor ) == TRUE) )
 		{
-			DoScreenIndependantMessageBox( L"Healed!" , MSG_BOX_FLAG_OK, NULL );
+			DoScreenIndependantMessageBox( JA2_TEXT("Healed!") , MSG_BOX_FLAG_OK, NULL );
 		}
 		else
 		{
-			DoScreenIndependantMessageBox( L"NOT Healed!" , MSG_BOX_FLAG_OK, NULL );
+			DoScreenIndependantMessageBox( JA2_TEXT("NOT Healed!") , MSG_BOX_FLAG_OK, NULL );
 		}
 
 		// Flugente: after surgery is done, remove the optional blood bag boosting
@@ -22526,7 +22526,7 @@ BOOLEAN DisplayMoveItemsMenu( SOLDIERTYPE *pSoldier )
 
 					// Set string for generic button
 					CHAR16 bla[64];
-					swprintf( bla, L"%s - No militia gear", wSectorName );
+					swprintf( bla, JA2_TEXT("%s - No militia gear"), wSectorName );
 
 					AddMonoString( (UINT32 *)&hStringHandle, bla );
 

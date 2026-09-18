@@ -1592,7 +1592,7 @@ void CheckForQuests( UINT32 uiDay )
 {
 	// This function gets called at 8:00 AM time of the day
 
-	ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Checking For Quests, Day %d", uiDay );
+	ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Checking For Quests, Day %d"), uiDay );
 
 #ifdef JA2UB
  // -------------------------------------------------------------------------------
@@ -1603,7 +1603,7 @@ void CheckForQuests( UINT32 uiDay )
 	if( gubQuest[ QUEST_DESTROY_MISSLES ] == QUESTNOTSTARTED )
 	{
 		StartQuest( QUEST_DESTROY_MISSLES, -1, -1 );
-		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Started DESTORY MISSLES quest");
+		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Started DESTORY MISSLES quest"));
 	}
 //Ja25: No deliver letter quest, dont start it
 #else
@@ -1617,7 +1617,7 @@ void CheckForQuests( UINT32 uiDay )
 		StartQuest( QUEST_DELIVER_LETTER, -1, -1 );
 
 		if (!is_networked)
-		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Started DELIVER LETTER quest");
+		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Started DELIVER LETTER quest"));
 	}
 #endif
 	// This quest gets turned OFF through conversation with Miguel - when user hands
@@ -1708,7 +1708,7 @@ void InitLUAModderData( )
 // SANDRO - a function to add quest-done point to merc records, and award some exp possibly
 void GiveQuestRewardPoint( INT16 sQuestSectorX, INT16 sQuestsSectorY, INT8 bExpReward, UINT8 bException )
 {
-	ScreenMsg( FONT_MCOLOR_LTBLUE, MSG_TESTVERSION, L"QUEST COMPLETED - Adding to merc records and awarding experiences (%d).", (bExpReward * gGameExternalOptions.usAwardSpecialExpForQuests) );
+	ScreenMsg( FONT_MCOLOR_LTBLUE, MSG_TESTVERSION, JA2_TEXT("QUEST COMPLETED - Adding to merc records and awarding experiences (%d)."), (bExpReward * gGameExternalOptions.usAwardSpecialExpForQuests) );
 
 	for ( SoldierID id = gTacticalStatus.Team[ gbPlayerNum ].bFirstID; id <= gTacticalStatus.Team[ gbPlayerNum ].bLastID; ++id )
 	{

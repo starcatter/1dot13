@@ -384,7 +384,7 @@ WRAPPED_STRING *LineWrap(INT32 iFont, UINT16 usLineWidthPixels, UINT16 *pusLineW
 			}
 			else
 			{
-				CHAR	zText[1024];
+				CHAR8	zText[1024];
 
 				sprintf( zText, "LineWrap() Error!	The string ( %S ) has a word ( %S ) that is too long to fit into the required width of %d!	Please fix!!", pString, &TempString[usCurIndex], usLineWidthPixels	);
 
@@ -579,7 +579,7 @@ UINT16 IanDisplayWrappedString(UINT16 usPosX, UINT16 usPosY, UINT16 usWidth, UIN
 	UINT8		ubLocalColor = ubColor;
 	BOOLEAN fBoldOn=FALSE;
 
-	CHAR16	zLineString[128] = L"",zWordString[64]= L"";
+	CHAR16	zLineString[128] = JA2_TEXT(""),zWordString[64]= JA2_TEXT("");
 
 	usHeight = WFGetFontHeight( iFont );
 
@@ -1012,7 +1012,7 @@ if(g_lang != i18n::Lang::zh) {
 
 
 	// terminate the entire paragraph with a null string (null character guaranteed)
-	wcscat(zLineString, L"");
+	wcscat(zLineString, JA2_TEXT(""));
 
 	// shadow control
 	if( IAN_WRAP_NO_SHADOW & uiFlags )
@@ -1139,7 +1139,7 @@ INT16 IanDisplayWrappedStringToPages(UINT16 usPosX, UINT16 usPosY, UINT16 usWidt
 	UINT16	usJustification = LEFT_JUSTIFIED,usLocalPosX=usPosX;
 	UINT8		ubLocalColor = ubColor;
 	BOOLEAN fBoldOn=FALSE;
-	CHAR16	zLineString[640] = L"",zWordString[640]= L"";
+	CHAR16	zLineString[640] = JA2_TEXT(""),zWordString[640]= JA2_TEXT("");
 
 	usHeight = WFGetFontHeight(iFont);
 
@@ -1481,7 +1481,7 @@ INT16 IanDisplayWrappedStringToPages(UINT16 usPosX, UINT16 usPosY, UINT16 usWidt
 
 
 	// terminate the entire paragraph with a null string (null character guaranteed)
-	wcscat(zLineString, L"");
+	wcscat(zLineString, JA2_TEXT(""));
 
 
 	// draw the paragraph
@@ -1504,7 +1504,7 @@ UINT16 IanWrappedStringHeight(UINT16 usPosX, UINT16 usPosY, UINT16 usWidth, UINT
 	UINT16	usJustification = LEFT_JUSTIFIED,usLocalPosX=usPosX;
 	UINT8		ubLocalColor = ubColor;
 	BOOLEAN fBoldOn=FALSE;
-	CHAR16	zLineString[640] = L"",zWordString[640]= L"";
+	CHAR16	zLineString[640] = JA2_TEXT(""),zWordString[640]= JA2_TEXT("");
 
 	usHeight = WFGetFontHeight(iFont);
 
@@ -2078,7 +2078,7 @@ BOOLEAN ReduceStringLength( STR16 pString, UINT32 uiWidthToFitIn, INT32 iFont )
 	}
 
 	//addd the '...' to the string
-	wcscpy( zStrDots, L"..." );
+	wcscpy( zStrDots, JA2_TEXT("...") );
 
 	//get the width of the '...'
 	uiDotWidth = StringPixLength( zStrDots, iFont );
@@ -2118,7 +2118,7 @@ BOOLEAN ReduceStringLength( STR16 pString, UINT32 uiWidthToFitIn, INT32 iFont )
 
 
 	//combine the temp string and the '...' to form the finished string
-	swprintf( pString, L"%s%s", zTemp, zStrDots );
+	swprintf( pString, JA2_TEXT("%s%s"), zTemp, zStrDots );
 
 	return( TRUE );
 }

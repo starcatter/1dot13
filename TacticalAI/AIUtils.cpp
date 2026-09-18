@@ -2781,7 +2781,7 @@ INT32 CalcManThreatValue( SOLDIERTYPE *pEnemy, INT32 sMyGrid, UINT8 ubReduceForC
 
 INT16 RoamingRange(SOLDIERTYPE *pSoldier, INT32 * pusFromGridNo)
 {
-	BOOL OppPosKnown = FALSE;
+	BOOLEAN OppPosKnown = FALSE;
 	if (CREATURE_OR_BLOODCAT(pSoldier))
 	{
 		if (pSoldier->aiData.bAlertStatus > STATUS_YELLOW)

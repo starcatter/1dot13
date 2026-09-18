@@ -1247,7 +1247,7 @@ BOOLEAN DrawNumeralsToScreen(INT32 iNumber, INT8 bWidth, UINT16 usLocX, UINT16 u
 {
 	CHAR16		sStr[10];
 
-	swprintf(sStr, L"%d", iNumber);
+	swprintf(sStr, JA2_TEXT("%d"), iNumber);
 
 	DrawTextToScreen(sStr, usLocX, usLocY, bWidth, ulFont, ubColor, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED	);
 
@@ -1298,8 +1298,8 @@ void SelectFaceMovementRegionCallBack(MOUSE_REGION * pRegion, INT32 iReason )
 static auto DrawDiscountedDailyCosts() -> void
 {
 	constexpr auto offset{ 65 };
-	constexpr auto l{ L"(" };
-	constexpr auto r{ L")" };
+	constexpr auto l{ JA2_TEXT("(") };
+	constexpr auto r{ JA2_TEXT(")") };
 	const static auto nsgi = gGameExternalOptions.gfUseNewStartingGearInterface;
 	const auto width = nsgi ? FEE_WIDTH_NSGI : FEE_WIDTH;
 	const auto xOffset = nsgi ? FEE_X_NSGI : FEE_X;
@@ -1333,7 +1333,7 @@ BOOLEAN	UpdateMercInfo(void)
 			CHAR16	sMedicalString[40];
 
 			// Display the medical cost
-			swprintf( sMedicalString, L"%s %s", FormatMoney(gMercProfiles[gbCurrentSoldier].sMedicalDepositAmount).data(), CharacterInfo[AIM_MEMBER_MEDICAL_DEPOSIT_REQ] );
+			swprintf( sMedicalString, JA2_TEXT("%s %s"), FormatMoney(gMercProfiles[gbCurrentSoldier].sMedicalDepositAmount).data(), CharacterInfo[AIM_MEMBER_MEDICAL_DEPOSIT_REQ] );
 
 			// If the string will be displayed in more then 2 lines, recenter the string
 			if( ( DisplayWrappedString( 0, 0, AIM_MEDICAL_DEPOSIT_WIDTH_NSGI, 2, AIM_FONT12ARIAL, AIM_M_COLOR_DYNAMIC_TEXT,	sMedicalString, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED | DONT_DISPLAY_TEXT ) / GetFontHeight( AIM_FONT12ARIAL ) ) > 2 )
@@ -1358,8 +1358,8 @@ BOOLEAN	UpdateMercInfo(void)
 		}
 		else
 		{
-			Loc::GetString(Loc::AIM_BIOGRAPHY, L"Bio", gbCurrentSoldier, MercInfoString, SIZE_MERC_BIO_INFO);
-			Loc::GetString(Loc::AIM_BIOGRAPHY, L"Add", gbCurrentSoldier, AdditionalInfoString, SIZE_MERC_BIO_INFO);
+			Loc::GetString(Loc::AIM_BIOGRAPHY, JA2_TEXT("Bio"), gbCurrentSoldier, MercInfoString, SIZE_MERC_BIO_INFO);
+			Loc::GetString(Loc::AIM_BIOGRAPHY, JA2_TEXT("Add"), gbCurrentSoldier, AdditionalInfoString, SIZE_MERC_BIO_INFO);
 		}
 		if( MercInfoString[0] != 0)
 		{
@@ -1391,7 +1391,7 @@ BOOLEAN	UpdateMercInfo(void)
 			CHAR16	sMedicalString[40];
 
 			// Display the medical cost
-			swprintf( sMedicalString, L"%s %s", FormatMoney(gMercProfiles[gbCurrentSoldier].sMedicalDepositAmount).data(), CharacterInfo[AIM_MEMBER_MEDICAL_DEPOSIT_REQ] );
+			swprintf( sMedicalString, JA2_TEXT("%s %s"), FormatMoney(gMercProfiles[gbCurrentSoldier].sMedicalDepositAmount).data(), CharacterInfo[AIM_MEMBER_MEDICAL_DEPOSIT_REQ] );
 
 			// If the string will be displayed in more then 2 lines, recenter the string
 			if( ( DisplayWrappedString( 0, 0, AIM_MEDICAL_DEPOSIT_WIDTH, 2, AIM_FONT12ARIAL, AIM_M_COLOR_DYNAMIC_TEXT,	sMedicalString, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED | DONT_DISPLAY_TEXT ) / GetFontHeight( AIM_FONT12ARIAL ) ) > 2 )
@@ -1417,8 +1417,8 @@ BOOLEAN	UpdateMercInfo(void)
 		}
 		else
 		{
-			Loc::GetString(Loc::AIM_BIOGRAPHY, L"Bio", gbCurrentSoldier, MercInfoString, SIZE_MERC_BIO_INFO);
-			Loc::GetString(Loc::AIM_BIOGRAPHY, L"Add", gbCurrentSoldier, AdditionalInfoString, SIZE_MERC_BIO_INFO);
+			Loc::GetString(Loc::AIM_BIOGRAPHY, JA2_TEXT("Bio"), gbCurrentSoldier, MercInfoString, SIZE_MERC_BIO_INFO);
+			Loc::GetString(Loc::AIM_BIOGRAPHY, JA2_TEXT("Add"), gbCurrentSoldier, AdditionalInfoString, SIZE_MERC_BIO_INFO);
 		}
 		if( MercInfoString[0] != 0)
 		{
@@ -1551,7 +1551,7 @@ BOOLEAN DisplayMercsInventory(UINT8 ubMercID)
 				else
 				{
 					SGP_THROW(_BS(L"Number of images in VObject [") << hVObject->usNumberOfObjects
-						<< L"] is smaller than the requested index [" << (int)pItem->ubGraphicNum << L"]" << _BS::wget);
+						<< JA2_TEXT("] is smaller than the requested index [") << (int)pItem->ubGraphicNum << JA2_TEXT("]") << _BS::wget);
 				}
 
 				usHeight				= (UINT32)pTrav->usHeight;
@@ -1572,7 +1572,7 @@ BOOLEAN DisplayMercsInventory(UINT8 ubMercID)
 				{
 					CHAR16 zTempStr[ 32 ];
 
-					swprintf( zTempStr, L"x%d", gMercProfiles[ ubMercID ].bInvNumber[ i ] );
+					swprintf( zTempStr, JA2_TEXT("x%d"), gMercProfiles[ ubMercID ].bInvNumber[ i ] );
 
 					DrawTextToScreen( zTempStr, (UINT16)(PosX-1), (UINT16)(PosY+20), AIM_MEMBER_WEAPON_NAME_WIDTH, AIM_M_FONT_DYNAMIC_TEXT, AIM_M_WEAPON_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED );
 				}
@@ -1651,7 +1651,7 @@ BOOLEAN DisplayMercsInventory(UINT8 ubMercID)
 				{
 					CHAR16 zTempStr[ 32 ];
 
-					swprintf( zTempStr, L"x%d", gMercProfiles[ ubMercID ].bInvNumber[ i ] );
+					swprintf( zTempStr, JA2_TEXT("x%d"), gMercProfiles[ ubMercID ].bInvNumber[ i ] );
 
 					DrawTextToScreen( zTempStr, (UINT16)(PosX-1), (UINT16)(PosY+20), AIM_MEMBER_WEAPON_NAME_WIDTH, AIM_M_FONT_DYNAMIC_TEXT, AIM_M_WEAPON_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED );
 				}
@@ -2166,7 +2166,7 @@ void DisplayMercStats()
 	}
 
 	//Buggler: Display current AIM index & total AIM members at the bottom of the screen
-	swprintf( sPage, L"%d / %d", gbCurrentIndex + 1, MAX_NUMBER_MERCS );
+	swprintf( sPage, JA2_TEXT("%d / %d"), gbCurrentIndex + 1, MAX_NUMBER_MERCS );
 	DrawTextToScreen(sPage, AIM_PAGE_X, AIM_PAGE_Y, 0, AIM_M_FONT_STATIC_TEXT, AIM_M_COLOR_STATIC_TEXT, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 }
 
@@ -2193,7 +2193,7 @@ void DisplayDots(UINT16 usNameX, UINT16 usNameY, UINT16 usStatX, STR16 pString)
 	usPosX = usStatX;
 	for(i=usNameX + usStringLength; i <= usPosX; usPosX-=7)
 	{
-		DrawTextToScreen(L".", (UINT16)usPosX, usNameY, 0, AIM_M_FONT_STATIC_TEXT, AIM_M_COLOR_STATIC_TEXT, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
+		DrawTextToScreen(JA2_TEXT("."), (UINT16)usPosX, usNameY, 0, AIM_M_FONT_STATIC_TEXT, AIM_M_COLOR_STATIC_TEXT, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	}
 }
 
@@ -2472,12 +2472,12 @@ BOOLEAN DisplayVideoConferencingDisplay()
 	//Title & Name
 	if( gubVideoConferencingMode == AIM_VIDEO_INIT_MODE)
 	{
-		swprintf( sMercName, L"%s",	VideoConfercingText[AIM_MEMBER_CONNECTING]);
+		swprintf( sMercName, JA2_TEXT("%s"),	VideoConfercingText[AIM_MEMBER_CONNECTING]);
 		DrawTextToScreen(sMercName, AIM_MEMBER_VIDEO_NAME_X, AIM_MEMBER_VIDEO_NAME_Y, 0, FONT12ARIAL, AIM_M_VIDEO_TITLE_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	}
 	else
 	{
-		swprintf( sMercName, L"%s %s",	VideoConfercingText[AIM_MEMBER_VIDEO_CONF_WITH], gMercProfiles[gbCurrentSoldier].zName);
+		swprintf( sMercName, JA2_TEXT("%s %s"),	VideoConfercingText[AIM_MEMBER_VIDEO_CONF_WITH], gMercProfiles[gbCurrentSoldier].zName);
 		DrawTextToScreen(sMercName, AIM_MEMBER_VIDEO_NAME_X, AIM_MEMBER_VIDEO_NAME_Y, 0, FONT12ARIAL, AIM_M_VIDEO_TITLE_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	}
 
@@ -2671,7 +2671,7 @@ UINT32 DisplayMercChargeAmount()
 		auto contractAmount{ FormatMoney(giContractAmount) };
 #ifndef JA2UB
 		if (gMercProfiles[gbCurrentSoldier].bMedicalDeposit)
-			contractAmount += L" ";
+			contractAmount += JA2_TEXT(" ");
 			contractAmount += VideoConfercingText[AIM_MEMBER_WITH_MEDICAL];
 #endif
 
@@ -2921,7 +2921,7 @@ void BtnAnsweringMachineButtonCallback(GUI_BUTTON *btn,INT32 reason)
 
 				//Display a message box displaying a messsage that the message was recorded
 //				DoLapTopMessageBox( 10, AimPopUpText[ AIM_MEMBER_MESSAGE_RECORDED ], LAPTOP_SCREEN, MSG_BOX_FLAG_OK, NULL );
-				InitCreateDeleteAimPopUpBox( AIM_POPUP_CREATE, L" ", AimPopUpText[ AIM_MEMBER_MESSAGE_RECORDED ], AIM_POPUP_BOX_X, AIM_POPUP_BOX_Y, AIM_POPUP_BOX_SUCCESS );
+				InitCreateDeleteAimPopUpBox( AIM_POPUP_CREATE, JA2_TEXT(" "), AimPopUpText[ AIM_MEMBER_MESSAGE_RECORDED ], AIM_POPUP_BOX_X, AIM_POPUP_BOX_Y, AIM_POPUP_BOX_SUCCESS );
 
 
 				SpecifyDisabledButtonStyle( giAnsweringMachineButton[1], DISABLED_STYLE_NONE );
@@ -3099,7 +3099,7 @@ BOOLEAN DisplayTalkingMercFaceForVideoPopUp(INT32	iFaceIndex)
 
 void DisplayTextForMercFaceVideoPopUp(STR16 pString)
 {
-	swprintf( gsTalkingMercText, L"\"%s\"", pString );
+	swprintf( gsTalkingMercText, JA2_TEXT("\"%s\""), pString );
 
 	//Set the minimum time for the dialogue text to be present
 	usAimMercSpeechDuration =	wcslen( gsTalkingMercText ) * AIM_TEXT_SPEECH_MODIFIER;
@@ -5391,13 +5391,13 @@ void DisplayPopUpBoxExplainingMercArrivalLocationAndTime( )
 	uiHour = ( ( LaptopSaveInfo.sLastHiredMerc.uiArrivalTime ) - ( ( ( LaptopSaveInfo.sLastHiredMerc.uiArrivalTime ) / 1440 ) * 1440 ) ) / 60;
 
 	//create the time string
-	swprintf( zTimeString, L"%02d:%02d", uiHour, 0 );
+	swprintf( zTimeString, JA2_TEXT("%02d:%02d"), uiHour, 0 );
 
 	//get the id string
 	GetSectorIDString( gsMercArriveSectorX, gsMercArriveSectorY, 0, zSectorIDString, FALSE );
 
 	//create the string to display to the user, looks like....
-	//	L"%s should arrive at the designated drop-off point ( sector %d:%d %s ) on day %d, at approximately %s.",		//first %s is mercs name, next is the sector location and name where they will be arriving in, lastely is the day an the time of arrival
+	//	JA2_TEXT("%s should arrive at the designated drop-off point ( sector %d:%d %s ) on day %d, at approximately %s."),		//first %s is mercs name, next is the sector location and name where they will be arriving in, lastely is the day an the time of arrival
 
 if( g_lang == i18n::Lang::de ) {
 	//Germans version has a different argument order
@@ -5463,7 +5463,7 @@ void DisplayAimMemberClickOnFaceHelpText()
 	// Buggler: skills/traits tooltip on merc portrait
 
 	// clear string value
-	swprintf( sString, L"");
+	swprintf( sString, JA2_TEXT(""));
 
 	if (gGameOptions.fNewTraitSystem) // SANDRO - old/new traits check
 	{
@@ -5488,13 +5488,13 @@ void DisplayAimMemberClickOnFaceHelpText()
 
 		if ( bNumSkillTraits == 0 )
 		{
-			swprintf( sString, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+			swprintf( sString, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 		}
 		else
 		{
 			for ( UINT8 ubCnt = 0; ubCnt < bNumSkillTraits; ubCnt++ )
 			{
-				swprintf( sTemp, L"%s\n", gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
+				swprintf( sTemp, JA2_TEXT("%s\n"), gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
 				wcscat( sString, sTemp );
 			}
 		}
@@ -5507,25 +5507,25 @@ void DisplayAimMemberClickOnFaceHelpText()
 
 		if ( bSkill1 == 0 && bSkill2 == 0 )
 		{
-			swprintf( sString, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+			swprintf( sString, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 		}
 		else
 		{
 			//if the 2 skills are the same, add the '(expert)' at the end
 			if( bSkill1 == bSkill2 )
 			{
-				swprintf( sString, L"%s %s", gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
+				swprintf( sString, JA2_TEXT("%s %s"), gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
 			}
 			else
 			{
 				//Display the first skill
 				if( bSkill1 != 0 )
 				{
-					swprintf( sString, L"%s\n", gzMercSkillText[bSkill1] );
+					swprintf( sString, JA2_TEXT("%s\n"), gzMercSkillText[bSkill1] );
 				}
 				if( bSkill2 != 0 )
 				{
-					swprintf( sTemp, L"%s", gzMercSkillText[bSkill2] );
+					swprintf( sTemp, JA2_TEXT("%s"), gzMercSkillText[bSkill2] );
 					wcscat( sString, sTemp );
 				}
 			}

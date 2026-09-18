@@ -163,7 +163,7 @@ UINT32 MainGameScreenInit(void)
 	VideoOverlayDesc.ubFontFore	= FONT_MCOLOR_DKGRAY ;
 	VideoOverlayDesc.sX					= VideoOverlayDesc.sLeft;
 	VideoOverlayDesc.sY					= VideoOverlayDesc.sTop;
-	swprintf( VideoOverlayDesc.pzText, L"90" );
+	swprintf( VideoOverlayDesc.pzText, JA2_TEXT("90") );
 	VideoOverlayDesc.BltCallback = BlitMFont;
 	giFPSOverlay =	RegisterVideoOverlay( ( VOVERLAY_STARTDISABLED | VOVERLAY_DIRTYBYTEXT ), &VideoOverlayDesc );
 
@@ -172,7 +172,7 @@ UINT32 MainGameScreenInit(void)
 	VideoOverlayDesc.sTop				= 12;
 	VideoOverlayDesc.sX					= VideoOverlayDesc.sLeft;
 	VideoOverlayDesc.sY					= VideoOverlayDesc.sTop;
-	swprintf( VideoOverlayDesc.pzText, L"Levelnodes: 100000" );
+	swprintf( VideoOverlayDesc.pzText, JA2_TEXT("Levelnodes: 100000") );
 	VideoOverlayDesc.BltCallback = BlitMFont;
 	giCounterPeriodOverlay =	RegisterVideoOverlay( ( VOVERLAY_STARTDISABLED | VOVERLAY_DIRTYBYTEXT ), &VideoOverlayDesc );
 
@@ -468,7 +468,7 @@ UINT32	MainGameScreenHandle(void)
 		UnLockVideoSurface(guiRENDERBUFFER);
 		InvalidateRegion( 0, 0, 64, 64 );
 
-		//mprintf( 0, 55, L"W: %dH: %d", gsCurMouseWidth, gsCurMouseHeight );
+		//mprintf( 0, 55, JA2_TEXT("W: %dH: %d"), gsCurMouseWidth, gsCurMouseHeight );
 	}
 #endif
 
@@ -678,7 +678,7 @@ UINT32	MainGameScreenHandle(void)
 		guiTacticalInterfaceFlags &= (~INTERFACE_MAPSCREEN );
 
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"MAPSCREEN_INTERFACE flag set: Please remember how you entered Tactical." );
+			ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("MAPSCREEN_INTERFACE flag set: Please remember how you entered Tactical.") );
 		#endif
 	}
 
@@ -832,8 +832,8 @@ UINT32	MainGameScreenHandle(void)
 		SetFontBackground( FONT_MCOLOR_BLACK );
 		SetFontForeground( FONT_MCOLOR_LTGREEN );
 
-		mprintf( 0, 0, L"IN CONVERSATION %d", giNPCReferenceCount );
-		gprintfdirty( 0, 0, L"IN CONVERSATION %d", giNPCReferenceCount );
+		mprintf( 0, 0, JA2_TEXT("IN CONVERSATION %d"), giNPCReferenceCount );
+		gprintfdirty( 0, 0, JA2_TEXT("IN CONVERSATION %d"), giNPCReferenceCount );
 	}
 
 #ifdef JA2BETAVERSION
@@ -844,8 +844,8 @@ UINT32	MainGameScreenHandle(void)
 		SetFontBackground( FONT_MCOLOR_BLACK );
 		SetFontForeground( FONT_MCOLOR_LTGREEN );
 
-		mprintf( 0, 10, L"Game Clock Paused" );
-		gprintfdirty( 0, 10, L"Game Clock Paused" );
+		mprintf( 0, 10, JA2_TEXT("Game Clock Paused") );
+		gprintfdirty( 0, 10, JA2_TEXT("Game Clock Paused") );
 	}
 
 #endif
@@ -861,8 +861,8 @@ UINT32	MainGameScreenHandle(void)
 		SetFontBackground( FONT_MCOLOR_BLACK );
 		SetFontForeground( FONT_MCOLOR_LTGREEN );
 
-		mprintf( 0, 15, L"Attacker Busy Count: %d", gTacticalStatus.ubAttackBusyCount );
-		gprintfdirty( 0, 15, L"Attacker Busy Count: %d", gTacticalStatus.ubAttackBusyCount );
+		mprintf( 0, 15, JA2_TEXT("Attacker Busy Count: %d"), gTacticalStatus.ubAttackBusyCount );
+		gprintfdirty( 0, 15, JA2_TEXT("Attacker Busy Count: %d"), gTacticalStatus.ubAttackBusyCount );
 
 		curr = gpScheduleList;
 		iSchedules = 0;
@@ -872,8 +872,8 @@ UINT32	MainGameScreenHandle(void)
 			curr = curr->next;
 		}
 
-		mprintf( 0, 25, L"Schedules: %d", iSchedules );
-		gprintfdirty( 0, 25, L"Schedules: %d", iSchedules );
+		mprintf( 0, 25, JA2_TEXT("Schedules: %d"), iSchedules );
+		gprintfdirty( 0, 25, JA2_TEXT("Schedules: %d"), iSchedules );
 	}
 #endif
 

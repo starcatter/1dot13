@@ -4,7 +4,6 @@
 	#include "Font Control.h"
 	#include "message.h"
 	#include "memory.h"
-	#include "mbstring.h"
 	#include "Timer Control.h"
 	#include "Render Dirty.h"
 	#include "renderworld.h"
@@ -819,7 +818,7 @@ void TacticalScreenMsg( UINT16 usColor, UINT8 ubPriority, STR16 pStringA, ... )
 		#else
 		usColor = DEBUG_COLOR;
 		//wcscpy( DestStringA, DestString );
-		//swprintf( DestString, L"Debug: %s", DestStringA );
+		//swprintf( DestString, JA2_TEXT("Debug: %s"), DestStringA );
 		//WriteMessageToFile( DestStringA );
 		#endif
 	}
@@ -974,7 +973,7 @@ void MapScreenMessage( UINT16 usColor, UINT8 ubPriority, STR16 pStringA, ... )
 		vswprintf(DestString, pStringA, argptr);	// process gprintf string (get output str)
 		va_end(argptr);
 
-		swprintf( DestStringA, L"DEBUG: %s", DestString );
+		swprintf( DestStringA, JA2_TEXT("DEBUG: %s"), DestString );
 
 		BeginUIMessage( DestStringA );
 		WriteMessageToFile( DestStringA );
@@ -1020,7 +1019,7 @@ void MapScreenMessage( UINT16 usColor, UINT8 ubPriority, STR16 pStringA, ... )
 		#endif
 		usColor = DEBUG_COLOR;
 		wcscpy( DestStringA, DestString );
-		swprintf( DestString, L"Debug: %s", DestStringA );
+		swprintf( DestString, JA2_TEXT("Debug: %s"), DestStringA );
 	}
 
 	if ( ubPriority == MSG_DIALOG )
@@ -1522,7 +1521,7 @@ static struct DebugMessageLog {
 void WriteMessageToFile( const STR16 pString )
 {
 #ifdef JA2BETAVERSION
-	SGP_LOG(s_DebugMessageLog.id, pString);
+	SGP_LOG(s_DebugMessageLog.id) << pString << sgp::endl;
 #endif
 }
 
@@ -1927,7 +1926,7 @@ void DisplayLastMessage( void )
 				else if( gMapScreenMessageList[ ubCounter ]->uiFlags == MSG_DIALOG )
 				{
 					wcscat( sString, gMapScreenMessageList[ ubCounter ]->pString16 );
-					wcscat( sString, L" " );
+					wcscat( sString, JA2_TEXT(" ") );
 				}
 
 				if( ( gMapScreenMessageList[ ubCounter ]-> fBeginningOfNewString ) )

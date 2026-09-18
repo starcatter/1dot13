@@ -118,7 +118,7 @@ void InitNewGameClock( )
 	guiDay = ( guiGameClock / NUM_SEC_IN_DAY );
 	guiHour = ( guiGameClock - ( guiDay * NUM_SEC_IN_DAY ) ) / NUM_SEC_IN_HOUR;
 	guiMin	= ( guiGameClock - ( ( guiDay * NUM_SEC_IN_DAY ) + ( guiHour * NUM_SEC_IN_HOUR ) ) ) / NUM_SEC_IN_MIN;
-	swprintf( WORLDTIMESTR, L"%s %d, %02d:%02d", pDayStrings[ 0 ], guiDay, guiHour, guiMin );
+	swprintf( WORLDTIMESTR, JA2_TEXT("%s %d, %02d:%02d"), pDayStrings[ 0 ], guiDay, guiHour, guiMin );
 	guiTimeCurrentSectorWasLastLoaded = 0;
 	guiGameSecondsPerRealSecond = 0;
 	gubClockResolution = 1;
@@ -250,7 +250,7 @@ void AdvanceClock( UINT8 ubWarpCode )
 	guiHour = ( guiGameClock - ( guiDay * NUM_SEC_IN_DAY ) ) / NUM_SEC_IN_HOUR;
 	guiMin	= ( guiGameClock - ( ( guiDay * NUM_SEC_IN_DAY ) + ( guiHour * NUM_SEC_IN_HOUR ) ) ) / NUM_SEC_IN_MIN;
 
-	swprintf( WORLDTIMESTR, L"%s %d, %02d:%02d", gpGameClockString[ STR_GAMECLOCK_DAY_NAME ], guiDay, guiHour, guiMin );
+	swprintf( WORLDTIMESTR, JA2_TEXT("%s %d, %02d:%02d"), gpGameClockString[ STR_GAMECLOCK_DAY_NAME ], guiDay, guiHour, guiMin );
 
 	if( gfResetAllPlayerKnowsEnemiesFlags && !gTacticalStatus.fEnemyInSector )
 	{
@@ -313,7 +313,7 @@ void RenderClock( INT16 sX, INT16 sY )
 		SetFontForeground( FONT_FCOLOR_NICERED );
 		// Erase first!
 		RestoreExternBackgroundRect(sX, sY, CLOCK_STRING_WIDTH, CLOCK_STRING_HEIGHT );
-		swprintf( gswzWorldTimeStr, L"GAME OVER" );
+		swprintf( gswzWorldTimeStr, JA2_TEXT("GAME OVER") );
 		mprintf( sX + (CLOCK_STRING_WIDTH - StringPixLength( WORLDTIMESTR, CLOCK_FONT ))/2, sY, WORLDTIMESTR );
 		return;
 	}
@@ -354,7 +354,7 @@ void ToggleSuperCompression()
 	// Display message
 	if ( gTacticalStatus.uiFlags & INCOMBAT )
 	{
-		//ScreenMsg( MSG_FONT_YELLOW, MSG_INTERFACE, L"Cannot toggle compression in Combat Mode."	);
+		//ScreenMsg( MSG_FONT_YELLOW, MSG_INTERFACE, JA2_TEXT("Cannot toggle compression in Combat Mode.")	);
 		return;
 	}
 
@@ -366,14 +366,14 @@ void ToggleSuperCompression()
 		giTimeCompressMode		= TIME_SUPER_COMPRESS;
 		guiGameSecondsPerRealSecond = giTimeCompressSpeeds[ giTimeCompressMode ] * SECONDS_PER_COMPRESSION;
 
-		//ScreenMsg( MSG_FONT_YELLOW, MSG_INTERFACE, L"Time compression ON."	);
+		//ScreenMsg( MSG_FONT_YELLOW, MSG_INTERFACE, JA2_TEXT("Time compression ON.")	);
 	}
 	else
 	{
 		giTimeCompressMode		= uiOldTimeCompressMode;
 		guiGameSecondsPerRealSecond = giTimeCompressSpeeds[ giTimeCompressMode ] * SECONDS_PER_COMPRESSION;
 
-		//ScreenMsg( MSG_FONT_YELLOW, MSG_INTERFACE, L"Time compression OFF."	);
+		//ScreenMsg( MSG_FONT_YELLOW, MSG_INTERFACE, JA2_TEXT("Time compression OFF.")	);
 	}
 }
 
@@ -670,7 +670,7 @@ void UnPauseGame()
 		// ignore request if locked
 		if ( gfLockPauseState )
 		{
-			ScreenMsg( FONT_ORANGE, MSG_TESTVERSION, L"Call to UnPauseGame() while Pause State is LOCKED! AM-4" );
+			ScreenMsg( FONT_ORANGE, MSG_TESTVERSION, JA2_TEXT("Call to UnPauseGame() while Pause State is LOCKED! AM-4") );
 			return;
 		}
 
@@ -1033,7 +1033,7 @@ BOOLEAN LoadGameClock( HWFILE hFile )
 	guiHour = ( guiGameClock - ( guiDay * NUM_SEC_IN_DAY ) ) / NUM_SEC_IN_HOUR;
 	guiMin	= ( guiGameClock - ( ( guiDay * NUM_SEC_IN_DAY ) + ( guiHour * NUM_SEC_IN_HOUR ) ) ) / NUM_SEC_IN_MIN;
 
-	swprintf( WORLDTIMESTR, L"%s %d, %02d:%02d", pDayStrings[ 0 ], guiDay, guiHour, guiMin );
+	swprintf( WORLDTIMESTR, JA2_TEXT("%s %d, %02d:%02d"), pDayStrings[ 0 ], guiDay, guiHour, guiMin );
 
 	if( !gfBasement && !gfCaves )
 		gfDoLighting		= TRUE;

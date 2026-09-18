@@ -666,7 +666,7 @@ void DrawNameOfLoadedSector( void )
 		COMPFONT, &sFontX, &sFontY, sString 
 	);
 
-	mprintf( sFontX, sFontY, L"%s", sString );
+	mprintf( sFontX, sFontY, JA2_TEXT("%s"), sString );
 }
 
 
@@ -1021,11 +1021,11 @@ void DisplayCompressMode( void )
 	{
 		if( IsTimeBeingCompressed() )
 		{
-			swprintf( sString, L"%s", sTimeStrings[ giTimeCompressMode ] );
+			swprintf( sString, JA2_TEXT("%s"), sTimeStrings[ giTimeCompressMode ] );
 		}
 		else
 		{
-			swprintf( sString, L"%s", sTimeStrings[ 0 ] );
+			swprintf( sString, JA2_TEXT("%s"), sTimeStrings[ 0 ] );
 		}
 	}
 
@@ -1526,30 +1526,30 @@ void DisplayCurrentBalanceTitleForMapBottom( void )
 	SetFontForeground( MAP_BOTTOM_FONT_COLOR );
 	SetFontBackground( FONT_BLACK );
 
-	swprintf( sString, L"%s", pMapScreenBottomText[ 0 ] );
+	swprintf( sString, JA2_TEXT("%s"), pMapScreenBottomText[ 0 ] );
 
 	// center it
 	VarFindFontCenterCoordinates(UI_BOTTOM.Text.BalanceTitle.x, UI_BOTTOM.Text.BalanceTitle.y, UI_BOTTOM.Text.BalanceTitle.width, UI_BOTTOM.Text.BalanceTitle.height, COMPFONT, &sFontX, &sFontY, sString );
 	
 	// print it
-	mprintf( sFontX, sFontY, L"%s", sString );
+	mprintf( sFontX, sFontY, JA2_TEXT("%s"), sString );
 
-	swprintf( sString, L"%s", zMarksMapScreenText[ 2 ] );
+	swprintf( sString, JA2_TEXT("%s"), zMarksMapScreenText[ 2 ] );
 
 	// center it
 	VarFindFontCenterCoordinates(UI_BOTTOM.Text.IncomeTitle.x, UI_BOTTOM.Text.IncomeTitle.y, UI_BOTTOM.Text.IncomeTitle.width, UI_BOTTOM.Text.IncomeTitle.height, COMPFONT, &sFontX, &sFontY, sString );
 
 	// print it
-	mprintf( sFontX, sFontY, L"%s", sString );
+	mprintf( sFontX, sFontY, JA2_TEXT("%s"), sString );
 
-	swprintf( sString, L"%s", New113HAMMessage[ 20 ] );
+	swprintf( sString, JA2_TEXT("%s"), New113HAMMessage[ 20 ] );
 
 	// HEADROCK HAM 3.6: Projected expenses for today, with facilities (and in the future, merc contracts) taken into
 	// account.
 	VarFindFontCenterCoordinates(UI_BOTTOM.Text.ExpensesTitle.x, UI_BOTTOM.Text.ExpensesTitle.y, UI_BOTTOM.Text.ExpensesTitle.width, UI_BOTTOM.Text.ExpensesTitle.height, COMPFONT, &sFontX, &sFontY, sString );
 
 	// print it
-	mprintf( sFontX, sFontY, L"%s", sString );
+	mprintf( sFontX, sFontY, JA2_TEXT("%s"), sString );
 
 	// ste the font buffer
 	SetFontDestBuffer( FRAME_BUFFER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
@@ -1560,7 +1560,7 @@ void DisplayCurrentBalanceTitleForMapBottom( void )
 void DisplayCurrentBalanceForMapBottom( void )
 {
 	// show the current balance for the player on the map panel bottom
-	std::wstring sString;
+	ja2::text::Utf16String sString;
 	INT16 sFontX, sFontY;
 
 	// ste the font buffer
@@ -1582,7 +1582,7 @@ void DisplayCurrentBalanceForMapBottom( void )
 	);
 	
 	// print it
-	mprintf( sFontX, sFontY, L"%s", sString.data() );
+	mprintf( sFontX, sFontY, JA2_TEXT("%s"), sString.data() );
 
 	return;
 }
@@ -1661,7 +1661,7 @@ void DisplayProjectedDailyMineIncome( void )
 {
 	INT32 iRate = 0;
 	static INT32 iOldRate = -1;
-	std::wstring sString;
+	ja2::text::Utf16String sString;
 	INT16 sFontX, sFontY;
 
 	// grab the rate from the financial system
@@ -1697,7 +1697,7 @@ void DisplayProjectedDailyMineIncome( void )
 	);
 
 	// print it
-	mprintf( sFontX, sFontY, L"%s", sString.data() );
+	mprintf( sFontX, sFontY, JA2_TEXT("%s"), sString.data() );
 
 	return;
 }
@@ -1749,7 +1749,7 @@ void DisplayProjectedDailyExpenses( void )
 	);
 
 	// print it
-	mprintf( sFontX, sFontY, L"%s", rate.data());
+	mprintf( sFontX, sFontY, JA2_TEXT("%s"), rate.data());
 
 	return;
 }

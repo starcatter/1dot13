@@ -39,8 +39,7 @@ public:
 		m_ssBuffer << ">" << value << "</" << utf8key << ">\n";
 	}
 
-	template<>
-	void addValue<std::string>(vfs::String const& key, std::string const& value)
+	void addValue(vfs::String const& key, std::string const& value)
 	{
 		std::string utf8key = key.utf8();
 		m_ssBuffer << indent() <<  "<" << utf8key;

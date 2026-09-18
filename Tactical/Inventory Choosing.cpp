@@ -4135,7 +4135,7 @@ void TakeMilitiaEquipmentfromSector( INT16 sMapX, INT16 sMapY, INT8 sMapZ, SOLDI
 
 	if ( uiTotalNumberOfRealItems == 0 )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Militia found no items to equip, uses harsh language instead!" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Militia found no items to equip, uses harsh language instead!") );
 		return;
 	}
 
@@ -4286,7 +4286,7 @@ void TakeMilitiaEquipmentfromSector( INT16 sMapX, INT16 sMapY, INT8 sMapZ, SOLDI
 
 		if ( dummygridno == NOWHERE )
 		{
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Militia found no items to equip, uses harsh langugage instead!" );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Militia found no items to equip, uses harsh langugage instead!") );
 			return;
 		}
 	}
@@ -4473,14 +4473,14 @@ void TakeMilitiaEquipmentfromSector( INT16 sMapX, INT16 sMapY, INT8 sMapZ, SOLDI
 			else
 			{
 				si[SI_GUN].done = TRUE;
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Militia found no gun to equip, uses harsh langugage instead!" );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Militia found no gun to equip, uses harsh langugage instead!") );
 			}
 		}
 		// we didn't find any gun at all. Now what?
 		else
 		{
 			si[SI_GUN].done = TRUE;
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Militia found no gun to equip, uses harsh langugage instead!" );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Militia found no gun to equip, uses harsh langugage instead!") );
 		}
 	}
 		 

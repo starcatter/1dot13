@@ -314,8 +314,8 @@ UINT32 MapUtilScreenHandle(void)
 	SetFont(TINYFONT1);
 	SetFontBackground(FONT_MCOLOR_BLACK);
 	SetFontForeground(FONT_MCOLOR_DKGRAY);
-	mprintf(iOffsetHorizontal+10, iOffsetVertical+330, L"Writing radar image %S", zFilename2);
-	mprintf(iOffsetHorizontal+10, iOffsetVertical+340, L"Using tileset %s", gTilesets[giCurrentTilesetID].zName);
+	mprintf(iOffsetHorizontal+10, iOffsetVertical+330, JA2_TEXT("Writing radar image %S"), zFilename2);
+	mprintf(iOffsetHorizontal+10, iOffsetVertical+340, JA2_TEXT("Using tileset %s"), gTilesets[giCurrentTilesetID].zName);
 	InvalidateScreen();
 	// Set next
 	if(FListNode)

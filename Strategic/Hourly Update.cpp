@@ -182,7 +182,7 @@ CHAR16	zString[128];
 					if( CanGameBeSaved() || ( gGameOptions.ubIronManMode == 3 && GetWorldHour() == gGameExternalOptions.ubExtremeIronManSavingHour ) )
 					{
 						SetOptionsPreviousScreen(guiCurrentScreen);
-						swprintf( zString, L"%s%d",pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT1);
+						swprintf( zString, JA2_TEXT("%s%d"),pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT1);
 						DoAutoSave(SAVE__TIMED_AUTOSAVE_SLOT1,zString);
 
 						AutoSaveToSlot[0] = FALSE;
@@ -197,7 +197,7 @@ CHAR16	zString[128];
 					if( CanGameBeSaved() || ( gGameOptions.ubIronManMode == 3 && GetWorldHour() == gGameExternalOptions.ubExtremeIronManSavingHour ) )
 					{
 						SetOptionsPreviousScreen(guiCurrentScreen);
-						swprintf( zString, L"%s%d",pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT2);
+						swprintf( zString, JA2_TEXT("%s%d"),pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT2);
 						DoAutoSave(SAVE__TIMED_AUTOSAVE_SLOT2,zString);
 
 						AutoSaveToSlot[0] = FALSE;
@@ -212,7 +212,7 @@ CHAR16	zString[128];
 					if( CanGameBeSaved() || ( gGameOptions.ubIronManMode == 3 && GetWorldHour() == gGameExternalOptions.ubExtremeIronManSavingHour ) )
 					{
 						SetOptionsPreviousScreen(guiCurrentScreen);
-						swprintf( zString, L"%s%d",pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT3);
+						swprintf( zString, JA2_TEXT("%s%d"),pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT3);
 						DoAutoSave(SAVE__TIMED_AUTOSAVE_SLOT3,zString);
 
 						AutoSaveToSlot[0] = FALSE;
@@ -227,7 +227,7 @@ CHAR16	zString[128];
 					if( CanGameBeSaved() || ( gGameOptions.ubIronManMode == 3 && GetWorldHour() == gGameExternalOptions.ubExtremeIronManSavingHour ) )
 					{
 						SetOptionsPreviousScreen(guiCurrentScreen);
-						swprintf( zString, L"%s%d",pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT4);
+						swprintf( zString, JA2_TEXT("%s%d"),pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT4);
 						DoAutoSave(SAVE__TIMED_AUTOSAVE_SLOT4,zString);
 
 						AutoSaveToSlot[0] = FALSE;
@@ -242,7 +242,7 @@ CHAR16	zString[128];
 					if( CanGameBeSaved() || ( gGameOptions.ubIronManMode == 3 && GetWorldHour() == gGameExternalOptions.ubExtremeIronManSavingHour ) )
 					{
 						SetOptionsPreviousScreen(guiCurrentScreen);
-						swprintf( zString, L"%s%d",pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT5);
+						swprintf( zString, JA2_TEXT("%s%d"),pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT5);
 						DoAutoSave(SAVE__TIMED_AUTOSAVE_SLOT5,zString);
 
 						AutoSaveToSlot[0] = TRUE;
@@ -743,7 +743,7 @@ void HourlyDisabilityUpdate( )
 
 					extern void SpecialDialogue( SOLDIERTYPE* pSoldier, STR8 azSoundString, STR16 azTextString );
 
-					SpecialDialogue( pSoldier, "Speech\\Special\\buns_ptsd_deactivation.MP3", L"I'm better now." );
+					SpecialDialogue( pSoldier, "Speech\\Special\\buns_ptsd_deactivation.MP3", JA2_TEXT("I'm better now.") );
 
 					//TacticalCharacterDialogue( pSoldier, QUOTE_WORK_UP_AND_RETURNING_TO_ASSIGNMENT );
 				}
@@ -1077,7 +1077,7 @@ void HourlyFactoryUpdate()
 							continue;
 
 						CHAR16 productionname[64];
-						swprintf( productionname, L"%s", wcslen((*prodit ).szProductionName ) > 0 ? ( *prodit ).szProductionName : ( *prodit ).usItemToCreate != NOTHING ? Item[( *prodit ).usItemToCreate].szItemName : L"--" );
+						swprintf( productionname, JA2_TEXT("%s"), wcslen((*prodit ).szProductionName ) > 0 ? ( *prodit ).szProductionName : ( *prodit ).usItemToCreate != NOTHING ? Item[( *prodit ).usItemToCreate].szItemName : JA2_TEXT("--") );
 						
 						// check for sufficient loyalty
 						if ( ubTownID != BLANK_SECTOR

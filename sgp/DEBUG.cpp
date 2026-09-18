@@ -24,12 +24,15 @@
 
 
 	#include "types.h"
+	#ifdef _WIN32
 	#include <windows.h>
+	#endif
 	#include <stdio.h>
 	#include <string>
 	#include <sstream>
 	#include "DEBUG.H"
 	#include "platform/Clock.h"
+	#include "platform/ApplicationHost.h"
 
 	//Kris addition
 		#include "screenids.h"
@@ -52,6 +55,18 @@
 
 BOOLEAN gfRecordToFile     = FALSE;
 BOOLEAN gfRecordToDebugger = TRUE;
+
+namespace
+{
+void DebuggerOutput(const char* message)
+{
+#ifdef _WIN32
+	OutputDebugStringA(message);
+#else
+	std::fputs(message, stderr);
+#endif
+}
+}
 
 // moved from header file: 24mar98:HJH
 // Had to move these outside the ifdef SGP_DEBUG below, because
@@ -280,8 +295,8 @@ void DbgMessageReal(unsigned uiTopicId, unsigned uiCommand, unsigned uiDebugLeve
 	// Check for a registered topic ID
 	if ( (uiTopicId < MAX_TOPICS_ALLOTED) && (gfDebugTopics[uiTopicId]) )
 	{
-		OutputDebugString ( strMessage );
-		OutputDebugString ( "\n" );
+		DebuggerOutput(strMessage);
+		DebuggerOutput("\n");
 
 //add _NO_DEBUG_TXT to your SGP preprocessor definitions to avoid this f**king huge file from 
 //slowly growing behind the scenes!!!!
@@ -350,7 +365,7 @@ void			_DebugMessage(const char *pString, unsigned uiLineNum, const char *pSourc
 
 	if (gfRecordToDebugger)
 	{
-		OutputDebugString( (LPCSTR) ubOutputString );
+		DebuggerOutput(ubOutputString);
 	}
 
 	//
@@ -395,7 +410,7 @@ void _FailMessage(const char* message, unsigned lineNum, const char * functionNa
 	// everything below it (a stack walk, a save, a screen) can die trying.
 	sgp::raiseAssertException(lineNum, sourceFileName, message);
 
-	mprintf( 10, 10, L"%s: %s %s", pMessageStrings[ MSG_VERSION ], zProductLabel, zBuildInformation );
+	mprintf( 10, 10, JA2_TEXT("%s: %s %s"), pMessageStrings[ MSG_VERSION ], zProductLabel, zBuildInformation );
 
 	std::stringstream basicInformation;
 	basicInformation << "Assertion Failure [Line " << lineNum;
@@ -417,7 +432,7 @@ void _FailMessage(const char* message, unsigned lineNum, const char * functionNa
 
 	//Output to debugger
 	if (gfRecordToDebugger)
-		OutputDebugString( outputString.str().c_str() );
+		DebuggerOutput(outputString.str().c_str());
 	
 	DbgMessage( TOPIC_GAME, DBG_LEVEL_1, outputString.str().c_str());
 
@@ -436,9 +451,10 @@ void _FailMessage(const char* message, unsigned lineNum, const char * functionNa
 	// WDS - Automatically try to save when an assertion failure occurs
 	if (gGameExternalOptions.autoSaveOnAssertionFailure &&
 		!alreadySaving) {
-		SaveGame( SAVE__ASSERTION_FAILURE, L"Assertion Failure Auto Save" );
+		SaveGame( SAVE__ASSERTION_FAILURE, JA2_TEXT("Assertion Failure Auto Save") );
 	}
 
+#ifdef _WIN32
     MSG Message;
 	while (gfProgramIsRunning)
 	{
@@ -458,6 +474,23 @@ void _FailMessage(const char* message, unsigned lineNum, const char * functionNa
 			gfSGPInputReceived  =  FALSE;			
 		}
 	}
+#else
+	while (gfProgramIsRunning)
+	{
+		if (Platform::ApplicationHost* host = Platform::GetCurrentApplicationHost())
+		{
+			const Platform::HostPumpResult result = host->waitAndDispatchOne(1);
+			if (result.status == Platform::HostPumpStatus::quitRequested ||
+				result.status == Platform::HostPumpStatus::failed)
+			{
+				gfProgramIsRunning = FALSE;
+				continue;
+			}
+		}
+		GameLoop();
+		gfSGPInputReceived = FALSE;
+	}
+#endif
 
 	alreadyInThisFunction = false;
 	exit(0);

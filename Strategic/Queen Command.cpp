@@ -132,7 +132,7 @@ void ValidateEnemiesHaveWeapons()
 		if( iNumInvalid )
 		{
 			CHAR16 str[ 100 ];
-			swprintf( str, L"%d enemies have been added without any weapons!  KM:0.  Please note sector.", iNumInvalid );
+			swprintf( str, JA2_TEXT("%d enemies have been added without any weapons!  KM:0.  Please note sector."), iNumInvalid );
 			iErrorDialog = DoMessageBox( MSG_BOX_BASIC_STYLE, str, GAME_SCREEN, MSG_BOX_FLAG_OK, NULL, &CenteringRect );
 		}
 	#endif
@@ -802,7 +802,7 @@ BOOLEAN PrepareEnemyForSectorBattle()
 	{
 		/*
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_RED, MSG_ERROR, L"The total stationary enemy forces in sector %c%d is %d. (max %d)",
+			ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("The total stationary enemy forces in sector %c%d is %d. (max %d)"),
 				gWorldSectorY + 'A' - 1, gWorldSectorX, ubTotalAdmins + ubTotalTroops + ubTotalElites, mapMaximumNumberOfEnemies );
 		#endif
 		*/
@@ -846,7 +846,7 @@ BOOLEAN PrepareEnemyForSectorBattle()
 	if( sNumSlots != gTacticalStatus.Team[ENEMY_TEAM].bLastID - gTacticalStatus.Team[ENEMY_TEAM].bFirstID + 1 )
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_RED, MSG_ERROR, L"All enemy slots should be free at this point.  Only %d of %d are available.\nTrying to add %d admins, %d troops, and %d elites.",
+			ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("All enemy slots should be free at this point.  Only %d of %d are available.\nTrying to add %d admins, %d troops, and %d elites."),
 				sNumSlots, gTacticalStatus.Team[ENEMY_TEAM].bLastID - gTacticalStatus.Team[ENEMY_TEAM].bFirstID + 1 ,
 				ubTotalAdmins, ubTotalTroops, ubTotalElites );
 		#endif
@@ -1336,7 +1336,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 		{
 			#ifdef JA2BETAVERSION
 				CHAR16 str[256];
-				swprintf( str, L"Enemy soldier killed with ubGroupID of %d, and the group doesn't exist!", pSoldier->ubGroupID );
+				swprintf( str, JA2_TEXT("Enemy soldier killed with ubGroupID of %d, and the group doesn't exist!"), pSoldier->ubGroupID );
 				DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 			#endif
 			return;
@@ -1346,7 +1346,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 		{
 #ifdef JA2BETAVERSION
 				CHAR16 str[256];
-				swprintf( str, L"Attempting to process player group %d thinking it's an enemy group in ProcessQueenCmdImplicationsOfDeath()", pSoldier->ubGroupID );
+				swprintf( str, JA2_TEXT("Attempting to process player group %d thinking it's an enemy group in ProcessQueenCmdImplicationsOfDeath()"), pSoldier->ubGroupID );
 				DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 #endif
 			return;
@@ -1355,7 +1355,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 		{
 #ifdef JA2BETAVERSION
 			CHAR16 str[256];
-			swprintf( str, L"Attempting to process militia group %d thinking it's an enemy group in ProcessQueenCmdImplicationsOfDeath()", pSoldier->ubGroupID );
+			swprintf( str, JA2_TEXT("Attempting to process militia group %d thinking it's an enemy group in ProcessQueenCmdImplicationsOfDeath()"), pSoldier->ubGroupID );
 			DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 #endif
 			return;
@@ -1377,7 +1377,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 				#ifdef JA2BETAVERSION
 					if( !pGroup->pEnemyGroup->ubNumElites )
 					{
-						//swprintf( str, L"Enemy elite killed with ubGroupID of %d, but the group doesn't contain elites!", pGroup->ubGroupID );
+						//swprintf( str, JA2_TEXT("Enemy elite killed with ubGroupID of %d, but the group doesn't contain elites!"), pGroup->ubGroupID );
 						//DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 						break;
 					}
@@ -1386,7 +1386,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 						if ( pGroup->ubGroupSize <= iMaxEnemyGroupSize && pGroup->pEnemyGroup->ubNumElites != pGroup->pEnemyGroup->ubElitesInBattle && !gfPendingNonPlayerTeam[ENEMY_TEAM] ||
 								pGroup->ubGroupSize > iMaxEnemyGroupSize /* || pGroup->pEnemyGroup->ubNumElites > 50 || pGroup->pEnemyGroup->ubElitesInBattle > 50*/ )
 						{
-							DoScreenIndependantMessageBox( L"Group elite counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+							DoScreenIndependantMessageBox( JA2_TEXT("Group elite counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 						}
 					}
 				#endif
@@ -1403,7 +1403,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 				#ifdef JA2BETAVERSION
 					if( !pGroup->pEnemyGroup->ubNumTroops )
 					{
-						//swprintf( str, L"Enemy troop killed with ubGroupID of %d, but the group doesn't contain elites!", pGroup->ubGroupID );
+						//swprintf( str, JA2_TEXT("Enemy troop killed with ubGroupID of %d, but the group doesn't contain elites!"), pGroup->ubGroupID );
 						//DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 						break;
 					}
@@ -1415,7 +1415,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 							// haydent
 							if (!is_client)
 							{
-								DoScreenIndependantMessageBox( L"Group troop counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+								DoScreenIndependantMessageBox( JA2_TEXT("Group troop counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 						
 							}
 						}
@@ -1434,7 +1434,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 				#ifdef JA2BETAVERSION
 					if( !pGroup->pEnemyGroup->ubNumAdmins )
 					{
-						//swprintf( str, L"Enemy administrator killed with ubGroupID of %d, but the group doesn't contain elites!", pGroup->ubGroupID );
+						//swprintf( str, JA2_TEXT("Enemy administrator killed with ubGroupID of %d, but the group doesn't contain elites!"), pGroup->ubGroupID );
 						//DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 						break;
 					}
@@ -1443,7 +1443,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 						if ( pGroup->ubGroupSize <= iMaxEnemyGroupSize && pGroup->pEnemyGroup->ubNumAdmins != pGroup->pEnemyGroup->ubAdminsInBattle && !gfPendingNonPlayerTeam[ENEMY_TEAM] ||
 						pGroup->ubGroupSize > iMaxEnemyGroupSize /*|| pGroup->pEnemyGroup->ubNumAdmins > 50 || pGroup->pEnemyGroup->ubAdminsInBattle > 50*/ )
 						{
-							DoScreenIndependantMessageBox( L"Group admin counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+							DoScreenIndependantMessageBox( JA2_TEXT("Group admin counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 						}
 					}
 				#endif
@@ -1497,7 +1497,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 								!pSector->ubNumAdmins || !pSector->ubAdminsInBattle ||
 								pSector->ubNumAdmins > gGameExternalOptions.ubGameMaximumNumberOfEnemies || pSector->ubAdminsInBattle > gGameExternalOptions.ubGameMaximumNumberOfEnemies )
 							{
-								DoScreenIndependantMessageBox( L"Sector admin counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+								DoScreenIndependantMessageBox( JA2_TEXT("Sector admin counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 							}
 						}
 					#endif
@@ -1518,7 +1518,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 									!pSector->ubNumTroops || !pSector->ubTroopsInBattle ||
 									pSector->ubNumTroops > gGameExternalOptions.ubGameMaximumNumberOfEnemies || pSector->ubTroopsInBattle > gGameExternalOptions.ubGameMaximumNumberOfEnemies )
 							{
-								if(!is_client)DoScreenIndependantMessageBox( L"Sector troop counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+								if(!is_client)DoScreenIndependantMessageBox( JA2_TEXT("Sector troop counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 								//disabled: hayden.
 							}
 						}
@@ -1540,7 +1540,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 									!pSector->ubNumElites || !pSector->ubElitesInBattle ||
 									pSector->ubNumElites > gGameExternalOptions.ubGameMaximumNumberOfEnemies || pSector->ubElitesInBattle > gGameExternalOptions.ubGameMaximumNumberOfEnemies )
 							{
-								DoScreenIndependantMessageBox( L"Sector elite counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+								DoScreenIndependantMessageBox( JA2_TEXT("Sector elite counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 							}
 						}
 					#endif
@@ -1575,7 +1575,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 									!pSector->ubNumCreatures || !pSector->ubCreaturesInBattle ||
 									pSector->ubNumCreatures > 50 || pSector->ubCreaturesInBattle > 50 )
 								{
-									DoScreenIndependantMessageBox( L"Sector creature counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+									DoScreenIndependantMessageBox( JA2_TEXT("Sector creature counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 								}
 							}
 						#endif
@@ -1621,7 +1621,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 								!pSector->ubNumAdmins || !pSector->ubAdminsInBattle ||
 								pSector->ubNumAdmins > 100 || pSector->ubAdminsInBattle > iMaxEnemyGroupSize )
 						{
-							DoScreenIndependantMessageBox( L"Underground sector admin counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+							DoScreenIndependantMessageBox( JA2_TEXT("Underground sector admin counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 						}
 						#endif
 						if( pSector->ubNumAdmins )
@@ -1639,7 +1639,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 								!pSector->ubNumTroops || !pSector->ubTroopsInBattle ||
 								pSector->ubNumTroops > 100 || pSector->ubTroopsInBattle > iMaxEnemyGroupSize )
 						{
-							DoScreenIndependantMessageBox( L"Underground sector troop counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+							DoScreenIndependantMessageBox( JA2_TEXT("Underground sector troop counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 						}
 						#endif
 						if( pSector->ubNumTroops )
@@ -1657,7 +1657,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 								!pSector->ubNumElites || !pSector->ubElitesInBattle ||
 								pSector->ubNumElites > 100 || pSector->ubElitesInBattle > iMaxEnemyGroupSize )
 						{
-							DoScreenIndependantMessageBox( L"Underground sector elite counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+							DoScreenIndependantMessageBox( JA2_TEXT("Underground sector elite counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 						}
 						#endif
 						if( pSector->ubNumElites )
@@ -1696,7 +1696,7 @@ void ProcessQueenCmdImplicationsOfDeath( SOLDIERTYPE *pSoldier )
 								pSector->ubNumCreatures > gGameExternalOptions.ubGameMaximumNumberOfCreatures || 
 								pSector->ubCreaturesInBattle > gGameExternalOptions.ubGameMaximumNumberOfCreatures )
 							{
-								DoScreenIndependantMessageBox( L"Underground sector creature counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!", MSG_BOX_FLAG_OK, NULL );
+								DoScreenIndependantMessageBox( JA2_TEXT("Underground sector creature counters are bad.  What were the last 2-3 things to die, and how?  Save game and send to KM with info!!!"), MSG_BOX_FLAG_OK, NULL );
 							}
 #endif
 							if( pSector->ubNumCreatures )
@@ -2185,7 +2185,7 @@ void AddEnemiesToBattle( GROUP *pGroup, UINT8 ubStrategicInsertionCode, UINT16 u
 		default:  AssertMsg( 0, "Illegal direction passed to AddEnemiesToBattle()" );	break;
 	}
 #ifdef JA2TESTVERSION
-	ScreenMsg( FONT_RED, MSG_INTERFACE, L"Enemy reinforcements have arrived!  (%d admins, %d troops, %d elite)", ubNumAdmins, ubNumTroops, ubNumElites );
+	ScreenMsg( FONT_RED, MSG_INTERFACE, JA2_TEXT("Enemy reinforcements have arrived!  (%d admins, %d troops, %d elite)"), ubNumAdmins, ubNumTroops, ubNumElites );
 #endif
 
 	if( fMagicallyAppeared )
@@ -2462,7 +2462,7 @@ void AddMilitiaToBattle( GROUP *pGroup, UINT8 ubStrategicInsertionCode, UINT16 u
 	default:  AssertMsg( 0, "Illegal direction passed to AddEnemiesToBattle()" );	break;
 	}
 #ifdef JA2TESTVERSION
-	ScreenMsg( FONT_RED, MSG_INTERFACE, L"Militia reinforcements have arrived!  (%d greens, %d regulars, %d elite)", ubNumGreens, ubNumRegulars, ubNumElites );
+	ScreenMsg( FONT_RED, MSG_INTERFACE, JA2_TEXT("Militia reinforcements have arrived!  (%d greens, %d regulars, %d elite)"), ubNumGreens, ubNumRegulars, ubNumElites );
 #endif
 
 	if ( fMagicallyAppeared )

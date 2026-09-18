@@ -4,6 +4,7 @@
 #include "fileio/FileServices.h"
 #include "sgp_logger.h"
 
+#include <cstring>
 #include <limits>
 #include <vfs/Core/vfs_string.h>
 

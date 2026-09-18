@@ -252,7 +252,7 @@ BOOLEAN WriteMercOpinions()
 			while(szRemainder[0] != '\0')
 			{
 				//UINT32 uiCharLoc = wcscspn(szRemainder,L"&<>\'\"\0");
-				UINT32 uiCharLoc = wcscspn(szRemainder,L"&<>\0");
+				UINT32 uiCharLoc = wcscspn(szRemainder,JA2_TEXT("&<>"));
 				CHAR16 invChar = szRemainder[uiCharLoc];
 
 				if(uiCharLoc)

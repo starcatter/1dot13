@@ -85,7 +85,7 @@
 
 	template<typename P1,typename P2,typename P3>
 	popupCallbackFunction3<void,P1,P2,P3>::popupCallbackFunction3(void * newFun, P1 param, P2 param2, P3 param3){
-		this->fun = static_cast< void(*)(P1,P2,P3)>(newFun);
+		this->fun = reinterpret_cast< void(*)(P1,P2,P3)>(newFun);
 		this->param_1 = param;
 		this->param_2 = param2;
 		this->param_3 = param3;
@@ -93,7 +93,7 @@
 
 	template<typename P1,typename P2,typename P3>
 	void popupCallbackFunction3<void,P1,P2,P3>::bind(void * newFun){
-		this->fun = static_cast< void(*)(P1,P2,P3)>(newFun);
+		this->fun = reinterpret_cast< void(*)(P1,P2,P3)>(newFun);
 	};
 
 	template<typename P1,typename P2,typename P3>
@@ -203,13 +203,13 @@
 
 	template<typename R,typename P1>
 	popupCallbackFunction<R,P1>::popupCallbackFunction(void * newFun, P1 param){
-			this->fun = static_cast< R(*)(P1)>(newFun);
+			this->fun = reinterpret_cast< R(*)(P1)>(newFun);
 			this->param_1 = param;
 	};
 
 	template<typename R,typename P1>
 	void popupCallbackFunction<R,P1>::bind(void * newFun){
-			this->fun = static_cast< R(*)(P1)>(newFun);
+			this->fun = reinterpret_cast< R(*)(P1)>(newFun);
 	};
 
 	template<typename R,typename P1>
@@ -238,13 +238,13 @@
 
 	template<typename P1>
 	popupCallbackFunction<void,P1>::popupCallbackFunction(void * newFun, P1 param){
-			this->fun = static_cast< void(*)(P1)>(newFun);
+			this->fun = reinterpret_cast< void(*)(P1)>(newFun);
 			this->param_1 = param;
 	};
 
 	template<typename P1>
 	void popupCallbackFunction<void,P1>::bind(void * newFun){
-			this->fun = static_cast< void(*)(P1)>(newFun);
+			this->fun = reinterpret_cast< void(*)(P1)>(newFun);
 	};
 
 
@@ -306,10 +306,10 @@
 			this->fun = 0;
 		};
 		popupCallbackFunction(void * newFun){
-			this->fun = static_cast< void(*)(void)>(newFun);
+			this->fun = reinterpret_cast< void(*)(void)>(newFun);
 		};
 		virtual void bind(void * newFun){
-			this->fun = static_cast< void(*)(void)>(newFun);
+			this->fun = reinterpret_cast< void(*)(void)>(newFun);
 		};
 		virtual bool call(void){
 			try { 

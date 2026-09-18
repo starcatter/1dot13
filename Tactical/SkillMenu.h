@@ -69,7 +69,7 @@ public:
 		gPopup->show();
 	}
 
-	void SetupPopup(CHAR* name);
+	void SetupPopup(CHAR8* name);
 
 	POPUP* GetPopup()
 	{

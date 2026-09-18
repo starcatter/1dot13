@@ -380,11 +380,11 @@ void BeginCivQuote( SOLDIERTYPE *pCiv, UINT16 ubCivQuoteID, UINT16 ubEntryID, IN
 		return;
 	}
 
-	swprintf( gzCivQuote, L"\"%s\"", zQuote );
+	swprintf( gzCivQuote, JA2_TEXT("\"%s\""), zQuote );
 
 	if ( ubCivQuoteID == CIV_QUOTE_HINT )
 	{
-		MapScreenMessage( FONT_MCOLOR_WHITE, MSG_DIALOG, L"%s",	gzCivQuote );
+		MapScreenMessage( FONT_MCOLOR_WHITE, MSG_DIALOG, JA2_TEXT("%s"),	gzCivQuote );
 	}
 
 	// Create video oeverlay....
@@ -465,9 +465,9 @@ void BeginChatQuote( SOLDIERTYPE *pCiv, INT16 sX, INT16 sY )
 	}
 
 	if ( pCiv->bTeam == gbPlayerNum )
-		swprintf( gzCivQuote, L"\"%s\"", szChatTextSpy[Random( 24 )] );
+		swprintf( gzCivQuote, JA2_TEXT("\"%s\""), szChatTextSpy[Random( 24 )] );
 	else
-		swprintf( gzCivQuote, L"\"%s\"", szChatTextEnemy[Random( 24 )] );
+		swprintf( gzCivQuote, JA2_TEXT("\"%s\""), szChatTextEnemy[Random( 24 )] );
 	
 	// Create video oeverlay....
 	memset( &VideoOverlayDesc, 0, sizeof( VIDEO_OVERLAY_DESC ) );
@@ -1323,7 +1323,7 @@ void StartEnemyTaunt( SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTar
 		// try to play voice taunt, use noise if gTauntsSettings.fTauntMakeNoise is TRUE
 		PlayVoiceTaunt(pCiv, iTauntType, pTarget);
 		// block this enemy from taunting for a time being
-		uiTauntFinishTimes[pCiv->ubID] = GetJA2Clock() + min(gTauntsSettings.sMaxDelay, max(gTauntsSettings.sMinDelay, FindDelayForString(L"You're the disease and I'm the cure!") + gTauntsSettings.sModDelay));
+		uiTauntFinishTimes[pCiv->ubID] = GetJA2Clock() + min(gTauntsSettings.sMaxDelay, max(gTauntsSettings.sMinDelay, FindDelayForString(JA2_TEXT("You're the disease and I'm the cure!")) + gTauntsSettings.sModDelay));
 		return;
 	}
 
@@ -1957,7 +1957,7 @@ void StartEnemyTaunt( SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTar
 			swprintf( sTauntText, zApplicableTaunts[ iChosenTaunt ].szText );
 		}
 
-		swprintf( gzTauntQuote, L"\"%s\"", sTauntText );
+		swprintf( gzTauntQuote, JA2_TEXT("\"%s\""), sTauntText );
 
 		// block this enemy from taunting for a time being
 		uiTauntFinishTimes[pCiv->ubID] = GetJA2Clock() + min( gTauntsSettings.sMaxDelay , max( gTauntsSettings.sMinDelay, FindDelayForString( gzTauntQuote ) + gTauntsSettings.sModDelay ) ); 
@@ -1977,7 +1977,7 @@ void StartEnemyTaunt( SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTar
 			{
 				if( gbPublicOpplist[gbPlayerNum][pCiv->ubID] == SEEN_CURRENTLY || gTauntsSettings.fTauntAlwaysShowInLog == TRUE )
 				{
-					ScreenMsg( FONT_GRAY2, MSG_INTERFACE, L"%s: %s", pCiv->GetName(), gzTauntQuote );
+					ScreenMsg( FONT_GRAY2, MSG_INTERFACE, JA2_TEXT("%s: %s"), pCiv->GetName(), gzTauntQuote );
 				}
 			}
 		}
@@ -2172,13 +2172,13 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 
 	// show some information about taunts
 	if (gTauntsSettings.fTauntVoiceShowInfo)
-		ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"Soldier [%d] TauntType %d", pCiv->ubID, iTauntType);
+		ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("Soldier [%d] TauntType %d"), pCiv->ubID, iTauntType);
 
 	// cannot taunt when dead or collapsed
 	if (pCiv->stats.bLife < OKLIFE || pCiv->bCollapsed || pCiv->bBreathCollapsed)
 	{
 		if (gTauntsSettings.fTauntVoiceShowInfo)
-			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"Bad soldier state (dying or collapsed)");
+			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("Bad soldier state (dying or collapsed)"));
 
 		return FALSE;
 	}
@@ -2186,7 +2186,7 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 	if (iTauntType < TAUNT_FIRE_GUN || iTauntType > TAUNT_RIPOSTE)
 	{
 		if (gTauntsSettings.fTauntVoiceShowInfo)
-			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"Bad taunt");
+			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("Bad taunt"));
 
 		return FALSE;
 	}
@@ -2210,7 +2210,7 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 	else
 	{
 		if (gTauntsSettings.fTauntVoiceShowInfo)
-			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"Bad soldier team");
+			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("Bad soldier team"));
 
 		return FALSE;
 	}
@@ -2227,7 +2227,7 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 	else
 	{
 		if (gTauntsSettings.fTauntVoiceShowInfo)
-			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"Incorrect bodytype");
+			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("Incorrect bodytype"));
 
 		return FALSE;
 	}
@@ -2244,7 +2244,7 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 		{
 			if (gTauntsSettings.fTauntVoiceShowInfo)
 			{
-				mbstowcs(noise, buf, strlen(buf) + 1);
+				ja2::text::copyUtf8ToUtf16(buf, noise);
 				ScreenMsg(FONT_GREEN, MSG_INTERFACE, noise);
 			}
 
@@ -2257,13 +2257,13 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 	if (ubVoiceCount < 1)
 	{
 		if (gTauntsSettings.fTauntVoiceShowInfo)
-			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"Could not find any voice folder");
+			ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("Could not find any voice folder"));
 
 		return FALSE;
 	}
 
 	if (gTauntsSettings.fTauntVoiceShowInfo)
-		ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"found %d voices", ubVoiceCount);
+		ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("found %d voices"), ubVoiceCount);
 
 	// prepare voice folder name
 	sprintf(buf, "%02d", 1 + pCiv->ubID % ubVoiceCount);
@@ -2309,7 +2309,7 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 		(void)ja2::fileio::logStore().appendLine("VoiceTauntLog.txt", buf);
 
 		// show some information about taunts	
-		mbstowcs(noise, filename, strlen(filename) + 1);
+		ja2::text::copyUtf8ToUtf16(filename, noise);
 		ScreenMsg(FONT_GREEN, MSG_INTERFACE, noise);
 	}
 
@@ -2318,9 +2318,9 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 	{
 		if (gTauntsSettings.fTauntVoiceShowInfo)
 		{
-			mbstowcs(noise, filename, strlen(filename) + 1);
+			ja2::text::copyUtf8ToUtf16(filename, noise);
 			ScreenMsg(FONT_GREEN, MSG_INTERFACE, noise);
-			ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"Taunt: no file %s", noise);
+			ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("Taunt: no file %s"), noise);
 		}
 
 		return FALSE;
@@ -2329,7 +2329,7 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 	if (gTauntsSettings.fTauntMakeNoise == TRUE)
 	{
 		// convert char to char16
-		mbstowcs(noise, filename, strlen(filename) + 1);
+		ja2::text::copyUtf8ToUtf16(filename, noise);
 		// use filename as taunt text, play sound later
 		MakeNoise(pCiv->ubID, pCiv->sGridNo, pCiv->pathing.bLevel, pCiv->bOverTerrainType, (UINT8)gTauntsSettings.sVolume, NOISE_VOICE, noise);
 	}
@@ -2339,7 +2339,7 @@ BOOLEAN PlayVoiceTaunt(SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SOLDIERTYPE *pTa
 		if (PlayJA2SampleFromFile(filename, RATE_11025, SoundVolume(HIGHVOLUME, pCiv->sGridNo), 1, SoundDir(pCiv->sGridNo)) == SOUND_ERROR)
 		{
 			if (gTauntsSettings.fTauntVoiceShowInfo)
-				ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"Failed to play taunt");
+				ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("Failed to play taunt"));
 
 			return FALSE;
 		}

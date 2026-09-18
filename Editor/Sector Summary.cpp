@@ -56,7 +56,7 @@ enum{
 	BETA,
 	RELEASE
 };
-CHAR16 gszVersionType[5][10] = { L"Pre-Alpha", L"Alpha", L"Demo", L"Beta", L"Release" };
+CHAR16 gszVersionType[5][10] = { JA2_TEXT("Pre-Alpha"), JA2_TEXT("Alpha"), JA2_TEXT("Demo"), JA2_TEXT("Beta"), JA2_TEXT("Release") };
 #define GLOBAL_SUMMARY_STATE			RELEASE
 
 //Regular masks
@@ -360,8 +360,8 @@ void CreateSummaryWindow()
 	iSummaryButton[ SUMMARY_ENEMY ] = 
 		CreateCheckBoxButton( iScreenWidthOffset + 350, iScreenHeightOffset + 60, "EDITOR\\radiobutton.sti", MSYS_PRIORITY_HIGH, SummaryEnemyCallback );
 
-	//SetButtonFastHelpText( iSummaryButton[ SUMMARY_SCIFI ], L"Display items that appear in SciFi mode." );
-	//SetButtonFastHelpText( iSummaryButton[ SUMMARY_REAL ], L"Display items that appear in Realistic mode." );
+	//SetButtonFastHelpText( iSummaryButton[ SUMMARY_SCIFI ], JA2_TEXT("Display items that appear in SciFi mode.") );
+	//SetButtonFastHelpText( iSummaryButton[ SUMMARY_REAL ], JA2_TEXT("Display items that appear in Realistic mode.") );
 	switch( gubSummaryItemMode )
 	{
 		case ITEMMODE_SCIFI:
@@ -378,7 +378,7 @@ void CreateSummaryWindow()
 	//Init the textinput field.
 	InitTextInputModeWithScheme( DEFAULT_SCHEME );
 	AddUserInputField( NULL );  //just so we can use short cut keys while not typing.
-	AddTextInputField(MAP_LEFT+110, MAP_BOTTOM+75, 100, 18, MSYS_PRIORITY_HIGH, L"", (FILENAME_BUFLEN-4-1), INPUTTYPE_EXCLUSIVE_DOSFILENAME);//dnl ch39 190909
+	AddTextInputField(MAP_LEFT+110, MAP_BOTTOM+75, 100, 18, MSYS_PRIORITY_HIGH, JA2_TEXT(""), (FILENAME_BUFLEN-4-1), INPUTTYPE_EXCLUSIVE_DOSFILENAME);//dnl ch39 190909
 	for( i = 1; i < NUM_SUMMARY_BUTTONS; i++ )
 		HideButton( iSummaryButton[ i ] );
 
@@ -535,15 +535,15 @@ void RenderSectorInformation()
 	{
 		INT32 x;
 		x = iScreenWidthOffset + 140;
-		mprintf( x, iScreenHeightOffset + 75, L"(" );
-		x += StringPixLength( L"(", FONT10ARIAL ) + 2;
+		mprintf( x, iScreenHeightOffset + 75, JA2_TEXT("(") );
+		x += StringPixLength( JA2_TEXT("("), FONT10ARIAL ) + 2;
 		if( m->sNorthGridNo			!= -1	)	{	mprintf( x, iScreenHeightOffset + 75, pRenderSectorInformationText[5] );	x += StringPixLength( pRenderSectorInformationText[5], FONT10ARIAL ) + 2; }
 		if( m->sEastGridNo			!= -1	)	{	mprintf( x, iScreenHeightOffset + 75, pRenderSectorInformationText[6] );	x += StringPixLength( pRenderSectorInformationText[6], FONT10ARIAL ) + 2; }
 		if( m->sSouthGridNo			!= -1	)	{	mprintf( x, iScreenHeightOffset + 75, pRenderSectorInformationText[7] );	x += StringPixLength( pRenderSectorInformationText[7], FONT10ARIAL ) + 2; }
 		if( m->sWestGridNo			!= -1	)	{	mprintf( x, iScreenHeightOffset + 75, pRenderSectorInformationText[8] );	x += StringPixLength( pRenderSectorInformationText[8], FONT10ARIAL ) + 2; }
 		if( m->sCenterGridNo		!= -1	)	{	mprintf( x, iScreenHeightOffset + 75, pRenderSectorInformationText[9] );	x += StringPixLength( pRenderSectorInformationText[9], FONT10ARIAL ) + 2; }
 		if( m->sIsolatedGridNo		!= -1	)	{	mprintf( x, iScreenHeightOffset + 75, pRenderSectorInformationText[10] );	x += StringPixLength( pRenderSectorInformationText[10], FONT10ARIAL ) + 2; }
-		mprintf( x, iScreenHeightOffset + 75, L")" );
+		mprintf( x, iScreenHeightOffset + 75, JA2_TEXT(")") );
 	}
 	mprintf( iScreenWidthOffset + 10, iScreenHeightOffset + 85,		pRenderSectorInformationText[11], s->ubNumRooms );
 	mprintf( iScreenWidthOffset + 10, iScreenHeightOffset + 95,		pRenderSectorInformationText[12], m->ubNumIndividuals );
@@ -767,9 +767,9 @@ void RenderItemDetails()
 				dAvgStatus = uiStatus / (FLOAT)uiQuantity;
 				//Display stats.
 				LoadShortNameItemInfo( (UINT16)index, str );
-				mprintf( xp, yp, L"%s", str );
-				mprintf( xp + 85, yp, L"%3.02f", dAvgExistChance ); 
-				mprintf( xp + 110, yp, L"@ %3.02f%%", dAvgStatus );
+				mprintf( xp, yp, JA2_TEXT("%s"), str );
+				mprintf( xp + 85, yp, JA2_TEXT("%3.02f"), dAvgExistChance ); 
+				mprintf( xp + 110, yp, JA2_TEXT("@ %3.02f%%"), dAvgStatus );
 				yp += 10;
 				if( yp >= (UINT32)(iScreenHeightOffset + 355 ))
 				{
@@ -810,12 +810,12 @@ void RenderItemDetails()
 				{
 					dAvgExistChance = (FLOAT)(uiTriggerExistChance[i] / 100.0);
 					dAvgStatus = (FLOAT)(uiActionExistChance[i] / 100.0);
-					mprintf( xp, yp, L"%s:  %3.02f trigger(s), %3.02f action(s)", str, dAvgExistChance, dAvgStatus );
+					mprintf( xp, yp, JA2_TEXT("%s:  %3.02f trigger(s), %3.02f action(s)"), str, dAvgExistChance, dAvgStatus );
 				}
 				else 
 				{
 					dAvgExistChance = (FLOAT)(uiActionExistChance[i] / 100.0);
-					mprintf( xp, yp, L"%s:  %3.02f", str, dAvgExistChance );
+					mprintf( xp, yp, JA2_TEXT("%s:  %3.02f"), str, dAvgExistChance );
 				}
 				yp += 10;
 				if( yp >= (UINT32)(iScreenHeightOffset + 355 ))
@@ -874,9 +874,9 @@ void RenderItemDetails()
 				dAvgStatus = uiStatus / (FLOAT)uiQuantity;
 				//Display stats.
 				LoadShortNameItemInfo( (UINT16)index, str );
-				mprintf( xp, yp, L"%s", str );
-				mprintf( xp + 85, yp, L"%3.02f", dAvgExistChance ); 
-				mprintf( xp + 110, yp, L"@ %3.02f%%", dAvgStatus );
+				mprintf( xp, yp, JA2_TEXT("%s"), str );
+				mprintf( xp + 85, yp, JA2_TEXT("%3.02f"), dAvgExistChance ); 
+				mprintf( xp + 110, yp, JA2_TEXT("@ %3.02f%%"), dAvgStatus );
 				yp += 10;
 				if( yp >= (UINT32)(iScreenHeightOffset + 355 ))
 				{
@@ -946,9 +946,9 @@ void RenderItemDetails()
 				dAvgStatus = uiStatus / (FLOAT)uiQuantity;
 				//Display stats.
 				LoadShortNameItemInfo( (UINT16)index, str );
-				mprintf( xp, yp, L"%s", str );
-				mprintf( xp + 85, yp, L"%3.02f", dAvgExistChance ); 
-				mprintf( xp + 110, yp, L"@ %3.02f%%", dAvgStatus );
+				mprintf( xp, yp, JA2_TEXT("%s"), str );
+				mprintf( xp + 85, yp, JA2_TEXT("%3.02f"), dAvgExistChance ); 
+				mprintf( xp + 110, yp, JA2_TEXT("@ %3.02f%%"), dAvgStatus );
 				yp += 10;
 				if( yp >= (UINT32)(iScreenHeightOffset + 355 ))
 				{
@@ -983,7 +983,7 @@ void RenderSummaryWindow()
 	if( (GetActiveFieldID() == 1 ) != gfTempFile )
 	{
 		gfTempFile ^= 1;
-		SetInputFieldStringWith16BitString( 1, L"" );
+		SetInputFieldStringWith16BitString( 1, JA2_TEXT("") );
 		gfRenderSummary = TRUE;
 	}
 	if( gfTempFile ) //constantly extract the temp filename for updating purposes.
@@ -1080,7 +1080,7 @@ void RenderSummaryWindow()
 					x = gsSelSectorX - 1, y = gsSelSectorY - 1;
 				else
 					x = gsSectorX - 1, y = gsSectorY - 1;
-				swprintf( str, L"%c%d", y + 'A', x + 1 );
+				swprintf( str, JA2_TEXT("%c%d"), y + 'A', x + 1 );
 				swprintf( gszFilename, str );
 				giCurrLevel = giCurrentViewLevel;
 				switch( giCurrentViewLevel )
@@ -1200,14 +1200,14 @@ void RenderSummaryWindow()
 				{
 					switch( giCurrLevel )
 					{
-						case 0:	wcscat( gszFilename, L".dat" );				break;
-						case 1:	wcscat( gszFilename, L"_b1.dat" );		break;
-						case 2:	wcscat( gszFilename, L"_b2.dat" );		break;
-						case 3:	wcscat( gszFilename, L"_b3.dat" );		break;
-						case 4:	wcscat( gszFilename, L"_a.dat" );			break;
-						case 5:	wcscat( gszFilename, L"_b1_a.dat" );	break;
-						case 6:	wcscat( gszFilename, L"_b2_a.dat" );	break;
-						case 7:	wcscat( gszFilename, L"_b3_a.dat" );	break;
+						case 0:	wcscat( gszFilename, JA2_TEXT(".dat") );				break;
+						case 1:	wcscat( gszFilename, JA2_TEXT("_b1.dat") );		break;
+						case 2:	wcscat( gszFilename, JA2_TEXT("_b2.dat") );		break;
+						case 3:	wcscat( gszFilename, JA2_TEXT("_b3.dat") );		break;
+						case 4:	wcscat( gszFilename, JA2_TEXT("_a.dat") );			break;
+						case 5:	wcscat( gszFilename, JA2_TEXT("_b1_a.dat") );	break;
+						case 6:	wcscat( gszFilename, JA2_TEXT("_b2_a.dat") );	break;
+						case 7:	wcscat( gszFilename, JA2_TEXT("_b3_a.dat") );	break;
 					}
 					swprintf( gszDisplayName, gszFilename );
 					EnableButton( iSummaryButton[ SUMMARY_LOAD ] );
@@ -1278,15 +1278,15 @@ void RenderSummaryWindow()
 					switch( giCurrentViewLevel )
 					{
 						case ALL_LEVELS_MASK:
-						case GROUND_LEVEL_MASK:			wcscat( gszFilename, L".dat" );				break;
-						case BASEMENT1_LEVEL_MASK:	wcscat( gszFilename, L"_b1.dat" );		break;
-						case BASEMENT2_LEVEL_MASK:	wcscat( gszFilename, L"_b2.dat" );		break;
-						case BASEMENT3_LEVEL_MASK:	wcscat( gszFilename, L"_b3.dat" );		break;
+						case GROUND_LEVEL_MASK:			wcscat( gszFilename, JA2_TEXT(".dat") );				break;
+						case BASEMENT1_LEVEL_MASK:	wcscat( gszFilename, JA2_TEXT("_b1.dat") );		break;
+						case BASEMENT2_LEVEL_MASK:	wcscat( gszFilename, JA2_TEXT("_b2.dat") );		break;
+						case BASEMENT3_LEVEL_MASK:	wcscat( gszFilename, JA2_TEXT("_b3.dat") );		break;
 						case ALTERNATE_LEVELS_MASK:
-						case ALTERNATE_GROUND_MASK:	wcscat( gszFilename, L"_a.dat" );			break;
-						case ALTERNATE_B1_MASK:			wcscat( gszFilename, L"_b1_a.dat" );	break;
-						case ALTERNATE_B2_MASK:			wcscat( gszFilename, L"_b2_a.dat" );	break;
-						case ALTERNATE_B3_MASK:			wcscat( gszFilename, L"_b3_a.dat" );	break;
+						case ALTERNATE_GROUND_MASK:	wcscat( gszFilename, JA2_TEXT("_a.dat") );			break;
+						case ALTERNATE_B1_MASK:			wcscat( gszFilename, JA2_TEXT("_b1_a.dat") );	break;
+						case ALTERNATE_B2_MASK:			wcscat( gszFilename, JA2_TEXT("_b2_a.dat") );	break;
+						case ALTERNATE_B3_MASK:			wcscat( gszFilename, JA2_TEXT("_b3_a.dat") );	break;
 					}
 					swprintf( gszDisplayName, gszFilename );
 					DisableButton( iSummaryButton[ SUMMARY_LOAD ] );
@@ -1401,12 +1401,12 @@ void RenderSummaryWindow()
 		SetFontForeground( FONT_BLACK );
 		for( y = 0; y < 16; y++ )
 		{
-			mprintf( MAP_LEFT-8, MAP_TOP+4+y*13, L"%c", 65 + y );
+			mprintf( MAP_LEFT-8, MAP_TOP+4+y*13, JA2_TEXT("%c"), 65 + y );
 		}
 		for( x = 1; x <= 16; x++ )
 		{
 			CHAR16 str[3];
-			swprintf( str, L"%d", x );
+			swprintf( str, JA2_TEXT("%d"), x );
 			mprintf( MAP_LEFT+x*13-(13+StringPixLength( str, SMALLCOMPFONT ))/2, MAP_TOP-8, str );
 		}
 		if( gfRenderGrid )
@@ -1446,7 +1446,7 @@ void RenderSummaryWindow()
 							//is no ground level, then it'll be shadowed.
 							SetFont( SMALLCOMPFONT );
 							SetFontForeground( FONT_YELLOW );
-							swprintf( str, L"%d", ubNumUndergroundLevels );
+							swprintf( str, JA2_TEXT("%d"), ubNumUndergroundLevels );
 							mprintf( MAP_LEFT + x*13 + 4, ClipRect.iTop + 4, str );
 						}
 						if( gbSectorLevels[x][y] & GROUND_LEVEL_MASK )
@@ -1466,7 +1466,7 @@ void RenderSummaryWindow()
 							//is no ground level, then it'll be shadowed.
 							SetFont( SMALLCOMPFONT );
 							SetFontForeground( FONT_YELLOW );
-							swprintf( str, L"%d", ubNumUndergroundLevels );
+							swprintf( str, JA2_TEXT("%d"), ubNumUndergroundLevels );
 							mprintf( MAP_LEFT + x*13 + 4, ClipRect.iTop + 4, str );
 						}
 						if( gbSectorLevels[x][y] & ALTERNATE_GROUND_MASK )
@@ -1562,7 +1562,7 @@ void ResetCustomFileSectorSummary(void)
 void GetSectorFromFileName(STR16 szFileName, INT16& sSectorX, INT16& sSectorY, INT8& bSectorZ, BOOLEAN& fAltMap)
 {
 	const int strsz = 16;
-	CHAR16 str[strsz] = L"";
+	CHAR16 str[strsz] = JA2_TEXT("");
 	if(szFileName[2] == L'.' || szFileName[2] == L'_')
 	{
 		str[0] = szFileName[0];
@@ -1581,9 +1581,9 @@ void GetSectorFromFileName(STR16 szFileName, INT16& sSectorX, INT16& sSectorY, I
 		fAltMap = FALSE;
 		if(!(sSectorX < 1 || sSectorX > 16 || sSectorY < 1 || sSectorY > 16))
 		{
-			if(wcscmp(&str[3], L".DAT") == 0)
+			if(wcscmp(&str[3], JA2_TEXT(".DAT")) == 0)
 				return;
-			else if(wcscmp(&str[3], L"_A.DAT") == 0)
+			else if(wcscmp(&str[3], JA2_TEXT("_A.DAT")) == 0)
 			{
 				fAltMap = TRUE;// Alternate Ground Map
 				return;
@@ -1591,9 +1591,9 @@ void GetSectorFromFileName(STR16 szFileName, INT16& sSectorX, INT16& sSectorY, I
 			else if(str[3] == L'_' && str[4] == L'B' && str[5] >= L'1' && str[5] <= L'3')
 			{
 				bSectorZ = str[5] - L'0';
-				if(wcscmp(&str[6], L".DAT") == 0)
+				if(wcscmp(&str[6], JA2_TEXT(".DAT")) == 0)
 					return;
-				else if(wcscmp(&str[6], L"_A.DAT") == 0)
+				else if(wcscmp(&str[6], JA2_TEXT("_A.DAT")) == 0)
 				{
 					fAltMap = TRUE;// Alternate Underground Map
 					return;
@@ -2124,7 +2124,7 @@ void SummaryLoadMapCallback( GUI_BUTTON *btn, INT32 reason )
 
 		fNewMapSaved = TRUE;
 
-		//swprintf( str, L"Loading map:  %s...", gszDisplayName );
+		//swprintf( str, JA2_TEXT("Loading map:  %s..."), gszDisplayName );
 		//mprintf( MAP_LEFT, MAP_BOTTOM+100, str );
 		//InvalidateRegion( MAP_LEFT, MAP_BOTTOM+100, MAP_LEFT+150,	MAP_BOTTOM+110 );
 		
@@ -2148,7 +2148,7 @@ void SummaryLoadMapCallback( GUI_BUTTON *btn, INT32 reason )
 			gfMapFileDirty = FALSE;
 		}
 		RemoveProgressBar( 0 );
-		ptr = wcsstr( gszDisplayName, L"_b" );
+		ptr = wcsstr( gszDisplayName, JA2_TEXT("_b") );
 		if( !ptr || ptr[3] != L'.' )
 		{
 			gsSectorLayer = GROUND_LEVEL_MASK;
@@ -2228,7 +2228,7 @@ void CalculateOverrideStatus()
 	}
 	else
 		sprintf( szFilename, "MAPS\\%S", gszFilename );
-	swprintf( gszDisplayName, L"%S", &(szFilename[5]) );
+	swprintf( gszDisplayName, JA2_TEXT("%S"), &(szFilename[5]) );
 	if( GetFileFirst( szFilename, &FileInfo) )
 	{
 		if( gfWorldLoaded )
@@ -2487,7 +2487,7 @@ void WriteSectorSummaryUpdate(STR8 sFileName, UINT8 ubLevel, SUMMARYFILE* pSumma
 	INT8 x, y, bSectorZ;
 	BOOLEAN fAltMap;
 	CHAR16 szFileName[FILENAME_BUFLEN];
-	swprintf(szFileName, L"%S", sFileName);
+	swprintf(szFileName, JA2_TEXT("%S"), sFileName);
 	GetSectorFromFileName(szFileName, sSectorX, sSectorY, bSectorZ, fAltMap);
 	if(!sSectorX)
 		gCustomFileSectorSummary = *pSummaryFileInfo;//dnl ch30 150909
@@ -2702,10 +2702,10 @@ void ReportError( STR8 pSector, UINT8 ubLevel )
 	CHAR16 temp[10];
 
 	//Make sure the file exists... if not, then return false
-	swprintf( str, L"%S", pSector );
+	swprintf( str, JA2_TEXT("%S"), pSector );
 	if( ubLevel % 4  )
 	{
-		swprintf( temp, L"_b%d.dat", ubLevel % 4 );
+		swprintf( temp, JA2_TEXT("_b%d.dat"), ubLevel % 4 );
 		wcscat( str, temp );
 	}
 	mprintf( iScreenWidthOffset + 10, yp, pReportErrorText[0] , str );
@@ -2835,7 +2835,7 @@ void ExtractTempFilename()
 		gfOverrideDirty = TRUE;
 	}
 	if( !wcslen( str ) )
-		swprintf( gszDisplayName, L"test.dat" );
+		swprintf( gszDisplayName, JA2_TEXT("test.dat") );
 }
 
 //dnl ch30 170909
@@ -2847,7 +2847,7 @@ BOOLEAN ReEvaluateWorld(const STR8 puiFilename)
 	INT8 bSectorZ;
 	BOOLEAN fAltMap;
 	CHAR16 szFileName[FILENAME_BUFLEN];//dnl ch81 021213
-	swprintf(szFileName, L"%S", puiFilename);
+	swprintf(szFileName, JA2_TEXT("%S"), puiFilename);
 	GetSectorFromFileName(szFileName, sSectorX, sSectorY, bSectorZ, fAltMap);
 /*
 	switch(bSector)

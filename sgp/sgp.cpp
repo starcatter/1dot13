@@ -1,10 +1,19 @@
 /* $Id: sgp.c,v 1.4 2004/03/19 06:16:04 digicrab Exp $ */
 //its test what doeas it do?
 #include "types.h"
+#ifdef _WIN32
 #include <windows.h>
+#include <excpt.h>
+#endif
 #include <string.h>
 #include "LegacySGP.h"
+#include "application/ApplicationPlatform.h"
+#ifdef _WIN32
+#include "platform/windows/ApplicationHost.h"
 #include "video_windows.h"
+#else
+#include "platform/sdl/Sdl3ApplicationPlatform.h"
+#endif
 #include "vobject.h"
 #include "Font.h"
 #include "local.h"
@@ -20,12 +29,10 @@
 #include "application/ApplicationLoop.h"
 #include "application/ShutdownOnce.h"
 #include "fileio/FileServices.h"
-#include "platform/windows/ApplicationHost.h"
 #include "platform/Process.h"
 #include "platform/Dialog.h"
 #include "platform/NativeFonts.h"
 #include "UtfConversion.h"
-#include "zmouse.h"
 #include <vfs/Aspects/vfs_settings.h>
 #include <vfs/Core/vfs.h>
 #include <vfs/Core/vfs_init.h>
@@ -34,10 +41,11 @@
 #include "Text.h"
 #include "ExportStrings.h"
 #include "ImportStrings.h"
-#include <excpt.h>
 #include "INIReader.h"
 #include "connect.h"
+#ifdef _WIN32
 #include "wine.h"
+#endif
 #include "Intro.h"
 #include <Music Control.h>
 #include <language.hpp>
@@ -111,14 +119,16 @@ static void SHOWEXCEPTION(vfs::Exception& ex)
 extern UINT32		MemDebugCounter;
 	extern BOOLEAN	gfPauseDueToPlayerGamePause;
 	extern int		iScreenMode;
-	extern BOOL		bScreenModeCmdLine;
+	extern BOOLEAN		bScreenModeCmdLine;
 
 extern	BOOLEAN		CheckIfGameCdromIsInCDromDrive();
 extern	void		QueueEvent(UINT16 ubInputEvent, UINT32 usParam, UINT32 uiParam);
 
 // Prototype Declarations
+#ifdef _WIN32
 INT32 FAR PASCAL	WindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LPARAM lParam);
-BOOLEAN				InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow);
+#endif
+BOOLEAN				InitializeStandardGamingPlatform(ja2::application::ApplicationPlatform& platform);
 void				ShutdownStandardGamingPlatform(void);
 void				GetRuntimeSettings( );
 
@@ -128,10 +138,7 @@ static void			CallGameLoop();
 
 
 
-int PASCAL HandledWinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandLine, int sCommandShow);
-
-
-
+#ifdef _WIN32
 static void PopulateSectionFromCommandLine(vfs::PropertyContainer &oProps, vfs::String const& sSection);
 
 static Platform::WindowShowMode WindowShowModeFromCommand(int command)
@@ -147,20 +154,50 @@ static Platform::WindowShowMode WindowShowModeFromCommand(int command)
 	}
 }
 
+class WindowsApplicationPlatform final : public ja2::application::ApplicationPlatform
+{
+public:
+	WindowsApplicationPlatform(HINSTANCE instance, int commandShow)
+		: instance_(instance), commandShow_(commandShow)
+	{
+	}
+
+	BOOLEAN initializeVideo() override
+	{
+		return InitializeVideoManager(instance_, (UINT16)commandShow_,
+			(void*)WindowProcedure);
+	}
+
+	Platform::ApplicationHost& applicationHost() override
+	{
+		return applicationHost_;
+	}
+
+private:
+	HINSTANCE instance_;
+	int commandShow_;
+	Platform::WindowsApplicationHost applicationHost_;
+};
+#else
+static void PopulateSectionFromCommandLine(vfs::PropertyContainer &oProps, vfs::String const& sSection);
+#endif
+
+#ifdef _WIN32
 HINSTANCE			ghInstance;
+#endif
 
 
 	void ProcessJa2CommandLineBeforeInitialization(CHAR8 *pCommandLine);
 
 // Global Variable Declarations
+#ifdef _WIN32
 RECT				rcWindow;
 POINT				ptWindowSize;
+#endif
 
 // moved from header file: 24mar98:HJH
 //UINT8				gbPixelDepth;		// redefintion... look down a few lines (jonathanl)
 // GLOBAL RUN-TIME SETTINGS
-
-UINT32				guiMouseWheelMsg;			// For mouse wheel messages
 
 BOOLEAN				gfApplicationActive;
 BOOLEAN				gfProgramIsRunning;
@@ -217,6 +254,7 @@ bool				g_bUseXML_Structures	= false;
 
 static vfs::Path	sp_force_load_jsd_xml_file;
 
+#ifdef _WIN32
 INT32 FAR PASCAL WindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LPARAM lParam)
 {
 	static BOOLEAN fRestore = FALSE;
@@ -226,7 +264,7 @@ INT32 FAR PASCAL WindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LP
 		FreeConsole();
 		return 0L;
 	}
-	BOOL visible = IsWindowVisible(hWindow);
+	BOOLEAN visible = IsWindowVisible(hWindow);
 	
 	if(gfIgnoreMessages)
 		return(DefWindowProc(hWindow, Message, wParam, lParam));
@@ -264,7 +302,7 @@ INT32 FAR PASCAL WindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LP
 			ClientToScreen(hWindow, (LPPOINT)&rcWindow+1);
 			int xPos = (int)(short) LOWORD(lParam); 
 			int yPos = (int)(short) HIWORD(lParam);
-			BOOL needchange = FALSE;
+			BOOLEAN needchange = FALSE;
 			if (xPos < 0)
 			{
 				xPos = 0;
@@ -400,8 +438,9 @@ INT32 FAR PASCAL WindowProcedure(HWND hWindow, UINT16 Message, WPARAM wParam, LP
 	}
 	return 0L;
 }
+#endif
 
-BOOLEAN InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow)
+BOOLEAN InitializeStandardGamingPlatform(ja2::application::ApplicationPlatform& platform)
 {
 	FontTranslationTable *pFontTable;
 
@@ -446,8 +485,7 @@ BOOLEAN InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow)
 	}
 
 	FastDebugMsg("Initializing Video Manager");
-	// Initialize DirectDraw (DirectX 2)
-	if (InitializeVideoManager(hInstance, (UINT16) sCommandShow, (void *) WindowProcedure) == FALSE)
+	if (platform.initializeVideo() == FALSE)
 	{
 		// We were unable to initialize the video manager
 		FastDebugMsg("FAILED : Initializing Video Manager");
@@ -483,13 +521,13 @@ BOOLEAN InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow)
 
 	getVFS()->getVirtualLocation(vfs::Path("Temp"),true)->setIsExclusive(true);
 	getVFS()->getVirtualLocation(vfs::Path("ShadeTables"),true)->setIsExclusive(true);
-	getVFS()->getVirtualLocation(vfs::Path(pMessageStrings[MSG_SAVEDIRECTORY]+3),true)->setIsExclusive(true);
-	getVFS()->getVirtualLocation(vfs::Path(pMessageStrings[MSG_MPSAVEDIRECTORY]+3),true)->setIsExclusive(true);
+	getVFS()->getVirtualLocation(vfs::Path(ja2::text::utf16ToUtf8(pMessageStrings[MSG_SAVEDIRECTORY] + 3)),true)->setIsExclusive(true);
+	getVFS()->getVirtualLocation(vfs::Path(ja2::text::utf16ToUtf8(pMessageStrings[MSG_MPSAVEDIRECTORY] + 3)),true)->setIsExclusive(true);
 	ja2::fileio::initializeFileServices({
 		"Temp",
 		"ShadeTables",
-		vfs::String::as_utf8(pMessageStrings[MSG_SAVEDIRECTORY] + 3),
-		vfs::String::as_utf8(pMessageStrings[MSG_MPSAVEDIRECTORY] + 3)
+		ja2::text::utf16ToUtf8(pMessageStrings[MSG_SAVEDIRECTORY] + 3),
+		ja2::text::utf16ToUtf8(pMessageStrings[MSG_MPSAVEDIRECTORY] + 3)
 	});
 
 	if(!sp_force_load_jsd_xml_file.empty())
@@ -527,6 +565,7 @@ BOOLEAN InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow)
 	{
 		return( FALSE );
 	}
+	Platform::SetCurrentApplicationHost(&platform.applicationHost());
 
 	// Initialize Font Manager
 	FastDebugMsg("Initializing the Font Manager");
@@ -559,9 +598,6 @@ BOOLEAN InitializeStandardGamingPlatform(HINSTANCE hInstance, int sCommandShow)
 		FastDebugMsg("FAILED : Initializing Game Manager");
 		return FALSE;
 	}
-
-	// Register mouse wheel message
-	guiMouseWheelMsg = RegisterWindowMessage( MSH_MOUSEWHEEL );
 
 	gfGameInitialized = TRUE;
 
@@ -693,6 +729,7 @@ private:
 // their stack, and under Wine the WndProc dispatch swallows them before they ever
 // reach "unhandled". A vectored handler runs first-chance, ahead of every frame
 // handler; it only records the fault and continues the search.
+#ifdef _WIN32
 static LONG CALLBACK VectoredCrashHandler(EXCEPTION_POINTERS* pExceptInfo)
 {
 	switch (pExceptInfo->ExceptionRecord->ExceptionCode)
@@ -712,11 +749,34 @@ static LONG CALLBACK VectoredCrashHandler(EXCEPTION_POINTERS* pExceptInfo)
 	}
 	return EXCEPTION_CONTINUE_SEARCH; // never handle; let normal SEH run
 }
+#endif
 
+#ifdef _WIN32
 int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandLine, int sCommandShow)
+#else
+int main(int argc, char** argv)
+#endif
 {
+#ifdef _WIN32
 	AddVectoredExceptionHandler(1, VectoredCrashHandler); // 1 = call first
+#endif
 	sgp::setCrashBuildId(czVersionString); // packaged: the commit SHA whose PDB we kept
+
+#ifdef _WIN32
+	WindowsApplicationPlatform applicationPlatform(hInstance, sCommandShow);
+#else
+	std::string nativeCommandLine;
+	for (int index = 1; index < argc; ++index)
+	{
+		if (!nativeCommandLine.empty())
+		{
+			nativeCommandLine += ' ';
+		}
+		nativeCommandLine += argv[index];
+	}
+	CHAR8* pCommandLine = nativeCommandLine.data();
+	Platform::Sdl3ApplicationPlatform applicationPlatform;
+#endif
 
 #ifdef _DEBUG
 	// Use this one ONLY if you're having memory corruption issues that can be repeated in a short time
@@ -733,6 +793,7 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 	/****************************************************************************************************/
 #endif
 
+#ifdef _WIN32
 	// Make sure the game works out of the box on Linux/macOS/Android (WINE)
 	if (wine_add_dll_overrides())
 	{
@@ -740,6 +801,7 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 		Platform::RelaunchCurrentProcess(WindowShowModeFromCommand(sCommandShow));
 		return 0;
 	}
+#endif
 
 	vfs::Log::setSharedString( getGameID() );
 	//if(!vfs::Aspects::getMutexFactory())
@@ -794,7 +856,9 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 
 #endif
 
+#ifdef _WIN32
 	ghInstance = hInstance;
+#endif
 
 	// Copy commandline!
 	strncpy( gzCommandLine, pCommandLine, 100);
@@ -814,7 +878,7 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 	try
 	{
 		// Inititialize the SGP
-		if (InitializeStandardGamingPlatform(hInstance, sCommandShow) == FALSE)
+		if (InitializeStandardGamingPlatform(applicationPlatform) == FALSE)
 		{
 			// We failed to initialize the SGP
 			return 0;
@@ -852,9 +916,9 @@ int PASCAL WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR pCommandL
 	{
 		MAGIC();
 		LegacyApplicationLoopClient loopClient;
-		Platform::WindowsApplicationHost applicationHost;
 		const ja2::application::ApplicationLoopResult loopResult =
-			ja2::application::RunApplicationLoop(loopClient, applicationHost);
+			ja2::application::RunApplicationLoop(
+				loopClient, applicationPlatform.applicationHost());
 		if (loopResult.reason ==
 			ja2::application::ApplicationLoopExitReason::hostFailure)
 		{
@@ -929,7 +993,7 @@ void SGPExit(void)
 	if (const wchar_t* crashMsg = sgp::crashReportMessage())
 	{
 		Platform::ShowDialog("Jagged Alliance 2 1.13 - Crash",
-			ja2::text::utf16ToUtf8ReplacingInvalid(crashMsg), Platform::DialogKind::error);
+			vfs::String::as_utf8(crashMsg), Platform::DialogKind::error);
 	}
 	else if(strlen(gzErrorMsg))
 	{
@@ -944,7 +1008,12 @@ void GetRuntimeSettings( )
 	int		iMaximize;
 
 	/* Detect cnc-ddraw and disable windowed mode */
-	BOOL bCncDdraw = GetProcAddress(GetModuleHandleW(L"ddraw.dll"), "GameHandlesClose") != NULL;
+#ifdef _WIN32
+	const BOOLEAN bCncDdraw =
+		GetProcAddress(GetModuleHandleW(L"ddraw.dll"), "GameHandlesClose") != NULL;
+#else
+	const BOOLEAN bCncDdraw = FALSE;
+#endif
 	
 	vfs::PropertyContainer oProps;
 	oProps.initFromIniFile(GAME_INI_FILE);
@@ -1245,6 +1314,7 @@ void GetRuntimeSettings( )
 
 void SafeSGPExit(void)
 {
+#ifdef _WIN32
 	// SGPExit tends to use resources that are already uninitialized so handle 
 	__try
 	{
@@ -1255,6 +1325,17 @@ void SafeSGPExit(void)
 		// The application is in exit and best effort to clean up 
 		//  has failed so just ignore and continue silently
 	}
+#else
+	// Shutdown is idempotent. Native hosts rely on ordinary C++ exception
+	// handling instead of the Windows structured-exception mechanism.
+	try
+	{
+		SGPExit();
+	}
+	catch (...)
+	{
+	}
+#endif
 }
 
 
@@ -1324,10 +1405,12 @@ static void PopulateSectionFromCommandLine(vfs::PropertyContainer &oProps, vfs::
 	}
 }
 
+#ifdef _WIN32
 static LONG __stdcall SGPExceptionFilter(int exceptionCount, EXCEPTION_POINTERS* pExceptInfo)
 {
 	return EXCEPTION_EXECUTE_HANDLER;
 }
+#endif
 
 static void SGPGameLoop()
 {
@@ -1361,6 +1444,7 @@ static void SGPGameLoop()
 
 static void CallGameLoop()
 {
+#ifdef _WIN32
 	static int numUnsuccessfulTries = 0;
 	__try
 	{
@@ -1376,5 +1460,8 @@ static void CallGameLoop()
 	{
 		ShutdownWithErrorBox("Unhandled exception. Unable to recover.");
 	}
+#else
+	SGPGameLoop();
+#endif
 }
 

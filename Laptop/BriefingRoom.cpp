@@ -545,10 +545,7 @@ void HandleBriefingRoomTextEvent( UINT32 uiKey )
 void ProcessPlayerInputActivationBriefingRoomString( void )
 {
 	// prcess string to see if it matches activation string
-	char charPlayerActivationString[32];
-	wcstombs(charPlayerActivationString,pPlayerBriefingRoomActivationString,32);
-
-	if( ( ( wcscmp(pPlayerBriefingRoomActivationString, L"SN5631") == 0 ) || ( wcscmp(pPlayerBriefingRoomActivationString, L"sn5631") == 0 ) ) ) //&&( LaptopSaveInfo.gfNewGameLaptop < 2 ) )
+	if( ( ( wcscmp(pPlayerBriefingRoomActivationString, JA2_TEXT("SN5631")) == 0 ) || ( wcscmp(pPlayerBriefingRoomActivationString, JA2_TEXT("sn5631")) == 0 ) ) ) //&&( LaptopSaveInfo.gfNewGameLaptop < 2 ) )
 	{
 	
 		//bEncyclopediaLocation = FALSE;

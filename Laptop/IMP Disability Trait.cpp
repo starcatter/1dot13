@@ -480,7 +480,7 @@ void AssignDisabilityHelpText( UINT8 ubNumber )
 {
 	CHAR16	apStr[ 2000 ];
 
-	swprintf( apStr, L"" );
+	swprintf( apStr, JA2_TEXT("") );
 	swprintf( apStr, gzIMPDisabilitiesHelpTexts[ubNumber] );
 
 	// Set region help text

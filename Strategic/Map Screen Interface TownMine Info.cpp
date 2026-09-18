@@ -382,7 +382,7 @@ void AddTextToTownBox( void )
 				}
 				else
 				{ // town name
-					swprintf( wString, L"%s", pTownNames[ ubTownId ] );
+					swprintf( wString, JA2_TEXT("%s"), pTownNames[ ubTownId ] );
 					AddMonoString( &hStringHandle, wString );
 				}
 				break;
@@ -390,7 +390,7 @@ void AddTextToTownBox( void )
 	}
 
 	// blank line
-	AddMonoString( &hStringHandle, L"" );
+	AddMonoString( &hStringHandle, JA2_TEXT("") );
 
 	// sector
 	AddSectorToBox();
@@ -398,9 +398,9 @@ void AddTextToTownBox( void )
 	// town size
 	if( gfHiddenTown[ GetTownIdForSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY ) ] )
 	{
-		swprintf( wString, L"%s:", pwTownInfoStrings[ 0 ] );
+		swprintf( wString, JA2_TEXT("%s:"), pwTownInfoStrings[ 0 ] );
 		AddMonoString( &hStringHandle, wString );
-		swprintf( wString, L"%d",	GetTownSectorSize( ubTownId ) );
+		swprintf( wString, JA2_TEXT("%d"),	GetTownSectorSize( ubTownId ) );
 		AddSecondColumnMonoString( &hStringHandle, wString );
 	}
 
@@ -413,9 +413,9 @@ void AddTextToTownBox( void )
 		gfHiddenTown[ GetTownIdForSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY ) ] )
 	{
 		// town control
-		swprintf( wString, L"%s:", pwTownInfoStrings[ 2 ] );
+		swprintf( wString, JA2_TEXT("%s:"), pwTownInfoStrings[ 2 ] );
 		AddMonoString( &hStringHandle, wString );
-		swprintf( wString, L"%d%%%%",	(GetTownSectorsUnderControl( ubTownId ) * 100) / GetTownSectorSize( ubTownId ));
+		swprintf( wString, JA2_TEXT("%d%%%%"),	(GetTownSectorsUnderControl( ubTownId ) * 100) / GetTownSectorSize( ubTownId ));
 		AddSecondColumnMonoString( &hStringHandle, wString );
 	}
 
@@ -424,9 +424,9 @@ void AddTextToTownBox( void )
 		gfHiddenTown[ GetTownIdForSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY ) ] )
 	{
 		// town loyalty
-		swprintf( wString, L"%s:", pwTownInfoStrings[ 5 ] );
+		swprintf( wString, JA2_TEXT("%s:"), pwTownInfoStrings[ 5 ] );
 		AddMonoString( &hStringHandle, wString );
-		swprintf( wString, L"%d%%%%", gTownLoyalty[ ubTownId ].ubRating );
+		swprintf( wString, JA2_TEXT("%d%%%%"), gTownLoyalty[ ubTownId ].ubRating );
 		AddSecondColumnMonoString( &hStringHandle, wString );
 	}
 
@@ -435,7 +435,7 @@ void AddTextToTownBox( void )
 	if( sMineSector != -1 && gfHiddenTown[ GetTownIdForSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY ) ] )
 	{
 		// Associated Mine: Sector
-		swprintf( wString, L"%s:",	pwTownInfoStrings[ 4 ] );
+		swprintf( wString, JA2_TEXT("%s:"),	pwTownInfoStrings[ 4 ] );
 		AddMonoString( &hStringHandle, wString );
 		GetShortSectorString( ( INT16 )( sMineSector % MAP_WORLD_X ), ( INT16 )( sMineSector / MAP_WORLD_X ), wString );
 		AddSecondColumnMonoString( &hStringHandle, wString );
@@ -463,7 +463,7 @@ void AddTextToTownBox( void )
 		}
 
 		// prisoners
-		swprintf( wString, L"%s:", pwTownInfoStrings[ 12 ] );
+		swprintf( wString, JA2_TEXT("%s:"), pwTownInfoStrings[ 12 ] );
 		AddMonoString( &hStringHandle, wString );
 		swprintf( wString, pwTownInfoStrings[13], numprisoners, capacity );
 		AddSecondColumnMonoString( &hStringHandle, wString );
@@ -472,7 +472,7 @@ void AddTextToTownBox( void )
 		{
 			if ( aPrisoners[i] )
 			{
-				swprintf( wString, L"" );
+				swprintf( wString, JA2_TEXT("") );
 				AddMonoString( &hStringHandle, wString );
 				swprintf( wString, pwTownInfoStrings[14 + i], aPrisoners[i] );
 				AddSecondColumnMonoString( &hStringHandle, wString );
@@ -494,19 +494,19 @@ void AddTextToMineBox( void )
 	ubMineIndex = GetMineIndexForSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY );
 
 	// name of town followed by "mine"
-	//swprintf( wString, L"%s %s", pTownNames[ GetTownAssociatedWithMine( ubMineIndex ) ], pwMineStrings[ 0 ] );
-	swprintf( wString, L"%s %s", pTownNames[ GetTownAssociatedWithMine( ubMineIndex ) ], MineralsName[gMineStatus[ubMineIndex].ubMineType].sType );
+	//swprintf( wString, JA2_TEXT("%s %s"), pTownNames[ GetTownAssociatedWithMine( ubMineIndex ) ], pwMineStrings[ 0 ] );
+	swprintf( wString, JA2_TEXT("%s %s"), pTownNames[ GetTownAssociatedWithMine( ubMineIndex ) ], MineralsName[gMineStatus[ubMineIndex].ubMineType].sType );
 	AddMonoString( &hStringHandle, wString );
 
 	// blank line
-	AddMonoString( &hStringHandle, L"" );
+	AddMonoString( &hStringHandle, JA2_TEXT("") );
 
 
 	// sector
 	AddSectorToBox();
 
 	// mine status
-	swprintf( wString, L"%s:", pwMineStrings[ 9 ]);
+	swprintf( wString, JA2_TEXT("%s:"), pwMineStrings[ 9 ]);
 	AddMonoString( &hStringHandle, wString );
 
 	// check if mine is empty (abandoned) or running out
@@ -539,14 +539,14 @@ void AddTextToMineBox( void )
 	if (!gMineStatus[ ubMineIndex ].fEmpty)
 	{
 		// current production
-		swprintf( wString, L"%s:", pwMineStrings[ 3 ]);
+		swprintf( wString, JA2_TEXT("%s:"), pwMineStrings[ 3 ]);
 		AddMonoString( &hStringHandle, wString );
 
 		AddSecondColumnMonoString( &hStringHandle, FormatMoney(PredictDailyIncomeFromAMine(ubMineIndex, TRUE)).data() );
 
 
 		// potential production
-		swprintf( wString, L"%s:", pwMineStrings[ 4 ]);
+		swprintf( wString, JA2_TEXT("%s:"), pwMineStrings[ 4 ]);
 		AddMonoString( &hStringHandle, wString );
 
 		AddSecondColumnMonoString( &hStringHandle, FormatMoney(GetMaxDailyRemovalFromMine(ubMineIndex)).data());
@@ -556,18 +556,18 @@ void AddTextToMineBox( void )
 		if (GetMaxPeriodicRemovalFromMine(ubMineIndex) > 0)
 		{
 			// production rate (current production as a percentage of potential production)
-			swprintf( wString, L"%s:", pwMineStrings[ 10 ]);
+			swprintf( wString, JA2_TEXT("%s:"), pwMineStrings[ 10 ]);
 			AddMonoString( &hStringHandle, wString );
-			swprintf( wString, L"%d%%%%", (PredictDailyIncomeFromAMine(ubMineIndex, TRUE) * 100 ) / GetMaxDailyRemovalFromMine(ubMineIndex) );
+			swprintf( wString, JA2_TEXT("%d%%%%"), (PredictDailyIncomeFromAMine(ubMineIndex, TRUE) * 100 ) / GetMaxDailyRemovalFromMine(ubMineIndex) );
 			AddSecondColumnMonoString( &hStringHandle, wString );
 		}
 
 
 		// town control percentage
-		swprintf( wString, L"%s:", pwMineStrings[ 12 ]);
+		swprintf( wString, JA2_TEXT("%s:"), pwMineStrings[ 12 ]);
 		AddMonoString( &hStringHandle, wString );
-		//swprintf( wString, L"%d%%%%", (GetTownSectorsUnderControl( gMineLocation[ ubMineIndex ].bAssociatedTown ) *	100) / GetTownSectorSize( gMineLocation[ ubMineIndex ].bAssociatedTown ));
-		swprintf( wString, L"%d%%%%", (GetTownSectorsUnderControl( gMineStatus[ ubMineIndex ].bAssociatedTown ) *	100) / GetTownSectorSize( gMineStatus[ ubMineIndex ].bAssociatedTown ));
+		//swprintf( wString, JA2_TEXT("%d%%%%"), (GetTownSectorsUnderControl( gMineLocation[ ubMineIndex ].bAssociatedTown ) *	100) / GetTownSectorSize( gMineLocation[ ubMineIndex ].bAssociatedTown ));
+		swprintf( wString, JA2_TEXT("%d%%%%"), (GetTownSectorsUnderControl( gMineStatus[ ubMineIndex ].bAssociatedTown ) *	100) / GetTownSectorSize( gMineStatus[ ubMineIndex ].bAssociatedTown ));
 		AddSecondColumnMonoString( &hStringHandle, wString );
 
 		//ubTown = gMineLocation[ ubMineIndex ].bAssociatedTown;
@@ -575,23 +575,23 @@ void AddTextToMineBox( void )
 		if( gTownLoyalty[ ubTown ].fStarted && gfTownUsesLoyalty[ ubTown ])
 		{
 			// town loyalty percentage
-			swprintf( wString, L"%s:", pwMineStrings[ 13 ]);
+			swprintf( wString, JA2_TEXT("%s:"), pwMineStrings[ 13 ]);
 			AddMonoString( &hStringHandle, wString );
-			//swprintf( wString, L"%d%%%%", gTownLoyalty[ gMineLocation[ ubMineIndex ].bAssociatedTown ].ubRating);
-			swprintf( wString, L"%d%%%%", gTownLoyalty[ gMineStatus[ ubMineIndex ].bAssociatedTown ].ubRating);
+			//swprintf( wString, JA2_TEXT("%d%%%%"), gTownLoyalty[ gMineLocation[ ubMineIndex ].bAssociatedTown ].ubRating);
+			swprintf( wString, JA2_TEXT("%d%%%%"), gTownLoyalty[ gMineStatus[ ubMineIndex ].bAssociatedTown ].ubRating);
 			AddSecondColumnMonoString( &hStringHandle, wString );
 		}
 
 /* gradual monster infestation concept was ditched, now simply IN PRODUCTION or SHUT DOWN
 		// percentage of miners working
-		swprintf( wString, L"%s:", pwMineStrings[ 14 ]);
+		swprintf( wString, JA2_TEXT("%s:"), pwMineStrings[ 14 ]);
 		AddMonoString( &hStringHandle, wString );
-		swprintf( wString, L"%d%%%%", gubMonsterMineInfestation[ gMineStatus[ ubMineIndex ].bMonsters ]);
+		swprintf( wString, JA2_TEXT("%d%%%%"), gubMonsterMineInfestation[ gMineStatus[ ubMineIndex ].bMonsters ]);
 		AddSecondColumnMonoString( &hStringHandle, wString );
 */
 
 		// ore type (silver/gold
-		swprintf( wString, L"%s:", pwMineStrings[ 11 ]);
+		swprintf( wString, JA2_TEXT("%s:"), pwMineStrings[ 11 ]);
 		AddMonoString( &hStringHandle, wString );
 		AddSecondColumnMonoString( &hStringHandle, MineralsName[gMineStatus[ubMineIndex].ubMineType].sMinerals );
 		//AddSecondColumnMonoString( &hStringHandle, (gMineStatus[ubMineIndex].ubMineType == SILVER_MINE) ? pwMineStrings[ 1 ] : pwMineStrings[ 2 ] );
@@ -600,10 +600,10 @@ void AddTextToMineBox( void )
 
 #ifdef _DEBUG
 	// dollar amount remaining in mine
-	wcscpy( wString, L"Remaining (DEBUG):");
+	wcscpy( wString, JA2_TEXT("Remaining (DEBUG):"));
 	AddMonoString( &hStringHandle, wString );
 
-	swprintf( wString, L"%s", FormatMoney( GetTotalLeftInMine( ubMineIndex ) ).data() );
+	swprintf( wString, JA2_TEXT("%s"), FormatMoney( GetTotalLeftInMine( ubMineIndex ) ).data() );
 	AddSecondColumnMonoString( &hStringHandle, wString );
 #endif
 
@@ -700,7 +700,7 @@ void AddTextToBlankSectorBox( void )
 	}
 
 	// blank line
-	AddMonoString( &hStringHandle, L"" );
+	AddMonoString( &hStringHandle, JA2_TEXT("") );
 
 	// sector
 	AddSectorToBox();
@@ -717,13 +717,13 @@ void AddSectorToBox(void)
 	UINT32 hStringHandle = 0;
 
 	// sector
-	swprintf( wString, L"%s:", pwMiscSectorStrings[ 1 ]);
+	swprintf( wString, JA2_TEXT("%s:"), pwMiscSectorStrings[ 1 ]);
 	AddMonoString( &hStringHandle, wString );
 
 	GetShortSectorString( bCurrentTownMineSectorX, bCurrentTownMineSectorY, wString );
 	if (bCurrentTownMineSectorZ != 0 )
 	{
-		swprintf( wString2, L"-%d", bCurrentTownMineSectorZ );
+		swprintf( wString2, JA2_TEXT("-%d"), bCurrentTownMineSectorZ );
 		wcscat( wString, wString2 );
 	}
 
@@ -798,22 +798,22 @@ void AddCommonInfoToBox(void)
 	if ( MilitiaTrainingAllowedInSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY, 0 ) && fKnownSite )
 	{
 		// controlled:
-		swprintf( wString, L"%s:", pwMiscSectorStrings[ 4 ] );
+		swprintf( wString, JA2_TEXT("%s:"), pwMiscSectorStrings[ 4 ] );
 		AddMonoString( &hStringHandle, wString );
 
 		// No/Yes
-		swprintf( wString, L"%s", pwMiscSectorStrings[ ( StrategicMap[ CALCULATE_STRATEGIC_INDEX( bCurrentTownMineSectorX, bCurrentTownMineSectorY ) ].fEnemyControlled ) ? 6 : 5 ] );
+		swprintf( wString, JA2_TEXT("%s"), pwMiscSectorStrings[ ( StrategicMap[ CALCULATE_STRATEGIC_INDEX( bCurrentTownMineSectorX, bCurrentTownMineSectorY ) ].fEnemyControlled ) ? 6 : 5 ] );
 		AddSecondColumnMonoString( &hStringHandle, wString );
 		
 		// militia - is there any?
-		swprintf( wString, L"%s:", pwTownInfoStrings[ 11 ] );
+		swprintf( wString, JA2_TEXT("%s:"), pwTownInfoStrings[ 11 ] );
 		AddMonoString( &hStringHandle, wString );
 
 		ubMilitiaTotal = NumNonPlayerTeamMembersInSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY, MILITIA_TEAM );
 		if (ubMilitiaTotal > 0)
 		{
 			// some militia, show total & their breakdown by level
-			swprintf( wString, L"%d (%d/%d/%d)", ubMilitiaTotal,
+			swprintf( wString, JA2_TEXT("%d (%d/%d/%d)"), ubMilitiaTotal,
 												MilitiaInSectorOfRank(bCurrentTownMineSectorX, bCurrentTownMineSectorY, GREEN_MILITIA),
 												MilitiaInSectorOfRank(bCurrentTownMineSectorX, bCurrentTownMineSectorY, REGULAR_MILITIA),
 												MilitiaInSectorOfRank(bCurrentTownMineSectorX, bCurrentTownMineSectorY, ELITE_MILITIA));
@@ -822,7 +822,7 @@ void AddCommonInfoToBox(void)
 		else
 		{
 			// no militia: don't bother displaying level breakdown
-			wcscpy( wString, L"0");
+			wcscpy( wString, JA2_TEXT("0"));
 			AddSecondColumnMonoString( &hStringHandle, wString );
 		}
 
@@ -830,7 +830,7 @@ void AddCommonInfoToBox(void)
 		BOOLEAN fMilitiaTrainingAllowed = FALSE;
 
 		// percentage of current militia squad training completed
-		swprintf( wString, L"%s:", pwTownInfoStrings[ 10 ] );
+		swprintf( wString, JA2_TEXT("%s:"), pwTownInfoStrings[ 10 ] );
 		AddMonoString( &hStringHandle, wString );
 
 		// Sector contains Militia training facility?
@@ -850,7 +850,7 @@ void AddCommonInfoToBox(void)
 		if (fMilitiaTrainingAllowed)
 		{
 			// Show percent completed
-			swprintf( wString, L"%d%%%%", SectorInfo[ usSectorValue ].ubMilitiaTrainingPercentDone );
+			swprintf( wString, JA2_TEXT("%d%%%%"), SectorInfo[ usSectorValue ].ubMilitiaTrainingPercentDone );
 			AddSecondColumnMonoString( &hStringHandle, wString );
 		}
 		else
@@ -861,7 +861,7 @@ void AddCommonInfoToBox(void)
 	}
 
 	// enemy forces
-	swprintf( wString, L"%s:", pwMiscSectorStrings[ 0 ] );
+	swprintf( wString, JA2_TEXT("%s:"), pwMiscSectorStrings[ 0 ] );
 	AddMonoString( &hStringHandle, wString );
 
 	// how many are there, really?
@@ -884,12 +884,12 @@ void AddCommonInfoToBox(void)
 			if ( ubNumEnemies > 0 )
 			{
 				// show "?", but not exactly how many
-				wcscpy(wString, L"?" );
+				wcscpy(wString, JA2_TEXT("?") );
 			}
 			else
 			{
 				// we know there aren't any (or we'd be seing them on map, too)
-				wcscpy(wString, L"0" );
+				wcscpy(wString, JA2_TEXT("0") );
 			}
 			break;
 
@@ -898,9 +898,9 @@ void AddCommonInfoToBox(void)
 		case KNOWS_THEYRE_THERE_AND_WHERE_GOING_AND_HOW_MANY:
 			// show exactly how many
 			if (numEnemiesOnMap != ubNumEnemies)
-				swprintf( wString, L"%d (%d)", numEnemiesOnMap, ubNumEnemies );
+				swprintf( wString, JA2_TEXT("%d (%d)"), numEnemiesOnMap, ubNumEnemies );
 			else
-				swprintf( wString, L"%d", ubNumEnemies );
+				swprintf( wString, JA2_TEXT("%d"), ubNumEnemies );
 			break;
 	}
 
@@ -914,7 +914,7 @@ void AddCommonInfoToBox(void)
 			swprintf( wString, pwMiscSectorStrings[7] );
 			AddMonoString( &hStringHandle, wString );
 
-			swprintf( wString, L"%d / %d", StrategicMap[SECTOR_INFO_TO_STRATEGIC_INDEX( usSectorValue )].bSAMCondition, StrategicMap[SECTOR_INFO_TO_STRATEGIC_INDEX( usSectorValue )].sSamHackStatus );
+			swprintf( wString, JA2_TEXT("%d / %d"), StrategicMap[SECTOR_INFO_TO_STRATEGIC_INDEX( usSectorValue )].bSAMCondition, StrategicMap[SECTOR_INFO_TO_STRATEGIC_INDEX( usSectorValue )].sSamHackStatus );
 			AddSecondColumnMonoString( &hStringHandle, wString );
 
 			break;
@@ -930,11 +930,11 @@ void AddItemsInSectorToBox(void)
 
 	// items in sector (this works even for underground)
 
-	swprintf( wString, L"%s:", pwMiscSectorStrings[ 2 ] );
+	swprintf( wString, JA2_TEXT("%s:"), pwMiscSectorStrings[ 2 ] );
 	AddMonoString( &hStringHandle, wString );
 
-//	swprintf( wString, L"%d", GetSizeOfStashInSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY, bCurrentTownMineSectorZ, FALSE ));
-	swprintf( wString, L"%d", GetNumberOfVisibleWorldItemsFromSectorStructureForSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY, bCurrentTownMineSectorZ ));
+//	swprintf( wString, JA2_TEXT("%d"), GetSizeOfStashInSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY, bCurrentTownMineSectorZ, FALSE ));
+	swprintf( wString, JA2_TEXT("%d"), GetNumberOfVisibleWorldItemsFromSectorStructureForSector( bCurrentTownMineSectorX, bCurrentTownMineSectorY, bCurrentTownMineSectorZ ));
 	AddSecondColumnMonoString( &hStringHandle, wString );
 }
 
@@ -950,21 +950,21 @@ void AddIntelAndQuestTextToBox()
 
 	BOOLEAN first = TRUE;
 
-	CHAR16* subString = wcstok ( line, L"\n\0" );
+	CHAR16* subString = wcstok ( line, JA2_TEXT("\n\0") );
 
 	while ( subString != NULL )
 	{
 		if ( first )
 		{
-			swprintf( wString, L"%s:", pwMiscSectorStrings[8] );
+			swprintf( wString, JA2_TEXT("%s:"), pwMiscSectorStrings[8] );
 			AddMonoString( &hStringHandle, wString );
 		}
 		else
-			AddMonoString( &hStringHandle, L"" );
+			AddMonoString( &hStringHandle, JA2_TEXT("") );
 
 		AddSecondColumnMonoString( &hStringHandle, subString );
 
-		subString = wcstok ( NULL, L"\n\0" );
+		subString = wcstok ( NULL, JA2_TEXT("\n\0") );
 
 		first = FALSE;
 	}

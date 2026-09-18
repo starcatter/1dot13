@@ -753,8 +753,8 @@ void ValidatePendingGroups()
 		if( iErrorsForInvalidPendingGroup )
 		{
 			CHAR16 str[256];
-			swprintf( str, L"Strategic AI: Internal error -- %d pending groups were discovered to be invalid. Please report error and send save."
-										L"You can continue playing, as this has been auto-corrected. No need to send any debug files.", iErrorsForInvalidPendingGroup );
+			swprintf( str, JA2_TEXT("Strategic AI: Internal error -- %d pending groups were discovered to be invalid. Please report error and send save.")
+										JA2_TEXT("You can continue playing, as this has been auto-corrected. No need to send any debug files."), iErrorsForInvalidPendingGroup );
 			SAIReportError( str );
 		}
 	#endif
@@ -788,8 +788,8 @@ void ValidateWeights( INT32 iID )
 		if( giReinforcementPoints != iSumReinforcementPoints || giRequestPoints != iSumRequestPoints )
 		{
 			CHAR16 str[256];
-			swprintf( str, L"Strategic AI: Internal error #%02d (total request/reinforcement points). Please report error including error#."
-										L"You can continue playing, as the points have been auto-corrected. No need to send any save/debug files.", iID );
+			swprintf( str, JA2_TEXT("Strategic AI: Internal error #%02d (total request/reinforcement points). Please report error including error#.")
+										JA2_TEXT("You can continue playing, as the points have been auto-corrected. No need to send any save/debug files."), iID );
 			//Correct the misalignment.
 			giReinforcementPoints = iSumReinforcementPoints;
 			giRequestPoints = iSumRequestPoints;
@@ -815,7 +815,7 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Strategic2");
 			#ifdef JA2BETAVERSION
 			{
 				CHAR16 str[256];
-				swprintf( str, L"Strategic AI: Internal error (invalid enemy group #%d location at %c%d, destination %c%d). Please send PRIOR save file and Strategic Decisions.txt.",
+				swprintf( str, JA2_TEXT("Strategic AI: Internal error (invalid enemy group #%d location at %c%d, destination %c%d). Please send PRIOR save file and Strategic Decisions.txt."),
 											pGroup->ubGroupID, pGroup->ubSectorY + 'A' - 1, pGroup->ubSectorX, pGroup->ubNextY + 'A' - 1, pGroup->ubNextX );
 				SAIReportError( str );
 			}
@@ -831,7 +831,7 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Strategic2");
 												&& pGroup->pEnemyGroup->ubIntention != REINFORCEMENTS )
 		{
 			#ifdef JA2BETAVERSION
-				SAIReportError( L"Strategic AI:	Internal error (floating group).	Please send PRIOR save file and Strategic Decisions.txt." );
+				SAIReportError( JA2_TEXT("Strategic AI:	Internal error (floating group).	Please send PRIOR save file and Strategic Decisions.txt.") );
 			#endif
 			if( gTacticalStatus.uiFlags & LOADING_SAVED_GAME )
 			{
@@ -845,7 +845,7 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Strategic2");
 	if ( pGroup->pEnemyGroup->ubNumAdmins + pGroup->pEnemyGroup->ubNumTroops + pGroup->pEnemyGroup->ubNumElites + pGroup->pEnemyGroup->ubNumTanks + pGroup->pEnemyGroup->ubNumJeeps + pGroup->pEnemyGroup->ubNumRobots != pGroup->ubGroupSize ||
 				pGroup->ubGroupSize > iMaxEnemyGroupSize )
 		{
-			SAIReportError( L"Strategic AI: Internal error (bad group populations). Please send PRIOR save file and Strategic Decisions.txt." );
+			SAIReportError( JA2_TEXT("Strategic AI: Internal error (bad group populations). Please send PRIOR save file and Strategic Decisions.txt.") );
 		}
 	#endif
 }
@@ -857,9 +857,9 @@ void ValidateLargeGroup( GROUP *pGroup )
 		if( pGroup->ubGroupSize > 25 )
 		{
 			CHAR16 str[ 512 ];
-			swprintf( str, L"Strategic AI warning: Enemy group containing %d soldiers "
-									L"(%d admins, %d troops, %d elites) in sector %c%d. This message is a temporary test message "
-									L"to evaluate a potential problems with very large enemy groups.",
+			swprintf( str, JA2_TEXT("Strategic AI warning: Enemy group containing %d soldiers ")
+									JA2_TEXT("(%d admins, %d troops, %d elites) in sector %c%d. This message is a temporary test message ")
+									JA2_TEXT("to evaluate a potential problems with very large enemy groups."),
 									pGroup->ubGroupSize, pGroup->pEnemyGroup->ubNumAdmins, pGroup->pEnemyGroup->ubNumTroops, pGroup->pEnemyGroup->ubNumElites,
 									pGroup->ubSectorY + 'A' - 1, pGroup->ubSectorX );
 			SAIReportError( str );
@@ -1005,9 +1005,9 @@ void ValidatePlayersAreInOneGroupOnly()
 					pGroup = GetGroup( pSoldier->ubGroupID );
 					Assert( pGroup );
 					Assert( pOtherGroup );
-					swprintf( str, L"%s in %c%d thinks he/she is in group %d in %c%d but isn't. "
-												L"Group %d in %c%d thinks %s is in the group but isn't. %s will be assigned to a unique squad. "
-												L"Please send screenshot, PRIOR save (corrected by time you read this), and any theories.",
+					swprintf( str, JA2_TEXT("%s in %c%d thinks he/she is in group %d in %c%d but isn't. ")
+												JA2_TEXT("Group %d in %c%d thinks %s is in the group but isn't. %s will be assigned to a unique squad. ")
+												JA2_TEXT("Please send screenshot, PRIOR save (corrected by time you read this), and any theories."),
 												pSoldier->name, pSoldier->sSectorY + 'A' - 1, pSoldier->sSectorX,
 												pSoldier->ubGroupID, pGroup->ubSectorY + 'A' - 1, pGroup->ubSectorX,
 												pOtherGroup->ubGroupID, pOtherGroup->ubSectorY + 'A' - 1, pOtherGroup->ubSectorX, pSoldier->name,
@@ -1049,9 +1049,9 @@ void ValidatePlayersAreInOneGroupOnly()
 					Assert( pGroup );
 					Assert( pOtherGroup );
 
-					swprintf( str, L"%s in %c%d has been found in multiple groups. The group he/she is supposed "
-												L"to be in is group %d in %c%d, but %s was also found to be in group %d in %c%d. %s was found in %d groups "
-												L"total. Please send screenshot, PRIOR save (corrected by time you read this), and any theories.",
+					swprintf( str, JA2_TEXT("%s in %c%d has been found in multiple groups. The group he/she is supposed ")
+												JA2_TEXT("to be in is group %d in %c%d, but %s was also found to be in group %d in %c%d. %s was found in %d groups ")
+												JA2_TEXT("total. Please send screenshot, PRIOR save (corrected by time you read this), and any theories."),
 												pSoldier->name, pSoldier->sSectorY + 'A' - 1, pSoldier->sSectorX,
 												pGroup->ubGroupID, pGroup->ubSectorY + 'A' - 1, pGroup->ubSectorX,
 												pSoldier->name, pOtherGroup->ubGroupID, pOtherGroup->ubSectorY + 'A' - 1, pOtherGroup->ubSectorX,
@@ -1060,9 +1060,9 @@ void ValidatePlayersAreInOneGroupOnly()
 				else if( !iGroups )
 				{ //The merc cannot be found in any group!	This should never happen!	We will assign the merc into his
 					//own unique squad as a correction.
-					swprintf( str, L"%s in %c%d cannot be found in any group. %s will be assigned to a unique group/squad. "
-												L"Please provide details on how you think this may have happened. Send screenshot and PRIOR save. Do not send a save "
-												L"you create after this point as the info will have been corrected by then.",
+					swprintf( str, JA2_TEXT("%s in %c%d cannot be found in any group. %s will be assigned to a unique group/squad. ")
+												JA2_TEXT("Please provide details on how you think this may have happened. Send screenshot and PRIOR save. Do not send a save ")
+												JA2_TEXT("you create after this point as the info will have been corrected by then."),
 												pSoldier->name, pSoldier->sSectorY + 'A' - 1, pSoldier->sSectorX, pSoldier->name );
 				}
 			}
@@ -1092,7 +1092,7 @@ void ValidatePlayersAreInOneGroupOnly()
 	{ //The first error to be detected is the one responsible for building the strings.	We will simply append another string containing
 		//the total number of detected errors.
 		CHAR16 tempstr[ 128 ];
-		swprintf( tempstr, L" A total of %d related errors have been detected.", iNumErrors );
+		swprintf( tempstr, JA2_TEXT(" A total of %d related errors have been detected."), iNumErrors );
 		wcscat( str, tempstr );
 		SAIReportError( str );
 	}
@@ -2367,8 +2367,8 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Strategic5");
 						UINT8 ubCut;
 						#ifdef JA2BETAVERSION
 						CHAR16 str[512];
-						swprintf( str, L"Patrol group #%d in %c%d received too many reinforcements from group #%d that was created in %c%d. Size truncated from %d to %d."
-													L"Please send Strategic Decisions.txt and PRIOR save.",
+						swprintf( str, JA2_TEXT("Patrol group #%d in %c%d received too many reinforcements from group #%d that was created in %c%d. Size truncated from %d to %d.")
+													JA2_TEXT("Please send Strategic Decisions.txt and PRIOR save."),
 													pPatrolGroup->ubGroupID, pPatrolGroup->ubSectorY + 'A' - 1, pPatrolGroup->ubSectorX,
 													pGroup->ubGroupID, SECTORY( pGroup->ubCreatedSectorID ) + 'A' - 1, SECTORX( pGroup->ubCreatedSectorID ),
 													pPatrolGroup->ubGroupSize, iMaxEnemyGroupSize );
@@ -3245,7 +3245,7 @@ BOOLEAN SendReinforcementsForGarrison( INT32 iDstGarrisonID, UINT16 usDefencePoi
 			iReinforcementsAvailable = ReinforcementsAvailable( iSrcGarrisonID );
 			if( iReinforcementsAvailable <= 0)
 			{
-				SAIReportError( L"Attempting to send reinforcements from a garrison that doesn't have any! -- KM:0 (with prior saved game and strategic decisions.txt)" );
+				SAIReportError( JA2_TEXT("Attempting to send reinforcements from a garrison that doesn't have any! -- KM:0 (with prior saved game and strategic decisions.txt)") );
 				return FALSE;
 			}
 			//Send the lowest of the two:	number requested or number available
@@ -5431,7 +5431,7 @@ void ExecuteStrategicAIAction( UINT16 usActionCode, INT16 sSectorX, INT16 sSecto
 			break;
 
 		default:
-			ScreenMsg( FONT_RED, MSG_DEBUG, L"QueenAI failed to handle action code %d.", usActionCode );
+			ScreenMsg( FONT_RED, MSG_DEBUG, JA2_TEXT("QueenAI failed to handle action code %d."), usActionCode );
 			break;
 	}
 }
@@ -5451,7 +5451,7 @@ static struct StratDecLog {
 	sgp::Logger_ID id;
 	StratDecLog() {
 		id = sgp::Logger::instance().createLogger();
-		sgp::Logger::instance().connectFile(id, L"Strategic Decisions.txt", false, sgp::Logger::FLUSH_ON_DELETE);
+		sgp::Logger::instance().connectFile(id, "Strategic Decisions.txt", false, sgp::Logger::FLUSH_ON_DELETE);
 	}
 } s_stratD;
 
@@ -5467,7 +5467,7 @@ void LogStrategicMsg( STR8	str, ... )
 
 	if( gfDisplayStrategicAILogs )
 	{
-		ScreenMsg( FONT_LTKHAKI, MSG_DIALOG, L"%S", string );
+		ScreenMsg( FONT_LTKHAKI, MSG_DIALOG, JA2_TEXT("%S"), string );
 	}
 	if( guiCurrentScreen == AIVIEWER_SCREEN )
 	{
@@ -5486,7 +5486,7 @@ void LogStrategicEvent( STR8	str, ... )
 	SGP_LOG(s_stratD.id) << sgp::endl << WORLDTIMESTR << ":" << sgp::endl << string << sgp::endl;
 	if( gfDisplayStrategicAILogs )
 	{
-		ScreenMsg( FONT_LTKHAKI, MSG_DIALOG, L"%S", string );
+		ScreenMsg( FONT_LTKHAKI, MSG_DIALOG, JA2_TEXT("%S"), string );
 	}
 	if( guiCurrentScreen == AIVIEWER_SCREEN )
 	{
@@ -5663,7 +5663,7 @@ void StrategicHandleQueenLosingControlOfSector( INT16 sSectorX, INT16 sSectorY, 
 	if( StrategicMap[CALCULATE_STRATEGIC_INDEX(sSectorX, sSectorY)].fEnemyControlled )
 	{
 		//If the sector doesn't belong to the player, then we shouldn't be calling this function!
-		SAIReportError( L"StrategicHandleQueenLosingControlOfSector() was called for a sector that is internally considered to be enemy controlled." );
+		SAIReportError( JA2_TEXT("StrategicHandleQueenLosingControlOfSector() was called for a sector that is internally considered to be enemy controlled.") );
 		return;
 	}
 
@@ -6002,28 +6002,28 @@ void RenderAIViewerGarrisonInfo( INT32 x, INT32 y, SECTORINFO *pSector )
 		SetFontForeground( FONT_WHITE );
 		if( iSurplus >= 0 )
 		{
-			mprintf( x, y, L"%d desired, %d surplus troops", iDesired, iSurplus );
+			mprintf( x, y, JA2_TEXT("%d desired, %d surplus troops"), iDesired, iSurplus );
 		}
 		else
 		{
-			mprintf( x, y, L"%d desired, %d reinforcements requested", iDesired, -iSurplus );
+			mprintf( x, y, JA2_TEXT("%d desired, %d reinforcements requested"), iDesired, -iSurplus );
 		}
 		if( gGarrisonGroup[ pSector->ubGarrisonID ].ubPendingGroupID )
 		{
 			GROUP *pGroup;
 			pGroup = GetGroup( gGarrisonGroup[ pSector->ubGarrisonID ].ubPendingGroupID );
-			mprintf( x, y+10, L"%d reinforcements on route from group %d in %c%d", pGroup->ubGroupSize, pGroup->ubGroupID,
+			mprintf( x, y+10, JA2_TEXT("%d reinforcements on route from group %d in %c%d"), pGroup->ubGroupSize, pGroup->ubGroupID,
 				pGroup->ubSectorY + 'A' - 1, pGroup->ubSectorX );
 		}
 		else
 		{
-			mprintf( x, y+10, L"No pending reinforcements for this sector." );
+			mprintf( x, y+10, JA2_TEXT("No pending reinforcements for this sector.") );
 		}
 	}
 	else
 	{
 		SetFontForeground( FONT_GRAY2 );
-		mprintf( x, y, L"No garrison information for this sector." );
+		mprintf( x, y, JA2_TEXT("No garrison information for this sector.") );
 	}
 }
 
@@ -6966,7 +6966,7 @@ UINT8 RedirectEnemyGroupsMovingThroughSector( UINT8 ubSectorX, UINT8 ubSectorY )
 	}
 	if( ubNumGroupsRedirected )
 	{
-		ScreenMsg( FONT_LTBLUE, MSG_BETAVERSION, L"Test message for new feature:	%d enemy groups were redirected away from moving through sector %c%d.	Please don't report unless this number is greater than 5.",
+		ScreenMsg( FONT_LTBLUE, MSG_BETAVERSION, JA2_TEXT("Test message for new feature:	%d enemy groups were redirected away from moving through sector %c%d.	Please don't report unless this number is greater than 5."),
 			ubNumGroupsRedirected, ubSectorY + 'A' - 1, ubSectorX );
 	}
 	return ubNumGroupsRedirected;

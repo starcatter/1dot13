@@ -42,7 +42,7 @@ void InitEngineTilesets( )
 		std::vector<char> contents(static_cast<std::size_t>(file->size()) + 1, 0);
 		file->readExact(contents.data(), contents.size() - 1);
 		SGP_TRYCATCH_RETHROW( pars.parseBuffer(contents.data(), contents.size() - 1),
-			L"Parser Error in Ja2Set.dat.xml" );
+			JA2_TEXT("Parser Error in Ja2Set.dat.xml") );
 	}
 	else
 	{
@@ -91,7 +91,7 @@ void InitEngineTilesets( )
 			FileRead( hfile, &(gTilesets[ cnt ].ubAmbientID), sizeof( UINT8 ), &uiNumBytesRead );
 
 			// Set into tileset
-			swprintf( gTilesets[ cnt ].zName, L"%S", zName );
+			swprintf( gTilesets[ cnt ].zName, JA2_TEXT("%S"), zName );
 
 			// Loop for files
 			for ( cnt2 = 0; cnt2 < uiNumFiles; cnt2++ )
@@ -164,7 +164,7 @@ void ExportTilesets(const char* filename)
 
 	// COMPARE
 	SGP_THROW_IFFALSE( numFiles == giNumberOfTileTypes,
-		L"Number of tilesets slots in code does not match data file" );
+		JA2_TEXT("Number of tilesets slots in code does not match data file") );
 
 	xmlw.addAttributeToNextValue("numFiles",(int)numFiles);
 	xmlw.openNode("tilesets");

@@ -1685,7 +1685,7 @@ void DrawMouseText( )
 		else
 			SetFontForeground( FONT_MCOLOR_LTYELLOW );
 
-		swprintf( pStr, L"%d", gsBulletCount );
+		swprintf( pStr, JA2_TEXT("%d"), gsBulletCount );
 		FindFontCenterCoordinates( 0, 0, gsCurMouseWidth, gsCurMouseHeight, pStr, TINYFONT1, &sX, &sY );
 		// HEADROCK HAM B2: Moved bullet counter to right side (and a bit upwards) to accomodate two CTH bars.
 		//mprintf( sX, sY - 10 - GetFontHeight(TINYFONT1), pStr );
@@ -1700,7 +1700,7 @@ void DrawMouseText( )
 		// Single.
 		if ( gGameExternalOptions.ubNewCTHBars != 1 && gGameExternalOptions.ubNewCTHBars != 3 )
 		{
-			swprintf( pStr, L"%d", gsTotalBulletCount );
+			swprintf( pStr, JA2_TEXT("%d"), gsTotalBulletCount );
 
 			FindFontCenterCoordinates( 0, 0, gsCurMouseWidth, gsCurMouseHeight, pStr, TINYFONT1, &sX, &sY );
 			mprintf( sX, sY + 7 + GetFontHeight(TINYFONT1), pStr );
@@ -1787,7 +1787,7 @@ void DrawMouseText( )
 				// Set dest for gprintf to be different
 			SetFontDestBuffer( MOUSE_BUFFER , 0, 0, 64, 64, FALSE );
 
-			swprintf( pStr, L"%d", gsCurrentActionPoints );
+			swprintf( pStr, JA2_TEXT("%d"), gsCurrentActionPoints );
 
 			if ( gfUIDisplayActionPointsCenter )
 			{
@@ -1845,8 +1845,8 @@ void DrawMouseText( )
 				SetFontShadow( DEFAULT_SHADOW );
 			}
 
-			mprintf( sX, sY, L"%d", gsCurrentActionPoints );
-			//mprintf( sX, sY, L"%d %d", sX, sY );
+			mprintf( sX, sY, JA2_TEXT("%d"), gsCurrentActionPoints );
+			//mprintf( sX, sY, JA2_TEXT("%d %d"), sX, sY );
 
 			SetFontShadow( DEFAULT_SHADOW );
 

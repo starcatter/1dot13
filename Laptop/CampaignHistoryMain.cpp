@@ -77,7 +77,7 @@ void HandleCampaignHistory()
 void RenderCampaignHistory()
 {
 	CHAR16		sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 	HVOBJECT	hPixHandle;
 
@@ -217,7 +217,7 @@ void GetCampaignHistoryText( UINT8 ubNumber, STR16 pString )
 	CHAR16		sText[800];
 
 	if ( ubNumber >= TEXT_CAMPAIGNHISTORY_MAX )
-		wcscpy(	pString, L"bla" );
+		wcscpy(	pString, JA2_TEXT("bla") );
 		
 	switch( ubNumber )
 	{

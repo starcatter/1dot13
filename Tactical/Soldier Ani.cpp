@@ -881,7 +881,7 @@ BOOLEAN AdjustToNextAnimationFrame( SOLDIERTYPE *pSoldier )
 							if ( pSoldier->bTeam == gbPlayerNum	)
 							{
 								PlayJA2Sample( S_DRYFIRE1, RATE_11025, SoundVolume( MIDVOLUME, pSoldier->sGridNo ), 1, SoundDir( pSoldier->sGridNo ) );
-								//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Gun jammed!" );
+								//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Gun jammed!") );
 							}
 
 							DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("@@@@@@@ Freeing up attacker - aborting start of attack due to burst gun jam") );
@@ -2668,7 +2668,7 @@ BOOLEAN AdjustToNextAnimationFrame( SOLDIERTYPE *pSoldier )
 				}
 				// IF we are here - something is wrong - we should have a death animation here
 #ifdef JA2BETAVERSION
-				ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"Soldier Ani: GOTO Stance not chained properly: %d %d %d", ubDesiredHeight, ubCurrentHeight, pSoldier->usAnimState );
+				ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("Soldier Ani: GOTO Stance not chained properly: %d %d %d"), ubDesiredHeight, ubCurrentHeight, pSoldier->usAnimState );
 #endif
 
 				pSoldier->SoldierGotoStationaryStance( );

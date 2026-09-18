@@ -12,6 +12,7 @@
 #include "soldier profile type.h"
 #include "Animation Data.h"
 #include "Soldier Create.h"
+#include "UtfConversion.h"
 
 // not used atm
 /*typedef struct
@@ -64,10 +65,10 @@ enum MilitiaOrigin
 typedef struct
 {
 	// possible name pool
-	std::vector<std::wstring> szMale_Forename;
-	std::vector<std::wstring> szMale_Surname;
-	std::vector<std::wstring> szFemale_Forename;
-	std::vector<std::wstring> szFemale_Surname;
+	std::vector<ja2::text::Utf16String> szMale_Forename;
+	std::vector<ja2::text::Utf16String> szMale_Surname;
+	std::vector<ja2::text::Utf16String> szFemale_Forename;
+	std::vector<ja2::text::Utf16String> szFemale_Surname;
 
 	// chances for bodytypes and skin colours (hair is chosen auomatically according to coded scheme)
 	UINT8 chance_bodytype[ADULTFEMALEMONSTER];

@@ -76,7 +76,7 @@ DropDownBase::DropDownBase( )
 
 	mEntryVector.clear( );
 
-	swprintf( mHelpText, L"" );
+	swprintf( mHelpText, JA2_TEXT("") );
 
 	mSelectedEntry = 0;
 	mFirstShownEntry = 0;

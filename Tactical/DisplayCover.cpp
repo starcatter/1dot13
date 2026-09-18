@@ -820,68 +820,68 @@ void DisplayRangeToTarget(SOLDIERTYPE *pSoldier, INT32 sTargetGridNo)
 				ubCover, ubBrightness);
 
 			UINT8 ubApplicableProperties = 0;
-			swprintf(zOutputString, L"");
+			swprintf(zOutputString, JA2_TEXT(""));
 			if (zGivenTileProperties.bWoodCamoAffinity > 0)
 			{
 				swprintf(zOutputString + wcslen(zOutputString), gzDisplayCoverText[DC_TTI__WOOD]);
-				swprintf(zOutputString + wcslen(zOutputString), L": %d/100", zGivenTileProperties.bWoodCamoAffinity);
+				swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": %d/100"), zGivenTileProperties.bWoodCamoAffinity);
 				ubApplicableProperties++;
 			}
 			if (zGivenTileProperties.bDesertCamoAffinity > 0)
 			{
 				if (ubApplicableProperties)
-					swprintf(zOutputString + wcslen(zOutputString), L", ");
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(", "));
 				swprintf(zOutputString + wcslen(zOutputString), gzDisplayCoverText[DC_TTI__DESERT]);
-				swprintf(zOutputString + wcslen(zOutputString), L": %d/100", zGivenTileProperties.bDesertCamoAffinity);
+				swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": %d/100"), zGivenTileProperties.bDesertCamoAffinity);
 				ubApplicableProperties++;
 			}
 			if (zGivenTileProperties.bUrbanCamoAffinity > 0)
 			{
 				if (ubApplicableProperties)
-					swprintf(zOutputString + wcslen(zOutputString), L", ");
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(", "));
 				swprintf(zOutputString + wcslen(zOutputString), gzDisplayCoverText[DC_TTI__URBAN]);
-				swprintf(zOutputString + wcslen(zOutputString), L": %d/100", zGivenTileProperties.bUrbanCamoAffinity);
+				swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": %d/100"), zGivenTileProperties.bUrbanCamoAffinity);
 				ubApplicableProperties++;
 			}
 			if (zGivenTileProperties.bSnowCamoAffinity > 0)
 			{
 				if (ubApplicableProperties)
-					swprintf(zOutputString + wcslen(zOutputString), L", ");
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(", "));
 				swprintf(zOutputString + wcslen(zOutputString), gzDisplayCoverText[DC_TTI__SNOW]);
-				swprintf(zOutputString + wcslen(zOutputString), L": %d/100", zGivenTileProperties.bSnowCamoAffinity);
+				swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": %d/100"), zGivenTileProperties.bSnowCamoAffinity);
 				ubApplicableProperties++;
 			}
 			if (zGivenTileProperties.bSoundModifier != 0)
 			{
 				if (ubApplicableProperties)
-					swprintf(zOutputString + wcslen(zOutputString), L", ");
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(", "));
 				swprintf(zOutputString + wcslen(zOutputString), gzDisplayCoverText[DC_TTI__DETAILED_SOUND]);
 				if (zGivenTileProperties.bSoundModifier > 0)
-					swprintf(zOutputString + wcslen(zOutputString), L": +%d", zGivenTileProperties.bSoundModifier);
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": +%d"), zGivenTileProperties.bSoundModifier);
 				else
-					swprintf(zOutputString + wcslen(zOutputString), L": %d", zGivenTileProperties.bSoundModifier);
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": %d"), zGivenTileProperties.bSoundModifier);
 				ubApplicableProperties++;
 			}
 			if (zGivenTileProperties.bStealthDifficultyModifer != 0)
 			{
 				if (ubApplicableProperties)
-					swprintf(zOutputString + wcslen(zOutputString), L", ");
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(", "));
 				swprintf(zOutputString + wcslen(zOutputString), gzDisplayCoverText[DC_TTI__DETAILED_STEALTH]);
 				if (zGivenTileProperties.bStealthDifficultyModifer > 0)
-					swprintf(zOutputString + wcslen(zOutputString), L": +%d/100", zGivenTileProperties.bStealthDifficultyModifer);
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": +%d/100"), zGivenTileProperties.bStealthDifficultyModifer);
 				else
-					swprintf(zOutputString + wcslen(zOutputString), L": %d/100", zGivenTileProperties.bStealthDifficultyModifer);
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": %d/100"), zGivenTileProperties.bStealthDifficultyModifer);
 				ubApplicableProperties++;
 			}
 			if (zGivenTileProperties.bTrapBonus != 0)
 			{
 				if (ubApplicableProperties)
-					swprintf(zOutputString + wcslen(zOutputString), L", ");
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(", "));
 				swprintf(zOutputString + wcslen(zOutputString), gzDisplayCoverText[DC_TTI__DETAILED_TRAP_LEVEL]);
 				if (zGivenTileProperties.bTrapBonus > 0)
-					swprintf(zOutputString + wcslen(zOutputString), L": +%d", zGivenTileProperties.bTrapBonus);
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": +%d"), zGivenTileProperties.bTrapBonus);
 				else
-					swprintf(zOutputString + wcslen(zOutputString), L": %d", zGivenTileProperties.bTrapBonus);
+					swprintf(zOutputString + wcslen(zOutputString), JA2_TEXT(": %d"), zGivenTileProperties.bTrapBonus);
 				ubApplicableProperties++;
 			}
 			if (wcslen(zOutputString) > 0)
@@ -1021,7 +1021,7 @@ void SwitchToTrapNetworkView()
 		return;
 
 	gubDrawMode = MINES_DRAW_PLAYERTEAM_NETWORKS;
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Display trap network");
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Display trap network"));
 	DisplayCover( TRUE );
 }
 
@@ -1031,7 +1031,7 @@ void SwitchToHostileTrapsView()
 		return;
 
 	gubDrawMode = MINES_DRAW_DETECT_ENEMY;
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Display nearby traps");
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Display nearby traps"));
 	DisplayCover( TRUE );
 }
 
@@ -1041,7 +1041,7 @@ void SwitchMineViewOff()
 		return;
 
 	gubDrawMode = DRAW_MODE_OFF;
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Turning off trap display");
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Turning off trap display"));
 	DisplayCover( TRUE );
 }
 
@@ -1060,36 +1060,36 @@ void ToggleTrapNetworkView()
 	{
 	case MINES_DRAW_DETECT_ENEMY:
 		gubDrawMode = MINES_DRAW_PLAYERTEAM_NETWORKS;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Display trap network" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Display trap network") );
 		break;
 	case MINES_DRAW_PLAYERTEAM_NETWORKS:
 		gubDrawMode = MINES_DRAW_NETWORKCOLOURING;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Display trap network colouring" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Display trap network colouring") );
 		break;
 	case MINES_DRAW_NETWORKCOLOURING:
 		gubDrawMode = MINES_DRAW_NET_A;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Display trap network A" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Display trap network A") );
 		break;
 	case MINES_DRAW_NET_A:
 		gubDrawMode = MINES_DRAW_NET_B;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Display trap network B" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Display trap network B") );
 		break;
 	case MINES_DRAW_NET_B:
 		gubDrawMode = MINES_DRAW_NET_C;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Display trap network C" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Display trap network C") );
 		break;
 	case MINES_DRAW_NET_C:
 		gubDrawMode = MINES_DRAW_NET_D;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Display trap network D" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Display trap network D") );
 		break;
 	case MINES_DRAW_NET_D:
 		gubDrawMode = DRAW_MODE_OFF;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Turning off trap display" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Turning off trap display") );
 		break;
 
 	default:
 		gubDrawMode = MINES_DRAW_DETECT_ENEMY;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Display enemy traps" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Display enemy traps") );
 		break;
 	}
 

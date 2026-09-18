@@ -191,7 +191,7 @@ UINT16 FromSmokeTypeToWorldFlags( INT8 bType )
 
 
 
-INT32 NewSmokeEffect( INT32 sGridNo, UINT16 usItem, INT8 bLevel, SoldierID ubOwner, BOOL fFromRemoteClient )
+INT32 NewSmokeEffect( INT32 sGridNo, UINT16 usItem, INT8 bLevel, SoldierID ubOwner, BOOLEAN fFromRemoteClient )
 {
 	SMOKEEFFECT *pSmoke;
 	INT32		iSmokeIndex;
@@ -220,7 +220,7 @@ INT32 NewSmokeEffect( INT32 sGridNo, UINT16 usItem, INT8 bLevel, SoldierID ubOwn
 			}
 		}
 #ifdef JA2BETAVERSION
-		CHAR tmpMPDbgString[512];
+		CHAR8 tmpMPDbgString[512];
 		sprintf(tmpMPDbgString,"NewSmokeEffect ( sGridNo : %i ,  usItem : %i , ubOwner : %i , bLevel : %i , iSmokeEffectID : %i )\n",sGridNo, usItem , ubOwner.i , bLevel , iSmokeIndex );
 		MPDebugMsg(tmpMPDbgString);
 		gfMPDebugOutputRandoms = true;
@@ -364,7 +364,7 @@ INT32 NewSmokeEffect(INT32 sGridNo, UINT16 usItem, INT8 bLevel, SoldierID ubOwne
 			}
 		}
 #ifdef JA2BETAVERSION
-		CHAR tmpMPDbgString[512];
+		CHAR8 tmpMPDbgString[512];
 		sprintf(tmpMPDbgString, "NewSmokeEffect ( sGridNo : %i ,  usItem : %i , ubOwner : %i , bLevel : %i , iSmokeEffectID : %i )\n", sGridNo, usItem, ubOwner.i, bLevel, iSmokeIndex);
 		MPDebugMsg(tmpMPDbgString);
 		gfMPDebugOutputRandoms = true;
@@ -464,7 +464,7 @@ INT32 NewSmokeEffect(INT32 sGridNo, UINT16 usItem, INT8 bLevel, SoldierID ubOwne
 void AddSmokeEffectToTile( INT32 iSmokeEffectID, INT8 bType, INT32 sGridNo, INT8 bLevel )
 {
 #ifdef JA2BETAVERSION
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString,"AddSmokeEffectToTile ( iSmokeEffectID : %i , bType : %i , sGridNo : %i , bLevel : %i )\n", iSmokeEffectID, bType , sGridNo , bLevel );
 	MPDebugMsg(tmpMPDbgString);
 #endif
@@ -650,7 +650,7 @@ void AddSmokeEffectToTile( INT32 iSmokeEffectID, INT8 bType, INT32 sGridNo, INT8
 void RemoveSmokeEffectFromTile( INT32 sGridNo, INT8 bLevel )
 {
 #ifdef JA2BETAVERSION
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString,"RemoveSmokeEffectFromTile ( sGridNo : %i , bLevel : %i  )\n", sGridNo, bLevel );
 	MPDebugMsg(tmpMPDbgString);
 #endif
@@ -1137,7 +1137,7 @@ void UpdateSmokeEffectGraphics( )
 	}
 }
 
-BOOL GetRandomSignalSmokeGridNo(INT32* psGridNo)
+BOOLEAN GetRandomSignalSmokeGridNo(INT32* psGridNo)
 {
 	UINT32		uiCnt;
 	//SMOKEEFFECT *pSmoke;

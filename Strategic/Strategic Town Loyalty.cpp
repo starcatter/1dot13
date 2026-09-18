@@ -561,7 +561,7 @@ void UpdateTownLoyaltyBasedOnFriendliesInTown( INT8 bTownId )
 						if( iLocalNPCBonus > 0 )
 						{
 							// debug message
-							ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"%s influences loyalty in home town of %s, worth %d", pSoldier->name, pTownNames[ bTownId ], iLocalNPCBonus);
+							ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("%s influences loyalty in home town of %s, worth %d"), pSoldier->name, pTownNames[ bTownId ], iLocalNPCBonus);
 
 							// increment town loyalty
 							IncrementTownLoyalty( bTownId, iLocalNPCBonus );
@@ -843,7 +843,7 @@ void HandleMurderOfCivilian( SOLDIERTYPE *pSoldier, BOOLEAN fIntentional )
 			iLoyaltyChange /= 100;
 
 			// debug message
-			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"You're being blamed for a death you didn't cause!");
+			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("You're being blamed for a death you didn't cause!"));
 		}
 	}
 
@@ -856,7 +856,7 @@ void HandleMurderOfCivilian( SOLDIERTYPE *pSoldier, BOOLEAN fIntentional )
 			fIncrement = FALSE;
 
 			// debug message
-			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Civilian killed by friendly forces.");
+			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Civilian killed by friendly forces."));
 			break;
 
 		case ENEMY_TEAM:
@@ -867,7 +867,7 @@ void HandleMurderOfCivilian( SOLDIERTYPE *pSoldier, BOOLEAN fIntentional )
 				fIncrement = TRUE;
 
 				// debug message
-				ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Enemy soldiers murdered a civilian. Town loyalty increases");
+				ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Enemy soldiers murdered a civilian. Town loyalty increases"));
 			}
 			else
 			{
@@ -879,7 +879,7 @@ void HandleMurderOfCivilian( SOLDIERTYPE *pSoldier, BOOLEAN fIntentional )
 				fIncrement = FALSE;
 
 				// debug message
-				ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Town holds you responsible for murder by enemy.");
+				ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Town holds you responsible for murder by enemy."));
 			}
 			break;
 
@@ -895,7 +895,7 @@ void HandleMurderOfCivilian( SOLDIERTYPE *pSoldier, BOOLEAN fIntentional )
 				fIncrement = FALSE;
 
 				// debug message
-				ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Town holds you responsible for murder by rebels.");
+				ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Town holds you responsible for murder by rebels."));
 			}
 			break;
 
@@ -932,7 +932,7 @@ void HandleMurderOfCivilian( SOLDIERTYPE *pSoldier, BOOLEAN fIntentional )
 			fIncrement = FALSE;
 
 			// debug message
-			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Town holds you responsible for not stopping the murder.");
+			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Town holds you responsible for not stopping the murder."));
 		}
 		break;
 
@@ -1026,7 +1026,7 @@ BOOLEAN HandleLoyaltyAdjustmentForRobbery( SOLDIERTYPE *pSoldier )
 
 
 	// debug message
-	ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Theft not yet implemented.");
+	ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Theft not yet implemented."));
 
 	return ( FALSE );
 */
@@ -1166,7 +1166,7 @@ void RemoveRandomItemsInSector( INT16 sSectorX, INT16 sSectorY, INT16 sSectorZ, 
 					uiWeightToSteal -= uiStackWeight;
 
 					// debug message
-					ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"%s stolen in %s!", ItemNames[ pItemList[ iCounter ].object.usItem ], wSectorName );
+					ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("%s stolen in %s!"), ItemNames[ pItemList[ iCounter ].object.usItem ], wSectorName );
 				}
 			}
 		}
@@ -1190,7 +1190,7 @@ void RemoveRandomItemsInSector( INT16 sSectorX, INT16 sSectorY, INT16 sSectorZ, 
 					uiWeightToSteal -= uiStackWeight;
 					
 					// debug message
-					ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"%s stolen in %s!", ItemNames[ gWorldItems[ iCounter ].object.usItem ], wSectorName );
+					ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("%s stolen in %s!"), ItemNames[ gWorldItems[ iCounter ].object.usItem ], wSectorName );
 				}
 			}
 		}

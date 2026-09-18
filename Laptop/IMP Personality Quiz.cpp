@@ -475,7 +475,7 @@ void AddIMPPersonalityQuizAnswerButtons( INT32 iNumberOfButtons )
 
 			break;
 		}
-		swprintf( sString, L"%d", iCounter + 1 );
+		swprintf( sString, JA2_TEXT("%d"), iCounter + 1 );
 		SpecifyButtonUpTextColors( giIMPPersonalityQuizAnswerButton[ iCounter ], FONT_WHITE, FONT_BLACK );
 		SpecifyButtonDownTextColors( giIMPPersonalityQuizAnswerButton[ iCounter ], FONT_WHITE, FONT_BLACK	);
 		SpecifyButtonTextOffsets( giIMPPersonalityQuizAnswerButton[ iCounter ], +23, +12, TRUE );
@@ -1576,13 +1576,13 @@ void PrintQuizQuestionNumber( void )
 	SetFontBackground( FONT_BLACK );
 
 	// get current question number into a string
-	swprintf(sString, L"%d", giCurrentPersonalityQuizQuestion + 1);
+	swprintf(sString, JA2_TEXT("%d"), giCurrentPersonalityQuizQuestion + 1);
 
 	// print current question number
 	mprintf( LAPTOP_SCREEN_UL_X + 345 , LAPTOP_SCREEN_WEB_UL_Y + 370 ,sString);
 
 	// total number of questions
-	mprintf( LAPTOP_SCREEN_UL_X + 383 , LAPTOP_SCREEN_WEB_UL_Y + 370 , L"16");
+	mprintf( LAPTOP_SCREEN_UL_X + 383 , LAPTOP_SCREEN_WEB_UL_Y + 370 , JA2_TEXT("16"));
 	return;
 }
 

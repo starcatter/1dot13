@@ -1337,14 +1337,8 @@ void WriteOutCurrentImpCharacter( INT32 iProfileId )
 	DebugMsg (TOPIC_JA2,DBG_LEVEL_3,String("WriteOutCurrentImpCharacter: Nickname.dat"));
 
 	char zFileName[32];
-	if(vfs::Settings::getUseUnicode())
-	{
-		strncpy(zFileName, vfs::String::as_utf8(gMercProfiles[iProfileId].zNickname,10).c_str(), 32);
-	}
-	else
-	{
-		vfs::String::narrow(gMercProfiles[iProfileId].zNickname, 10, zFileName, 32);
-	}
+	ja2::text::copyUtf16ToUtf8(
+		ja2::text::Utf16View(gMercProfiles[iProfileId].zNickname, 10), zFileName);
 
 	// Changed by ADB, rev 1513
 	//strcat(zFileName,IMP_FILENAME_SUFFIX);

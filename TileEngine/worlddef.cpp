@@ -385,7 +385,7 @@ BOOLEAN LoadTileSurfaces( char ppTileSurfaceFilenames[][32], UINT8 ubTilesetID )
 
 	//uiFillColor = Get16BPPColor(FROMRGB( 100, 0, 0 ));
 	// load the tile surfaces
-	SetRelativeStartAndEndPercentage( 0, 1, 35, L"Tile Surfaces" );
+	SetRelativeStartAndEndPercentage( 0, 1, 35, JA2_TEXT("Tile Surfaces") );
 	for (uiLoop = 0; uiLoop < (UINT32)giNumberOfTileTypes; uiLoop++)
 	{
 	
@@ -1881,8 +1881,8 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		}
 		if( LayerCount > 15 )
 		{
-			swprintf( gzErrorCatchString, L"SAVE ABORTED!  Land count too high (%d) for gridno %d."
-				L"  Need to fix before map can be saved!  There are %d additional warnings.",
+			swprintf( gzErrorCatchString, JA2_TEXT("SAVE ABORTED!  Land count too high (%d) for gridno %d.")
+				JA2_TEXT("  Need to fix before map can be saved!  There are %d additional warnings."),
 				LayerCount, cnt, uiNumWarningsCaught );
 			gfErrorCatch = TRUE;
 			FileClose( hfile );
@@ -1892,7 +1892,7 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		{
 			uiNumWarningsCaught++;
 			gfErrorCatch = TRUE;
-			swprintf( gzErrorCatchString, L"Warnings %d -- Last warning:	Land count warning of %d for gridno %d.",
+			swprintf( gzErrorCatchString, JA2_TEXT("Warnings %d -- Last warning:	Land count warning of %d for gridno %d."),
 				uiNumWarningsCaught, LayerCount, cnt );
 		}
 		bCounts[ cnt ][ 0 ] = LayerCount;
@@ -1921,8 +1921,8 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		}
 		if( ObjectCount > 15 )
 		{
-			swprintf( gzErrorCatchString, L"SAVE ABORTED!  Object count too high (%d) for gridno %d."
-				L"  Need to fix before map can be saved!  There are %d additional warnings.",
+			swprintf( gzErrorCatchString, JA2_TEXT("SAVE ABORTED!  Object count too high (%d) for gridno %d.")
+				JA2_TEXT("  Need to fix before map can be saved!  There are %d additional warnings."),
 				ObjectCount, cnt, uiNumWarningsCaught );
 			gfErrorCatch = TRUE;
 			FileClose( hfile );
@@ -1932,7 +1932,7 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		{
 			uiNumWarningsCaught++;
 			gfErrorCatch = TRUE;
-			swprintf( gzErrorCatchString, L"Warnings %d -- Last warning:	Object count warning of %d for gridno %d.",
+			swprintf( gzErrorCatchString, JA2_TEXT("Warnings %d -- Last warning:	Object count warning of %d for gridno %d."),
 				uiNumWarningsCaught, ObjectCount, cnt );
 		}
 		bCounts[ cnt ][ 1 ] = ObjectCount;
@@ -1951,8 +1951,8 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		}
 		if( StructCount > 15 )
 		{
-			swprintf( gzErrorCatchString, L"SAVE ABORTED!  Struct count too high (%d) for gridno %d."
-				L"  Need to fix before map can be saved!  There are %d additional warnings.",
+			swprintf( gzErrorCatchString, JA2_TEXT("SAVE ABORTED!  Struct count too high (%d) for gridno %d.")
+				JA2_TEXT("  Need to fix before map can be saved!  There are %d additional warnings."),
 				StructCount, cnt, uiNumWarningsCaught );
 			gfErrorCatch = TRUE;
 			FileClose( hfile );
@@ -1962,7 +1962,7 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		{
 			uiNumWarningsCaught++;
 			gfErrorCatch = TRUE;
-			swprintf( gzErrorCatchString, L"Warnings %d -- Last warning:	Struct count warning of %d for gridno %d.",
+			swprintf( gzErrorCatchString, JA2_TEXT("Warnings %d -- Last warning:	Struct count warning of %d for gridno %d."),
 				uiNumWarningsCaught, StructCount, cnt );
 		}
 		bCounts[ cnt ][ 2 ] = StructCount;
@@ -1986,8 +1986,8 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		}
 		if( ShadowCount > 15 )
 		{
-			swprintf( gzErrorCatchString, L"SAVE ABORTED!  Shadow count too high (%d) for gridno %d."
-				L"  Need to fix before map can be saved!  There are %d additional warnings.",
+			swprintf( gzErrorCatchString, JA2_TEXT("SAVE ABORTED!  Shadow count too high (%d) for gridno %d.")
+				JA2_TEXT("  Need to fix before map can be saved!  There are %d additional warnings."),
 				ShadowCount, cnt, uiNumWarningsCaught );
 			gfErrorCatch = TRUE;
 			FileClose( hfile );
@@ -1997,7 +1997,7 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		{
 			uiNumWarningsCaught++;
 			gfErrorCatch = TRUE;
-			swprintf( gzErrorCatchString, L"Warnings %d -- Last warning:	Shadow count warning of %d for gridno %d.",
+			swprintf( gzErrorCatchString, JA2_TEXT("Warnings %d -- Last warning:	Shadow count warning of %d for gridno %d."),
 				uiNumWarningsCaught, ShadowCount, cnt );
 		}
 		bCounts[ cnt ][ 3 ] = ShadowCount;
@@ -2016,8 +2016,8 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		}
 		if( RoofCount > 15 )
 		{
-			swprintf( gzErrorCatchString, L"SAVE ABORTED!  Roof count too high (%d) for gridno %d."
-				L"  Need to fix before map can be saved!  There are %d additional warnings.",
+			swprintf( gzErrorCatchString, JA2_TEXT("SAVE ABORTED!  Roof count too high (%d) for gridno %d.")
+				JA2_TEXT("  Need to fix before map can be saved!  There are %d additional warnings."),
 				RoofCount, cnt, uiNumWarningsCaught );
 			gfErrorCatch = TRUE;
 			FileClose( hfile );
@@ -2027,7 +2027,7 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		{
 			uiNumWarningsCaught++;
 			gfErrorCatch = TRUE;
-			swprintf( gzErrorCatchString, L"Warnings %d -- Last warning:	Roof count warning of %d for gridno %d.",
+			swprintf( gzErrorCatchString, JA2_TEXT("Warnings %d -- Last warning:	Roof count warning of %d for gridno %d."),
 				uiNumWarningsCaught, RoofCount, cnt );
 		}
 		bCounts[ cnt ][ 4 ] = RoofCount;
@@ -2049,8 +2049,8 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		}
 		if( OnRoofCount > 15 )
 		{
-			swprintf( gzErrorCatchString, L"SAVE ABORTED!  OnRoof count too high (%d) for gridno %d."
-				L"  Need to fix before map can be saved!  There are %d additional warnings.",
+			swprintf( gzErrorCatchString, JA2_TEXT("SAVE ABORTED!  OnRoof count too high (%d) for gridno %d.")
+				JA2_TEXT("  Need to fix before map can be saved!  There are %d additional warnings."),
 				OnRoofCount, cnt, uiNumWarningsCaught );
 			gfErrorCatch = TRUE;
 			FileClose( hfile );
@@ -2060,7 +2060,7 @@ BOOLEAN SaveWorld(const STR8 puiFilename, FLOAT dMajorMapVersion, UINT8 ubMinorM
 		{
 			uiNumWarningsCaught++;
 			gfErrorCatch = TRUE;
-			swprintf( gzErrorCatchString, L"Warnings %d -- Last warning:	OnRoof count warning of %d for gridno %d.",
+			swprintf( gzErrorCatchString, JA2_TEXT("Warnings %d -- Last warning:	OnRoof count warning of %d for gridno %d."),
 				uiNumWarningsCaught, OnRoofCount, cnt );
 		}
 		bCounts[ cnt ][ 5 ] = RoofCount;
@@ -2418,7 +2418,7 @@ BOOLEAN EvaluateWorld(STR8 pSector, UINT8 ubLevel)
 		strcat(szFilename, "_a");
 	strcat(szFilename, ".dat");
 	CHAR16 szFileName[FILENAME_BUFLEN];//dnl ch81 021213
-	swprintf(szFileName, L"%S", pSector);
+	swprintf(szFileName, JA2_TEXT("%S"), pSector);
 	if(ValidMapFileName(szFileName))
 		strcpy(szFilename, pSector);
 	sprintf(szDirFilename, "MAPS\\%s", szFilename);
@@ -2433,7 +2433,7 @@ BOOLEAN EvaluateWorld(STR8 pSector, UINT8 ubLevel)
 	pBufferHead = pBuffer;
 	FileRead(hfile, pBuffer, uiFileSize, &uiBytesRead);
 	FileClose(hfile);
-	swprintf(str, L"Analyzing map %S", szFilename);
+	swprintf(str, JA2_TEXT("Analyzing map %S"), szFilename);
 	if(!gfUpdatingNow)
 		SetRelativeStartAndEndPercentage(0, 0, 100, str);
 	else
@@ -2859,7 +2859,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 	if(!gfEditMode)//dnl ch74 211013
 		SetNewLoadScreenHint();
 
-	SetRelativeStartAndEndPercentage(0, 0, 1, L"Trashing world...");
+	SetRelativeStartAndEndPercentage(0, 0, 1, JA2_TEXT("Trashing world..."));
 #ifdef JA2TESTVERSION
 	uiStartTime = GetJA2Clock();
 #endif
@@ -2969,7 +2969,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 			RemoveAllLandsOfTypeRange(cnt, FIRSTTEXTURE, DEEPWATERTEXTURE);
 	}
 
-	SetRelativeStartAndEndPercentage(0, 35, 40, L"Counting layers...");
+	SetRelativeStartAndEndPercentage(0, 35, 40, JA2_TEXT("Counting layers..."));
 	RenderProgressBar(0, 100);
 	// Read layer counts
 	for(i=0; i<iWorldSize; i++)
@@ -2996,7 +2996,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 		bCounts[cnt][5] = (UINT8)(ubCombine & 0x0F);
 	}
 
-	SetRelativeStartAndEndPercentage(0, 40, 43, L"Loading land layers...");
+	SetRelativeStartAndEndPercentage(0, 40, 43, JA2_TEXT("Loading land layers..."));
 	RenderProgressBar(0, 100);
 	for(i=0; i<iWorldSize; i++)
 	{
@@ -3013,7 +3013,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 		}
 	}
 
-	SetRelativeStartAndEndPercentage(0, 43, 46, L"Loading object layer...");
+	SetRelativeStartAndEndPercentage(0, 43, 46, JA2_TEXT("Loading object layer..."));
 	RenderProgressBar(0, 100);
 	// New load require UINT16 for the type subindex due to the fact that ROADPIECES contain over 300 type subindices.
 	for(i=0; i<iWorldSize; i++)
@@ -3033,7 +3033,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 		}
 	}
 
-	SetRelativeStartAndEndPercentage(0, 46, 49, L"Loading struct layer...");
+	SetRelativeStartAndEndPercentage(0, 46, 49, JA2_TEXT("Loading struct layer..."));
 	RenderProgressBar(0, 100);
 	for(i=0; i<iWorldSize; i++)
 	{
@@ -3056,7 +3056,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 		}
 	}
 
-	SetRelativeStartAndEndPercentage(0, 49, 52, L"Loading shadow layer...");
+	SetRelativeStartAndEndPercentage(0, 49, 52, JA2_TEXT("Loading shadow layer..."));
 	RenderProgressBar(0, 100);
 	for(i=0; i<iWorldSize; i++)
 	{
@@ -3072,7 +3072,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 		}
 	}
 
-	SetRelativeStartAndEndPercentage(0, 52, 55, L"Loading roof layer...");
+	SetRelativeStartAndEndPercentage(0, 52, 55, JA2_TEXT("Loading roof layer..."));
 	RenderProgressBar(0, 100);
 	for(i=0; i<iWorldSize; i++)
 	{
@@ -3088,7 +3088,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 		}
 	}
 
-	SetRelativeStartAndEndPercentage(0, 55, 58, L"Loading on roof layer...");
+	SetRelativeStartAndEndPercentage(0, 55, 58, JA2_TEXT("Loading on roof layer..."));
 	RenderProgressBar(0, 100);
 	for(i=0; i<iWorldSize; i++)
 	{
@@ -3119,7 +3119,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 	}
 	//now the data is discarded and when saved, as 6.27, you won't have this problem!
 
-	SetRelativeStartAndEndPercentage(0, 58, 59, L"Loading room information...");
+	SetRelativeStartAndEndPercentage(0, 58, 59, JA2_TEXT("Loading room information..."));
 	RenderProgressBar(0, 100);
 #ifdef JA2EDITOR
 	gusMaxRoomNumber = 0;
@@ -3154,7 +3154,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 #endif
 	memset(gubWorldRoomHidden, TRUE, sizeof(gubWorldRoomHidden));
 
-	SetRelativeStartAndEndPercentage(0, 59, 61, L"Loading items...");
+	SetRelativeStartAndEndPercentage(0, 59, 61, JA2_TEXT("Loading items..."));
 	RenderProgressBar(0, 100);
 	if(uiFlags & MAP_WORLDITEMS_SAVED)
 	{
@@ -3164,7 +3164,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 		gfLoadPitsWithoutArming = FALSE;
 	}
 
-	SetRelativeStartAndEndPercentage(0, 62, 85, L"Loading lights...");
+	SetRelativeStartAndEndPercentage(0, 62, 85, JA2_TEXT("Loading lights..."));
 	RenderProgressBar(0, 0);
 	if(uiFlags & MAP_AMBIENTLIGHTLEVEL_SAVED)
 	{
@@ -3198,7 +3198,7 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 	uiLoadMapLightsTime = GetJA2Clock() - uiStartTime;
 #endif
 
-	SetRelativeStartAndEndPercentage(0, 85, 86, L"Loading map information...");
+	SetRelativeStartAndEndPercentage(0, 85, 86, JA2_TEXT("Loading map information..."));
 	RenderProgressBar(0, 0);
 	LoadMapInformation(&pBuffer, dMajorMapVersion);
 	// Translation routine for map grid numbers
@@ -3211,25 +3211,25 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 
 	if(uiFlags & MAP_FULLSOLDIER_SAVED)
 	{
-		SetRelativeStartAndEndPercentage(0, 86, 87, L"Loading placements...");
+		SetRelativeStartAndEndPercentage(0, 86, 87, JA2_TEXT("Loading placements..."));
 		RenderProgressBar(0, 0);
 		LoadSoldiersFromMap(&pBuffer, dMajorMapVersion, ubMinorMapVersion);
 	}
 	if(uiFlags & MAP_EXITGRIDS_SAVED)
 	{
-		SetRelativeStartAndEndPercentage(0, 87, 88, L"Loading exit grids...");
+		SetRelativeStartAndEndPercentage(0, 87, 88, JA2_TEXT("Loading exit grids..."));
 		RenderProgressBar(0, 0);
 		LoadExitGrids(&pBuffer, dMajorMapVersion);
 	}
 	if(uiFlags & MAP_DOORTABLE_SAVED)
 	{
-		SetRelativeStartAndEndPercentage(0, 89, 90, L"Loading door tables...");
+		SetRelativeStartAndEndPercentage(0, 89, 90, JA2_TEXT("Loading door tables..."));
 		RenderProgressBar(0, 0);
 		LoadDoorTableFromMap(&pBuffer, dMajorMapVersion);
 	}
 	if(uiFlags & MAP_EDGEPOINTS_SAVED)
 	{
-		SetRelativeStartAndEndPercentage(0, 90, 91, L"Loading edgepoints...");
+		SetRelativeStartAndEndPercentage(0, 90, 91, JA2_TEXT("Loading edgepoints..."));
 		RenderProgressBar(0, 0);
 		if(!LoadMapEdgepoints(&pBuffer, dMajorMapVersion))
 			fGenerateEdgePoints = TRUE;// Only if the map had the older edgepoint system
@@ -3244,26 +3244,26 @@ BOOLEAN LoadWorld(const STR8 puiFilename, FLOAT* pMajorMapVersion, UINT8* pMinor
 		fGenerateEdgePoints = TRUE;
 	if(uiFlags & MAP_NPCSCHEDULES_SAVED)
 	{
-		SetRelativeStartAndEndPercentage(0, 91, 92, L"Loading NPC schedules...");
+		SetRelativeStartAndEndPercentage(0, 91, 92, JA2_TEXT("Loading NPC schedules..."));
 		RenderProgressBar(0, 0);
 		LoadSchedules(&pBuffer, dMajorMapVersion);
 	}
 
 	ValidateAndUpdateMapVersionIfNecessary();
-	SetRelativeStartAndEndPercentage(0, 93, 94, L"Init Loaded World...");
+	SetRelativeStartAndEndPercentage(0, 93, 94, JA2_TEXT("Init Loaded World..."));
 	RenderProgressBar(0, 0);
 	InitLoadedWorld();
 
 	if(fGenerateEdgePoints)
 	{
-		SetRelativeStartAndEndPercentage(0, 94, 95, L"Generating map edgepoints...");
+		SetRelativeStartAndEndPercentage(0, 94, 95, JA2_TEXT("Generating map edgepoints..."));
 		RenderProgressBar(0, 0);
 		CompileWorldMovementCosts();
 		GenerateMapEdgepoints();
 	}
 
 	RenderProgressBar(0, 20);
-	SetRelativeStartAndEndPercentage(0, 95, 100, L"General initialization...");
+	SetRelativeStartAndEndPercentage(0, 95, 100, JA2_TEXT("General initialization..."));
 	// RESET AI!
 	InitOpponentKnowledgeSystem();
 	RenderProgressBar(0, 40);

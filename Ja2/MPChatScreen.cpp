@@ -246,7 +246,7 @@ INT32 DoChatBox( bool bIncludeChatLog, const STR16 zString, UINT32 uiExitScreen,
 	// Init message box
 	if (bIncludeChatLog)
 		// we need a string just long enough to give 1 line, but max length of the box, we render the chatlog over this string so well never see it. DONT DELETE ANY SPACES
-		gChatBox.iBoxId = PrepareMercPopupBox( iId, ubMercBoxBackground, ubMercBoxBorder, L"A string that will be hidden,                          ", CHATBOX_WIDTH, CHATBOX_X_MARGIN, usYMargin, CHATBOX_Y_MARGIN_BOTTOM, &usTextBoxWidth, &usTextBoxHeight );
+		gChatBox.iBoxId = PrepareMercPopupBox( iId, ubMercBoxBackground, ubMercBoxBorder, JA2_TEXT("A string that will be hidden,                          "), CHATBOX_WIDTH, CHATBOX_X_MARGIN, usYMargin, CHATBOX_Y_MARGIN_BOTTOM, &usTextBoxWidth, &usTextBoxHeight );
 	else
 		gChatBox.iBoxId = PrepareMercPopupBox( iId, ubMercBoxBackground, ubMercBoxBorder, zString, CHATBOX_WIDTH, CHATBOX_X_MARGIN, usYMargin, CHATBOX_Y_MARGIN_BOTTOM, &usTextBoxWidth, &usTextBoxHeight );
 

@@ -570,17 +570,17 @@ void InitDoorEditing( INT32 iMapIndex )
 	DisableButton( iDoorButton[ DOOR_BACKGROUND ] );
 	SpecifyDisabledButtonStyle( iDoorButton[ DOOR_BACKGROUND ], DISABLED_STYLE_NONE );
 	iDoorButton[ DOOR_OKAY ] =
-		CreateTextButton(L"Okay", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton(JA2_TEXT("Okay"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 330, iScreenHeightOffset + 195, 50, 30, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		DoorOkayCallback );
 	iDoorButton[ DOOR_CANCEL ] =
-		CreateTextButton(L"Cancel", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton(JA2_TEXT("Cancel"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 385, iScreenHeightOffset + 195, 50, 30, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		DoorCancelCallback );
 	InitTextInputModeWithScheme( DEFAULT_SCHEME );
-	AddTextInputField( iScreenWidthOffset + 210, iScreenHeightOffset + 155, 25, 16, MSYS_PRIORITY_HIGH, L"0", 3, INPUTTYPE_NUMERICSTRICT );
-	AddTextInputField( iScreenWidthOffset + 210, iScreenHeightOffset + 175, 25, 16, MSYS_PRIORITY_HIGH, L"0", 2, INPUTTYPE_NUMERICSTRICT );
-	AddTextInputField( iScreenWidthOffset + 210, iScreenHeightOffset + 195, 25, 16, MSYS_PRIORITY_HIGH, L"0", 2, INPUTTYPE_NUMERICSTRICT );
+	AddTextInputField( iScreenWidthOffset + 210, iScreenHeightOffset + 155, 25, 16, MSYS_PRIORITY_HIGH, JA2_TEXT("0"), 3, INPUTTYPE_NUMERICSTRICT );
+	AddTextInputField( iScreenWidthOffset + 210, iScreenHeightOffset + 175, 25, 16, MSYS_PRIORITY_HIGH, JA2_TEXT("0"), 2, INPUTTYPE_NUMERICSTRICT );
+	AddTextInputField( iScreenWidthOffset + 210, iScreenHeightOffset + 195, 25, 16, MSYS_PRIORITY_HIGH, JA2_TEXT("0"), 2, INPUTTYPE_NUMERICSTRICT );
 	iDoorButton[ DOOR_LOCKED ] =
 		CreateCheckBoxButton(	iScreenWidthOffset + 210, iScreenHeightOffset + 215, "EDITOR//SmCheckbox.sti", MSYS_PRIORITY_HIGH, DoorToggleLockedCallback );
 
@@ -784,7 +784,7 @@ void SetupTextInputForBuildings()
 	CHAR16 str[4];
 	InitTextInputModeWithScheme( DEFAULT_SCHEME );
 	AddUserInputField( NULL );	//just so we can use short cut keys while not typing.
-	swprintf( str, L"%d", gusMaxRoomNumber );
+	swprintf( str, JA2_TEXT("%d"), gusMaxRoomNumber );
 	AddTextInputField( iScreenWidthOffset + 410, 2 * iScreenHeightOffset + 400, 40, 15, MSYS_PRIORITY_NORMAL, str, 5, INPUTTYPE_NUMERICSTRICT );
 }
 
@@ -802,7 +802,7 @@ void ExtractAndUpdateBuildingInfo()
 	{
 		gusCurrRoomNumber = 0;
 	}
-	swprintf( str, L"%d", gusCurrRoomNumber );
+	swprintf( str, JA2_TEXT("%d"), gusCurrRoomNumber );
 	SetInputFieldStringWith16BitString( 1, str );
 	SetActiveField( 0 );
 }

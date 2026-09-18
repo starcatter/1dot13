@@ -617,7 +617,7 @@ INT32 AddItemToWorld( INT32 sGridNo, OBJECTTYPE *pObject, UINT8 ubLevel, UINT16 
 	{
 		// Display warning.....
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Error: Item %d was given invalid grid location %d. Please report", pObject->usItem, sGridNo);
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Error: Item %d was given invalid grid location %d. Please report"), pObject->usItem, sGridNo);
 		#endif
 		return( -1 );
 	}

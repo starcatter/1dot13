@@ -66,7 +66,7 @@ BOOLEAN		gfHomePageActive=FALSE;		//Specifies whether or not the home page or th
 //Graphic for button
 INT32		guiGalleryButtonImage;
 void		BtnGalleryButtonCallback(GUI_BUTTON *btn,INT32 reason);
-UINT32	guiGalleryButton;
+static UINT32	guiGalleryButton;
 
 
 //link to the flower home page by clicking on the flower title

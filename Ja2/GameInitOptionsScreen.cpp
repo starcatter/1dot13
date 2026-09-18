@@ -2062,22 +2062,22 @@ BOOLEAN		RenderGIOScreen()
 	CHAR16 qualityText[256], quantityText[256];
 
 	if (iCurrentBRQualitySetting < BR_GREAT)
-		swprintf(qualityText, L"%s (%d)", gzGIOScreenText[GIO_BR_GOOD_TEXT], iCurrentBRQualitySetting);
+		swprintf(qualityText, JA2_TEXT("%s (%d)"), gzGIOScreenText[GIO_BR_GOOD_TEXT], iCurrentBRQualitySetting);
 	else if (iCurrentBRQualitySetting >= BR_GREAT && iCurrentBRQualitySetting < BR_EXCELLENT )
-		swprintf(qualityText, L"%s (%d)", gzGIOScreenText[GIO_BR_GREAT_TEXT], iCurrentBRQualitySetting);
+		swprintf(qualityText, JA2_TEXT("%s (%d)"), gzGIOScreenText[GIO_BR_GREAT_TEXT], iCurrentBRQualitySetting);
 	else if (iCurrentBRQualitySetting >= BR_EXCELLENT && iCurrentBRQualitySetting < BR_AWESOME )
-		swprintf(qualityText, L"%s (%d)", gzGIOScreenText[GIO_BR_EXCELLENT_TEXT], iCurrentBRQualitySetting);
+		swprintf(qualityText, JA2_TEXT("%s (%d)"), gzGIOScreenText[GIO_BR_EXCELLENT_TEXT], iCurrentBRQualitySetting);
 	else
-		swprintf(qualityText, L"%s (%d)", gzGIOScreenText[GIO_BR_AWESOME_TEXT], iCurrentBRQualitySetting);
+		swprintf(qualityText, JA2_TEXT("%s (%d)"), gzGIOScreenText[GIO_BR_AWESOME_TEXT], iCurrentBRQualitySetting);
 
 	if (iCurrentBRQuantitySetting < BR_GREAT)
-		swprintf(quantityText, L"%s (%dx)", gzGIOScreenText[GIO_BR_GOOD_TEXT], iCurrentBRQuantitySetting);
+		swprintf(quantityText, JA2_TEXT("%s (%dx)"), gzGIOScreenText[GIO_BR_GOOD_TEXT], iCurrentBRQuantitySetting);
 	else if (iCurrentBRQuantitySetting >= BR_GREAT && iCurrentBRQuantitySetting < BR_EXCELLENT )
-		swprintf(quantityText, L"%s (%dx)", gzGIOScreenText[GIO_BR_GREAT_TEXT], iCurrentBRQuantitySetting);
+		swprintf(quantityText, JA2_TEXT("%s (%dx)"), gzGIOScreenText[GIO_BR_GREAT_TEXT], iCurrentBRQuantitySetting);
 	else if (iCurrentBRQuantitySetting >= BR_EXCELLENT && iCurrentBRQuantitySetting < BR_AWESOME )
-		swprintf(quantityText, L"%s (%dx)", gzGIOScreenText[GIO_BR_EXCELLENT_TEXT], iCurrentBRQuantitySetting);
+		swprintf(quantityText, JA2_TEXT("%s (%dx)"), gzGIOScreenText[GIO_BR_EXCELLENT_TEXT], iCurrentBRQuantitySetting);
 	else
-		swprintf(quantityText, L"%s (%dx)", gzGIOScreenText[GIO_BR_AWESOME_TEXT], iCurrentBRQuantitySetting);
+		swprintf(quantityText, JA2_TEXT("%s (%dx)"), gzGIOScreenText[GIO_BR_AWESOME_TEXT], iCurrentBRQuantitySetting);
 
 	RenderGIOSmallSelectionFrame( (GIO_BR_QUALITY_SETTING_X + 36), (GIO_BR_QUALITY_SETTING_Y - 3) );
 	DisplayWrappedString( (UINT16)(GIO_BR_QUALITY_SETTING_X+GIO_OFFSET_TO_TEXT + 1), (UINT16)(GIO_BR_QUALITY_SETTING_Y-GIO_GAP_BN_SETTINGS + GIO_TITLE_DISTANCE - 12), GIO_BR_QUALITY_SETTING_WIDTH, 2, GIO_TOGGLE_TEXT_FONT, GIO_TOGGLE_TEXT_COLOR, gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED );
@@ -4374,22 +4374,22 @@ BOOLEAN		RenderGIOScreen()
 	CHAR16 qualityText[256], quantityText[256];
 
 	if (iCurrentBRQualitySetting < BR_GREAT)
-		swprintf(qualityText, L"%s (%d)", gzGIOScreenText[GIO_BR_GOOD_TEXT], iCurrentBRQualitySetting);
+		swprintf(qualityText, JA2_TEXT("%s (%d)"), gzGIOScreenText[GIO_BR_GOOD_TEXT], iCurrentBRQualitySetting);
 	else if (iCurrentBRQualitySetting >= BR_GREAT && iCurrentBRQualitySetting < BR_EXCELLENT )
-		swprintf(qualityText, L"%s (%d)", gzGIOScreenText[GIO_BR_GREAT_TEXT], iCurrentBRQualitySetting);
+		swprintf(qualityText, JA2_TEXT("%s (%d)"), gzGIOScreenText[GIO_BR_GREAT_TEXT], iCurrentBRQualitySetting);
 	else if (iCurrentBRQualitySetting >= BR_EXCELLENT && iCurrentBRQualitySetting < BR_AWESOME )
-		swprintf(qualityText, L"%s (%d)", gzGIOScreenText[GIO_BR_EXCELLENT_TEXT], iCurrentBRQualitySetting);
+		swprintf(qualityText, JA2_TEXT("%s (%d)"), gzGIOScreenText[GIO_BR_EXCELLENT_TEXT], iCurrentBRQualitySetting);
 	else
-		swprintf(qualityText, L"%s (%d)", gzGIOScreenText[GIO_BR_AWESOME_TEXT], iCurrentBRQualitySetting);
+		swprintf(qualityText, JA2_TEXT("%s (%d)"), gzGIOScreenText[GIO_BR_AWESOME_TEXT], iCurrentBRQualitySetting);
 
 	if (iCurrentBRQuantitySetting < BR_GREAT)
-		swprintf(quantityText, L"%s (%dx)", gzGIOScreenText[GIO_BR_GOOD_TEXT], iCurrentBRQuantitySetting);
+		swprintf(quantityText, JA2_TEXT("%s (%dx)"), gzGIOScreenText[GIO_BR_GOOD_TEXT], iCurrentBRQuantitySetting);
 	else if (iCurrentBRQuantitySetting >= BR_GREAT && iCurrentBRQuantitySetting < BR_EXCELLENT )
-		swprintf(quantityText, L"%s (%dx)", gzGIOScreenText[GIO_BR_GREAT_TEXT], iCurrentBRQuantitySetting);
+		swprintf(quantityText, JA2_TEXT("%s (%dx)"), gzGIOScreenText[GIO_BR_GREAT_TEXT], iCurrentBRQuantitySetting);
 	else if (iCurrentBRQuantitySetting >= BR_EXCELLENT && iCurrentBRQuantitySetting < BR_AWESOME )
-		swprintf(quantityText, L"%s (%dx)", gzGIOScreenText[GIO_BR_EXCELLENT_TEXT], iCurrentBRQuantitySetting);
+		swprintf(quantityText, JA2_TEXT("%s (%dx)"), gzGIOScreenText[GIO_BR_EXCELLENT_TEXT], iCurrentBRQuantitySetting);
 	else
-		swprintf(quantityText, L"%s (%dx)", gzGIOScreenText[GIO_BR_AWESOME_TEXT], iCurrentBRQuantitySetting);
+		swprintf(quantityText, JA2_TEXT("%s (%dx)"), gzGIOScreenText[GIO_BR_AWESOME_TEXT], iCurrentBRQuantitySetting);
 
 	RenderGIOSmallSelectionFrame( (GIO_BR_QUALITY_SETTING_X + 36), (GIO_BR_QUALITY_SETTING_Y - 3) );
 	DisplayWrappedString( (UINT16)(GIO_BR_QUALITY_SETTING_X+GIO_OFFSET_TO_TEXT + 1), (UINT16)(GIO_BR_QUALITY_SETTING_Y-GIO_GAP_BN_SETTINGS + GIO_TITLE_DISTANCE - 12), GIO_BR_QUALITY_SETTING_WIDTH, 2, GIO_TOGGLE_TEXT_FONT, GIO_TOGGLE_TEXT_COLOR, gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED );

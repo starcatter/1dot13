@@ -3,6 +3,7 @@
 	#include <stdarg.h>
 	#include "gameloop.h"
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "vobject.h"
 	#include "WCheck.h"
 	#include "worlddef.h"
@@ -380,7 +381,7 @@ typedef struct popbox PopUpBox;
 typedef PopUpBox *PopUpBoxPtr;
 
 // TABLES
-RGBCOLOR GlowColorsA[]={
+static RGBCOLOR GlowColorsA[]={
 	{0,0,0},
 	{25,0,0},
 	{50,0,0},
@@ -2332,7 +2333,7 @@ void DrawPay(INT16 sCharNumber)
 	SetFontBackground( FONT_BLACK );
 
 	// parse salary
-	swprintf( sString, L"%d", uiSalary );
+	swprintf( sString, JA2_TEXT("%d"), uiSalary );
 
 	// right justify salary
 	const auto x = UI_CHARPANEL.Text.Pay.x;
@@ -2427,7 +2428,7 @@ void DrawCharStats( INT16 sCharNum )
 	SetFontBackground(FONT_BLACK);
 
 	// strength
-	swprintf( sString, L"%d", pSoldier->stats.bStrength + pSoldier->bExtraStrength );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bStrength + pSoldier->bExtraStrength );
 
 	// SANDRO - if damaged stat we could regain, show in red until repaired
 	if ( ( gGameOptions.fNewTraitSystem && ( pSoldier->ubCriticalStatDamage[DAMAGED_STAT_STRENGTH] > 0 )) || ( UsingFoodSystem() && pSoldier->usStarveDamageStrength > 0) )
@@ -2465,7 +2466,7 @@ void DrawCharStats( INT16 sCharNum )
 	DrawString(sString,usX, UI_CHARPANEL.Attr.STR.iY,CHAR_FONT );
 
 	// dexterity
-	swprintf( sString, L"%d", pSoldier->stats.bDexterity + pSoldier->bExtraDexterity );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bDexterity + pSoldier->bExtraDexterity );
 
 	// SANDRO - if damaged stat we could regain, show in red until repaired
 	if( gGameOptions.fNewTraitSystem && ( pSoldier->ubCriticalStatDamage[DAMAGED_STAT_DEXTERITY] > 0 ))
@@ -2503,7 +2504,7 @@ void DrawCharStats( INT16 sCharNum )
 	DrawString(sString,usX, UI_CHARPANEL.Attr.DEX.iY,CHAR_FONT );
 
 	// agility
-	swprintf( sString, L"%d", pSoldier->stats.bAgility + pSoldier->bExtraAgility );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bAgility + pSoldier->bExtraAgility );
 	
 	// SANDRO - if damaged stat we could regain, show in red until repaired
 	if( gGameOptions.fNewTraitSystem && ( pSoldier->ubCriticalStatDamage[DAMAGED_STAT_AGILITY] > 0 ))
@@ -2541,7 +2542,7 @@ void DrawCharStats( INT16 sCharNum )
 	DrawString(sString,usX, UI_CHARPANEL.Attr.AGL.iY,CHAR_FONT );
 
 	// wisdom
-	swprintf( sString, L"%d", pSoldier->stats.bWisdom + pSoldier->bExtraWisdom );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bWisdom + pSoldier->bExtraWisdom );
 	
 	// SANDRO - if damaged stat we could regain, show in red until repaired
 	if( gGameOptions.fNewTraitSystem && ( pSoldier->ubCriticalStatDamage[DAMAGED_STAT_WISDOM] > 0 ))
@@ -2579,7 +2580,7 @@ void DrawCharStats( INT16 sCharNum )
 	DrawString(sString,usX, UI_CHARPANEL.Attr.WIS.iY,CHAR_FONT );
 
 	// leadership
-	swprintf( sString, L"%d", pSoldier->stats.bLeadership );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bLeadership );
 	
 	// SANDRO - if damaged stat we could regain, show in red until repaired
 	if( gGameOptions.fNewTraitSystem && ( pSoldier->ubCriticalStatDamage[DAMAGED_STAT_LEADERSHIP] > 0 ))
@@ -2613,7 +2614,7 @@ void DrawCharStats( INT16 sCharNum )
 	DrawString(sString,usX, UI_CHARPANEL.Attr.LDR.iY,CHAR_FONT );
 
 	// experience level
-	swprintf( sString, L"%d", pSoldier->stats.bExpLevel + pSoldier->bExtraExpLevel );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bExpLevel + pSoldier->bExtraExpLevel );
 
 	if( ( GetJA2Clock() < CHANGE_STAT_RECENTLY_DURATION + pSoldier->timeChanges.uiChangeLevelTime)&&( pSoldier->timeChanges.uiChangeLevelTime != 0 ) )
 	{
@@ -2646,7 +2647,7 @@ void DrawCharStats( INT16 sCharNum )
 	DrawString(sString,usX, UI_CHARPANEL.Attr.LVL.iY,CHAR_FONT );
 
 	// marksmanship
-	swprintf( sString, L"%d", pSoldier->stats.bMarksmanship );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bMarksmanship );
 
 	// SANDRO - if damaged stat we could regain, show in red until repaired
 	if( gGameOptions.fNewTraitSystem && ( pSoldier->ubCriticalStatDamage[DAMAGED_STAT_MARKSMANSHIP] > 0 ))
@@ -2680,7 +2681,7 @@ void DrawCharStats( INT16 sCharNum )
 	DrawString(sString,usX, UI_CHARPANEL.Attr.MRK.iY,CHAR_FONT );
 
 	// mechanical
-	swprintf( sString, L"%d", pSoldier->stats.bMechanical );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bMechanical );
 	
 	// SANDRO - if damaged stat we could regain, show in red until repaired
 	if( gGameOptions.fNewTraitSystem && ( pSoldier->ubCriticalStatDamage[DAMAGED_STAT_MECHANICAL] > 0 ))
@@ -2714,7 +2715,7 @@ void DrawCharStats( INT16 sCharNum )
 	DrawString(sString,usX, UI_CHARPANEL.Attr.MEC.iY,CHAR_FONT );
 	
 	// explosives
-	swprintf( sString, L"%d", pSoldier->stats.bExplosive );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bExplosive );
 	
 	// SANDRO - if damaged stat we could regain, show in red until repaired
 	if( gGameOptions.fNewTraitSystem && ( pSoldier->ubCriticalStatDamage[DAMAGED_STAT_EXPLOSIVES] > 0 ))
@@ -2748,7 +2749,7 @@ void DrawCharStats( INT16 sCharNum )
 	DrawString(sString,usX, UI_CHARPANEL.Attr.EXP.iY,CHAR_FONT );
 
 	// medical
-	swprintf( sString, L"%d", pSoldier->stats.bMedical );
+	swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bMedical );
 
 	// SANDRO - if damaged stat we could regain, show in red until repaired
 	if( gGameOptions.fNewTraitSystem && ( pSoldier->ubCriticalStatDamage[DAMAGED_STAT_MEDICAL] > 0 ))
@@ -2804,7 +2805,7 @@ void DrawCharHealth( INT16 sCharNum )
 	if( pSoldier->bAssignment != ASSIGNMENT_POW && pSoldier->bAssignment != ASSIGNMENT_MINIEVENT && pSoldier->bAssignment != ASSIGNMENT_REBELCOMMAND )
 	{
 		// find starting X coordinate by centering all 3 substrings together, then print them separately (different colors)!
-		swprintf( sString, L"%d/%d", pSoldier->stats.bLife, pSoldier->stats.bLifeMax );
+		swprintf( sString, JA2_TEXT("%d/%d"), pSoldier->stats.bLife, pSoldier->stats.bLifeMax );
 		FindFontCenterCoordinates(x, y, width, height, sString, CHAR_FONT, &usX, &usY);
 
 
@@ -2838,14 +2839,14 @@ void DrawCharHealth( INT16 sCharNum )
 		}
 
 		// current life
-		swprintf( sString, L"%d", pSoldier->stats.bLife );
+		swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bLife );
 		DrawString( sString, usX, y, CHAR_FONT );
 		usX += StringPixLength( sString, CHAR_FONT );
 
 
 		// slash
 		SetFontForeground(CHAR_TEXT_FONT_COLOR);
-		wcscpy( sString, L"/" );
+		wcscpy( sString, JA2_TEXT("/") );
 		DrawString( sString, usX, y, CHAR_FONT );
 		usX += StringPixLength( sString, CHAR_FONT );
 
@@ -2870,7 +2871,7 @@ void DrawCharHealth( INT16 sCharNum )
 		}
 
 		// maximum life
-		swprintf( sString, L"%d", pSoldier->stats.bLifeMax );
+		swprintf( sString, JA2_TEXT("%d"), pSoldier->stats.bLifeMax );
 		DrawString( sString, usX, y, CHAR_FONT );
 	}
 	else
@@ -2967,7 +2968,7 @@ void DrawCharacterInfo(INT16 sCharNumber)
 	}
 		else
 		{
-		swprintf(sString, L"%s%s", GetRankTitle(pSoldier->stats.bExpLevel), gMercProfiles[usMercProfileID].zName);
+		swprintf(sString, JA2_TEXT("%s%s"), GetRankTitle(pSoldier->stats.bExpLevel), gMercProfiles[usMercProfileID].zName);
 		}
  	}
 
@@ -2986,7 +2987,7 @@ void DrawCharacterInfo(INT16 sCharNumber)
 	else
 	{
 		if ( gGameExternalOptions.fUseXMLSquadNames && pSoldier->bAssignment < min(ON_DUTY, gSquadNameVector.size()) )
-			swprintf( sString, L"%s", gSquadNameVector[pSoldier->bAssignment].c_str() );
+			swprintf( sString, JA2_TEXT("%s"), gSquadNameVector[pSoldier->bAssignment].c_str() );
 		else
 			wcscpy( sString, pAssignmentStrings[ pSoldier->bAssignment ] );
 	}
@@ -3008,7 +3009,7 @@ void DrawCharacterInfo(INT16 sCharNumber)
 		UINT8 ubFacilityType = (UINT8)pSoldier->sFacilityTypeOperated;
 		// Print sector ID string
 		GetShortSectorString( pSoldier->sSectorX, pSoldier->sSectorY, sString );
-		wcscat( sString, L": " );
+		wcscat( sString, JA2_TEXT(": ") );
 		wcscat( sString, gFacilityTypes[ubFacilityType].szFacilityShortName );
 		//wcscpy(sString, gFacilityTypes[ pSoldier->sFacilityTypeOperated ].szFacilityName);
 	}
@@ -3098,7 +3099,7 @@ void DrawCharacterInfo(INT16 sCharNumber)
 	// dead?
 	if( pSoldier->stats.bLife <= 0 )
 	{
-		swprintf( sString, L"%s", gpStrategicString[ STR_PB_NOTAPPLICABLE_ABBREVIATION ] );
+		swprintf( sString, JA2_TEXT("%s"), gpStrategicString[ STR_PB_NOTAPPLICABLE_ABBREVIATION ] );
 	}
 	// what kind of merc
 	else if(pSoldier->ubWhatKindOfMercAmI == MERC_TYPE__AIM_MERC || pSoldier->ubProfile == SLAY )
@@ -3131,7 +3132,7 @@ void DrawCharacterInfo(INT16 sCharNumber)
 				SetFontForeground(FONT_LTGREEN);
 			}
 
-			swprintf(sString, L"%.1f%s/%d%s", dTimeLeft, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ], pSoldier->iTotalContractLength, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ]);
+			swprintf(sString, JA2_TEXT("%.1f%s/%d%s"), dTimeLeft, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ], pSoldier->iTotalContractLength, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ]);
 		}
 		else
 		{
@@ -3158,18 +3159,18 @@ void DrawCharacterInfo(INT16 sCharNumber)
 				SetFontForeground(FONT_RED);
 			}
 
-		swprintf(sString, L"%d%s/%d%s",iTimeRemaining, gpStrategicString[ STR_PB_HOURS_ABBREVIATION ], pSoldier->iTotalContractLength, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ]);
+		swprintf(sString, JA2_TEXT("%d%s/%d%s"),iTimeRemaining, gpStrategicString[ STR_PB_HOURS_ABBREVIATION ], pSoldier->iTotalContractLength, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ]);
 		}
 	}
 	else if( pSoldier->ubWhatKindOfMercAmI == MERC_TYPE__MERC )
 	{
 		INT32 iBeenHiredFor = ( GetWorldTotalMin( ) / NUM_MIN_IN_DAY ) - pSoldier->iStartContractTime;
 
-		swprintf(sString, L"%d%s/%d%s",gMercProfiles[ pSoldier->ubProfile ].iMercMercContractLength, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ], iBeenHiredFor, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ] );
+		swprintf(sString, JA2_TEXT("%d%s/%d%s"),gMercProfiles[ pSoldier->ubProfile ].iMercMercContractLength, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ], iBeenHiredFor, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ] );
 	}
 	else
 	{
-		swprintf( sString, L"%s", gpStrategicString[ STR_PB_NOTAPPLICABLE_ABBREVIATION ] );
+		swprintf( sString, JA2_TEXT("%s"), gpStrategicString[ STR_PB_NOTAPPLICABLE_ABBREVIATION ] );
 	}
 
 
@@ -3237,7 +3238,7 @@ void DrawCharacterInfo(INT16 sCharNumber)
 
 /*
 	// life insurance
-	swprintf(sString, L"%d", Menptr[ gCharactersList[ sCharNumber ].usSolID ].usLifeInsuranceAmount );
+	swprintf(sString, JA2_TEXT("%d"), Menptr[ gCharactersList[ sCharNumber ].usSolID ].usLifeInsuranceAmount );
 	InsertCommasForDollarFigure( sString );
 	InsertDollarSignInToString( sString );
 	FindFontRightCoordinates(CHAR_LIFE_INSUR_X, CHAR_LIFE_INSUR_Y, CHAR_LIFE_INSUR_WID, CHAR_LIFE_INSUR_HEI, sString, CHAR_FONT, &usX, &usY);
@@ -3253,7 +3254,7 @@ void DrawCharacterInfo(INT16 sCharNumber)
 		}
 		else
 		{
-			wcscpy( sString, L"" );
+			wcscpy( sString, JA2_TEXT("") );
 		}
 	}
 	else
@@ -3665,14 +3666,14 @@ void DisplayGroundEta( void )
 	if( ( iTotalTime / ( 60 * 24 ) ) < 1 )
 	{
 		// show hours and minutes
-		SetClockMin( L"%d", iTotalTime % 60 );
-		SetClockHour(L"%d", iTotalTime / 60);
+		SetClockMin( JA2_TEXT("%d"), iTotalTime % 60 );
+		SetClockHour(JA2_TEXT("%d"), iTotalTime / 60);
 	}
 	else
 	{
 		// show days and hours
-		SetHourAlternate(L"%d", ( iTotalTime / 60 ) % 24 );
-		SetDayAlternate( L"%d", iTotalTime / ( 60 * 24 ) );
+		SetHourAlternate(JA2_TEXT("%d"), ( iTotalTime / 60 ) % 24 );
+		SetDayAlternate( JA2_TEXT("%d"), iTotalTime / ( 60 * 24 ) );
 	}
 }
 
@@ -4119,9 +4120,9 @@ void DrawMPPlayerList ()
 
 	if (is_networked && is_client && is_connected)
 	{
-		wchar_t szPlayerName[30];
-		wchar_t szTeam[20];
-		wchar_t szCompass[2];
+		CHAR16 szPlayerName[30];
+		CHAR16 szTeam[20];
+		CHAR16 szCompass[2];
 		int row=0;
 		for(int i=0; i < 4; i++)
 		{
@@ -4169,8 +4170,8 @@ void DrawMPPlayerList ()
 				if (strcmp(client_names[i],"")!=0)
 				{
 					// valid player
-					memset(szPlayerName,0,30*sizeof(wchar_t));
-					mbstowcs( szPlayerName,client_names[i],30);
+					memset(szPlayerName,0,sizeof(szPlayerName));
+					ja2::text::copyUtf8ToUtf16(client_names[i], szPlayerName);
 					FindFontCenterCoordinates((short)MP_PLAYER_X + 1, (short)(MP_ROWSTART_Y+(row*Y_SIZE)), (short)MP_PLAYER_W, (short)Y_SIZE, szPlayerName, (long)MAP_SCREEN_FONT, &usX, &usY);
 					// do it manually here so as DrawString overrides the dirty rects
 					// we want the dirty rect to include progress bar as well as player text
@@ -4188,7 +4189,7 @@ void DrawMPPlayerList ()
 					FindFontCenterCoordinates((short)MP_TEAM_X + 1, (short)(MP_ROWSTART_Y+(row*Y_SIZE)), (short)MP_TEAM_W, (short)Y_SIZE, szTeam, (long)MAP_SCREEN_FONT, &usX, &usY);
 					DrawString( szTeam,usX,(short)usY, MAP_SCREEN_FONT);
 
-					wcscpy(szCompass,(gRandomStartingEdge==1 ? L"?" : gszMPEdgesText[client_edges[i]]));
+					wcscpy(szCompass,(gRandomStartingEdge==1 ? JA2_TEXT("?") : gszMPEdgesText[client_edges[i]]));
 					FindFontCenterCoordinates((short)MP_COMPASS_X + 1, (short)(MP_ROWSTART_Y+(row*Y_SIZE)), (short)MP_COMPASS_W, (short)Y_SIZE, szCompass, (long)MAP_SCREEN_FONT, &usX, &usY);
 					DrawString(szCompass , usX,(short)usY, MAP_SCREEN_FONT);
 
@@ -4207,7 +4208,7 @@ void DrawMPPlayerList ()
 		mbstowcs( szServerName,cServerName,30);
 
 		SetFontForeground( FONT_YELLOW );
-		DrawString( L"Server Name:" , MP_GAMEINFO_X ,MP_ROWSTART_Y, MAP_SCREEN_FONT);
+		DrawString( JA2_TEXT("Server Name:") , MP_GAMEINFO_X ,MP_ROWSTART_Y, MAP_SCREEN_FONT);
 		SetFontForeground( FONT_WHITE );
 		DrawString( (STR16)szServerName , MP_GAMEINFO_X ,MP_ROWSTART_Y+(1*Y_SIZE), MAP_SCREEN_FONT);*/
 
@@ -4234,8 +4235,8 @@ void DrawMPPlayerList ()
 		DrawString( gszMPMapscreenText[1] , MP_GAMEINFO_X ,MP_ROWSTART_Y+(2*Y_SIZE), MAP_SCREEN_FONT);
 		SetFontForeground( FONT_WHITE );
 
-		wchar_t szMaxPlayers[10];
-		swprintf(szMaxPlayers,L"%i",cMaxClients);
+		CHAR16 szMaxPlayers[10];
+		swprintf(szMaxPlayers,JA2_TEXT("%i"),cMaxClients);
 		DrawString( szMaxPlayers , MP_GAMEINFO_X + StringPixLength(gszMPMapscreenText[1],MAP_SCREEN_FONT),MP_ROWSTART_Y+(2*Y_SIZE), MAP_SCREEN_FONT);
 
 		// Number of Mercs
@@ -4243,8 +4244,8 @@ void DrawMPPlayerList ()
 		DrawString( gszMPMapscreenText[2] , MP_GAMEINFO_X ,MP_ROWSTART_Y+(3*Y_SIZE), MAP_SCREEN_FONT);
 		SetFontForeground( FONT_WHITE );
 
-		wchar_t szSquadSize[10];
-		swprintf(szSquadSize,L"%i",cMaxMercs);
+		CHAR16 szSquadSize[10];
+		swprintf(szSquadSize,JA2_TEXT("%i"),cMaxMercs);
 		DrawString( szSquadSize , MP_GAMEINFO_X + StringPixLength(gszMPMapscreenText[2],MAP_SCREEN_FONT),MP_ROWSTART_Y+(3*Y_SIZE), MAP_SCREEN_FONT);
 
 		row = 4;
@@ -4263,9 +4264,9 @@ void DrawMPPlayerList ()
 		DrawString( gszMPMapscreenText[8] , MP_GAMEINFO_X ,MP_ROWSTART_Y+(row*Y_SIZE), MAP_SCREEN_FONT);
 		row++;
 
-		wchar_t szServerVer[30];
-		memset(szServerVer,0,30*sizeof(wchar_t));
-		mbstowcs( szServerVer,MPVERSION,30);
+		CHAR16 szServerVer[30];
+		memset(szServerVer,0,sizeof(szServerVer));
+		ja2::text::copyUtf8ToUtf16(MPVERSION, szServerVer);
 		SetFontForeground( FONT_WHITE );
 		DrawString( szServerVer , MP_GAMEINFO_X ,MP_ROWSTART_Y+(row*Y_SIZE), MAP_SCREEN_FONT);
 
@@ -5833,12 +5834,12 @@ UINT32 MapScreenHandle(void)
 			SetFontForeground( FONT_DKRED );
 		else
 			SetFontForeground( FONT_RED );
-		mprintf( SCREEN_WIDTH - 110, 2, L"TESTVERSION MSG" );
+		mprintf( SCREEN_WIDTH - 110, 2, JA2_TEXT("TESTVERSION MSG") );
 		if( GetJA2Clock() % 1000 < 500 )
 			SetFontForeground( FONT_DKYELLOW );
 		else
 			SetFontForeground( FONT_YELLOW );
-		mprintf( SCREEN_WIDTH - 110, 12, L"NO WORLD LOADED" );
+		mprintf( SCREEN_WIDTH - 110, 12, JA2_TEXT("NO WORLD LOADED") );
 		InvalidateRegion( SCREEN_WIDTH - 110, 2, SCREEN_WIDTH, 23 );
 	}
 	#endif
@@ -7439,9 +7440,9 @@ void GetMapKeyboardInput( UINT32 *puiNewEvent )
 				case '?':
 					#ifdef JA2TESTVERSION
 						if( fCtrl )
-						MapScreenMessage( 0, MSG_DEBUG, L"JA2Clock = %d", GetJA2Clock() );
+						MapScreenMessage( 0, MSG_DEBUG, JA2_TEXT("JA2Clock = %d"), GetJA2Clock() );
 						else
-						MapScreenMessage( 0, MSG_DEBUG, L"Mouse X,Y = %d,%d", MSYS_CurrentMX, MSYS_CurrentMY );
+						MapScreenMessage( 0, MSG_DEBUG, JA2_TEXT("Mouse X,Y = %d,%d"), MSYS_CurrentMX, MSYS_CurrentMY );
 					#endif
 					break;
 
@@ -7627,9 +7628,9 @@ void GetMapKeyboardInput( UINT32 *puiNewEvent )
 							if( CHEATER_CHEAT_LEVEL( ) )
 							{
 								if(	gfAutoAmbush ^= 1 )
-									ScreenMsg( FONT_WHITE, MSG_TESTVERSION, L"Enemy ambush test mode enabled." );
+									ScreenMsg( FONT_WHITE, MSG_TESTVERSION, JA2_TEXT("Enemy ambush test mode enabled.") );
 								else
-									ScreenMsg( FONT_WHITE, MSG_TESTVERSION, L"Enemy ambush test mode disabled." );
+									ScreenMsg( FONT_WHITE, MSG_TESTVERSION, JA2_TEXT("Enemy ambush test mode disabled.") );
 							}
 						}
 						else
@@ -7881,7 +7882,7 @@ void GetMapKeyboardInput( UINT32 *puiNewEvent )
 						{
 							pSoldier->sBreathRed = 10000;
 							pSoldier->bBreath = 100;
-							ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"Vehicle refueled" );
+							ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("Vehicle refueled") );
 
 							fTeamPanelDirty = TRUE;
 							fCharacterInfoPanelDirty = TRUE;
@@ -7905,12 +7906,12 @@ void GetMapKeyboardInput( UINT32 *puiNewEvent )
 						{
 							if (gTacticalStatus.uiFlags & GODMODE)
 							{
-								//ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, L"God mode deactivated.");
+								//ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("God mode deactivated."));
 								gTacticalStatus.uiFlags &= (~GODMODE);
 							}
 							else
 							{
-								//ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, L"God mode activated.");
+								//ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("God mode activated."));
 								gTacticalStatus.uiFlags |= GODMODE;
 							}
 						}
@@ -8167,12 +8168,12 @@ void GetMapKeyboardInput( UINT32 *puiNewEvent )
 						if(gGameExternalOptions.fEnableInventoryPoolQ)
 						{
 							gGameExternalOptions.fEnableInventoryPoolQ = FALSE;
-							ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"InventoryPoolQ disabled.");
+							ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("InventoryPoolQ disabled."));
 						}
 						else
 						{
 							gGameExternalOptions.fEnableInventoryPoolQ = TRUE;
-							ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"InventoryPoolQ enabled.");
+							ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("InventoryPoolQ enabled."));
 						}
 					}
 #endif
@@ -8400,9 +8401,9 @@ void GetMapKeyboardInput( UINT32 *puiNewEvent )
 					if( fCtrl )
 					{
 						#ifdef SGP_VIDEO_DEBUGGING
-							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"VObjects:	%d", guiVObjectSize );
-							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"VSurfaces:	%d", guiVSurfaceSize );
-							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"SGPVideoDump.txt updated..." );
+							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("VObjects:	%d"), guiVObjectSize );
+							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("VSurfaces:	%d"), guiVSurfaceSize );
+							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("SGPVideoDump.txt updated...") );
 							PerformVideoInfoDumpIntoFile( "SGPVideoDump.txt", TRUE );
 						#endif
 					}
@@ -8532,9 +8533,9 @@ void GetMapKeyboardInput( UINT32 *puiNewEvent )
 						if( CHEATER_CHEAT_LEVEL( ) )
 						{
 							if(	gfAutoAIAware ^= 1 )
-								ScreenMsg( FONT_WHITE, MSG_TESTVERSION, L"Strategic AI awareness maxed." );
+								ScreenMsg( FONT_WHITE, MSG_TESTVERSION, JA2_TEXT("Strategic AI awareness maxed.") );
 							else
-								ScreenMsg( FONT_WHITE, MSG_TESTVERSION, L"Strategic AI awareness normal." );
+								ScreenMsg( FONT_WHITE, MSG_TESTVERSION, JA2_TEXT("Strategic AI awareness normal.") );
 						}
 					}
 					else if ( !fShowMapInventoryPool )
@@ -9635,7 +9636,7 @@ void BltCharInvPanel()
 		if( g_lang == i18n::Lang::zh ) {
 			mprintf(UI_CHARINV.Text.ArmorPercent.iX, UI_CHARINV.Text.ArmorPercent.iY, ChineseSpecString1 );
 		} else {
-			mprintf(UI_CHARINV.Text.ArmorPercent.iX, UI_CHARINV.Text.ArmorPercent.iY, L"%%" );
+			mprintf(UI_CHARINV.Text.ArmorPercent.iX, UI_CHARINV.Text.ArmorPercent.iY, JA2_TEXT("%%") );
 		}
 
 		mprintf(UI_CHARINV.Text.WeightLabel.iX, UI_CHARINV.Text.WeightLabel.iY, pInvPanelTitleStrings[ 1 ]  );
@@ -9643,7 +9644,7 @@ void BltCharInvPanel()
 		if( g_lang == i18n::Lang::zh ) {
 			mprintf(UI_CHARINV.Text.WeightPercent.iX, UI_CHARINV.Text.WeightPercent.iY, ChineseSpecString1 );
 		} else {
-			mprintf(UI_CHARINV.Text.WeightPercent.iX, UI_CHARINV.Text.WeightPercent.iY, L"%%" );
+			mprintf(UI_CHARINV.Text.WeightPercent.iX, UI_CHARINV.Text.WeightPercent.iY, JA2_TEXT("%%") );
 		}
 
 		mprintf(UI_CHARINV.Text.CamoLabel.iX, UI_CHARINV.Text.CamoLabel.iY, pInvPanelTitleStrings[ 2 ]  );
@@ -9651,25 +9652,25 @@ void BltCharInvPanel()
 		if( g_lang == i18n::Lang::zh ) {
 			mprintf(UI_CHARINV.Text.CamoPercent.iX, UI_CHARINV.Text.CamoPercent.iY, ChineseSpecString1 );
 		} else {
-			mprintf(UI_CHARINV.Text.CamoPercent.iX, UI_CHARINV.Text.CamoPercent.iY, L"%%" );
+			mprintf(UI_CHARINV.Text.CamoPercent.iX, UI_CHARINV.Text.CamoPercent.iY, JA2_TEXT("%%") );
 		}
 
 		const auto width = UI_CHARINV.Text.PercentWidth;
 		const auto height = UI_CHARINV.Text.PercentHeight;
 		// display armor value
-		swprintf( sString, L"%3d", ArmourPercent( pSoldier ) );
+		swprintf( sString, JA2_TEXT("%3d"), ArmourPercent( pSoldier ) );
 		FindFontRightCoordinates( UI_CHARINV.Text.Armor.iX, UI_CHARINV.Text.Armor.iY, width, height, sString, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, sString ); 
 
 		// Display weight value
-		swprintf( sString, L"%3d", CalculateCarriedWeight( pSoldier ) );
+		swprintf( sString, JA2_TEXT("%3d"), CalculateCarriedWeight( pSoldier ) );
 		FindFontRightCoordinates(UI_CHARINV.Text.Weight.iX, UI_CHARINV.Text.Weight.iY, width, height, sString, BLOCKFONT2, &usX, &usY);
 		mprintf( usX, usY, sString ); 
 		
 		ApplyEquipmentBonuses(pSoldier);
 
 		// Display camo value
-		swprintf( sString, L"%3d", max(0, min(max((pSoldier->bCamo + pSoldier->wornCamo), max((pSoldier->urbanCamo+pSoldier->wornUrbanCamo), max((pSoldier->desertCamo+pSoldier->wornDesertCamo), (pSoldier->snowCamo+pSoldier->wornSnowCamo)))),100)) );
+		swprintf( sString, JA2_TEXT("%3d"), max(0, min(max((pSoldier->bCamo + pSoldier->wornCamo), max((pSoldier->urbanCamo+pSoldier->wornUrbanCamo), max((pSoldier->desertCamo+pSoldier->wornDesertCamo), (pSoldier->snowCamo+pSoldier->wornSnowCamo)))),100)) );
 		FindFontRightCoordinates(UI_CHARINV.Text.Camo.iX, UI_CHARINV.Text.Camo.iY, width, height, sString, BLOCKFONT2, &usX, &usY);
 		mprintf( usX, usY, sString );
 
@@ -9679,31 +9680,31 @@ void BltCharInvPanel()
 
 			// detailed camo info popup
 			CHAR16 pStrCamo[400];
-			swprintf( pStrCamo, L"" );
-			swprintf( pStr, L"");
+			swprintf( pStrCamo, JA2_TEXT("") );
+			swprintf( pStr, JA2_TEXT(""));
 			if ((pSoldier->bCamo + pSoldier->wornCamo) > 0 )
 			{
-				swprintf( pStrCamo, L"\n%d/%d%s %s", pSoldier->bCamo, pSoldier->wornCamo, L"%", gzMiscItemStatsFasthelp[ 21 ]);
+				swprintf( pStrCamo, JA2_TEXT("\n%d/%d%s %s"), pSoldier->bCamo, pSoldier->wornCamo, JA2_TEXT("%"), gzMiscItemStatsFasthelp[ 21 ]);
 				wcscat( pStr, pStrCamo);
-				swprintf( pStrCamo, L"" );
+				swprintf( pStrCamo, JA2_TEXT("") );
 			}
 			if ((pSoldier->urbanCamo + pSoldier->wornUrbanCamo) > 0 )
 			{
-				swprintf( pStrCamo, L"\n%d/%d%s %s", pSoldier->urbanCamo, pSoldier->wornUrbanCamo, L"%", gzMiscItemStatsFasthelp[ 22 ]);
+				swprintf( pStrCamo, JA2_TEXT("\n%d/%d%s %s"), pSoldier->urbanCamo, pSoldier->wornUrbanCamo, JA2_TEXT("%"), gzMiscItemStatsFasthelp[ 22 ]);
 				wcscat( pStr, pStrCamo);
-				swprintf( pStrCamo, L"" );
+				swprintf( pStrCamo, JA2_TEXT("") );
 			}
 			if ((pSoldier->desertCamo + pSoldier->wornDesertCamo) > 0 )
 			{
-				swprintf( pStrCamo, L"\n%d/%d%s %s", pSoldier->desertCamo, pSoldier->wornDesertCamo, L"%", gzMiscItemStatsFasthelp[ 23 ]);
+				swprintf( pStrCamo, JA2_TEXT("\n%d/%d%s %s"), pSoldier->desertCamo, pSoldier->wornDesertCamo, JA2_TEXT("%"), gzMiscItemStatsFasthelp[ 23 ]);
 				wcscat( pStr, pStrCamo);
-				swprintf( pStrCamo, L"" );
+				swprintf( pStrCamo, JA2_TEXT("") );
 			}
 			if ((pSoldier->snowCamo + pSoldier->wornSnowCamo) > 0 )
 			{
-				swprintf( pStrCamo, L"\n%d/%d%s %s", pSoldier->snowCamo, pSoldier->wornSnowCamo, L"%", gzMiscItemStatsFasthelp[ 24 ] );
+				swprintf( pStrCamo, JA2_TEXT("\n%d/%d%s %s"), pSoldier->snowCamo, pSoldier->wornSnowCamo, JA2_TEXT("%"), gzMiscItemStatsFasthelp[ 24 ] );
 				wcscat( pStr, pStrCamo);
-				swprintf( pStrCamo, L"" );
+				swprintf( pStrCamo, JA2_TEXT("") );
 			}
 		
 			// anv: display stealth together with camo
@@ -9728,16 +9729,16 @@ void BltCharInvPanel()
 				CHAR16 pStrBonusStealth[400];
 				CHAR16 pStrWornStealth[400];
 				if( bonusstealth < 0 )
-				swprintf( pStrBonusStealth, L"%d", bonusstealth );
+				swprintf( pStrBonusStealth, JA2_TEXT("%d"), bonusstealth );
 				else
-					swprintf( pStrBonusStealth, L"+%d", bonusstealth );
+					swprintf( pStrBonusStealth, JA2_TEXT("+%d"), bonusstealth );
 				if( wornstealth < 0 )
-					swprintf( pStrWornStealth, L"%d", wornstealth );
+					swprintf( pStrWornStealth, JA2_TEXT("%d"), wornstealth );
 				else
-					swprintf( pStrWornStealth, L"+%d", wornstealth );
-				swprintf( pStrCamo, L"\n%s/%s %s", pStrBonusStealth, pStrWornStealth, gzMiscItemStatsFasthelp[ 25 ] );
+					swprintf( pStrWornStealth, JA2_TEXT("+%d"), wornstealth );
+				swprintf( pStrCamo, JA2_TEXT("\n%s/%s %s"), pStrBonusStealth, pStrWornStealth, gzMiscItemStatsFasthelp[ 25 ] );
 				wcscat( pStr, pStrCamo);
-				swprintf( pStrCamo, L"" );
+				swprintf( pStrCamo, JA2_TEXT("") );
 			}
 
 			SetRegionFastHelpText( &(gMapMercCamoRegion), pStr );
@@ -9818,22 +9819,22 @@ void BltCharInvPanel()
 		// robot utility bonus
 		if ( HasItemFlag( pSoldier->inv[ROBOT_UTILITY_SLOT].usItem, CLEANING_KIT ) )
 		{
-			swprintf(text, L"%s", szRobotText[ROBOT_TEXT_CLEANING_KIT]);
+			swprintf(text, JA2_TEXT("%s"), szRobotText[ROBOT_TEXT_CLEANING_KIT]);
 			fontColour = FONT_MCOLOR_LTGREEN;
 		}
 		else if ( HasItemFlag(pSoldier->inv[ROBOT_UTILITY_SLOT].usItem, RADIO_SET ) )
 		{
-			swprintf(text, L"%s", szRobotText[ROBOT_TEXT_RADIO]);
+			swprintf(text, JA2_TEXT("%s"), szRobotText[ROBOT_TEXT_RADIO]);
 			fontColour = FONT_MCOLOR_LTGREEN;
 		}
 		else if (ItemIsMetalDetector(pSoldier->inv[ROBOT_UTILITY_SLOT].usItem))
 		{
-			swprintf(text, L"%s", szRobotText[ROBOT_TEXT_METAL_DETECTOR]);
+			swprintf(text, JA2_TEXT("%s"), szRobotText[ROBOT_TEXT_METAL_DETECTOR]);
 			fontColour = FONT_MCOLOR_LTGREEN;
 		}
 		else if (ItemHasXRay(pSoldier->inv[ROBOT_UTILITY_SLOT].usItem))
 		{
-			swprintf(text, L"%s", szRobotText[ROBOT_TEXT_XRAY]);
+			swprintf(text, JA2_TEXT("%s"), szRobotText[ROBOT_TEXT_XRAY]);
 			fontColour = FONT_MCOLOR_LTGREEN;
 		}
 		else if (Item[pSoldier->inv[ROBOT_UTILITY_SLOT].usItem].bRobotUtilitySkillGrant > 0)
@@ -9843,7 +9844,7 @@ void BltCharInvPanel()
 		}
 		else
 		{
-			swprintf(text, L"%s", szRobotText[ROBOT_TEXT_NO_BONUS]);
+			swprintf(text, JA2_TEXT("%s"), szRobotText[ROBOT_TEXT_NO_BONUS]);
 			fontColour = FONT_MCOLOR_RED;
 		}
 		DisplayWrappedString(UI_CHARINV.Text.RobotUtilityBonus.iX, UI_CHARINV.Text.RobotUtilityBonus.iY, 170, 2, FONT10ARIAL, fontColour, text, FONT_MCOLOR_BLACK, FALSE, 0);
@@ -11173,7 +11174,7 @@ void MPTeamChangeCallback( MOUSE_REGION * pReason, INT32 iReason)
 			}
 			else if (gRandomStartingEdge)
 			{
-				ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, L"Cannot change edge, the game is set to random spawn");
+				ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, JA2_TEXT("Cannot change edge, the game is set to random spawn"));
 			}
 		}
 		else
@@ -12944,9 +12945,9 @@ void TestMessageSystem( void )
 
 	for( iCounter = 0; iCounter < 300; iCounter++ )
 	{
-	MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"%d", iCounter );
+	MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("%d"), iCounter );
 	}
-	MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"%d", iCounter );
+	MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("%d"), iCounter );
 
 	return;
 }
@@ -12994,7 +12995,7 @@ void EnableDisableTeamListRegionsAndHelpText( void )
 					// "Remove Merc"
 					SetRegionFastHelpText( &gTeamListAssignmentRegion[ bCharNum ], pRemoveMercStrings[ 0 ] );
 
-					SetRegionFastHelpText( &gTeamListDestinationRegion[ bCharNum ], L"" );
+					SetRegionFastHelpText( &gTeamListDestinationRegion[ bCharNum ], JA2_TEXT("") );
 				}
 				else
 				{
@@ -14440,8 +14441,8 @@ void TellPlayerWhyHeCantCompressTime( void )
 	if ( PauseStateLocked() )
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, L"(BETA) Can't compress time, pause state locked (reason %d). OK unless permanent.", guiLockPauseStateLastReasonId );
-		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, L"(BETA) If permanent, take screenshot now, send with *previous* save & describe what happened since.");
+		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, JA2_TEXT("(BETA) Can't compress time, pause state locked (reason %d). OK unless permanent."), guiLockPauseStateLastReasonId );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, JA2_TEXT("(BETA) If permanent, take screenshot now, send with *previous* save & describe what happened since."));
 #endif
 	}
 #ifdef JA2UB
@@ -14474,25 +14475,25 @@ void TellPlayerWhyHeCantCompressTime( void )
 	else if ( gfContractRenewalSquenceOn )
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, L"(BETA) Can't compress time while contract renewal sequence is on.");
+		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, JA2_TEXT("(BETA) Can't compress time while contract renewal sequence is on."));
 #endif
 	}
 	else if( fDisableMapInterfaceDueToBattle )
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, L"(BETA) Can't compress time while disabled due to battle.");
+		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, JA2_TEXT("(BETA) Can't compress time while disabled due to battle."));
 #endif
 	}
 	else if( fDisableDueToBattleRoster )
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, L"(BETA) Can't compress time while in battle roster.");
+		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, JA2_TEXT("(BETA) Can't compress time while in battle roster."));
 #endif
 	}
 	else if ( fMapInventoryItem )
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, L"(BETA) Can't compress time while still holding an inventory item.");
+		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, JA2_TEXT("(BETA) Can't compress time while still holding an inventory item."));
 #endif
 	}
 	else if( fShowMapInventoryPool )
@@ -15899,9 +15900,9 @@ void ConvertMinTimeToDayHourMinString( UINT32 uiTimeInMin, STR16 sString )
 	uiMin = uiTimeInMin - ((uiDay * NUM_MIN_IN_DAY) + (uiHour * NUM_MIN_IN_HOUR));
 
 	// there ain't enough room to show both the day and ETA: and without ETA it's confused as the current time
-	//	swprintf( sString, L"%s %s %d, %02d:%02d", pEtaString[ 0 ], pDayStrings[ 0 ], uiDay, uiHour, uiMin );
-	//	swprintf( sString, L"%s %d, %02d:%02d", pDayStrings[ 0 ], uiDay, uiHour, uiMin );
-	swprintf( sString, L"%02d:%02d", uiHour, uiMin );
+	//	swprintf( sString, JA2_TEXT("%s %s %d, %02d:%02d"), pEtaString[ 0 ], pDayStrings[ 0 ], uiDay, uiHour, uiMin );
+	//	swprintf( sString, JA2_TEXT("%s %d, %02d:%02d"), pDayStrings[ 0 ], uiDay, uiHour, uiMin );
+	swprintf( sString, JA2_TEXT("%02d:%02d"), uiHour, uiMin );
 }
 
 void ConvertMinTimeToETADayHourMinString( UINT32 uiTimeInMin, STR16 sString )
@@ -15909,7 +15910,7 @@ void ConvertMinTimeToETADayHourMinString( UINT32 uiTimeInMin, STR16 sString )
 	CHAR16 timestring[64];
 	ConvertMinTimeToDayHourMinString( uiTimeInMin, timestring );
 
-	swprintf( sString, L"%s %s", pEtaString[0], timestring );
+	swprintf( sString, JA2_TEXT("%s %s"), pEtaString[0], timestring );
 }
 
 
@@ -16427,24 +16428,24 @@ void DumpSectorDifficultyInfo( void )
 	// NOTE: This operates on the selected map sector!
 	CHAR16 wSectorName[ 128 ];
 
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Playing Difficulty: %s", zDiffSetting[gGameOptions.ubDifficultyLevel].szDiffName );		
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Playing Difficulty: %s"), zDiffSetting[gGameOptions.ubDifficultyLevel].szDiffName );		
 	
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Highest Progress (0-100) = %d%%", HighestPlayerProgressPercentage() );
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Player Kills = %d", gStrategicStatus.usPlayerKills );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Highest Progress (0-100) = %d%%"), HighestPlayerProgressPercentage() );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Player Kills = %d"), gStrategicStatus.usPlayerKills );
 
 	GetSectorIDString( sSelMapX, sSelMapY, ( INT8 ) iCurrentMapSectorZ, wSectorName, TRUE );
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"SECTOR: %s", wSectorName );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("SECTOR: %s"), wSectorName );
 
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Pyth. Distance From Meduna (0-20) = %d", GetPythDistanceFromPalace( sSelMapX, sSelMapY ) );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Pyth. Distance From Meduna (0-20) = %d"), GetPythDistanceFromPalace( sSelMapX, sSelMapY ) );
 
 	if ( ( gWorldSectorX == sSelMapX ) && ( gWorldSectorY == sSelMapY ) && ( gbWorldSectorZ == iCurrentMapSectorZ ) )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Enemy Difficulty Factor (0 to 100) = %d%%", CalcDifficultyModifier( SOLDIER_CLASS_ARMY ) );
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Avg Regular Enemy Exp. Level (2-6) = %d", 2 + ( CalcDifficultyModifier( SOLDIER_CLASS_ARMY ) / 20 ) );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Enemy Difficulty Factor (0 to 100) = %d%%"), CalcDifficultyModifier( SOLDIER_CLASS_ARMY ) );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Avg Regular Enemy Exp. Level (2-6) = %d"), 2 + ( CalcDifficultyModifier( SOLDIER_CLASS_ARMY ) / 20 ) );
 	}
 	else
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"--Must load sector to calculate difficulty--" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("--Must load sector to calculate difficulty--") );
 	}
 }
 #endif
@@ -16622,16 +16623,16 @@ void GetMapscreenMercAssignmentString( SOLDIERTYPE *pSoldier, CHAR16 sString[] )
 	else
 	{
 		if ( gGameExternalOptions.fUseXMLSquadNames && pSoldier->bAssignment < min(ON_DUTY, gSquadNameVector.size() ) )
-			swprintf( sString, L" %s", gSquadNameVector[pSoldier->bAssignment].c_str() );
+			swprintf( sString, JA2_TEXT(" %s"), gSquadNameVector[pSoldier->bAssignment].c_str() );
 		else if(pSoldier->bVehicleID != 0 && pSoldier->bAssignment == ASSIGNMENT_DEAD)
-			wcscpy(sString, L"Wrecked");
+			wcscpy(sString, JA2_TEXT("Wrecked"));
 		else
 			wcscpy(sString, pAssignmentStrings[ pSoldier->bAssignment ] );
 	}
 	// If soldier is working at a facility, add an asterisk.
 	if (pSoldier->sFacilityTypeOperated != -1)
 	{
-		wcscat(sString, L"*");
+		wcscat(sString, JA2_TEXT("*"));
 	}
 }
 
@@ -16644,7 +16645,7 @@ void GetMapscreenMercLocationString( SOLDIERTYPE *pSoldier, CHAR16 sString[] )
 	if( pSoldier->bAssignment == IN_TRANSIT )
 	{
 		// show blank
-		wcscpy( sString, L"--" );
+		wcscpy( sString, JA2_TEXT("--") );
 	}
 	else
 	{
@@ -16652,34 +16653,34 @@ void GetMapscreenMercLocationString( SOLDIERTYPE *pSoldier, CHAR16 sString[] )
 		if ( pSoldier->bAssignment == ASSIGNMENT_POW && !( pSoldier->usSoldierFlagMask2 & SOLDIER_MERC_POW_LOCATIONKNOWN ))
 		{
 			// POW - location unknown
-			swprintf( sString, L"%s", pPOWStrings[ 1 ] );
+			swprintf( sString, JA2_TEXT("%s"), pPOWStrings[ 1 ] );
 		}
 		else if ( pSoldier->bAssignment == ASSIGNMENT_MINIEVENT )
 		{
 			// mini event - unknown location, use the same string as POWs
-			swprintf( sString, L"%s", pPOWStrings[ 1 ] );
+			swprintf( sString, JA2_TEXT("%s"), pPOWStrings[ 1 ] );
 		}
 		else if (pSoldier->bAssignment == ASSIGNMENT_REBELCOMMAND)
 		{
 			// on a rebel command mission
-			swprintf( sString, L"%s%s*", pMapVertIndex[pSoldier->sSectorY], pMapHortIndex[pSoldier->sSectorX] );
+			swprintf( sString, JA2_TEXT("%s%s*"), pMapVertIndex[pSoldier->sSectorY], pMapHortIndex[pSoldier->sSectorX] );
 		}
 		else if ( SPY_LOCATION( pSoldier->bAssignment ) )
 		{
-			swprintf( pTempString, L"%s%s%s",
+			swprintf( pTempString, JA2_TEXT("%s%s%s"),
 				pMapVertIndex[pSoldier->sSectorY], pMapHortIndex[pSoldier->sSectorX], pMapDepthIndex[max(0, pSoldier->bSectorZ - 10)] );
 
-			swprintf( sString, L"%s*", pTempString );
+			swprintf( sString, JA2_TEXT("%s*"), pTempString );
 		}
 		else
 		{
-			swprintf( pTempString, L"%s%s%s",
+			swprintf( pTempString, JA2_TEXT("%s%s%s"),
 						pMapVertIndex[ pSoldier->sSectorY ], pMapHortIndex[ pSoldier->sSectorX ], pMapDepthIndex[ pSoldier->bSectorZ ] );
 
 			if ( pSoldier->flags.fBetweenSectors )
 			{
 				// put brackets around it when he's between sectors!
-				swprintf( sString, L"(%s)", pTempString );
+				swprintf( sString, JA2_TEXT("(%s)"), pTempString );
 			}
 			else
 			{
@@ -16698,7 +16699,7 @@ void GetMapscreenMercDestinationString( SOLDIERTYPE *pSoldier, CHAR16 sString[] 
 
 
 	// by default, show nothing
-	wcscpy( sString, L"" );
+	wcscpy( sString, JA2_TEXT("") );
 
 	// if dead or POW - has no destination (no longer part of a group, for that matter)
 	if( ( pSoldier->bAssignment == ASSIGNMENT_DEAD ) ||
@@ -16747,7 +16748,7 @@ void GetMapscreenMercDestinationString( SOLDIERTYPE *pSoldier, CHAR16 sString[] 
 	}
 
 
-	swprintf( sString, L"%s%s", pMapVertIndex[ iSectorY ], pMapHortIndex[ iSectorX ] );
+	swprintf( sString, JA2_TEXT("%s%s"), pMapVertIndex[ iSectorY ], pMapHortIndex[ iSectorX ] );
 }
 
 
@@ -16764,7 +16765,7 @@ void GetMapscreenMercDepartureString( SOLDIERTYPE *pSoldier, CHAR16 sString[], U
 	if( ( pSoldier->ubWhatKindOfMercAmI != MERC_TYPE__AIM_MERC && pSoldier->ubProfile != SLAY ) || pSoldier->stats.bLife == 0 )
 #endif
 	{
-		swprintf( sString, L"%s", gpStrategicString[ STR_PB_NOTAPPLICABLE_ABBREVIATION ] );
+		swprintf( sString, JA2_TEXT("%s"), gpStrategicString[ STR_PB_NOTAPPLICABLE_ABBREVIATION ] );
 	}
 	else
 	{
@@ -16787,7 +16788,7 @@ void GetMapscreenMercDepartureString( SOLDIERTYPE *pSoldier, CHAR16 sString[], U
 
 			*pubFontColor = FONT_LTGREEN;
 
-			swprintf(sString, L"%d%s", iDaysRemaining, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ] );
+			swprintf(sString, JA2_TEXT("%d%s"), iDaysRemaining, gpStrategicString[ STR_PB_DAYS_ABBREVIATION ] );
 		}
 		else	// less than 3 days
 		{
@@ -16810,7 +16811,7 @@ void GetMapscreenMercDepartureString( SOLDIERTYPE *pSoldier, CHAR16 sString[], U
 			*pubFontColor = FONT_RED;
 		}
 
-		swprintf(sString, L"%d%s", iHoursRemaining, gpStrategicString[ STR_PB_HOURS_ABBREVIATION ] );
+		swprintf(sString, JA2_TEXT("%d%s"), iHoursRemaining, gpStrategicString[ STR_PB_HOURS_ABBREVIATION ] );
 		}
 	}
 }
@@ -17685,8 +17686,8 @@ void RetreatBandageCallback( UINT8 ubResult )
 void moveSectorInventoryToVehicle(SOLDIERTYPE *pSoldier) {
 
 	fillCurrentSectorLBEItems(pSoldier);	// puts LBE items in vehicle
-	// ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"---------------------------------------------");
-	// ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Moving remaining sector items into the car...");
+	// ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("---------------------------------------------"));
+	// ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Moving remaining sector items into the car..."));
 	moveCurrentSectorItemsToVehicle(pSoldier); // puts remaining items in vehicle
 
 	fTeamPanelDirty = TRUE;
@@ -17724,8 +17725,8 @@ void fillCurrentSectorLBEItems(SOLDIERTYPE *pSoldier) {
 		INVTYPE LBEItemType = Item[LBEItem->usItem];
 		LBETYPE LBEType = LoadBearingEquipment[LBEItemType.ubClassIndex];
 
-		//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"===================================");
-		//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Filling: %s", LBEItemType.szItemName);		
+		//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("==================================="));
+		//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Filling: %s"), LBEItemType.szItemName);		
 
 		if ( LBEItem->IsActiveLBE(0) == FALSE ) {
 			// init LBE data
@@ -17736,10 +17737,10 @@ void fillCurrentSectorLBEItems(SOLDIERTYPE *pSoldier) {
 
 		// try to put the LBE item in the vehicle, if we fail then drop it.
 		if (placeItemInVehicle(pSoldier, *LBEItem) == false) {
-			// ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Dropped %s on the ground", LBEItemType.szItemName);
+			// ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Dropped %s on the ground"), LBEItemType.szItemName);
 			AutoPlaceObjectToWorld(pSoldier, LBEItem);
 		} else {
-			// ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Moved %s into the car", LBEItemType.szItemName);
+			// ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Moved %s into the car"), LBEItemType.szItemName);
 		}
 		
 	}
@@ -17775,7 +17776,7 @@ void fillLBEWithSectorItems(OBJECTTYPE * LBEObject) {
 
 					int remainingItems = sectorItemObject->MoveThisObjectTo(*pocketItemObject, movedItems);				
 
-					//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Moved %s * %i (%i remaining) into %s (%s)", sectorItemType.szItemName, movedItems, remainingItems, LBEItemType.szItemName, lbePocketType.pName);
+					//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Moved %s * %i (%i remaining) into %s (%s)"), sectorItemType.szItemName, movedItems, remainingItems, LBEItemType.szItemName, lbePocketType.pName);
 
 					pLBE->inv[i] = (*pocketItemObject);
 
@@ -17824,13 +17825,13 @@ bool placeItemInVehicle(SOLDIERTYPE *pSoldier, OBJECTTYPE &item) {
 			}
 			else
 			{
-				//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Stacking %s * %i in car slot %i", sectorItemType.szItemName, item.ubNumberOfObjects, x);
+				//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Stacking %s * %i in car slot %i"), sectorItemType.szItemName, item.ubNumberOfObjects, x);
 				pSoldier->inv[x].AddObjectsToStack(item, -1, pSoldier, x);
 			}
 		}
 		else
 		{
-			//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Placing %s * %i in car slot %i", sectorItemType.szItemName, item.ubNumberOfObjects, x);
+			//ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Placing %s * %i in car slot %i"), sectorItemType.szItemName, item.ubNumberOfObjects, x);
 			int result = item.MoveThisObjectTo(pSoldier->inv[x], -1, pSoldier, x);
 		}
 

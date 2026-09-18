@@ -104,7 +104,7 @@ void RenderCampaignHistorySummary()
 {
 //	HVOBJECT hPixHandle;
 	CHAR16	sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 
 	DisplayCampaignHistoryDefaults();
@@ -116,7 +116,7 @@ void RenderCampaignHistorySummary()
 
 	if ( gusSummaryMode == 0 )
 	{
-		swprintf(sText, L"");
+		swprintf(sText, JA2_TEXT(""));
 		DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 
 		usPosX += 2 * CAMPAIGN_HISTORY_TABLE_STEP_X;
@@ -150,12 +150,12 @@ void RenderCampaignHistorySummary()
 				continue;
 
 			usPosX = LAPTOP_SCREEN_UL_X;
-			swprintf(sText, L"%s", szSoldierClassName[i]);
+			swprintf(sText, JA2_TEXT("%s"), szSoldierClassName[i]);
 			DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 
 			usPosX += 2 * CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-			swprintf(sText, L"%d", gCampaignStats.usKills[i]);
+			swprintf(sText, JA2_TEXT("%d"), gCampaignStats.usKills[i]);
 			if ( gCampaignStats.usKills[i] )
 				DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 			else
@@ -163,7 +163,7 @@ void RenderCampaignHistorySummary()
 		
 			usPosX += CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-			swprintf(sText, L"%d", gCampaignStats.usWounds[i]);
+			swprintf(sText, JA2_TEXT("%d"), gCampaignStats.usWounds[i]);
 			if ( gCampaignStats.usWounds[i] )
 				DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 			else
@@ -171,7 +171,7 @@ void RenderCampaignHistorySummary()
 		
 			usPosX += CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-			swprintf(sText, L"%d", gCampaignStats.usPrisoners[i]);
+			swprintf(sText, JA2_TEXT("%d"), gCampaignStats.usPrisoners[i]);
 			if ( gCampaignStats.usPrisoners[i] )
 				DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 			else
@@ -179,7 +179,7 @@ void RenderCampaignHistorySummary()
 
 			usPosX += CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-			swprintf(sText, L"%d", gCampaignStats.usShots[i]);
+			swprintf(sText, JA2_TEXT("%d"), gCampaignStats.usShots[i]);
 			if ( gCampaignStats.usShots[i] )
 				DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 			else
@@ -201,7 +201,7 @@ void RenderCampaignHistorySummary()
 		for(int i = 0; i < CAMPAIGN_MONEY_MAX; ++i)
 		{
 			usPosX = LAPTOP_SCREEN_UL_X;
-			swprintf(sText, L"%s", szCampaignHistoryMoneyTypeString[i]);
+			swprintf(sText, JA2_TEXT("%s"), szCampaignHistoryMoneyTypeString[i]);
 			if ( gCampaignStats.sMoneyEarned[i] )
 				DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 			else
@@ -209,7 +209,7 @@ void RenderCampaignHistorySummary()
 		
 			usPosX += 2 * CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-			swprintf(sText, L"%d $", gCampaignStats.sMoneyEarned[i]);
+			swprintf(sText, JA2_TEXT("%d $"), gCampaignStats.sMoneyEarned[i]);
 			if ( gCampaignStats.sMoneyEarned[i] )
 				DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 			else
@@ -229,7 +229,7 @@ void RenderCampaignHistorySummary()
 		for(int i = 0; i < CAMPAIGN_CONSUMED_MAX; ++i)
 		{
 			usPosX = LAPTOP_SCREEN_UL_X;
-			swprintf(sText, L"%s", szCampaignHistoryConsumptionTypeString[i]);
+			swprintf(sText, JA2_TEXT("%s"), szCampaignHistoryConsumptionTypeString[i]);
 			if ( gCampaignStats.usConsumed[i] )
 				DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 			else
@@ -237,7 +237,7 @@ void RenderCampaignHistorySummary()
 		
 			usPosX += 2 * CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-			swprintf(sText, L"%3.3f kg", gCampaignStats.usConsumed[i] / 10.0 );
+			swprintf(sText, JA2_TEXT("%3.3f kg"), gCampaignStats.usConsumed[i] / 10.0 );
 			if ( gCampaignStats.usConsumed[i] )
 				DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 			else
@@ -423,7 +423,7 @@ void RenderCampaignHistory_MostImportant()
 {
 	HVOBJECT hPixHandle;
 	CHAR16	sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 
 	DisplayCampaignHistoryDefaults();
@@ -453,7 +453,7 @@ void RenderCampaignHistory_MostImportant()
 	
 		STR16 operationstr = GetIncidentName( incident.usID );
 
-		swprintf( sText, L"Operation %s - %s, %s %d, %02d:%02d", operationstr, wSectorName_Target, szCampaignHistoryWebpageString[WEBPAGE_CAMPAIGNHISTORY_DAY], day, hour, minute );
+		swprintf( sText, JA2_TEXT("Operation %s - %s, %s %d, %02d:%02d"), operationstr, wSectorName_Target, szCampaignHistoryWebpageString[WEBPAGE_CAMPAIGNHISTORY_DAY], day, hour, minute );
 		DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, CAMPHIS_FONT_BIG, CAMPHIS_FONT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 	
 		usPosY = LAPTOP_SCREEN_WEB_UL_Y + 90;
@@ -501,12 +501,12 @@ void RenderCampaignHistory_MostImportant()
 					continue;
 
 				usPosX = LAPTOP_SCREEN_UL_X;
-				swprintf(sText, L"%s", szSoldierClassName[i]);
+				swprintf(sText, JA2_TEXT("%s"), szSoldierClassName[i]);
 				DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 		
 				usPosX += 2 * CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-				swprintf(sText, L"%d", incident.usKills[i]);
+				swprintf(sText, JA2_TEXT("%d"), incident.usKills[i]);
 				if ( incident.usKills[i] )
 					DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 				else
@@ -514,7 +514,7 @@ void RenderCampaignHistory_MostImportant()
 		
 				usPosX += CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-				swprintf(sText, L"%d", incident.usWounds[i]);
+				swprintf(sText, JA2_TEXT("%d"), incident.usWounds[i]);
 				if ( incident.usWounds[i] )
 					DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 				else
@@ -522,7 +522,7 @@ void RenderCampaignHistory_MostImportant()
 		
 				usPosX += CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-				swprintf(sText, L"%d", incident.usPrisoners[i]);
+				swprintf(sText, JA2_TEXT("%d"), incident.usPrisoners[i]);
 				if ( incident.usPrisoners[i] )
 					DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 				else
@@ -530,7 +530,7 @@ void RenderCampaignHistory_MostImportant()
 
 				usPosX += CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-				swprintf(sText, L"%d", incident.usShots[i]);
+				swprintf(sText, JA2_TEXT("%d"), incident.usShots[i]);
 				if ( incident.usShots[i] )
 					DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 				else
@@ -538,7 +538,7 @@ void RenderCampaignHistory_MostImportant()
 		
 				usPosX += CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-				swprintf(sText, L"%d", incident.usParticipants[i]);
+				swprintf(sText, JA2_TEXT("%d"), incident.usParticipants[i]);
 				if ( incident.usParticipants[i] )
 					DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 				else
@@ -546,7 +546,7 @@ void RenderCampaignHistory_MostImportant()
 		
 				usPosX += CAMPAIGN_HISTORY_TABLE_STEP_X;
 
-				swprintf(sText, L"%d", incident.usPromotions[i]);
+				swprintf(sText, JA2_TEXT("%d"), incident.usPromotions[i]);
 				if ( incident.usPromotions[i] )
 					DrawTextToScreen( sText, usPosX, usPosY, LAPTOP_SCREEN_LR_X-LAPTOP_SCREEN_UL_X, INS_FONT_SMALL, CAMPAIGN_HISTORY_FONT_COLOR_REGULAR, FONT_MCOLOR_BLACK, FALSE, 0 );
 				else
@@ -964,7 +964,7 @@ void RenderCampaignHistory_News()
 {
 //	HVOBJECT hPixHandle;
 	CHAR16	sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 
 	DisplayCampaignHistoryDefaults();

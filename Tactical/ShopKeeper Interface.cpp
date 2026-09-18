@@ -769,7 +769,7 @@ BOOLEAN EnterShopKeeperInterface()
 		//either post a message or run to the guy like HandleTalkInit does
 		if( (gTacticalStatus.uiFlags & TURNBASED) && (gTacticalStatus.uiFlags & INCOMBAT) )
 		{
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"Unable to interact with shopkeeper during combat" );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("Unable to interact with shopkeeper during combat") );
 			return( FALSE );
 		}
 		else
@@ -829,7 +829,7 @@ BOOLEAN EnterShopKeeperInterface()
 	if( !AddVideoSurface( &vs_desc, &guiCornerWhereTacticalIsStillSeenImage) )
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Failed to create Surface where tactical map shows through" );
+			ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Failed to create Surface where tactical map shows through") );
 		#endif
 
 		return( FALSE );
@@ -867,7 +867,7 @@ BOOLEAN EnterShopKeeperInterface()
 	if( !AddVideoObject(&VObjectDesc, &guiItemCrossOut ))
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Failed to load itemcrossout.sti" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Failed to load itemcrossout.sti") );
 #endif
 		return( FALSE );
 	}
@@ -901,7 +901,7 @@ BOOLEAN EnterShopKeeperInterface()
 			if(!AddVideoObject(&VObjectDesc, &guiSmallSoldiersFace[ gubNumberMercsInArray ] ))
 			{
 				#ifdef JA2BETAVERSION
-						ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Failed to load %s", zTemp );
+						ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Failed to load %s"), zTemp );
 				#endif
 				return( FALSE );
 			}
@@ -1514,13 +1514,13 @@ BOOLEAN RenderShopKeeperInterface()
 	// display shopkeeper budget
 	DisplayWrappedString( SKI_BUDGET_X, SKI_BUDGET_Y, SKI_BUDGET_WIDTH, 2, SKI_LABEL_FONT, SKI_TITLE_COLOR, SKI_Text[SKI_TEXT_BUDGET], FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED );
 
-	swprintf( zMoney, L"%s", FormatMoney(gArmsDealerStatus[gbSelectedArmsDealerID].uiArmsDealersCash).data() );
+	swprintf( zMoney, JA2_TEXT("%s"), FormatMoney(gArmsDealerStatus[gbSelectedArmsDealerID].uiArmsDealersCash).data() );
 
 	CHAR16			zTemp2[64];
 	if ( armsDealerInfo[gbSelectedArmsDealerID].uiFlags & ARMS_DEALER_DEALWITHINTEL )
-		swprintf( zTemp2, L"%s Intel", zMoney );
+		swprintf( zTemp2, JA2_TEXT("%s Intel"), zMoney );
 	else
-		swprintf( zTemp2, L"%s", zMoney );
+		swprintf( zTemp2, JA2_TEXT("%s"), zMoney );
 
 	DrawTextToScreen( zTemp2, SKI_BUDGET_X, SKI_BUDGET_OFFSET_TO_VALUE, SKI_BUDGET_WIDTH, FONT10ARIAL, SKI_ITEM_PRICE_COLOR, FONT_MCOLOR_BLACK, TRUE, CENTER_JUSTIFIED );
 
@@ -1542,13 +1542,13 @@ BOOLEAN RenderShopKeeperInterface()
 	//Display the players current balance value
 	if ( armsDealerInfo[gbSelectedArmsDealerID].uiFlags & ARMS_DEALER_DEALWITHINTEL )
 	{
-		swprintf( zMoney, L"%s", FormatMoney((int)(GetIntel()) ).data());
-		swprintf( zTemp2, L"%s Intel", zMoney );
+		swprintf( zMoney, JA2_TEXT("%s"), FormatMoney((int)(GetIntel()) ).data());
+		swprintf( zTemp2, JA2_TEXT("%s Intel"), zMoney );
 	}
 	else
 	{
-		swprintf( zMoney, L"%s", FormatMoney(LaptopSaveInfo.iCurrentBalance ).data());
-		swprintf( zTemp2, L"%s", zMoney );
+		swprintf( zMoney, JA2_TEXT("%s"), FormatMoney(LaptopSaveInfo.iCurrentBalance ).data());
+		swprintf( zTemp2, JA2_TEXT("%s"), zMoney );
 	}
 
 	DrawTextToScreen( zTemp2, SKI_PLAYERS_CURRENT_BALANCE_X, SKI_PLAYERS_CURRENT_BALANCE_OFFSET_TO_VALUE, SKI_PLAYERS_CURRENT_BALANCE_WIDTH, FONT10ARIAL, SKI_ITEM_PRICE_COLOR, FONT_MCOLOR_BLACK, TRUE, CENTER_JUSTIFIED );
@@ -1713,12 +1713,12 @@ void DisplayAllDealersCash()
 		DrawTextToScreen( gMercProfiles[ armsDealerInfo[ bArmsDealer ].ubShopKeeperID ].zNickname, SCREEN_X_OFFSET + 540, SCREEN_Y_OFFSET + usPosY, 0, FONT10ARIAL, SKI_TITLE_COLOR, FONT_MCOLOR_BLACK, TRUE, LEFT_JUSTIFIED );
 
 		//Display the arms dealer cash on hand
-		swprintf( zTemp, L"%s", FormatMoney(gArmsDealerStatus[ bArmsDealer ].uiArmsDealersCash ).data());
+		swprintf( zTemp, JA2_TEXT("%s"), FormatMoney(gArmsDealerStatus[ bArmsDealer ].uiArmsDealersCash ).data());
 		
 		if ( armsDealerInfo[gbSelectedArmsDealerID].uiFlags & ARMS_DEALER_DEALWITHINTEL )
-			swprintf( zTemp2, L"%s Intel", zTemp );
+			swprintf( zTemp2, JA2_TEXT("%s Intel"), zTemp );
 		else
-			swprintf( zTemp2, L"%s", zTemp );
+			swprintf( zTemp2, JA2_TEXT("%s"), zTemp );
 
 		ubForeColor = ( UINT8 ) ( ( bArmsDealer == gbSelectedArmsDealerID ) ? SKI_BUTTON_COLOR : SKI_TITLE_COLOR );
 		DrawTextToScreen( zTemp2, SCREEN_X_OFFSET + 590, SCREEN_Y_OFFSET + usPosY, 0, FONT10ARIAL, ubForeColor, FONT_MCOLOR_BLACK, TRUE, LEFT_JUSTIFIED );
@@ -2426,7 +2426,7 @@ void EnterShopKeeperInterfaceScreen( UINT8	ubArmsDealer )
 	if( gbSelectedArmsDealerID <= -1 )
 	{
 #ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Failed to find Arms Dealer ID From Merc ID #%d", ubArmsDealer );
+			ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Failed to find Arms Dealer ID From Merc ID #%d"), ubArmsDealer );
 #endif
 		gfSKIScreenExit = TRUE;
 	}
@@ -2445,7 +2445,7 @@ void EnterShopKeeperInterfaceScreen_NonNPC( INT8 ubArmsDealerID, SoldierID aMerc
 	if ( gbSelectedArmsDealerID <= -1 )
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Failed to find Arms Dealer ID From Merc ID #%d", ubArmsDealerID );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Failed to find Arms Dealer ID From Merc ID #%d"), ubArmsDealerID );
 #endif
 		gfSKIScreenExit = TRUE;
 	}
@@ -2549,7 +2549,7 @@ void DisplayArmsDealerCurrentInventoryPage( )
 
 			//Display the Current Page number
 			uiFontHeight = GetFontHeight( SKI_LABEL_FONT );
-			swprintf( zTemp, L"%d/%d", gSelectArmsDealerInfo.ubCurrentPage, gSelectArmsDealerInfo.ubNumberOfPages );
+			swprintf( zTemp, JA2_TEXT("%d/%d"), gSelectArmsDealerInfo.ubCurrentPage, gSelectArmsDealerInfo.ubNumberOfPages );
 			DrawTextToScreen( zTemp, SKI_PAGE_X, (UINT16)(SKI_PAGE_Y+uiFontHeight+6), SKI_PAGE_WIDTH, SKI_LABEL_FONT, SKI_TITLE_COLOR, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED );
 		}
 
@@ -2768,13 +2768,13 @@ UINT32 DisplayInvSlot( UINT16 ubSlotNum, UINT16 usItemIndex, UINT16 usPosX, UINT
 	//if the item has a price, display it
 	if( uiItemCost != 0 )
 	{
-		swprintf( zTemp, L"%s", FormatMoney(uiItemCost).data() );
+		swprintf( zTemp, JA2_TEXT("%s"), FormatMoney(uiItemCost).data() );
 
 		CHAR16			zTemp2[64];
 		if ( armsDealerInfo[gbSelectedArmsDealerID].uiFlags & ARMS_DEALER_DEALWITHINTEL )
-			swprintf( zTemp2, L"%s Intel", zTemp );
+			swprintf( zTemp2, JA2_TEXT("%s Intel"), zTemp );
 		else
-			swprintf( zTemp2, L"%s", zTemp );
+			swprintf( zTemp2, JA2_TEXT("%s"), zTemp );
 
 		DrawTextToScreen( zTemp2, (UINT16)(usPosX+SKI_INV_PRICE_OFFSET_X), (UINT16)(usPosY+SKI_INV_PRICE_OFFSET_Y+4), SKI_INV_SLOT_WIDTH, SKI_ITEM_DESC_FONT, SKI_ITEM_PRICE_COLOR, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED );
 	}
@@ -2793,7 +2793,7 @@ UINT32 DisplayInvSlot( UINT16 ubSlotNum, UINT16 usItemIndex, UINT16 usPosX, UINT
 			( ( pItemObject->ubNumberOfObjects == 1 ) &&
 				( ubItemArea == ARMS_DEALER_INVENTORY ) && ( gpTempDealersInventory[ ubSlotNum ].uiFlags & ARMS_INV_ITEM_SELECTED ) ) )
 	{
-		swprintf( zTemp, L"x%d", pItemObject->ubNumberOfObjects );
+		swprintf( zTemp, JA2_TEXT("x%d"), pItemObject->ubNumberOfObjects );
 		DrawTextToScreen( zTemp, (UINT16)(usPosX+SKI_ITEM_NUMBER_TEXT_OFFSET_X), (UINT16)(usPosY+SKI_ITEM_NUMBER_TEXT_OFFSET_Y), SKI_ITEM_NUMBER_TEXT_WIDTH, SKIT_NUMBER_FONT, SKI_ITEM_PRICE_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED );
 	}
 
@@ -2815,7 +2815,7 @@ UINT32 DisplayInvSlot( UINT16 ubSlotNum, UINT16 usItemIndex, UINT16 usPosX, UINT
 	if( ItemHasAttachments( pItemObject ) )
 	{
 		//Display the '*' in the bottom right corner of the square
-		swprintf( zTemp, L"*" );
+		swprintf( zTemp, JA2_TEXT("*") );
 		DrawTextToScreen( zTemp, (UINT16)(usPosX+SKI_ATTACHMENT_SYMBOL_X_OFFSET), (UINT16)(usPosY+SKI_ATTACHMENT_SYMBOL_Y_OFFSET), 0, TINYFONT1, FONT_GREEN, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 	}
 
@@ -2823,7 +2823,7 @@ UINT32 DisplayInvSlot( UINT16 ubSlotNum, UINT16 usItemIndex, UINT16 usPosX, UINT
 	else if( (UsingNewInventorySystem() == true) && pItemObject->HasAnyActiveLBEs() == true)
 	{
 		//Display the '*' in the bottom right corner of the square
-		swprintf( zTemp, L"*" );
+		swprintf( zTemp, JA2_TEXT("*") );
 		DrawTextToScreen( zTemp, (UINT16)(usPosX+SKI_ATTACHMENT_SYMBOL_X_OFFSET), (UINT16)(usPosY+SKI_ATTACHMENT_SYMBOL_Y_OFFSET), 0, TINYFONT1, FONT_BLUE, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );	
 	}
 
@@ -3440,13 +3440,13 @@ void DisplayArmsDealerOfferArea()
 	if( gubSkiDirtyLevel == SKI_DIRTY_LEVEL2 )
 	{
 		//Display the total cost text
-		swprintf( zTemp, L"%s", FormatMoney(uiTotalCost).data() );
+		swprintf( zTemp, JA2_TEXT("%s"), FormatMoney(uiTotalCost).data() );
 
 		CHAR16			zTemp2[64];
 		if ( armsDealerInfo[gbSelectedArmsDealerID].uiFlags & ARMS_DEALER_DEALWITHINTEL )
-			swprintf( zTemp2, L"%s Intel", zTemp );
+			swprintf( zTemp2, JA2_TEXT("%s Intel"), zTemp );
 		else
-			swprintf( zTemp2, L"%s", zTemp );
+			swprintf( zTemp2, JA2_TEXT("%s"), zTemp );
 
 		DrawTextToScreen( zTemp2, SKI_ARMS_DEALER_TOTAL_COST_X, (UINT16)(SKI_ARMS_DEALER_TOTAL_COST_Y+5), SKI_INV_SLOT_WIDTH, SKI_LABEL_FONT, SKI_ITEM_PRICE_COLOR, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED );
 	}
@@ -3532,7 +3532,7 @@ void SetSkiFaceRegionHelpText( INVENTORY_IN_SLOT *pInv, MOUSE_REGION *pRegion, U
 	{
 		BuildItemHelpTextString( zTempText, pInv, ubScreenArea );
 		// add who owns it
-		swprintf( zHelpText, L"%s%s %s", gMercProfiles[ pInv->ubIdOfMercWhoOwnsTheItem ].zNickname, pMessageStrings[ MSG_DASH_S ], zTempText );
+		swprintf( zHelpText, JA2_TEXT("%s%s %s"), gMercProfiles[ pInv->ubIdOfMercWhoOwnsTheItem ].zNickname, pMessageStrings[ MSG_DASH_S ], zTempText );
 	}
 	else
 	{
@@ -3704,13 +3704,13 @@ void DisplayPlayersOfferArea()
 	if( gubSkiDirtyLevel == SKI_DIRTY_LEVEL2 )
 	{
 		//Display the total cost text
-		swprintf( zTemp, L"%s", FormatMoney(uiTotalCost).data() );
+		swprintf( zTemp, JA2_TEXT("%s"), FormatMoney(uiTotalCost).data() );
 		
 		CHAR16			zTemp2[64];
 		if ( armsDealerInfo[gbSelectedArmsDealerID].uiFlags & ARMS_DEALER_DEALWITHINTEL )
-			swprintf( zTemp2, L"%s Intel", zTemp );
+			swprintf( zTemp2, JA2_TEXT("%s Intel"), zTemp );
 		else
-			swprintf( zTemp2, L"%s", zTemp );
+			swprintf( zTemp2, JA2_TEXT("%s"), zTemp );
 
 		DrawTextToScreen( zTemp2, SKI_TOTAL_VALUE_X, SKI_TOTAL_VALUE_OFFSET_TO_VALUE, SKI_INV_SLOT_WIDTH, SKI_LABEL_FONT, SKI_ITEM_PRICE_COLOR, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED );
 	}
@@ -4993,7 +4993,7 @@ void			InitShopKeeperSubTitledText( STR16 pString )
 	//Clear the contents of the subtitle text
 	memset(gsShopKeeperTalkingText, 0, sizeof(CHAR16)* SKI_SUBTITLE_TEXT_SIZE);
 
-	swprintf( gsShopKeeperTalkingText, L"\"%s\"", pString );
+	swprintf( gsShopKeeperTalkingText, JA2_TEXT("\"%s\""), pString );
 
 	//Now setup the popup box
 	if( gGameSettings.fOptions[ TOPTION_SUBTITLES ] )
@@ -5532,12 +5532,12 @@ void ClearArmsDealerOfferSlot( INT32 ubSlotToClear )
 	ArmsDealerOfferArea[ ubSlotToClear ].initialize();
 
 	//Remove the mouse help text from the region
-	SetRegionFastHelpText( &gDealersOfferSlotsMouseRegions[ ubSlotToClear ], L"" );
+	SetRegionFastHelpText( &gDealersOfferSlotsMouseRegions[ ubSlotToClear ], JA2_TEXT("") );
 
 	//if the dealer repairs
 	if( armsDealerInfo[ gbSelectedArmsDealerID ].ubTypeOfArmsDealer == ARMS_DEALER_REPAIRS )
 	{
-		SetRegionFastHelpText( &gDealersOfferSlotsSmallFaceMouseRegions[ ubSlotToClear ], L"" );
+		SetRegionFastHelpText( &gDealersOfferSlotsSmallFaceMouseRegions[ ubSlotToClear ], JA2_TEXT("") );
 	}
 }
 
@@ -5547,8 +5547,8 @@ void ClearPlayersOfferSlot( INT32 ubSlotToClear )
 	PlayersOfferArea[ ubSlotToClear ].initialize();
 
 	//Clear the text for the item
-	SetRegionFastHelpText( &gPlayersOfferSlotsMouseRegions[ ubSlotToClear ], L"" );
-	SetRegionFastHelpText( &gPlayersOfferSlotsSmallFaceMouseRegions[ ubSlotToClear ], L"" );
+	SetRegionFastHelpText( &gPlayersOfferSlotsMouseRegions[ ubSlotToClear ], JA2_TEXT("") );
+	SetRegionFastHelpText( &gPlayersOfferSlotsSmallFaceMouseRegions[ ubSlotToClear ], JA2_TEXT("") );
 
 	// if the player offer area is clear, reset flags for transaction
 	CheckAndHandleClearingOfPlayerOfferArea( );
@@ -5662,7 +5662,7 @@ void EvaluateItemAddedToPlayersOfferArea( INT8 bSlotID, BOOLEAN fFirstOne )
 				else
 				{
 					#ifdef JA2BETAVERSION
-						ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Failed to add repair item to ArmsDealerOfferArea.  AM-0");
+						ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Failed to add repair item to ArmsDealerOfferArea.  AM-0"));
 					#endif
 					return;
 				}
@@ -5789,7 +5789,7 @@ void EvaluateItemAddedToPlayersOfferArea( INT8 bSlotID, BOOLEAN fFirstOne )
 
 			default:
 				#ifdef JA2BETAVERSION
-					ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Invalid evaluation result of %d.  AM-0", uiEvalResult );
+					ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Invalid evaluation result of %d.  AM-0"), uiEvalResult );
 				#endif
 				break;
 		}
@@ -6249,7 +6249,7 @@ BOOLEAN OfferObjectToDealer( OBJECTTYPE *pComplexObject, UINT8 ubOwnerProfileId,
 		if ( ( ubDealerOfferAreaSlotsNeeded + CountNumberOfItemsInTheArmsDealersOfferArea() ) > SKI_NUM_TRADING_INV_SLOTS )
 		{
 			// tell player there's not enough room in the dealer's offer area
-			DoSkiMessageBox( MSG_BOX_BASIC_STYLE, L"There is not enough room in the dealers repair area.", SHOPKEEPER_SCREEN, MSG_BOX_FLAG_OK, NULL );
+			DoSkiMessageBox( MSG_BOX_BASIC_STYLE, JA2_TEXT("There is not enough room in the dealers repair area."), SHOPKEEPER_SCREEN, MSG_BOX_FLAG_OK, NULL );
 			return(FALSE);	// no room
 		}
 */
@@ -7172,7 +7172,7 @@ void BuildDoneWhenTimeString( CHAR16 sString[], UINT8 ubArmsDealer, INVENTORY_IN
 	uiDoneTime = pSpecial->uiRepairDoneTime;
 	if( uiDoneTime <= GetWorldTotalMin() )
 	{
-		wcscpy( sString, L"" );
+		wcscpy( sString, JA2_TEXT("") );
 		return;
 	}
 	
@@ -7190,11 +7190,11 @@ void BuildDoneWhenTimeString( CHAR16 sString[], UINT8 ubArmsDealer, INVENTORY_IN
 	// only show day if it's gonna take overnight
 	if ( GetWorldDay() != uiDay )
 	{
-		swprintf( sString, L"%s %d %02d:%02d", pDayStrings[ 0 ], uiDay, uiHour, uiMin );
+		swprintf( sString, JA2_TEXT("%s %d %02d:%02d"), pDayStrings[ 0 ], uiDay, uiHour, uiMin );
 	}
 	else
 	{
-		swprintf( sString, L"%02d:%02d", uiHour, uiMin );
+		swprintf( sString, JA2_TEXT("%02d:%02d"), uiHour, uiMin );
 	}
 }
 
@@ -7212,7 +7212,7 @@ void BuildItemHelpTextString( CHAR16 sString[], INVENTORY_IN_SLOT *pInv, UINT8 u
 				 ( armsDealerInfo[ gbSelectedArmsDealerID ].ubTypeOfArmsDealer == ARMS_DEALER_REPAIRS ) )
 		{
 			BuildRepairTimeString( zRepairTime, CalculateObjectItemRepairTime( gbSelectedArmsDealerID, &( pInv->ItemObject ) ) );
-			swprintf( sString, L"%s\n(%s: %s)", zHelpText, gzLateLocalizedString[ 44 ], zRepairTime );
+			swprintf( sString, JA2_TEXT("%s\n(%s: %s)"), zHelpText, gzLateLocalizedString[ 44 ], zRepairTime );
 		}
 		else
 		{

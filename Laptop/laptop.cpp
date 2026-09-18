@@ -885,7 +885,7 @@ INT32 EnterLaptop()
 		MSYS_DisableRegion( &gRadarRegion );
 /*
 		#ifdef JA2BETAVERSION
-			DoLapTopMessageBox( MSG_BOX_LAPTOP_DEFAULT, L"Mapscreen's radar region is still active, please tell Dave how you entered Laptop.", LAPTOP_SCREEN, MSG_BOX_FLAG_OK, NULL );
+			DoLapTopMessageBox( MSG_BOX_LAPTOP_DEFAULT, JA2_TEXT("Mapscreen's radar region is still active, please tell Dave how you entered Laptop."), LAPTOP_SCREEN, MSG_BOX_FLAG_OK, NULL );
 		#endif
 */
 	}
@@ -992,7 +992,7 @@ INT32 EnterLaptop()
 	CreateLapTopMouseRegions();
 	RenderLapTopImage();
 	HighLightRegion(giCurrentRegion);
-	//AddEmailMessage(L"Entered LapTop",L"Entered", 0, 0);
+	//AddEmailMessage(JA2_TEXT("Entered LapTop"),JA2_TEXT("Entered"), 0, 0);
 	//for(iCounter=0; iCounter <10; iCounter++)
 	//{
 	//AddEmail(3,5,0,0);
@@ -5087,7 +5087,7 @@ void DisplayPlayersBalanceToDate( void )
 	SetFontShadow(NO_SHADOW);
 
 	// parse straigth number
-	std::wstring sString{FormatMoney(LaptopSaveInfo.iCurrentBalance)};
+	ja2::text::Utf16String sString{FormatMoney(LaptopSaveInfo.iCurrentBalance)};
 
 	// get center
 	FindFontCenterCoordinates( (INT16)LAPTOP_ICON_TEXT_X, iScreenHeightOffset, (INT16)(LAPTOP_ICON_TEXT_WIDTH) ,(INT16)(LAPTOP_ICON_TEXT_HEIGHT), sString.data(), LAPTOPICONFONT, &sX, &sY);
@@ -6201,7 +6201,7 @@ void PrintBalance( void )
 	SetFontBackground( FONT_BLACK );
 	SetFontShadow( NO_SHADOW );
 
-	std::wstring pString{ FormatMoney(LaptopSaveInfo.iCurrentBalance) };
+	ja2::text::Utf16String pString{ FormatMoney(LaptopSaveInfo.iCurrentBalance) };
 
 	if( ButtonList[ gLaptopButton[ 5 ] ]->uiFlags & BUTTON_CLICKED_ON )
 	{
@@ -6245,7 +6245,7 @@ void PrintNumberOnTeam( void )
 	}
 
 
-	swprintf( pString, L"%s %d",pPersonnelString[ 0 ], iCounter );
+	swprintf( pString, JA2_TEXT("%s %d"),pPersonnelString[ 0 ], iCounter );
 
 	usFontHeight = GetFontHeight( FONT10ARIAL );
 	usStrLength = StringPixLength( pString, FONT10ARIAL );
@@ -6536,9 +6536,9 @@ void HandleKeyBoardShortCutsForLapTop( UINT16 usEvent, UINT32 usParam, UINT16 us
 	else if( usEvent == KEY_DOWN && usParam == 'v' && usKeyState & CTRL_DOWN )
 	{
 		#ifdef SGP_VIDEO_DEBUGGING
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"VObjects:	%d", guiVObjectSize );
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"VSurfaces:	%d", guiVSurfaceSize );
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"SGPVideoDump.txt updated..." );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("VObjects:	%d"), guiVObjectSize );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("VSurfaces:	%d"), guiVSurfaceSize );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("SGPVideoDump.txt updated...") );
 			PerformVideoInfoDumpIntoFile( "SGPVideoDump.txt", TRUE );
 		#endif
 	}
@@ -6641,10 +6641,10 @@ BOOLEAN RenderWWWProgramTitleBar( void )
 		if( iIndex >= 33 && iIndex <= 36 )
 		{
 			swprintf( sTemp, pWebPagesTitles[ iIndex ], pCountryNames[COUNTRY_NAME] );
-			swprintf( sString, L"%s - %s", pWebTitle[0], sTemp );
+			swprintf( sString, JA2_TEXT("%s - %s"), pWebTitle[0], sTemp );
 		}
 		else 
-			swprintf( sString, L"%s - %s", pWebTitle[0], pWebPagesTitles[ iIndex ] );
+			swprintf( sString, JA2_TEXT("%s - %s"), pWebTitle[0], pWebPagesTitles[ iIndex ] );
 		mprintf(iScreenWidthOffset + 140 ,iScreenHeightOffset + 33 ,sString);
 	}
 	
@@ -7310,7 +7310,7 @@ void CreateFileAndNewEmailIconFastHelpText( UINT32 uiHelpTextID, BOOLEAN fClearH
 	}
 
 	if( fClearHelpText )
-		SetRegionFastHelpText( pRegion, L"" );
+		SetRegionFastHelpText( pRegion, JA2_TEXT("") );
 	else
 		SetRegionFastHelpText( pRegion, gzLaptopHelpText[ uiHelpTextID ] );
 

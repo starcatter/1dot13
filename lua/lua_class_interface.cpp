@@ -2,6 +2,8 @@
 
 #include <DEBUG.H>
 
+#include <cstring>
+
 #define ARRAY_INDEX " idx"	// The space is intentional to make this an out-of-band field
 
 luaL_Reg LuaInterface::s_ClassList[] = {

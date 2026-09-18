@@ -487,7 +487,7 @@ BOOLEAN DrawAimPolicyMenu()
 		}
 		else
 		{
-			Loc::GetString(Loc::AIM_POLICY, L"Line", ubLocInFile[i], sText, 400);
+			Loc::GetString(Loc::AIM_POLICY, JA2_TEXT("Line"), ubLocInFile[i], sText, 400);
 		}
 		DrawTextToScreen(sText, AIM_POLICY_TOC_X + AIM_POLICY_TOC_TEXT_OFFSET_X, (UINT16)(usPosY + AIM_POLICY_TOC_TEXT_OFFSET_Y), AIM_CONTENTBUTTON_WIDTH, AIM_POLICY_TOC_FONT, AIM_POLICY_TOC_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
@@ -573,7 +573,7 @@ BOOLEAN	DisplayAimPolicyTitleText(void)
 	}
 	else
 	{
-		Loc::GetString(Loc::AIM_POLICY, L"Line", AIM_STATEMENT_OF_POLICY);
+		Loc::GetString(Loc::AIM_POLICY, JA2_TEXT("Line"), AIM_STATEMENT_OF_POLICY);
 	}
 	if(gubCurPageNum == 0)
 		DrawTextToScreen(sText, AIM_POLICY_TITLE_X, AIM_POLICY_TITLE_STATEMENT_Y-25, AIM_POLICY_TITLE_WIDTH, AIM_POLICY_TITLE_FONT, AIM_POLICY_TITLE_COLOR, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED);
@@ -598,7 +598,7 @@ BOOLEAN	DisplayAimPolicyStatement(void)
 	}
 	else
 	{
-		Loc::GetString(Loc::AIM_POLICY, L"Line", AIM_STATEMENT_OF_POLICY_1, sText, 400);
+		Loc::GetString(Loc::AIM_POLICY, JA2_TEXT("Line"), AIM_STATEMENT_OF_POLICY_1, sText, 400);
 	}
 	usNumPixels = DisplayWrappedString(AIM_POLICY_TITLE_STATEMENT_X, AIM_POLICY_TITLE_STATEMENT_Y, AIM_POLICY_TITLE_STATEMENT_WIDTH, 2, AIM_POLICY_TEXT_FONT, AIM_POLICY_TEXT_COLOR, sText, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
@@ -610,7 +610,7 @@ BOOLEAN	DisplayAimPolicyStatement(void)
 	}
 	else
 	{
-		Loc::GetString(Loc::AIM_POLICY, L"Line", AIM_STATEMENT_OF_POLICY_2, sText, 400);
+		Loc::GetString(Loc::AIM_POLICY, JA2_TEXT("Line"), AIM_STATEMENT_OF_POLICY_2, sText, 400);
 	}
 	DisplayWrappedString(AIM_POLICY_TITLE_STATEMENT_X, (UINT16)(AIM_POLICY_TITLE_STATEMENT_Y + usNumPixels+15), AIM_POLICY_TITLE_STATEMENT_WIDTH, 2, AIM_POLICY_TEXT_FONT, AIM_POLICY_TEXT_COLOR, sText, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
@@ -685,7 +685,7 @@ BOOLEAN	DisplayAimPolicyTitle(UINT16 usPosY, UINT8	ubPageNum, FLOAT fNumber)
 	}
 	else
 	{
-		Loc::GetString(Loc::AIM_POLICY,L"Line", ubPageNum, sText, 400); 
+		Loc::GetString(Loc::AIM_POLICY,JA2_TEXT("Line"), ubPageNum, sText, 400); 
 	}
 	DrawTextToScreen(sText, AIM_POLICY_SUBTITLE_NUMBER, usPosY, 0, AIM_POLICY_SUBTITLE_FONT, AIM_POLICY_SUBTITLE_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
@@ -705,12 +705,12 @@ UINT16 DisplayAimPolicyParagraph(UINT16 usPosY, UINT8	ubPageNum, FLOAT fNumber)
 	}
 	else
 	{
-		Loc::GetString(Loc::AIM_POLICY, L"Line", ubPageNum, sText, 400);
+		Loc::GetString(Loc::AIM_POLICY, JA2_TEXT("Line"), ubPageNum, sText, 400);
 	}
 	if(fNumber != 0.0)
 	{
 		//Display the section number
-		swprintf(sTemp, L"%2.1f", fNumber);
+		swprintf(sTemp, JA2_TEXT("%2.1f"), fNumber);
 		DrawTextToScreen(sTemp, AIM_POLICY_PARAGRAPH_NUMBER, usPosY, 0, AIM_POLICY_TEXT_FONT, AIM_POLICY_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	}
 
@@ -732,10 +732,10 @@ UINT16 DisplayAimPolicySubParagraph(UINT16 usPosY, UINT8	ubPageNum, FLOAT fNumbe
 	}
 	else
 	{
-		Loc::GetString(Loc::AIM_POLICY, L"Line", ubPageNum, sText, 400);
+		Loc::GetString(Loc::AIM_POLICY, JA2_TEXT("Line"), ubPageNum, sText, 400);
 	}
 	//Display the section number
-	swprintf(sTemp, L"%2.2f", fNumber);
+	swprintf(sTemp, JA2_TEXT("%2.2f"), fNumber);
 	DrawTextToScreen(sTemp, AIM_POLICY_SUBPARAGRAPH_NUMBER, usPosY, 0, AIM_POLICY_TEXT_FONT, AIM_POLICY_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
 	//Display the text beside the section number

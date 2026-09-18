@@ -4,6 +4,7 @@
 	#include "popup_callback.h"
 	#include "types.h"
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 
 	#define MAX_POPUPS 32
 	#define POPUP_MAX_SUB_POPUPS  24
@@ -67,10 +68,10 @@
 	{
 	public:
 		POPUP_OPTION::POPUP_OPTION(void); // default constructor
-		POPUP_OPTION(const std::wstring& name, popupCallback* newFunction); // constructor
+		POPUP_OPTION(const ja2::text::Utf16String& name, popupCallback* newFunction); // constructor
 		~POPUP_OPTION();			// destructor
 		// setup
-		BOOLEAN setName(const std::wstring& name);
+		BOOLEAN setName(const ja2::text::Utf16String& name);
 		BOOLEAN setAction(popupCallback*fun);
 		BOOLEAN setAvail(popupCallback *fun);
 		BOOLEAN setHover(popupCallback *fun);
@@ -84,8 +85,8 @@
 		BOOLEAN HoverFunctionSet(){ return (this->hover != 0); };
 		BOOLEAN AvailabilityFunctionSet(){ return (this->avail != 0); };
 		
-		std::wstring name;
-		std::wstring hint;
+		ja2::text::Utf16String name;
+		ja2::text::Utf16String hint;
 //	protected:
 		popupCallback * action;
 		popupCallback * avail;
@@ -105,8 +106,8 @@
 	public:
 		// constructor/destructor
 	POPUP_SUB_POPUP_OPTION(void);
-	POPUP_SUB_POPUP_OPTION(const std::wstring& name);
-	POPUP_SUB_POPUP_OPTION(const std::wstring& newName, const POPUP * parent);
+	POPUP_SUB_POPUP_OPTION(const ja2::text::Utf16String& name);
+	POPUP_SUB_POPUP_OPTION(const ja2::text::Utf16String& newName, const POPUP * parent);
 	~POPUP_SUB_POPUP_OPTION();
 
 	void showPopup();
@@ -136,19 +137,19 @@
 		// public functions
 	public:
 		POPUP(void); // constructor
-		POPUP(CHAR* name); // constructor
+		POPUP(CHAR8* name); // constructor
 		~POPUP(void);			// destructor
 		// setup
-		POPUP_OPTION * addOption(const std::wstring& name, popupCallback * action);
+		POPUP_OPTION * addOption(const ja2::text::Utf16String& name, popupCallback * action);
 		/*INT16 findFreeOptionIndex();*/
 		BOOLEAN addOption(POPUP_OPTION &option);
 		POPUP_OPTION * getOption(UINT16 n);
 
-		BOOLEAN delOption(CHAR* name);		// Another index to through and clean, aargh
+		BOOLEAN delOption(CHAR8* name);		// Another index to through and clean, aargh
 		BOOLEAN delOption(UINT8 optIndex);
 
-		POPUP* addSubMenuOption(const std::wstring& name);
-		BOOL addSubMenuOption(POPUP_SUB_POPUP_OPTION* sub);
+		POPUP* addSubMenuOption(const ja2::text::Utf16String& name);
+		BOOLEAN addSubMenuOption(POPUP_SUB_POPUP_OPTION* sub);
 		/*INT16 findFreeSubMenuOptionIndex();*/
 		POPUP_SUB_POPUP_OPTION * getSubPopupOption(UINT8 n);
 
@@ -181,7 +182,7 @@
 		/////////////////////////
 		// public variables
 	public:
-		CHAR name[32];
+		CHAR8 name[32];
 		SGPPoint Position;
 		SGPRect Dimensions;
 		UINT32 id;

@@ -204,17 +204,17 @@ BOOLEAN ReadInAltSectors(STR fileName)
 BOOLEAN WriteInAltSectors(STR fileName)
 {
 	XMLWriter xmlw;
-	xmlw.openNode(L"ALT_SECTORS_LIST");
+	xmlw.openNode("ALT_SECTORS_LIST");
 	UINT32 x, y;
 	for(y = 1;y <= 16;y++)
 	{
-		xmlw.addAttributeToNextValue(L"y",(char)(y+0x40));
+		xmlw.addAttributeToNextValue("y",(char)(y+0x40));
 		std::stringstream ss;
 		for(x = 1;x <= 16; x++)
 		{
 			ss << " " << RandomSector[ ((y - 1) * 16) + (x - 1) ];
 		}
-		xmlw.addValue(L"ROW", ss.str());
+		xmlw.addValue("ROW", ss.str());
 	}
 	xmlw.closeNode();
 	xmlw.writeToFile(fileName);

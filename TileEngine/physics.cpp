@@ -1550,7 +1550,7 @@ vector_3 FindBestForceForTrajectory( INT32 sSrcGridNo, INT32 sGridNo,INT16 sStar
 	}
 
 #ifdef JA2TESTVERSION
-	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Number of integration: %d", iNumChecks );
+	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Number of integration: %d"), iNumChecks );
 #endif
 
 	return( vForce );
@@ -1700,7 +1700,7 @@ real FindBestAngleForTrajectory( INT32 sSrcGridNo, INT32 sGridNo,INT16 sStartZ, 
 	// OK, we have our force, calculate change to get through without collide
 	//if ( ChanceToGetThroughObjectTrajectory( sEndZ, pItem, &vPosition, &vForce ) == 0 )
 	//{
-	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Chance to get through throw is 0." );
+	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Chance to get through throw is 0.") );
 	//}
 
 	DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"FindBestAngleForTrajectory done");
@@ -2006,7 +2006,7 @@ void CalculateLaunchItemBasicParams( SOLDIERTYPE *pSoldier, OBJECTTYPE *pItem, I
 	if (!TileIsOutOfBounds(sInterGridNo))
 	{
 		// IF so, adjust target height, gridno....
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Through a window!" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Through a window!") );
 
 		fThroughIntermediateGridNo = TRUE;
 	}
@@ -2559,7 +2559,7 @@ BOOLEAN AttemptToCatchObject( REAL_OBJECT *pObject )
 	ubChanceToCatch = 50 + EffectiveDexterity( pSoldier, FALSE ) / 2;
 
 #ifdef JA2TESTVERSION
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Chance To Catch: %d", ubChanceToCatch );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Chance To Catch: %d"), ubChanceToCatch );
 #endif
 
 	pObject->fCatchCheckDone = TRUE;

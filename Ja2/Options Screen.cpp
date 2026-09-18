@@ -138,7 +138,7 @@ INT32		giDoneBtnImage;
 
 //checkbox to toggle tracking mode on or off
 UINT32	guiOptionsToggles[ MAX_NUMBER_OF_OPTION_TOGGLES ]; //array of ButtonID, index's for button list
-BOOL Buttons_Exist_State = 0;
+BOOLEAN Buttons_Exist_State = 0;
 void BtnOptionsTogglesCallback(GUI_BUTTON *btn,INT32 reason);
 
 
@@ -945,7 +945,7 @@ void RenderOptionsScreen()
 							zOptionsText[ OPT_MUSIC ], FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED );
 
 	//Display the option page numbers
-	swprintf( sPage, L"%d / %d", OptionsList_Column_Offset + 1, Max_Number_Of_Pages - 1 );
+	swprintf( sPage, JA2_TEXT("%d / %d"), OptionsList_Column_Offset + 1, Max_Number_Of_Pages - 1 );
 	DisplayWrappedString(	OPT_PAGE_X, OPT_PAGE_Y, OPT_SLIDER_TEXT_WIDTH, 2, OPT_BUTTON_FONT2, OPT_MAIN_COLOR, 
 							sPage, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED );
 
@@ -1034,7 +1034,9 @@ void GetOptionsScreenUserInput()
 
 
 				case 'z':
+				#ifdef _WIN32
 					SetErrorMode( SEM_FAILCRITICALERRORS );
+				#endif
 					break;
 
 //				case 'q':
@@ -1048,7 +1050,7 @@ void GetOptionsScreenUserInput()
 	// mousewheel input
 	if (OptionsList_Column_Offset > 0)
 	{
-		BOOL act = FALSE;
+		BOOLEAN act = FALSE;
 
 		// check general screen mouseregion
 		if (gSelectedToggleBoxAreaRegion.WheelState > 0)
@@ -1071,7 +1073,7 @@ void GetOptionsScreenUserInput()
 
 	if (OptionsList_Column_Offset < Max_Number_Of_Pages-2)
 	{
-		BOOL act = FALSE;
+		BOOLEAN act = FALSE;
 
 		// check general screen mouseregion
 		if (gSelectedToggleBoxAreaRegion.WheelState < 0)
@@ -1372,7 +1374,7 @@ void Handle_ButtonStyle_Options( UINT8 Button_UserData_1 )
 			if ( pEvent->ubCallbackID == EVENT_POSTAL_SERVICE_SHIPMENT)
 			{
 					gPostalService.DeliverShipment(pEvent->uiParam);
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Forced Bobby Ray's delivery.");
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Forced Bobby Ray's delivery."));
 					// ok now clean up the events we just forced..
 					// Use Assert () to help find any cases where these events are NOT deleted 
 					//	If they are still in EventList, an empty next Shipment will crash the game

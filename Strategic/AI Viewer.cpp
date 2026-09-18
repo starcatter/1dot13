@@ -213,11 +213,11 @@ extern void Ensure_RepairedGarrisonGroup( GARRISON_GROUP **ppGarrison, INT32 *pG
 
 CHAR16 gwGroupTypeString[ NUM_ENEMY_INTENTIONS ][ 20 ] =
 {
-	L"RETREAT",
-	L"ASSAULT",
-	L"STAGING",
-	L"PATROL",
-	L"REINFORCE"
+	JA2_TEXT("RETREAT"),
+	JA2_TEXT("ASSAULT"),
+	JA2_TEXT("STAGING"),
+	JA2_TEXT("PATROL"),
+	JA2_TEXT("REINFORCE")
 };
 
 
@@ -226,9 +226,9 @@ void StringFromValue( STR16 str, INT32 iValue, UINT32 uiMax )
 	if( iValue < 0 )			//a blank string is determined by a negative value.
 		str[0] = '\0';
 	else if( (UINT32)iValue > uiMax )	//higher than max attribute value, so convert it to the max.
-		swprintf( str, L"%d", uiMax );
+		swprintf( str, JA2_TEXT("%d"), uiMax );
 	else										//this is a valid static value, so convert it to a string.
-		swprintf( str, L"%d", iValue );
+		swprintf( str, JA2_TEXT("%d"), iValue );
 }
 
 BOOLEAN CreateAIViewer()
@@ -247,7 +247,7 @@ BOOLEAN CreateAIViewer()
 			!FileExists( "DevTools\\icons.sti" )			||
 			!FileExists( "DevTools\\SmCheckbox.sti" ) )
 	{
-		ScreenMsg( FONT_WHITE, MSG_BETAVERSION, L"AIViewer missing data.	Aborted." );
+		ScreenMsg( FONT_WHITE, MSG_BETAVERSION, JA2_TEXT("AIViewer missing data.	Aborted.") );
 		gfExitViewer = FALSE;
 		gfViewerEntry = TRUE;
 		return FALSE;
@@ -268,7 +268,7 @@ BOOLEAN CreateAIViewer()
 
 	//Create all of the buttons here
 	iViewerButton[ VIEWER_EXIT ] =
-		CreateTextButton(L"Exit", BLOCKFONT2, FONT_RED, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton(JA2_TEXT("Exit"), BLOCKFONT2, FONT_RED, FONT_BLACK, BUTTON_USE_DEFAULT,
 		585, 425, 50, 30, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		ViewerExitCallback );
 
@@ -279,61 +279,61 @@ BOOLEAN CreateAIViewer()
 	DisableButton( iViewerButton[ VIEWER_TIMEPANEL ] );
 	SpecifyDisabledButtonStyle( iViewerButton[ VIEWER_TIMEPANEL ], DISABLED_STYLE_NONE );
 	iViewerButton[ COMPRESSION0 ] =
-		CreateTextButton( L"0", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("0"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 3, 20, 17, 16, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		Compression0Callback );
 	iViewerButton[ COMPRESSION5 ] =
-		CreateTextButton( L"5", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("5"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 20, 20, 17, 16, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		Compression5Callback );
 	iViewerButton[ COMPRESSION15 ] =
-		CreateTextButton( L"15", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("15"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 37, 20, 18, 16, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		Compression15Callback );
 	iViewerButton[ COMPRESSION60 ] =
-		CreateTextButton( L"60", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("60"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 55, 20, 18, 16, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		Compression60Callback );
 /*
 	iViewerButton[ COMPRESSION6H ] =
-		CreateTextButton( L"6H", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("6H"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 73, 20, 18, 16, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		Compression6HCallback );
 */
 
 	iViewerButton[ VIEWER_RESET ] =
-		CreateTextButton( L"Reset Enemies", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Reset Enemies"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		526, 0, 114, 20, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, BUTTON_NO_CALLBACK,
 		BUTTON_NO_CALLBACK );
 	DisableButton( iViewerButton[ VIEWER_RESET ] );
 	SpecifyDisabledButtonStyle( iViewerButton[ VIEWER_RESET ], DISABLED_STYLE_NONE );
 	iViewerButton[ RESET_EASY ] =
-		CreateTextButton( L"Easy", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Easy"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		526, 20, 35, 16, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		EasyCallback );
 	iViewerButton[ RESET_NORMAL ] =
-		CreateTextButton( L"Normal", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Normal"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		561, 20, 44, 16, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		NormalCallback );
 	iViewerButton[ RESET_HARD ] =
-		CreateTextButton( L"Hard", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Hard"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		605, 20, 35, 16, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		HardCallback );
 
 	iViewerButton[ TEST_INCOMING_4SIDES ] =
-		CreateTextButton( L"Incoming 4 Sides", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Incoming 4 Sides"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 20, 100, 120, 18, BUTTON_NO_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		TestIncoming4SidesCallback );
 	iViewerButton[ START_CREATURE_QUEST ] =
-		CreateTextButton( L"Start Creature Quest", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Start Creature Quest"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 20, 125, 120, 18, BUTTON_NO_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		StartCreatureQuestCallback );
 	iViewerButton[ SPREAD_CREATURES ] =
-		CreateTextButton( L"Spread Creatures", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Spread Creatures"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 20, 150, 120, 18, BUTTON_NO_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		SpreadCreaturesCallback );
 	iViewerButton[ CREATURE_ATTACK ] =
-		CreateTextButton( L"Creature Attack", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Creature Attack"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 20, 175, 120, 18, BUTTON_NO_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		CreatureAttackCallback );
 
@@ -345,29 +345,29 @@ BOOLEAN CreateAIViewer()
 	}
 
 	iViewerButton[ RELOAD_SECTOR ] =
-		CreateTextButton( L"Override Sector", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Override Sector"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		10, VIEWER_BOTTOM + 5, 90, 18, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		ReloadSectorCallback );
 
 	iViewerButton[ VIEW_ENEMIES ] =
-		CreateTextButton( L"View Enemies", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("View Enemies"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 13, 40, 90, 20, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		ViewEnemiesCallback );
 	iViewerButton[ VIEW_CREATURES ] =
-		CreateTextButton( L"View Creatures", FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("View Creatures"), FONT12POINT1, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 103, 40, 90, 20, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		ViewCreaturesCallback );
 
 	iViewerButton[ BASEMENT1_BTN ] =
-		CreateTextButton( L"B1", FONT16ARIAL, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("B1"), FONT16ARIAL, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 58, 60, 30, 24, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		B1Callback );
 	iViewerButton[ BASEMENT2_BTN ] =
-		CreateTextButton( L"B2", FONT16ARIAL, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("B2"), FONT16ARIAL, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 88, 60, 30, 24, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		B2Callback );
 	iViewerButton[ BASEMENT3_BTN ] =
-		CreateTextButton( L"B3", FONT16ARIAL, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("B3"), FONT16ARIAL, FONT_BLACK, FONT_BLACK, BUTTON_USE_DEFAULT,
 		VIEWER_RIGHT + 118, 60, 30, 24, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK,
 		B3Callback );
 	if( gfViewEnemies )
@@ -519,7 +519,7 @@ void RenderStationaryGroups()
 				BlitGroupIcon( ICON_TYPE_STOPPED, ubIconColor, xp, yp, hVObject );
 
 				//Print the group size
-				swprintf( str, L"%d", ubGroupSize );
+				swprintf( str, JA2_TEXT("%d"), ubGroupSize );
 				mprintf( xp + 2, yp + 2, str );
 			}
 
@@ -623,7 +623,7 @@ void RenderMovingGroupsAndMercs()
 			//Print the group size
 			if ( pGroup->usGroupTeam == OUR_TEAM && !pGroup->uiTraverseTime )
 				// stationary player - count all mercs there, not just the group
-				mprintf( x+11, y+11, L"%d", PlayerMercsInSector( pGroup->ubSectorX, pGroup->ubSectorY, pGroup->ubSectorZ ) );
+				mprintf( x+11, y+11, JA2_TEXT("%d"), PlayerMercsInSector( pGroup->ubSectorX, pGroup->ubSectorY, pGroup->ubSectorZ ) );
 			else
 			{
 				if( !pGroup->pWaypoints )
@@ -633,7 +633,7 @@ void RenderMovingGroupsAndMercs()
 						SetFontForeground( FONT_WHITE );
 					}
 				}
-				mprintf( x+7, y+7, L"%d", pGroup->ubGroupSize );
+				mprintf( x+7, y+7, JA2_TEXT("%d"), pGroup->ubGroupSize );
 			}
 		}
 
@@ -655,18 +655,18 @@ void RenderInfoInSector()
 		SetFontForeground( FONT_LTRED );
 		xp = VIEWER_LEFT + VIEWER_CELLW * ( gModSettings.ubSAISpawnSectorX - 1 ) + 6;
 		yp = VIEWER_TOP + VIEWER_CELLH * ( gModSettings.ubSAISpawnSectorY - 1 ) + 13;
-		//mprintf( 78, 358, L"%3d", giReinforcementPool );
-		mprintf( xp, yp, L"%3d", giReinforcementPool );
+		//mprintf( 78, 358, JA2_TEXT("%3d"), giReinforcementPool );
+		mprintf( xp, yp, JA2_TEXT("%3d"), giReinforcementPool );
 
 		//Render general enemy statistics
 		ClearViewerRegion( 105, VIEWER_BOTTOM + 10, 265, VIEWER_BOTTOM + 66 );
 		SetFontForeground( FONT_YELLOW );
-		mprintf( 105, VIEWER_BOTTOM + 10, L"GLOBAL INFO" );
+		mprintf( 105, VIEWER_BOTTOM + 10, JA2_TEXT("GLOBAL INFO") );
 		SetFontForeground( FONT_GRAY2 );
-		mprintf( 118, VIEWER_BOTTOM + 24, L"Strategic AI Awake" );
-		mprintf( 105, VIEWER_BOTTOM + 36, L"Total Request Points:	%d", giRequestPoints );
-		mprintf( 105, VIEWER_BOTTOM + 46, L"Total Reinforcement Points:	%d", giReinforcementPoints );
-		mprintf( 105, VIEWER_BOTTOM + 56, L"Progress (Current/Highest): %d%%/%d%%", CurrentPlayerProgressPercentage(), HighestPlayerProgressPercentage() );
+		mprintf( 118, VIEWER_BOTTOM + 24, JA2_TEXT("Strategic AI Awake") );
+		mprintf( 105, VIEWER_BOTTOM + 36, JA2_TEXT("Total Request Points:	%d"), giRequestPoints );
+		mprintf( 105, VIEWER_BOTTOM + 46, JA2_TEXT("Total Reinforcement Points:	%d"), giReinforcementPoints );
+		mprintf( 105, VIEWER_BOTTOM + 56, JA2_TEXT("Progress (Current/Highest): %d%%/%d%%"), CurrentPlayerProgressPercentage(), HighestPlayerProgressPercentage() );
 
 		PrintEnemyPopTable();
 		PrintEnemiesKilledTable();
@@ -743,25 +743,25 @@ void RenderInfoInSector()
 			pGroup = pGroup->next;
 		}
 		ClearViewerRegion( 280, 375, 640, 480 );
-		mprintf( 280, yp, L"SECTOR INFO:	%c%d	(ID: %d)", ubSectorY + 'A' - 1, ubSectorX, SECTOR( ubSectorX, ubSectorY ) );
+		mprintf( 280, yp, JA2_TEXT("SECTOR INFO:	%c%d	(ID: %d)"), ubSectorY + 'A' - 1, ubSectorX, SECTOR( ubSectorX, ubSectorY ) );
 		yp += 10;
 		SetFontForeground( FONT_LTGREEN );
-		mprintf( 280, yp, L"%d Player Mercs:	(%d Active, %d Unconcious, %d Collapsed)",
+		mprintf( 280, yp, JA2_TEXT("%d Player Mercs:	(%d Active, %d Unconcious, %d Collapsed)"),
 			ubMercs, ubActive, ubUnconcious, ubCollapsed );
 		yp += 10;
 		SetFontForeground( FONT_LTBLUE );
-		mprintf( 280, yp, L"Militia:	(%d Green, %d Regular, %d Elite)", 
+		mprintf( 280, yp, JA2_TEXT("Militia:	(%d Green, %d Regular, %d Elite)"), 
 				 MilitiaInSectorOfRank( ubSectorX, ubSectorY, GREEN_MILITIA ), MilitiaInSectorOfRank( ubSectorX, ubSectorY, REGULAR_MILITIA ), MilitiaInSectorOfRank( ubSectorX, ubSectorY, ELITE_MILITIA ) );
 		yp += 10;
 		SetFontForeground( FONT_ORANGE );
-		mprintf( 280, yp, L"Garrison:	(%d:%d Admins, %d:%d Troops, %d:%d Elites, %d:%d Tanks, %d:%d Jeeps)",
+		mprintf( 280, yp, JA2_TEXT("Garrison:	(%d:%d Admins, %d:%d Troops, %d:%d Elites, %d:%d Tanks, %d:%d Jeeps)"),
 			pSector->ubAdminsInBattle, pSector->ubNumAdmins,
 			pSector->ubTroopsInBattle, pSector->ubNumTroops,
 			pSector->ubElitesInBattle, pSector->ubNumElites,
 			pSector->ubTanksInBattle, pSector->ubNumTanks,
 			pSector->ubJeepsInBattle, pSector->ubNumJeeps );
 		yp += 10;
-		mprintf( 280, yp, L"%d Groups:	(%d:%d Admins, %d:%d Troops, %d:%d Elites, %d:%d Tanks, %d:%d Jeeps)", ubNumGroups,
+		mprintf( 280, yp, JA2_TEXT("%d Groups:	(%d:%d Admins, %d:%d Troops, %d:%d Elites, %d:%d Tanks, %d:%d Jeeps)"), ubNumGroups,
 			ubAdminsInBattle, ubNumAdmins,
 			ubTroopsInBattle, ubNumTroops,
 			ubElitesInBattle, ubNumElites,
@@ -778,7 +778,7 @@ void RenderInfoInSector()
 		else
 		{
 			SetFontForeground( FONT_YELLOW );
-			mprintf( 280, yp, L"Monsters:	(%d:%d)", pSector->ubCreaturesInBattle, pSector->ubNumCreatures );
+			mprintf( 280, yp, JA2_TEXT("Monsters:	(%d:%d)"), pSector->ubCreaturesInBattle, pSector->ubNumCreatures );
 			yp += 10;
 		}
 	}
@@ -791,23 +791,23 @@ void RenderInfoInSector()
 		{
 			return;
 		}
-		mprintf( 280, yp, L"SECTOR INFO:	%c%d_b%d", ubSectorY + 'A' - 1, ubSectorX, gbViewLevel );
+		mprintf( 280, yp, JA2_TEXT("SECTOR INFO:	%c%d_b%d"), ubSectorY + 'A' - 1, ubSectorX, gbViewLevel );
 		yp += 10;
 		SetFontForeground( FONT_LTGREEN );
-		mprintf( 280, yp, L"%d Player Mercs:	(%d Active, %d Unconcious, %d Collapsed)",
+		mprintf( 280, yp, JA2_TEXT("%d Player Mercs:	(%d Active, %d Unconcious, %d Collapsed)"),
 			ubMercs, ubActive, ubUnconcious, ubCollapsed );
 		yp += 10;
 		SetFontForeground( FONT_YELLOW );
-		mprintf( 280, yp, L"Monsters:	(%d:%d)", pSector->ubCreaturesInBattle, pSector->ubNumCreatures );
+		mprintf( 280, yp, JA2_TEXT("Monsters:	(%d:%d)"), pSector->ubCreaturesInBattle, pSector->ubNumCreatures );
 		yp += 10;
 		if( pSector->uiFlags & SF_PENDING_ALTERNATE_MAP )
 		{
-			mprintf( 280, yp, L"SF_PENDING_ALTERNATE_MAP", pSector->ubCreaturesInBattle, pSector->ubNumCreatures );
+			mprintf( 280, yp, JA2_TEXT("SF_PENDING_ALTERNATE_MAP"), pSector->ubCreaturesInBattle, pSector->ubNumCreatures );
 			yp += 10;
 		}
 		if( pSector->uiFlags & SF_USE_ALTERNATE_MAP )
 		{
-			mprintf( 280, yp, L"SF_USE_ALTERNATE_MAP", pSector->ubCreaturesInBattle, pSector->ubNumCreatures );
+			mprintf( 280, yp, JA2_TEXT("SF_USE_ALTERNATE_MAP"), pSector->ubCreaturesInBattle, pSector->ubNumCreatures );
 			yp += 10;
 		}
 	}
@@ -835,10 +835,10 @@ void RenderViewer()
 		SetFontForeground( FONT_YELLOW );
 		SetFontShadow( FONT_NEARBLACK );
 
-		mprintf( 38, VIEWER_BOTTOM + 33, L"Admins" );
-		mprintf( 38, VIEWER_BOTTOM + 53, L"Troops" );
-		mprintf( 38, VIEWER_BOTTOM + 73, L"Elites" );
-		mprintf( 38, VIEWER_BOTTOM + 93, L"Creatures" );
+		mprintf( 38, VIEWER_BOTTOM + 33, JA2_TEXT("Admins") );
+		mprintf( 38, VIEWER_BOTTOM + 53, JA2_TEXT("Troops") );
+		mprintf( 38, VIEWER_BOTTOM + 73, JA2_TEXT("Elites") );
+		mprintf( 38, VIEWER_BOTTOM + 93, JA2_TEXT("Creatures") );
 	}
 
 	if( gfRenderMap )
@@ -859,7 +859,7 @@ void RenderViewer()
 				SetFontForeground( FONT_YELLOW );
 			else
 				SetFontForeground( FONT_GRAY1 );
-			mprintf( VIEWER_LEFT-10, VIEWER_TOP+7+y*22, L"%c", 'A' + y );
+			mprintf( VIEWER_LEFT-10, VIEWER_TOP+7+y*22, JA2_TEXT("%c"), 'A' + y );
 		}
 		for( x = 1; x <= 16; x++ )
 		{
@@ -870,7 +870,7 @@ void RenderViewer()
 				SetFontForeground( FONT_YELLOW );
 			else
 				SetFontForeground( FONT_GRAY1 );
-			swprintf( str, L"%d", x );
+			swprintf( str, JA2_TEXT("%d"), x );
 			mprintf( VIEWER_LEFT+x*26-(26+StringPixLength( str, FONT12POINT1 ))/2, VIEWER_TOP-12, str );
 		}
 		if( gbViewLevel )
@@ -890,7 +890,7 @@ void RenderViewer()
 					{
 						xp = VIEWER_LEFT+x*VIEWER_CELLW+2;
 						yp = VIEWER_TOP+y*VIEWER_CELLH+2;
-						mprintf( xp, yp, L"%d", pUnder->ubNumCreatures );
+						mprintf( xp, yp, JA2_TEXT("%d"), pUnder->ubNumCreatures );
 					}
 					else
 					{ //not found, so visually shade it darker.
@@ -1492,11 +1492,11 @@ enum
 
 CHAR16 EnemyRankString[ TABLE_ENEMY_RANKS ][ 10 ] =
 {
-	L"Adm",
-	L"Trp",
-	L"Elt",
-	L"TOT",
-	L"%%",
+	JA2_TEXT("Adm"),
+	JA2_TEXT("Trp"),
+	JA2_TEXT("Elt"),
+	JA2_TEXT("TOT"),
+	JA2_TEXT("%%"),
 };
 
 
@@ -1516,15 +1516,15 @@ enum
 
 CHAR16 EnemyTypeString[ POP_TABLE_ENEMY_TYPES ][ 10 ] =
 {
-	L"Pool",
-	L"Garr",
-	L"Ptrl",
-	L"Rein",
-	L"Aslt",
-	L"Stag",
-	L"Rtrt",
-	L" TOT",
-	L" %%",
+	JA2_TEXT("Pool"),
+	JA2_TEXT("Garr"),
+	JA2_TEXT("Ptrl"),
+	JA2_TEXT("Rein"),
+	JA2_TEXT("Aslt"),
+	JA2_TEXT("Stag"),
+	JA2_TEXT("Rtrt"),
+	JA2_TEXT(" TOT"),
+	JA2_TEXT(" %%"),
 };
 
 
@@ -1639,7 +1639,7 @@ void PrintEnemyPopTable()
 
 	// print table title
 	SetFontForeground( FONT_RED );
-	mprintf( usX, usY, L"ENEMY POPULATION:" );
+	mprintf( usX, usY, JA2_TEXT("ENEMY POPULATION:") );
 	usY += POP_TABLE_Y_GAP;
 
 	// print horizontal labels
@@ -1669,16 +1669,16 @@ void PrintEnemyPopTable()
 			// an exclusive OR operator, how often do ya see that, huh?	:-)
 			if ( ( ubEnemyRank == ENEMY_RANK_PERCENT ) ^ ( ubEnemyType == ENEMY_TYPE_PERCENT ) )
 			{
-				wcscpy( wPrintSpec, L"%3d%%%%" );
+				wcscpy( wPrintSpec, JA2_TEXT("%3d%%%%") );
 			}
 			else
 			if ( ( ubEnemyRank == ENEMY_RANK_PERCENT ) && ( ubEnemyType == ENEMY_TYPE_PERCENT ) )
 			{
-				wcscpy( wPrintSpec, L"" );
+				wcscpy( wPrintSpec, JA2_TEXT("") );
 			}
 			else
 			{
-				wcscpy( wPrintSpec, L"%4d" );
+				wcscpy( wPrintSpec, JA2_TEXT("%4d") );
 			}
 
 			swprintf( wTempString, wPrintSpec, usEnemyPopTable[ ubEnemyRank ][ ubEnemyType ] );
@@ -1700,10 +1700,10 @@ enum
 
 CHAR16 EnemiesKilledString[ KILLED_TABLE_ROWS ][ 10 ] =
 {
-	L"Tact",
-	L"Auto",
-	L" TOT",
-	L" %%",
+	JA2_TEXT("Tact"),
+	JA2_TEXT("Auto"),
+	JA2_TEXT(" TOT"),
+	JA2_TEXT(" %%"),
 };
 
 
@@ -1778,7 +1778,7 @@ void PrintEnemiesKilledTable()
 
 	// print table title
 	SetFontForeground( FONT_RED );
-	mprintf( usX, usY, L"ENEMIES KILLED:" );
+	mprintf( usX, usY, JA2_TEXT("ENEMIES KILLED:") );
 	usY += KILLED_TABLE_Y_GAP;
 
 	// print horizontal labels
@@ -1808,16 +1808,16 @@ void PrintEnemiesKilledTable()
 			// an exclusive OR operator, how often do ya see that, huh?	:-)
 			if ( ( ubEnemyRank == ENEMY_RANK_PERCENT ) ^ ( ubKillType == ENEMIES_KILLED_PERCENT ) )
 			{
-				wcscpy( wPrintSpec, L"%3d%%%%" );
+				wcscpy( wPrintSpec, JA2_TEXT("%3d%%%%") );
 			}
 			else
 			if ( ( ubEnemyRank == ENEMY_RANK_PERCENT ) && ( ubKillType == ENEMIES_KILLED_PERCENT ) )
 			{
-				wcscpy( wPrintSpec, L"" );
+				wcscpy( wPrintSpec, JA2_TEXT("") );
 			}
 			else
 			{
-				wcscpy( wPrintSpec, L"%4d" );
+				wcscpy( wPrintSpec, JA2_TEXT("%4d") );
 			}
 
 			swprintf( wTempString, wPrintSpec, usEnemiesKilledTable[ ubEnemyRank ][ ubKillType ] );
@@ -1904,16 +1904,16 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 		iSurplus = pSector->ubNumTroops + pSector->ubNumAdmins + pSector->ubNumElites + pSector->ubNumTanks - iDesired;
 		SetFontForeground( FONT_WHITE );
 
-		swprintf( wString, L"Garrison #%d: %d desired, ", pSector->ubGarrisonID, iDesired );
+		swprintf( wString, JA2_TEXT("Garrison #%d: %d desired, "), pSector->ubGarrisonID, iDesired );
 
 		if( iSurplus >= 0 )
 		{
-			swprintf( wSubString, L"%d surplus troops", iSurplus );
+			swprintf( wSubString, JA2_TEXT("%d surplus troops"), iSurplus );
 			wcscat( wString, wSubString );
 		}
 		else
 		{
-			swprintf( wSubString, L"%d reinforcements requested", -iSurplus	);
+			swprintf( wSubString, JA2_TEXT("%d reinforcements requested"), -iSurplus	);
 			wcscat( wString, wSubString );
 		}
 		mprintf( iScreenX, iScreenY, wString );
@@ -1924,7 +1924,7 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 			pGroup = GetGroup( gGarrisonGroup[ pSector->ubGarrisonID ].ubPendingGroupID );
 			if( pGroup )
 			{
-				mprintf( iScreenX, iScreenY, L"%d reinforcements on route from group %d in %c%d", pGroup->ubGroupSize, pGroup->ubGroupID,
+				mprintf( iScreenX, iScreenY, JA2_TEXT("%d reinforcements on route from group %d in %c%d"), pGroup->ubGroupSize, pGroup->ubGroupID,
 																																		pGroup->ubSectorY + 'A' - 1, pGroup->ubSectorX );
 			}
 			else
@@ -1933,14 +1933,14 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 		}
 		else
 		{
-			mprintf( iScreenX, iScreenY, L"No pending reinforcements for this sector." );
+			mprintf( iScreenX, iScreenY, JA2_TEXT("No pending reinforcements for this sector.") );
 		}
 		iScreenY += 10;
 	}
 	else
 	{
 		SetFontForeground( FONT_GRAY2 );
-		mprintf( iScreenX, iScreenY, L"No garrison information for this sector." );
+		mprintf( iScreenX, iScreenY, JA2_TEXT("No garrison information for this sector.") );
 		iScreenY += 10;
 	}
 
@@ -1955,7 +1955,7 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 			{
 				Assert( pGroup->pEnemyGroup->ubIntention < NUM_ENEMY_INTENTIONS );
 
-				swprintf( wString, L"Group %c: %s", 'A' + ubGroupCnt, gwGroupTypeString[ pGroup->pEnemyGroup->ubIntention ] );
+				swprintf( wString, JA2_TEXT("Group %c: %s"), 'A' + ubGroupCnt, gwGroupTypeString[ pGroup->pEnemyGroup->ubIntention ] );
 
 				switch ( pGroup->pEnemyGroup->ubIntention )
 				{
@@ -1965,7 +1965,7 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 						if ( iGarrisonIndex != -1 )
 						{
 							ubSectorID = gGarrisonGroup[ iGarrisonIndex ].ubSectorID;
-							swprintf( wSubString, L", target sector %c%d", SECTORY( ubSectorID ) + 'A' - 1, SECTORX( ubSectorID ) );
+							swprintf( wSubString, JA2_TEXT(", target sector %c%d"), SECTORY( ubSectorID ) + 'A' - 1, SECTORX( ubSectorID ) );
 						}
 						else
 						{
@@ -1974,16 +1974,16 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 							{
 								if( pFinalWaypoint->x == gModSettings.ubSAISpawnSectorX && pFinalWaypoint->y == gModSettings.ubSAISpawnSectorY )
 								{
-									swprintf( wSubString, L" - group returning to pool.");
+									swprintf( wSubString, JA2_TEXT(" - group returning to pool."));
 								}
 								else
 								{
-									swprintf( wSubString, L" - moving to %c%d", pFinalWaypoint->y + 'A' - 1, pFinalWaypoint->x );
+									swprintf( wSubString, JA2_TEXT(" - moving to %c%d"), pFinalWaypoint->y + 'A' - 1, pFinalWaypoint->x );
 								}
 							}
 							else
 							{
-								swprintf( wSubString, L" - can't determine target sector" );
+								swprintf( wSubString, JA2_TEXT(" - can't determine target sector") );
 							}
 						}
 						wcscat( wString, wSubString );
@@ -1995,7 +1995,7 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 						if ( iGarrisonIndex != -1 )
 						{
 							ubSectorID = gGarrisonGroup[ iGarrisonIndex ].ubSectorID;
-							swprintf( wSubString, L", dest sector %c%d", SECTORY( ubSectorID ) + 'A' - 1, SECTORX( ubSectorID ) );
+							swprintf( wSubString, JA2_TEXT(", dest sector %c%d"), SECTORY( ubSectorID ) + 'A' - 1, SECTORX( ubSectorID ) );
 							wcscat( wString, wSubString );
 						}
 						else	// must be reinforcing a patrol
@@ -2006,7 +2006,7 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 								pFinalWaypoint = GetFinalWaypoint( pGroup );
 								Assert( pFinalWaypoint );
 
-								swprintf( wSubString, L", Patrol #%d, dest sector %c%d", iPatrolIndex, pFinalWaypoint->y + 'A' - 1, pFinalWaypoint->x );
+								swprintf( wSubString, JA2_TEXT(", Patrol #%d, dest sector %c%d"), iPatrolIndex, pFinalWaypoint->y + 'A' - 1, pFinalWaypoint->x );
 								wcscat( wString, wSubString );
 							}
 							else
@@ -2016,16 +2016,16 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 								{
 									if( pFinalWaypoint->x == gModSettings.ubSAISpawnSectorX && pFinalWaypoint->y == gModSettings.ubSAISpawnSectorY )
 									{
-										swprintf( wSubString, L" - group returning to pool.");
+										swprintf( wSubString, JA2_TEXT(" - group returning to pool."));
 									}
 									else
 									{
-										swprintf( wSubString, L" - lost group moving to %c%d", pFinalWaypoint->y + 'A' - 1, pFinalWaypoint->x );
+										swprintf( wSubString, JA2_TEXT(" - lost group moving to %c%d"), pFinalWaypoint->y + 'A' - 1, pFinalWaypoint->x );
 									}
 								}
 								else
 								{
-									swprintf( wSubString, L" (LOST GROUP!)" );
+									swprintf( wSubString, JA2_TEXT(" (LOST GROUP!)") );
 								}
 								wcscat( wString, wSubString );
 							}
@@ -2035,11 +2035,11 @@ void PrintDetailedEnemiesInSectorInfo( INT32 iScreenX, INT32 iScreenY, UINT8 ubS
 						iPatrolIndex = FindPatrolGroupIndexForGroupID( pGroup->ubGroupID );
 						if( iPatrolIndex != -1 )
 						{
-							swprintf( wSubString, L"#%d, next sector %c%d", iPatrolIndex, pGroup->ubNextY + 'A' - 1, pGroup->ubNextX );
+							swprintf( wSubString, JA2_TEXT("#%d, next sector %c%d"), iPatrolIndex, pGroup->ubNextY + 'A' - 1, pGroup->ubNextX );
 						}
 						else
 						{
-							swprintf( wSubString, L"#err, FLOATING GROUP!" );
+							swprintf( wSubString, JA2_TEXT("#err, FLOATING GROUP!") );
 						}
 						wcscat( wString, wSubString );
 						break;

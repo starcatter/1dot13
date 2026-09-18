@@ -118,6 +118,7 @@ void CheckValidVObjectIndex( UINT32 uiIndex );
 //
 // **************************************************************
 
+#ifdef _WIN32
 int filter(unsigned int code, struct _EXCEPTION_POINTERS *ep)
 {
 	puts("in filter.");
@@ -132,6 +133,7 @@ int filter(unsigned int code, struct _EXCEPTION_POINTERS *ep)
 		return EXCEPTION_CONTINUE_SEARCH;
 	};
 }
+#endif
 
 BOOLEAN InitializeVideoObjectManager( )
 {

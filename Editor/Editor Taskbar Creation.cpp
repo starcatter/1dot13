@@ -44,7 +44,7 @@ void InitEditorItemStatsButtons()
 void InitEditorMercsToolbar()
 {
 	CHAR16 TempString[40];
-//	STR16 FaceDirs[8] = {L"north",L"northeast",L"east",L"southeast",L"south",L"southwest",L"west",L"northwest"};
+//	STR16 FaceDirs[8] = {JA2_TEXT("north"),JA2_TEXT("northeast"),JA2_TEXT("east"),JA2_TEXT("southeast"),JA2_TEXT("south"),JA2_TEXT("southwest"),JA2_TEXT("west"),JA2_TEXT("northwest")};
 	INT32 x;
 
 	iEditorButton[ MERCS_PLAYERTOGGLE ] =
@@ -383,28 +383,28 @@ void InitEditorMercsToolbar()
 		iScreenWidthOffset + 186, 2 * iScreenHeightOffset + 436, 77, 16, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MercsScheduleAction4Callback );
 
 	iEditorButton[ MERCS_SCHEDULE_DATA1A ] =
-		CreateTextButton( L"", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT(""), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 331, 2 * iScreenHeightOffset + 373, 40, 16, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MercsScheduleData1ACallback );
 	iEditorButton[ MERCS_SCHEDULE_DATA1B ] =
-		CreateTextButton( L"", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT(""), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 381, 2 * iScreenHeightOffset + 373, 40, 16, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MercsScheduleData1BCallback );
 	iEditorButton[ MERCS_SCHEDULE_DATA2A ] =
-		CreateTextButton( L"", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT(""), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 331, 2 * iScreenHeightOffset + 394, 40, 16, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MercsScheduleData2ACallback );
 	iEditorButton[ MERCS_SCHEDULE_DATA2B ] =
-		CreateTextButton( L"", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT(""), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 381, 2 * iScreenHeightOffset + 394, 40, 16, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MercsScheduleData2BCallback );
 	iEditorButton[ MERCS_SCHEDULE_DATA3A ] =
-		CreateTextButton( L"", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT(""), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 331, 2 * iScreenHeightOffset + 415, 40, 16, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MercsScheduleData3ACallback );
 	iEditorButton[ MERCS_SCHEDULE_DATA3B ] =
-		CreateTextButton( L"", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT(""), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 381, 2 * iScreenHeightOffset + 415, 40, 16, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MercsScheduleData3BCallback );
 	iEditorButton[ MERCS_SCHEDULE_DATA4A ] =
-		CreateTextButton( L"", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT(""), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 331, 2 * iScreenHeightOffset + 436, 40, 16, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MercsScheduleData4ACallback );
 	iEditorButton[ MERCS_SCHEDULE_DATA4B ] =
-		CreateTextButton( L"", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT(""), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 381, 2 * iScreenHeightOffset + 436, 40, 16, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MercsScheduleData4BCallback );
 	iEditorButton[ MERCS_SCHEDULE_CLEAR ] =
 		CreateTextButton( iEditorMercsToolbarText[62], FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,

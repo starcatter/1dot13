@@ -149,7 +149,7 @@ NPCQuoteInfo * LoadQuoteFile( UINT8 ubNPC )
 	NPCQuoteInfo	* pFileData;
 	UINT32					uiBytesRead;
 	UINT32					uiFileSize;
-	DWORD					uiSignature = 0; // SB // WANNE - BMP: DONE!
+	UINT32					uiSignature = 0; // SB // WANNE - BMP: DONE!
 
 	if ( ubNPC == PETER || ubNPC == ALBERTO || ubNPC == CARLO )
 	{
@@ -251,7 +251,9 @@ NPCQuoteInfo * LoadQuoteFile( UINT8 ubNPC )
 		
 		FileClose( hFile );
 		//check for Russian script & make a runtime conversion of it to International
-		if( *(DWORD*)pFileData_old_ == 0x00350039 )
+		UINT32 oldSignature = 0;
+		memcpy(&oldSignature, pFileData_old_, sizeof(oldSignature));
+		if( oldSignature == 0x00350039 )
 		{
 			//just offset records 4 bytes backward
 			_old_NPCQuoteInfo * pEnglishScript = ( _old_NPCQuoteInfo * )MemAlloc( uiFileSize );
@@ -413,7 +415,7 @@ BOOLEAN EnsureQuoteFileLoaded( UINT8 ubNPC )
 			if (!gfTriedToLoadQuoteInfoArray[ubNPC]) // don't report the error a second time
 			{
 
-				ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"ERROR: NPC.C - NPC needs NPC file: %d.", ubNPC );
+				ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("ERROR: NPC.C - NPC needs NPC file: %d."), ubNPC );
 				gfTriedToLoadQuoteInfoArray[ubNPC] = TRUE;
 			}
 		#endif
@@ -534,7 +536,7 @@ NPCQuoteInfo * LoadCivQuoteFile( UINT8 ubIndex )
 	NPCQuoteInfo	* pFileData;
 	UINT32					uiBytesRead;
 	UINT32					uiFileSize;
-	DWORD					uiSignature = 0; // SB // WANNE - BMP: DONE!
+	UINT32					uiSignature = 0; // SB // WANNE - BMP: DONE!
 
 	if ( ubIndex == MINERS_CIV_QUOTE_INDEX )
 	{
@@ -589,7 +591,9 @@ NPCQuoteInfo * LoadCivQuoteFile( UINT8 ubIndex )
 		
 		FileClose( hFile );
 		//check for Russian script & make a runtime conversion of it to International
-		if( *(DWORD*)pFileData_old_ == 0x00350039 )
+		UINT32 oldSignature = 0;
+		memcpy(&oldSignature, pFileData_old_, sizeof(oldSignature));
+		if( oldSignature == 0x00350039 )
 		{
 			//just offset records 4 bytes backward
 			_old_NPCQuoteInfo * pEnglishScript = ( _old_NPCQuoteInfo * )MemAlloc( uiFileSize );
@@ -800,7 +804,7 @@ INT32 GetEffectiveApproachValue( UINT8 usProfile, UINT8 usApproach, CHAR16* apSt
 
 	FLOAT val = 0;
 	CHAR16	atStr[500];
-	swprintf( atStr, L"" );
+	swprintf( atStr, JA2_TEXT("") );
 				
 	if ( usApproach == APPROACH_THREATEN )
 	{
@@ -865,7 +869,7 @@ INT32 GetEffectiveApproachValue( UINT8 usProfile, UINT8 usApproach, CHAR16* apSt
 		{
 			if ( DoesMercHavePersonality( pSoldier, CHAR_TRAIT_ASSERTIVE ) )
 			{
-				swprintf( atStr, L"  \n" );
+				swprintf( atStr, JA2_TEXT("  \n") );
 				wcscat( apStr, atStr );
 
 				swprintf( atStr, szLaptopStatText[LAPTOP_STAT_TEXT_ASSERTIVE] );
@@ -873,7 +877,7 @@ INT32 GetEffectiveApproachValue( UINT8 usProfile, UINT8 usApproach, CHAR16* apSt
 			}
 			else if ( DoesMercHavePersonality( pSoldier, CHAR_TRAIT_MALICIOUS ) )
 			{
-				swprintf( atStr, L"  \n" );
+				swprintf( atStr, JA2_TEXT("  \n") );
 				wcscat( apStr, atStr );
 
 				swprintf( atStr, szLaptopStatText[LAPTOP_STAT_TEXT_MALICIOUS] );
@@ -1546,7 +1550,7 @@ BOOLEAN HandleNPCBeingGivenMoneyByPlayer( UINT8 ubNPC, UINT32 uiMoneyAmount, UIN
 				{
 					CHAR16		sTempString[ 100 ];
 
-					swprintf( sTempString, L"%s", FormatMoney(iCost - uiMoneyAmount - giHospitalTempBalance).data());
+					swprintf( sTempString, JA2_TEXT("%s"), FormatMoney(iCost - uiMoneyAmount - giHospitalTempBalance).data());
 
 					// not enough cash
 					ScreenMsg( FONT_MCOLOR_LTYELLOW,
@@ -2252,7 +2256,7 @@ void Converse( UINT8 ubNPC, UINT8 ubMerc, INT8 bApproach, UINT32 uiApproachData 
 #ifdef JA2BETAVERSION
 				if ( gfDisplayScreenMsgOnRecordUsage )
 				{
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"Using record %d for %s", ubRecordNum, gMercProfiles[ ubNPC ].zNickname );
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("Using record %d for %s"), ubRecordNum, gMercProfiles[ ubNPC ].zNickname );
 				}
 #endif
 
@@ -3042,7 +3046,7 @@ BOOLEAN NPCHasUnusedHostileRecord( UINT8 ubNPC, UINT8 ubApproach )
 			#ifdef JA2BETAVERSION
 			if ( !(pQuotePtr->fFlags & QUOTE_FLAG_ERASE_ONCE_SAID)  )
 			{
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"Warning: possible infinite quote loop to follow." );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("Warning: possible infinite quote loop to follow.") );
 			}
 			#endif
 			return( TRUE );
@@ -3864,12 +3868,12 @@ void ToggleNPCRecordDisplay( void )
 	if ( gfDisplayScreenMsgOnRecordUsage )
 	{
 		gfDisplayScreenMsgOnRecordUsage = FALSE;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"Turning record reporting OFF" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("Turning record reporting OFF") );
 	}
 	else
 	{
 		gfDisplayScreenMsgOnRecordUsage = TRUE;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"Turning record reporting ON" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("Turning record reporting ON") );
 	}
 }
 #endif

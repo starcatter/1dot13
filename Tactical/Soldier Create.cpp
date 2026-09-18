@@ -586,7 +586,7 @@ SOLDIERTYPE* TacticalCreateSoldier( SOLDIERCREATE_STRUCT *pCreateStruct, Soldier
 	{
 		if(is_networked && (pCreateStruct->fOnRoof==1))
 		{
-			ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"skipping roof merc");
+			ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("skipping roof merc"));
 			return NULL;
 		}
 
@@ -606,7 +606,7 @@ SOLDIERTYPE* TacticalCreateSoldier( SOLDIERCREATE_STRUCT *pCreateStruct, Soldier
 
 		if ( is_networked && (ARMED_VEHICLE( pCreateStruct ) || ENEMYROBOT( pCreateStruct )) )
 		{
-			ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"skipping tank/jeep/robot");
+			ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("skipping tank/jeep/robot"));
 			return NULL;
 		}
 	}

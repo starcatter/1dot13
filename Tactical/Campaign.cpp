@@ -56,18 +56,18 @@ extern	UINT8	gbPlayerNum;
 
 #ifdef STAT_CHANGE_DEBUG
 STR16 wDebugStatStrings[]={
-	L"",
-	L"Life (Max)",
-  L"Agility",
-  L"Dexterity",
-  L"Wisdom",
-  L"Medical",
-  L"Explosives",
-  L"Mechanical",
-	L"Marksmanship",
-  L"Experience Level",
-  L"Strength",
-  L"Leadership",
+	JA2_TEXT(""),
+	JA2_TEXT("Life (Max)"),
+  JA2_TEXT("Agility"),
+  JA2_TEXT("Dexterity"),
+  JA2_TEXT("Wisdom"),
+  JA2_TEXT("Medical"),
+  JA2_TEXT("Explosives"),
+  JA2_TEXT("Mechanical"),
+	JA2_TEXT("Marksmanship"),
+  JA2_TEXT("Experience Level"),
+  JA2_TEXT("Strength"),
+  JA2_TEXT("Leadership"),
 };
 #endif
 
@@ -105,7 +105,7 @@ void StatChange(SOLDIERTYPE *pSoldier, UINT8 ubStat, UINT16 usNumChances, UINT8 
 
 	if( pSoldier->bAssignment == ASSIGNMENT_POW )
 	{
-		ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"ERROR: StatChange: %s improving stats while POW! ubStat %d", pSoldier->GetName(), ubStat );
+		ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("ERROR: StatChange: %s improving stats while POW! ubStat %d"), pSoldier->GetName(), ubStat );
 		return;
 	}
 
@@ -229,7 +229,7 @@ void ProcessStatChange(MERCPROFILESTRUCT *pProfile, UINT8 ubStat, UINT16 usNumCh
 
 		default:
 			// BETA message
-			ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"ERROR: ProcessStatChange: Rcvd unknown ubStat %d", ubStat);
+			ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("ERROR: ProcessStatChange: Rcvd unknown ubStat %d"), ubStat);
 		return;
 	}
 
@@ -413,7 +413,7 @@ void ProcessStatChange(MERCPROFILESTRUCT *pProfile, UINT8 ubStat, UINT16 usNumCh
 	if (sSubPointChange != 0)
 	{
 		// debug message
-		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"%s's %s changed by %d", pProfile->zNickname, wDebugStatStrings[ubStat], sSubPointChange );
+		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("%s's %s changed by %d"), pProfile->zNickname, wDebugStatStrings[ubStat], sSubPointChange );
 	}
 #endif
 
@@ -1208,7 +1208,7 @@ UINT16 SubpointsPerPoint(UINT8 ubStat, MERCPROFILESTRUCT* pProfile)
 
     default:
 			// BETA message
-      ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"SubpointsPerPoint: ERROR - Unknown ubStat %d", ubStat);
+      ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("SubpointsPerPoint: ERROR - Unknown ubStat %d"), ubStat);
       return(100);
   }
 
@@ -1718,7 +1718,7 @@ void HourlyProgressUpdate(void)
 		gStrategicStatus.ubHighestProgress = ubCurrentProgress;
 
 		// debug message
-		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"New player progress record: %d%%", gStrategicStatus.ubHighestProgress );
+		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("New player progress record: %d%%"), gStrategicStatus.ubHighestProgress );
 	}
 }
 
@@ -1879,7 +1879,7 @@ void BuildStatChangeString( STR16 wString, STR16 wName, BOOLEAN fIncrease, INT16
 		ubStringIndex += 2;
 	}
 
-	swprintf( wString, L"%s %s %d %s %s", wName, sPreStatBuildString[ fIncrease ? 1 : 0 ], abs( sPtsChanged ),
+	swprintf( wString, JA2_TEXT("%s %s %d %s %s"), wName, sPreStatBuildString[ fIncrease ? 1 : 0 ], abs( sPtsChanged ),
 					sPreStatBuildString[ ubStringIndex ], sStatGainStrings[ ubStat - FIRST_CHANGEABLE_STAT ] );
 }
 

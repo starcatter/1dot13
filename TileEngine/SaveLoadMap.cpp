@@ -1265,7 +1265,7 @@ void AddExitGridToMapTempFile( INT32 usGridNo, EXITGRID *pExitGrid, INT16 sSecto
 
 	if( !gfApplyChangesToTempFile )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Called AddExitGridToMapTempFile() without calling ApplyMapChangesToMapTempFile()" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Called AddExitGridToMapTempFile() without calling ApplyMapChangesToMapTempFile()") );
 		return;
 	}
 
@@ -1432,7 +1432,7 @@ void SetOpenableStructStatusFromMapTempFile( INT32 uiMapIndex, BOOLEAN fOpened )
 
 	if( pStructure == NULL )
 	{
-//		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"SetOpenableStructStatusFromMapTempFile( %d, %d ) failed to find the openable struct.	DF 1.", uiMapIndex, fOpened );
+//		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("SetOpenableStructStatusFromMapTempFile( %d, %d ) failed to find the openable struct.	DF 1."), uiMapIndex, fOpened );
 		return;
 	}
 
@@ -1599,7 +1599,7 @@ void AddRemoveExitGridToUnloadedMapTempFile( UINT32 usGridNo, INT16 sSectorX, IN
 
 	if( !gfApplyChangesToTempFile )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Called AddRemoveExitGridToUnloadedMapTempFile() without calling ApplyMapChangesToMapTempFile()" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Called AddRemoveExitGridToUnloadedMapTempFile() without calling ApplyMapChangesToMapTempFile()") );
 		return;
 	}
 

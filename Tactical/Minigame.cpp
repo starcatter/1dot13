@@ -503,26 +503,26 @@ UINT32 MiniGame_Handle_Tetris()
 			UINT16 width = 0;
 						
 			CHAR16		sText[800];
-			swprintf( sText, L"" );
+			swprintf( sText, JA2_TEXT("") );
 			
 			// different options are here, the one currently selected is coloured differently
 			if ( gMiniGameMenuScreen == 0 )
 			{
 				int menuentry = 0;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> New Game" : L"   New Game" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> New Game") : JA2_TEXT("   New Game") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE, 
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Options" : L"   Options" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Options") : JA2_TEXT("   Options") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Quit" : L"   Quit" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Quit") : JA2_TEXT("   Quit") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
@@ -566,19 +566,19 @@ UINT32 MiniGame_Handle_Tetris()
 
 				int menuentry = 0;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Starting Level: %d" : L"   Starting Level: %d", gTetrisInitialLevel );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Starting Level: %d") : JA2_TEXT("   Starting Level: %d"), gTetrisInitialLevel );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Handicap: %d" : L"   Handicap: %d", gTetrisHandicap );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Handicap: %d") : JA2_TEXT("   Handicap: %d"), gTetrisHandicap );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Apply" : L"   Apply" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Apply") : JA2_TEXT("   Apply") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
@@ -704,21 +704,21 @@ UINT32 MiniGame_Handle_Tetris()
 				UINT16 width = 0;
 
 				CHAR16		sText[800];
-				swprintf( sText, L"" );
+				swprintf( sText, JA2_TEXT("") );
 
-				swprintf( sText, L"Score: %d", gTetrisScore );
+				swprintf( sText, JA2_TEXT("Score: %d"), gTetrisScore );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
-				swprintf( sText, L"Lines: %d", gTetrisLinesDone );
+				swprintf( sText, JA2_TEXT("Lines: %d"), gTetrisLinesDone );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
-				swprintf( sText, L"Level: %d", gTetrisInitialLevel + gTetrisLinesDone / 10 );
+				swprintf( sText, JA2_TEXT("Level: %d"), gTetrisInitialLevel + gTetrisLinesDone / 10 );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
-				swprintf( sText, L"Handicap: %d", gTetrisHandicap );
+				swprintf( sText, JA2_TEXT("Handicap: %d"), gTetrisHandicap );
 				width = min( SCREEN_WIDTH - 2 * sX, StringPixLength( sText, fontused ) );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
@@ -1223,9 +1223,9 @@ UINT32 MiniGame_Handle_Tetris()
 			UINT16 width = 0;
 
 			CHAR16		sText[800];
-			swprintf( sText, L"" );
+			swprintf( sText, JA2_TEXT("") );
 
-			swprintf( sText, L"GAME OVER" );
+			swprintf( sText, JA2_TEXT("GAME OVER") );
 			width = StringPixLength( sText, fontused );
 			sY += DisplayWrappedString( sX, sY, width, 2, fontused, FONT_RED, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
@@ -1233,13 +1233,13 @@ UINT32 MiniGame_Handle_Tetris()
 			{
 				int menuentry = 0;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Main Menu" : L"   Main Menu" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Main Menu") : JA2_TEXT("   Main Menu") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_RED,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 				
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Quit" : L"   Quit" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Quit") : JA2_TEXT("   Quit") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_RED,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
@@ -1282,9 +1282,9 @@ UINT32 MiniGame_Handle_Tetris()
 			UINT16 width = 0;
 
 			CHAR16		sText[800];
-			swprintf( sText, L"" );
+			swprintf( sText, JA2_TEXT("") );
 
-			swprintf( sText, L"Game paused" );
+			swprintf( sText, JA2_TEXT("Game paused") );
 			width = StringPixLength( sText, fontused );
 			sY += DisplayWrappedString( sX, sY, width, 2, fontused, FONT_RED, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
@@ -1292,7 +1292,7 @@ UINT32 MiniGame_Handle_Tetris()
 			{
 				int menuentry = 0;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Continue" : L"   Continue" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Continue") : JA2_TEXT("   Continue") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_RED,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
@@ -1511,26 +1511,26 @@ UINT32 MiniGame_Handle_Pong()
 			UINT16 width = 0;
 
 			CHAR16		sText[800];
-			swprintf( sText, L"" );
+			swprintf( sText, JA2_TEXT("") );
 
 			// different options are here, the one currently selected is coloured differently
 			if ( gMiniGameMenuScreen == 0 )
 			{
 				int menuentry = 0;
 
-				swprintf( sText, L"%s %d Players", (gMiniGameMenuSelection == menuentry) ? L"->" : L"  ", gPongPlayers );
+				swprintf( sText, JA2_TEXT("%s %d Players"), (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("->") : JA2_TEXT("  "), gPongPlayers );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Options" : L"   Options" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Options") : JA2_TEXT("   Options") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Quit" : L"   Quit" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Quit") : JA2_TEXT("   Quit") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
@@ -1589,31 +1589,31 @@ UINT32 MiniGame_Handle_Pong()
 
 				int menuentry = 0;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Max Speed: %d" : L"   Max Speed: %d", gPongMaxSpeed );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Max Speed: %d") : JA2_TEXT("   Max Speed: %d"), gPongMaxSpeed );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Balls: %d" : L"   Balls: %d", gPongBallsToUse );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Balls: %d") : JA2_TEXT("   Balls: %d"), gPongBallsToUse );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, L"%s Force 4 Paddles: %s", (gMiniGameMenuSelection == menuentry) ? L"->" : L"  ", gPongForce4Paddles ? L"True" : L"False" );
+				swprintf( sText, JA2_TEXT("%s Force 4 Paddles: %s"), (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("->") : JA2_TEXT("  "), gPongForce4Paddles ? JA2_TEXT("True") : JA2_TEXT("False") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, L"%s AI: %s", (gMiniGameMenuSelection == menuentry) ? L"->" : L"  ", gPongAIHard ? L"Hard" : L"Easy" );
+				swprintf( sText, JA2_TEXT("%s AI: %s"), (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("->") : JA2_TEXT("  "), gPongAIHard ? JA2_TEXT("Hard") : JA2_TEXT("Easy") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
 				++menuentry;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Apply" : L"   Apply" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Apply") : JA2_TEXT("   Apply") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_WHITE,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );
@@ -1993,19 +1993,19 @@ UINT32 MiniGame_Handle_Pong()
 				ColorFillVideoSurfaceArea( FRAME_BUFFER, sX - 10, sY - 2, (!gPongForce4Paddles && gPongPlayers < 3) ? sX + 220 : sX + 500, sY + 20, Get16BPPColor( FROMRGB( 0, 0, 0 ) ) );
 				
 				CHAR16		sText[800];
-				swprintf( sText, L"" );
+				swprintf( sText, JA2_TEXT("") );
 
 				CHAR16		player1name[20];
-				swprintf( player1name, L"Player 1" );
+				swprintf( player1name, JA2_TEXT("Player 1") );
 								
 				CHAR16		player2name[20];
-				swprintf( player2name, L"Player 2" );
+				swprintf( player2name, JA2_TEXT("Player 2") );
 
 				CHAR16		player3name[20];
-				swprintf( player3name, L"Player 3" );
+				swprintf( player3name, JA2_TEXT("Player 3") );
 
 				CHAR16		player4name[20];
-				swprintf( player4name, L"Player 4" );
+				swprintf( player4name, JA2_TEXT("Player 4") );
 
 				// get the name of the players - use the currently controlled mercs and anybody nearby for this
 				BOOLEAN foundplayer_1 = FALSE;
@@ -2061,9 +2061,9 @@ UINT32 MiniGame_Handle_Pong()
 				}
 
 				if ( !gPongForce4Paddles && gPongPlayers < 3 )
-					swprintf( sText, L"%s %d - %s %d", player1name, gPongScorePlayer[1], player2name, gPongScorePlayer[2] );
+					swprintf( sText, JA2_TEXT("%s %d - %s %d"), player1name, gPongScorePlayer[1], player2name, gPongScorePlayer[2] );
 				else
-					swprintf( sText, L"%s %d - %s %d - %s %d - %s %d", player1name, gPongScorePlayer[1], player2name, gPongScorePlayer[2], player3name, gPongScorePlayer[3], player4name, gPongScorePlayer[4] );
+					swprintf( sText, JA2_TEXT("%s %d - %s %d - %s %d - %s %d"), player1name, gPongScorePlayer[1], player2name, gPongScorePlayer[2], player3name, gPongScorePlayer[3], player4name, gPongScorePlayer[4] );
 
 				sY += DisplayWrappedString( sX, sY, StringPixLength( sText, fontused ), 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
@@ -2071,29 +2071,29 @@ UINT32 MiniGame_Handle_Pong()
 				sX = MINIGAME_PONG_X_HIGH + 20;
 				sY = MINIGAME_PONG_Y_LOW;
 
-				swprintf( sText, L"Key bindings" );
+				swprintf( sText, JA2_TEXT("Key bindings") );
 				sY += DisplayWrappedString( sX, sY, StringPixLength( sText, fontused ), 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
-				swprintf( sText, L"%s: <, >", player1name );
+				swprintf( sText, JA2_TEXT("%s: <, >"), player1name );
 				sY += DisplayWrappedString( sX, sY, StringPixLength( sText, fontused ), 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
 				if ( !gPongForce4Paddles )
 				{
 					if ( gPongPlayers >= 2 )
 					{
-						swprintf( sText, L"%s: 4, 6", player2name );
+						swprintf( sText, JA2_TEXT("%s: 4, 6"), player2name );
 						sY += DisplayWrappedString( sX, sY, StringPixLength( sText, fontused ), 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 					}
 
 					if ( gPongPlayers >= 3 )
 					{
-						swprintf( sText, L"%s: w, s", player3name );
+						swprintf( sText, JA2_TEXT("%s: w, s"), player3name );
 						sY += DisplayWrappedString( sX, sY, StringPixLength( sText, fontused ), 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 					}
 
 					if ( gPongPlayers >= 4 )
 					{
-						swprintf( sText, L"%s: i, k", player4name );
+						swprintf( sText, JA2_TEXT("%s: i, k"), player4name );
 						sY += DisplayWrappedString( sX, sY, StringPixLength( sText, fontused ), 2, fontused, FONT_WHITE, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 					}
 				}
@@ -2430,9 +2430,9 @@ UINT32 MiniGame_Handle_Pong()
 			UINT16 width = 0;
 
 			CHAR16		sText[800];
-			swprintf( sText, L"" );
+			swprintf( sText, JA2_TEXT("") );
 
-			swprintf( sText, L"Game paused" );
+			swprintf( sText, JA2_TEXT("Game paused") );
 			width = StringPixLength( sText, fontused );
 			sY += DisplayWrappedString( sX, sY, width, 2, fontused, FONT_RED, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
@@ -2440,7 +2440,7 @@ UINT32 MiniGame_Handle_Pong()
 			{
 				int menuentry = 0;
 
-				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? L"-> Continue" : L"   Continue" );
+				swprintf( sText, (gMiniGameMenuSelection == menuentry) ? JA2_TEXT("-> Continue") : JA2_TEXT("   Continue") );
 				width = StringPixLength( sText, fontused );
 				sY += DisplayWrappedString( sX, sY, width, 2, fontused, (gMiniGameMenuSelection == menuentry) ? FONT_BLACK : FONT_RED,
 											sText, (gMiniGameMenuSelection == menuentry) ? FONT_MCOLOR_WHITE : FONT_MCOLOR_BLACK, FALSE, 0 );

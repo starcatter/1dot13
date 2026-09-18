@@ -116,20 +116,20 @@ MILITIA::Load( HWFILE hwFile )
 static CHAR16	gMilitiaNameText[100];
 STR16	MILITIA::GetName()
 {
-	swprintf( gMilitiaNameText, L"NAME NOT FOUND" );
+	swprintf( gMilitiaNameText, JA2_TEXT("NAME NOT FOUND") );
 
 	if ( bodytype == REGFEMALE )
 	{
 		if ( gMilitiaOriginData[origin].szFemale_Forename.size() > forename && gMilitiaOriginData[origin].szFemale_Surname.size() > surname )
 		{
-			swprintf( gMilitiaNameText, L"%s %s", gMilitiaOriginData[origin].szFemale_Forename[forename].c_str( ), gMilitiaOriginData[origin].szFemale_Surname[surname].c_str( ) );
+			swprintf( gMilitiaNameText, JA2_TEXT("%s %s"), gMilitiaOriginData[origin].szFemale_Forename[forename].c_str( ), gMilitiaOriginData[origin].szFemale_Surname[surname].c_str( ) );
 		}
 	}
 	else
 	{
 		if ( gMilitiaOriginData[origin].szMale_Forename.size( ) > forename && gMilitiaOriginData[origin].szMale_Surname.size( ) > surname )
 		{
-			swprintf( gMilitiaNameText, L"%s %s", gMilitiaOriginData[origin].szMale_Forename[forename].c_str( ), gMilitiaOriginData[origin].szMale_Surname[surname].c_str( ) );
+			swprintf( gMilitiaNameText, JA2_TEXT("%s %s"), gMilitiaOriginData[origin].szMale_Forename[forename].c_str( ), gMilitiaOriginData[origin].szMale_Surname[surname].c_str( ) );
 		}
 	}
 	
@@ -139,7 +139,7 @@ STR16	MILITIA::GetName()
 static CHAR16	gMilitiaSectorText[100];
 STR16	MILITIA::GetSector( )
 {
-	swprintf( gMilitiaSectorText, L"NAME NOT FOUND" );
+	swprintf( gMilitiaSectorText, JA2_TEXT("NAME NOT FOUND") );
 	
 	GetShortSectorString( SECTORX( sector ), SECTORY( sector ), gMilitiaSectorText );
 
@@ -148,7 +148,7 @@ STR16	MILITIA::GetSector( )
 
 STR16	MILITIA::GetOriginSector( )
 {
-	swprintf( gMilitiaSectorText, L"NAME NOT FOUND" );
+	swprintf( gMilitiaSectorText, JA2_TEXT("NAME NOT FOUND") );
 
 	GetShortSectorString( SECTORX( originsector ), SECTORY( originsector ), gMilitiaSectorText );
 
@@ -726,13 +726,13 @@ UINT32 GetIdOfUnusedIndividualMilitia( UINT8 aSoldierClass, UINT8 aSector )
 	{
 		// in debug mode, display messages all the time, otherwise only once per second
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"Possible error: Not enough individual militia found in GetIdOfUnusedindividualMilitia" );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Possible error: Not enough individual militia found in GetIdOfUnusedindividualMilitia") );
 #else
 		if ( gMIWarningTime != GetWorldTotalSeconds() )
 		{
 			gMIWarningTime = GetWorldTotalSeconds();
 
-			ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"Possible error: Not enough individual militia found in GetIdOfUnusedindividualMilitia" );
+			ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Possible error: Not enough individual militia found in GetIdOfUnusedindividualMilitia") );
 		}
 #endif
 	}
@@ -1039,7 +1039,7 @@ void MoveIndividualMilitiaProfiles( UINT8 aSourceSector, UINT8 aTargetSector, UI
 
 	// if this feature is on and we get to this point, then there aren't enough individual militia. This is odd, the player should be informed
 	if ( (usGreens + usRegulars + usElites) && gGameExternalOptions.fIndividualMilitia )
-		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"Possible error: Not enough individual militia found in MoveIndividualMilitiaProfiles" );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Possible error: Not enough individual militia found in MoveIndividualMilitiaProfiles") );
 }
 
 
@@ -1073,7 +1073,7 @@ void DisbandIndividualMilitia( UINT8 aSector, UINT16 usGreens, UINT16 usRegulars
 
 	// if this feature is on and we get to this point, then there aren't enough individual militia. This is odd, the player should be informed
 	if ( (usGreens + usRegulars + usElites) && gGameExternalOptions.fIndividualMilitia )
-		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"Possible error: Not enough individual militia found in DisbandIndividualMilitia" );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Possible error: Not enough individual militia found in DisbandIndividualMilitia") );
 }
 
 void PromoteIndividualMilitia( UINT8 aSector, UINT8 aSoldierClass )
@@ -1096,7 +1096,7 @@ void PromoteIndividualMilitia( UINT8 aSector, UINT8 aSoldierClass )
 
 	// if this feature is on and we get to this point, then there aren't enough individual militia. This is odd, the player should be informed
 	if ( gGameExternalOptions.fIndividualMilitia )
-		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"Possible error: Not enough individual militia found in PromoteIndividualMilitia" );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Possible error: Not enough individual militia found in PromoteIndividualMilitia") );
 }
 
 void PossiblyPromoteIndividualMilitia( MILITIA& aMilitia )
@@ -1208,13 +1208,13 @@ void PickIndividualMilitia( UINT8 aSector, UINT8 ubType, UINT16 aNumber )
 	{
 		// in debug mode, display messages all the time, otherwise only once per second
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"Possible error: Not enough individual militia found in PickIndividualMilitia" );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Possible error: Not enough individual militia found in PickIndividualMilitia") );
 #else
 		if ( gMIWarningTime != GetWorldTotalSeconds() )
 		{
 			gMIWarningTime = GetWorldTotalSeconds();
 
-			ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"Possible error: Not enough individual militia found in PickIndividualMilitia" );
+			ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Possible error: Not enough individual militia found in PickIndividualMilitia") );
 		}
 #endif
 	}
@@ -1245,13 +1245,13 @@ void DropIndividualMilitia( UINT8 aSector, UINT8 ubType, UINT16 aNumber )
 	{
 		// in debug mode, display messages all the time, otherwise only once per second
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"Possible error: Not enough individual militia found in DropIndividualMilitia" );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Possible error: Not enough individual militia found in DropIndividualMilitia") );
 #else
 		if ( gMIWarningTime != GetWorldTotalSeconds() )
 		{
 			gMIWarningTime = GetWorldTotalSeconds();
 
-			ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"Possible error: Not enough individual militia found in DropIndividualMilitia" );
+			ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Possible error: Not enough individual militia found in DropIndividualMilitia") );
 		}
 #endif
 	}

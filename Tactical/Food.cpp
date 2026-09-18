@@ -20,6 +20,7 @@
 	#include "Soldier macros.h"
 	#include "strategicmap.h"
 	#include "DynamicDialogue.h"			// added by Flugente
+#include <cmath>
 
 //forward declarations of common classes to eliminate includes
 class OBJECTTYPE;
@@ -193,7 +194,7 @@ BOOLEAN ApplyFood( SOLDIERTYPE *pSoldier, OBJECTTYPE *pObject, UINT16 usPointsTo
 		HandlePossibleInfection( pSoldier, NULL, type == AP_EAT ? INFECTION_TYPE_BADFOOD : INFECTION_TYPE_BADWATER, modifier );
 	}
 
-	FLOAT conditionmodifier = 0.5f * (1.0f + sqrt(foodcondition));
+	FLOAT conditionmodifier = 0.5f * (1.0f + std::sqrt(foodcondition));
 
 	FLOAT percentualsize = usPointsToUse / 100.0f;
 

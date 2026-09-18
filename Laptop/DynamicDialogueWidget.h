@@ -50,7 +50,7 @@ public:
 	*/
 	void SetText( STR16 aText )
 	{
-		swprintf( mText, L"" );
+		swprintf( mText, JA2_TEXT("") );
 		wcscat( mText, aText );
 	}
 
@@ -165,14 +165,14 @@ public:
 	*/
 	void SetText( STR16 aText )
 	{
-		swprintf( mText, L"" );
+		swprintf( mText, JA2_TEXT("") );
 		wcscat( mText, aText );
 	}
 
 	/*
 	* Set help text decribing what can be selected
 	*/
-	void SetHelpText( STR16 aText )		{ swprintf( mHelpText, L"" ); wcscat( mHelpText, aText ); }
+	void SetHelpText( STR16 aText )		{ swprintf( mHelpText, JA2_TEXT("") ); wcscat( mHelpText, aText ); }
 
 	/*
 	* Get key of selected entry

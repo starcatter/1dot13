@@ -624,7 +624,7 @@ INVTYPE* GearFindAmmoForWeapon(WEAPONTYPE* weapon)
 }
 
 //find attachments that match our weapon, that we are allowed to select
-std::vector<INVTYPE*> GearFindAttachmentsForWeapon(INVTYPE* weapon, BOOL attach_grip, BOOL attach_muzzle, BOOL attach_laser, BOOL attach_sight, BOOL attach_underbarrel)
+std::vector<INVTYPE*> GearFindAttachmentsForWeapon(INVTYPE* weapon, BOOLEAN attach_grip, BOOLEAN attach_muzzle, BOOLEAN attach_laser, BOOLEAN attach_sight, BOOLEAN attach_underbarrel)
 {
 	std::vector<INVTYPE*> result;
 	std::vector<INVTYPE*> candidates[5];
@@ -769,7 +769,7 @@ INVTYPE* LBEFindSuitableLBE(std::map<UINT16, UINT16> storage, UINT16 lbe_type)
 }
 
 //this is the main randomization function that calls almost all the other functions.
-void RandomizeMerc(UINT8 profile_id, MERCPROFILESTRUCT* merc, BOOL random_gear_kits)
+void RandomizeMerc(UINT8 profile_id, MERCPROFILESTRUCT* merc, BOOLEAN random_gear_kits)
 {
 	//reset merc's stats to basic values so we can increase them
 	merc->bExpLevel = 1;
@@ -941,7 +941,7 @@ void RandomizeMerc(UINT8 profile_id, MERCPROFILESTRUCT* merc, BOOL random_gear_k
 			if (hand_item)
 			{
 				WEAPONTYPE* weapon = &Weapon[hand_item->ubClassIndex];
-				BOOL got_second_pistol = false;
+				BOOLEAN got_second_pistol = false;
 
 				//ambidexterity has a chance of giving them a second pistol, if they have one.
 				if (weapon->ubWeaponType == GUN_PISTOL && Random(5) < 3 && HasTrait(&traits, AMBIDEXTROUS_NT))
@@ -1000,12 +1000,12 @@ void RandomizeMerc(UINT8 profile_id, MERCPROFILESTRUCT* merc, BOOL random_gear_k
 				}
 
 				//attachments
-				INT8 attach_grip = (BOOL)(Random(8) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 1);
-				INT8 attach_muzzle = (BOOL)(Random(20) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 0);
-				INT8 attach_laser = (BOOL)(Random(15) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 1);
-				INT8 attach_sight = (BOOL)(Random(10) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 1);
-				INT8 attach_underbarrel = (BOOL)(Random(15) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 0);
-				std::vector<INVTYPE*> attachments = GearFindAttachmentsForWeapon(hand_item, (BOOL)(attach_grip < 0), (BOOL)(attach_muzzle < 0), (BOOL)(attach_laser < 0), (BOOL)(attach_sight < 0), (BOOL)(attach_underbarrel < 0));
+				INT8 attach_grip = (BOOLEAN)(Random(8) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 1);
+				INT8 attach_muzzle = (BOOLEAN)(Random(20) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 0);
+				INT8 attach_laser = (BOOLEAN)(Random(15) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 1);
+				INT8 attach_sight = (BOOLEAN)(Random(10) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 1);
+				INT8 attach_underbarrel = (BOOLEAN)(Random(15) - Random((merc->bExpLevel / 2)) - Random(kit_id) - 0);
+				std::vector<INVTYPE*> attachments = GearFindAttachmentsForWeapon(hand_item, (BOOLEAN)(attach_grip < 0), (BOOLEAN)(attach_muzzle < 0), (BOOLEAN)(attach_laser < 0), (BOOLEAN)(attach_sight < 0), (BOOLEAN)(attach_underbarrel < 0));
 
 				UINT8 count = 0;
 				for (std::vector<INVTYPE*>::iterator it = attachments.begin(); it != attachments.end(); it++)

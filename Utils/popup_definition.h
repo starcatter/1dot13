@@ -37,14 +37,14 @@ public:
 	popupDef();
 	~popupDef();
 
-	BOOL applyToBox(POPUP* popup);
+	BOOLEAN applyToBox(POPUP* popup);
 
-	BOOL addOption(std::wstring* name, UINT16 callbackId, UINT16 availId);
+	BOOLEAN addOption(ja2::text::Utf16String* name, UINT16 callbackId, UINT16 availId);
 
-	popupDef * addSubPopup(std::wstring* name);
-	BOOL addSubPopup(popupDefSubPopupOption* sub);
+	popupDef * addSubPopup(ja2::text::Utf16String* name);
+	BOOLEAN addSubPopup(popupDefSubPopupOption* sub);
 
-	BOOL addGenerator(UINT16 id);
+	BOOLEAN addGenerator(UINT16 id);
 protected:
 	std::vector<popupDefContent*> content;
 };
@@ -54,21 +54,21 @@ public:
 	popupDefContent();
 	~popupDefContent();
 	
-	virtual BOOL addToBox(POPUP * popup) = 0;
+	virtual BOOLEAN addToBox(POPUP * popup) = 0;
 
 };
 
 class popupDefOption : public popupDefContent{
 public:
-	popupDefOption() : name( new std::wstring(L"Unnamed Option") ), callbackId(0), availId(0){};
-	popupDefOption( std::wstring* name, UINT16 callbackId, UINT16 availId ) : name( name ), callbackId(callbackId), availId(availId){};
+	popupDefOption() : name( new ja2::text::Utf16String(JA2_TEXT("Unnamed Option")) ), callbackId(0), availId(0){};
+	popupDefOption( ja2::text::Utf16String* name, UINT16 callbackId, UINT16 availId ) : name( name ), callbackId(callbackId), availId(availId){};
 
 	~popupDefOption(){ delete this->name; };
 
-	BOOL addToBox(POPUP * popup);
+	BOOLEAN addToBox(POPUP * popup);
 
 protected:
-	std::wstring* name;
+	ja2::text::Utf16String* name;
 	UINT16 callbackId;
 	UINT16 availId;
 
@@ -76,20 +76,20 @@ protected:
 
 class popupDefSubPopupOption : public popupDefContent{
 public:
-	popupDefSubPopupOption() : name( new std::wstring(L"Unnamed Submenu") ){ this->content = new popupDef(); };
-	popupDefSubPopupOption( std::wstring* name ) : name( name ){ this->content = new popupDef(); };
+	popupDefSubPopupOption() : name( new ja2::text::Utf16String(JA2_TEXT("Unnamed Submenu")) ){ this->content = new popupDef(); };
+	popupDefSubPopupOption( ja2::text::Utf16String* name ) : name( name ){ this->content = new popupDef(); };
 
 	~popupDefSubPopupOption(){ delete this->name; delete this->content; };
 
-	BOOL addToBox(POPUP * popup);
-	void rename( std::wstring* name ){
+	BOOLEAN addToBox(POPUP * popup);
+	void rename( ja2::text::Utf16String* name ){
 		delete this->name;	// lets just hope nothing else was using this string. TODO: use smart pointer
 		this->name = name;
 	};
 	popupDef * getSubDef(){ return this->content; };
 
 protected:
-	std::wstring* name;
+	ja2::text::Utf16String* name;
 	popupDef * content;
 };
 
@@ -100,7 +100,7 @@ public:
 
 	~popupDefContentGenerator();
 
-	BOOL addToBox(POPUP * popup);
+	BOOLEAN addToBox(POPUP * popup);
 
 protected:	
 	UINT16 generatorId;

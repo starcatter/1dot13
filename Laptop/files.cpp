@@ -273,8 +273,8 @@ static AdditionalFiles_Descriptor* AdditionalFiles_LoadTextFile( FilesUnitPtr fi
 				std::string utf8Line;
 				while ( FileReadLine( hFile, &utf8Line ) )
 				{
-					std::wstring wcharLine = utf8_to_wstring( utf8Line );
-					AddStringToFilesList( (STR16) wcharLine.c_str() );
+					const ja2::text::Utf16String text = ja2::text::utf8ToUtf16(utf8Line);
+					AddStringToFilesList(const_cast<STR16>(text.c_str()));
 				}
 				FileClose( hFile );
 			}
@@ -380,8 +380,7 @@ static void XMLCALL AdditionalFiles_EndElementHandler( void *userData, const XML
 			if ( strcmp( name, "Name" ) == 0 )
 			{
 				std::string strName( pData->szCharData );
-				std::wstring wstrName = utf8_to_wstring( strName );
-				wcsncpy( pData->parsedData.name, wstrName.c_str(), ADDFILES_NAME_MAX_LENGTH );
+				ja2::text::copyUtf8ToUtf16(strName, pData->parsedData.name, ADDFILES_NAME_MAX_LENGTH);
 			}
 			else if ( strcmp( name, "Path" ) == 0 )
 				strncpy( (CHAR8*)pData->parsedData.path, pData->szCharData, ADDFILES_PATH_MAX_LENGTH );
@@ -2233,7 +2232,7 @@ BOOLEAN HandleSpecialTerroristFile( INT32 iFileNumber, STR sPictureName )
 	UINT32 uiPicture;
 	HVOBJECT hHandle;
 	VOBJECT_DESC VObjectDesc;
-	CHAR sTemp[ 128 ];
+	CHAR8 sTemp[ 128 ];
 
 	iOffset = ubFileOffsets[ iFileNumber ] ;
 

@@ -21,12 +21,12 @@
 // Error strings for this XML reader
 STR16 szUniformErrorStrings[]=
 {
-	L"ENEMY_ADMIN",
-	L"ENEMY_TROOP",
-	L"ENEMY_ELITE",
-	L"MILITIA_ROOKIE",
-	L"MILITIA_REGULAR",
-	L"MILITIA_ELITE",
+	JA2_TEXT("ENEMY_ADMIN"),
+	JA2_TEXT("ENEMY_TROOP"),
+	JA2_TEXT("ENEMY_ELITE"),
+	JA2_TEXT("MILITIA_ROOKIE"),
+	JA2_TEXT("MILITIA_REGULAR"),
+	JA2_TEXT("MILITIA_ELITE"),
 };
 
 // Array to hold uniform data
@@ -152,7 +152,7 @@ UniformEndElementHandle(void *userData, const XML_Char *name)
 				if (!UniformDataFound[cnt])
 				{
 					CHAR16 sString[256];
-					swprintf( sString, L"Error in UniformColors.XML: Uniform color for %s not found or not properly defined!", szUniformErrorStrings[ cnt ] );
+					swprintf( sString, JA2_TEXT("Error in UniformColors.XML: Uniform color for %s not found or not properly defined!"), szUniformErrorStrings[ cnt ] );
 					SGP_THROW( sString );
 				}
 			}

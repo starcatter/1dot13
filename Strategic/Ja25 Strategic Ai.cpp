@@ -158,7 +158,7 @@ BOOLEAN		Ja25BetaDateToInvalidateExe();
 
 #ifdef JA2BETAVERSION
 	BOOLEAN RecordJa25StrategicAiDecisions( INT16 sSectorAttacked, UINT8 ubNumEnemies );
-	BOOLEAN OutputJA25SaiString( HWFILE hFile, CHAR *pString );
+	BOOLEAN OutputJA25SaiString( HWFILE hFile, CHAR8 *pString );
 #endif
 
 
@@ -2612,7 +2612,7 @@ BOOLEAN InitJa25StrategicAiDecisions( BOOLEAN fLoadedGame )
 }
 
 
-BOOLEAN OutputJA25SaiString( HWFILE hFile, CHAR *pString )
+BOOLEAN OutputJA25SaiString( HWFILE hFile, CHAR8 *pString )
 {
 	UINT32 uiNumBytesWritten;
 	UINT32 uiStrLen;

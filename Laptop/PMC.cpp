@@ -210,7 +210,7 @@ void HandlePMCMain( )
 void RenderPMCMain( )
 {
 	CHAR16		sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 
 	DisplayDefaults_PMC( );
@@ -590,7 +590,7 @@ void PMCTeamHireCallback( GUI_BUTTON *btn, INT32 reason )
 void RenderPMCContract( )
 {
 	CHAR16		sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 
 	DisplayDefaults_PMC( );
@@ -840,7 +840,7 @@ BOOLEAN LoadPMC( HWFILE hwFile )
 
 		if ( safetycheck1 != gPMCSaveCheck || safetycheck2 != gPMCSaveCheck )
 		{
-			ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"Eyecatcher corruption detected while loading PMC data!" );
+			ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("Eyecatcher corruption detected while loading PMC data!") );
 			return FALSE;
 		}
 	}

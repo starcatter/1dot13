@@ -3743,7 +3743,7 @@ void HandleWheelAdjustCursor( SOLDIERTYPE *pSoldier, INT32 sMapPos, INT32 sDelta
 					//Apply.
 					pSoldier->aiData.bShownAimTime = bFutureAim;
 
-					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"caft=%d",CalcChanceToHitGun( pSoldier, sMapPos, pSoldier->aiData.bShownAimTime, pSoldier->bAimShotLocation ) );
+					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("caft=%d"),CalcChanceToHitGun( pSoldier, sMapPos, pSoldier->aiData.bShownAimTime, pSoldier->bAimShotLocation ) );
 				}
 			}
 			break;

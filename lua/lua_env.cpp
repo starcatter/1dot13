@@ -65,7 +65,7 @@ static int LuaSetPrimeLights( lua_State *L )
 	return 0;
 }
 
-static LuaAttrib Environment[] = {
+LuaAttrib Environment[] = {
 	{ "rain", LuaGetRainVal, LuaSetRainVal },
 	{ "ambient", LuaGetAmbient, LuaSetAmbient },
 	{ "nightlights", NULL, NULL, LuaSetNightLights },

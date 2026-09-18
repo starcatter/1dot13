@@ -872,7 +872,7 @@ void RenderSquadList( void )
 				// CHRISL:
 				if ( gGameExternalOptions.fUseXMLSquadNames && sCounter < gSquadNameVector.size() )
 				{
-					swprintf( sString, L"%s", gSquadNameVector[sCounter].c_str() );
+					swprintf( sString, JA2_TEXT("%s"), gSquadNameVector[sCounter].c_str() );
 
 					FindFontCenterCoordinates( RADAR_WINDOW_TM_X, (INT16)( SQUAD_WINDOW_TM_Y + ( sCounter * ( 2 * ( SQUAD_REGION_HEIGHT - SUBTRACTOR_FOR_SQUAD_LIST ) / NUMBER_OF_SQUADS ) ) ), RADAR_WINDOW_WIDTH / 2 - 1, (INT16)( ( ( 2 * ( SQUAD_REGION_HEIGHT - SUBTRACTOR_FOR_SQUAD_LIST ) / NUMBER_OF_SQUADS ) ) ), sString, SQUAD_FONT, &sX, &sY );
 				}
@@ -884,7 +884,7 @@ void RenderSquadList( void )
 				// CHRISL:
 				if ( gGameExternalOptions.fUseXMLSquadNames && sCounter < gSquadNameVector.size() )
 				{
-					swprintf( sString, L"%s", gSquadNameVector[sCounter].c_str() );
+					swprintf( sString, JA2_TEXT("%s"), gSquadNameVector[sCounter].c_str() );
 
 					FindFontCenterCoordinates( RADAR_WINDOW_TM_X + RADAR_WINDOW_WIDTH / 2, (INT16)( SQUAD_WINDOW_TM_Y + ( ( sCounter - ( NUMBER_OF_SQUADS / 2 ) ) * ( 2 * ( SQUAD_REGION_HEIGHT - SUBTRACTOR_FOR_SQUAD_LIST ) / NUMBER_OF_SQUADS ) ) ), RADAR_WINDOW_WIDTH / 2 - 1, (INT16)( ( ( 2 * ( SQUAD_REGION_HEIGHT - SUBTRACTOR_FOR_SQUAD_LIST ) / NUMBER_OF_SQUADS ) ) ), sString, SQUAD_FONT, &sX, &sY );
 				}
@@ -929,7 +929,7 @@ void RenderSquadList( void )
 
 			if ( gGameExternalOptions.fUseXMLSquadNames && sCounter < gSquadNameVector.size() )
 			{ 
-				swprintf( sString, L"%s", gSquadNameVector[sCounter].c_str() );
+				swprintf( sString, JA2_TEXT("%s"), gSquadNameVector[sCounter].c_str() );
 
 				mprintf( sX, sY , sString );
 			}

@@ -128,14 +128,14 @@ void DisplayDefaults_Production()
 	UINT16 usPosY = CAMPAIGN_HISTORY_LINK_START_Y;
 	
 	//Display the title slogan
-	swprintf( sText, L"bla" );
+	swprintf( sText, JA2_TEXT("bla") );
 	DrawTextToScreen( sText, CAMPAIGN_HISTORY_BIG_TITLE_X, CAMPAIGN_HISTORY_BIG_TITLE_Y, LAPTOP_SCREEN_LR_X - LAPTOP_SCREEN_UL_X, CAMPHIS_FONT_BIG, MERCOMP_FONT_COLOR, FONT_MCOLOR_BLACK, FALSE, 0 );
 	
 	usPosX = CAMPAIGN_HISTORY_LINK_START_X;
 	usPosY = CAMPAIGN_HISTORY_LINK_START_Y;
 	for ( int i = 0; i<NUM_LINKS; ++i )
 	{
-		swprintf( sText, L"TODO link" );
+		swprintf( sText, JA2_TEXT("TODO link") );
 		DisplayWrappedString( usPosX, usPosY, CAMPAIGN_HISTORY_LINK_TEXT_WIDTH, 2, CAMPHIS_FONT_MED, MERCOMP_FONT_COLOR, sText, FONT_MCOLOR_BLACK, FALSE, 0 );
 
 		usPosY += CAMPAIGN_HISTORY_LINK_STEP_Y;
@@ -317,7 +317,7 @@ static CHAR16	gProductionHelpText[100];
 
 STR16 Sectornamegetter_Production( UINT32 aNum )
 {
-	swprintf( gProductionHelpText, L"NAME NOT FOUND" );
+	swprintf( gProductionHelpText, JA2_TEXT("NAME NOT FOUND") );
 
 	if ( aNum < gProductionVector.size() )
 	{
@@ -329,14 +329,14 @@ STR16 Sectornamegetter_Production( UINT32 aNum )
 
 STR16 Product_Production( UINT32 aNum )
 {
-	swprintf( gProductionHelpText, L"NOTHING" );
+	swprintf( gProductionHelpText, JA2_TEXT("NOTHING") );
 
 	if ( aNum < gProductionVector.size() )
 	{
 		if ( wcslen( gProductionVector[aNum].xmldata.szProductionName ) > 0 )
-			swprintf( gProductionHelpText, L"%s", gProductionVector[aNum].xmldata.szProductionName );
+			swprintf( gProductionHelpText, JA2_TEXT("%s"), gProductionVector[aNum].xmldata.szProductionName );
 		else if ( gProductionVector[aNum].xmldata.usItemToCreate != NOTHING )
-			swprintf( gProductionHelpText, L"%s", Item[gProductionVector[aNum].xmldata.usItemToCreate].szItemName );
+			swprintf( gProductionHelpText, JA2_TEXT("%s"), Item[gProductionVector[aNum].xmldata.usItemToCreate].szItemName );
 	}
 
 	return gProductionHelpText;
@@ -344,7 +344,7 @@ STR16 Product_Production( UINT32 aNum )
 
 STR16 PreProduct_Production( UINT32 aNum )
 {
-	swprintf( gProductionHelpText, L"--" );
+	swprintf( gProductionHelpText, JA2_TEXT("--") );
 
 	if ( aNum < gProductionVector.size() )
 	{
@@ -355,24 +355,24 @@ STR16 PreProduct_Production( UINT32 aNum )
 			{
 				if ( first )
 				{
-					swprintf( gProductionHelpText, L"%s (%d)", Item[it->item].szItemName, it->requiredforonecreation );
+					swprintf( gProductionHelpText, JA2_TEXT("%s (%d)"), Item[it->item].szItemName, it->requiredforonecreation );
 					first = false;
 				}
 				else
 				{
-					swprintf( gProductionHelpText, L"%s, %s (%d)", gProductionHelpText, Item[it->item].szItemName, it->requiredforonecreation );
+					swprintf( gProductionHelpText, JA2_TEXT("%s, %s (%d)"), gProductionHelpText, Item[it->item].szItemName, it->requiredforonecreation );
 				}
 			}
 			else
 			{
 				if ( first )
 				{
-					swprintf( gProductionHelpText, L"%s", Item[it->item].szItemName );
+					swprintf( gProductionHelpText, JA2_TEXT("%s"), Item[it->item].szItemName );
 					first = false;
 				}
 				else
 				{
-					swprintf( gProductionHelpText, L"%s, %s", gProductionHelpText, Item[it->item].szItemName );
+					swprintf( gProductionHelpText, JA2_TEXT("%s, %s"), gProductionHelpText, Item[it->item].szItemName );
 				}
 			}
 		}
@@ -399,11 +399,11 @@ UINT8 ColourGetter_Production( UINT32 aNum )
 
 STR16 Loyalty_Production( UINT32 aNum )
 {
-	swprintf( gProductionHelpText, L"--" );
+	swprintf( gProductionHelpText, JA2_TEXT("--") );
 
 	if ( aNum < gProductionVector.size() && gProductionVector[aNum].xmldata.usOptional_LoyaltyRequired > 0 )
 	{
-		swprintf( gProductionHelpText, L"%d+", gProductionVector[aNum].xmldata.usOptional_LoyaltyRequired );
+		swprintf( gProductionHelpText, JA2_TEXT("%d+"), gProductionVector[aNum].xmldata.usOptional_LoyaltyRequired );
 	}
 
 	return gProductionHelpText;
@@ -411,11 +411,11 @@ STR16 Loyalty_Production( UINT32 aNum )
 
 STR16 Costgetter_Production( UINT32 aNum )
 {
-	swprintf( gProductionHelpText, L"--" );
+	swprintf( gProductionHelpText, JA2_TEXT("--") );
 
 	if ( aNum < gProductionVector.size() && gProductionVector[aNum].xmldata.sHourlyCost )
 	{
-		swprintf( gProductionHelpText, L"%d$", gProductionVector[aNum].xmldata.sHourlyCost );
+		swprintf( gProductionHelpText, JA2_TEXT("%d$"), gProductionVector[aNum].xmldata.sHourlyCost );
 	}
 
 	return gProductionHelpText;
@@ -423,11 +423,11 @@ STR16 Costgetter_Production( UINT32 aNum )
 
 STR16 Minutesgetter_Production( UINT32 aNum )
 {
-	swprintf( gProductionHelpText, L"--:--" );
+	swprintf( gProductionHelpText, JA2_TEXT("--:--") );
 
 	if ( aNum < gProductionVector.size() )
 	{
-		swprintf( gProductionHelpText, L"%02d:%02d", gProductionVector[aNum].xmldata.sMinutesRequired / 60, gProductionVector[aNum].xmldata.sMinutesRequired % 60 );
+		swprintf( gProductionHelpText, JA2_TEXT("%02d:%02d"), gProductionVector[aNum].xmldata.sMinutesRequired / 60, gProductionVector[aNum].xmldata.sMinutesRequired % 60 );
 	}
 
 	return gProductionHelpText;
@@ -491,7 +491,7 @@ template<>  void	TestTableTemplate<4>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 
 	// on/off toggle
 	{
-		ColumnDataProvider col( L"" );
+		ColumnDataProvider col( JA2_TEXT("") );
 		col.SetRequiredHeigth( 12 );
 		col.SetRequiredLength( 24 );
 		col.SetMethodImage( CheckboxImagegetter_Production );
@@ -544,7 +544,7 @@ template<>  void	TestTableTemplate<4>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 
 	// cost
 	{
-		ColumnDataProvider col( L"$/h" );
+		ColumnDataProvider col( JA2_TEXT("$/h") );
 		col.SetMethodString( Costgetter_Production );
 		col.SetNumberOfEntries( gProductionVector.size() );
 		col.SetCallBackType( ColumnDataProvider::CDP_MILITIA_LIST );
@@ -554,7 +554,7 @@ template<>  void	TestTableTemplate<4>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 
 	// current progress
 	{
-		ColumnDataProvider col( L"" );
+		ColumnDataProvider col( JA2_TEXT("") );
 		col.SetMethodStatusBar( Factory_ProgressBar );
 		col.SetNumberOfEntries( gProductionVector.size() );
 		col.SetCallBackType( ColumnDataProvider::CDP_MILITIA_LIST );

@@ -164,7 +164,7 @@ BOOLEAN MAPCREATE_STRUCT::Save(HWFILE hFile, FLOAT dMajorMapVersion, UINT8 ubMin
 	// a map without entry points would be fatal in a campaign, so print out a warning to the maper
 	if ( sNorthGridNo == NOWHERE && sEastGridNo == NOWHERE && sSouthGridNo == NOWHERE && sWestGridNo == NOWHERE && sCenterGridNo == NOWHERE )
 	{
-		ScreenMsg( MSG_FONT_YELLOW, MSG_ERROR, L"Map has no entry points - please fix this!" );
+		ScreenMsg( MSG_FONT_YELLOW, MSG_ERROR, JA2_TEXT("Map has no entry points - please fix this!") );
 	}
 
 	UINT32 uiBytesWritten = 0;
@@ -346,7 +346,7 @@ void ValidateAndUpdateMapVersionIfNecessary()
 	//Older versions of mercs may require updating due to past bug fixes, new changes, etc.
 	if( gMapInformation.ubMapVersion < MINOR_MAP_VERSION )
 	{
-		SetRelativeStartAndEndPercentage( 0, 92, 93, L"Updating older map version..." );
+		SetRelativeStartAndEndPercentage( 0, 92, 93, JA2_TEXT("Updating older map version...") );
 		RenderProgressBar( 0, 0 );
 		UpdateOldVersionMap();
 	}

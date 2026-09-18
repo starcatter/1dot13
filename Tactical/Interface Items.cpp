@@ -147,8 +147,8 @@ INT16		ITEMDESC_AMMO_Y;
 INT16		ITEMDESC_DONE_X;
 INT16		ITEMDESC_DONE_Y;
 
-#define		DOTDOTDOT L"..."
-#define		COMMA_AND_SPACE L", "
+#define		DOTDOTDOT JA2_TEXT("...")
+#define		COMMA_AND_SPACE JA2_TEXT(", ")
 
 #define		ITEM_PROS_AND_CONS( usItem ) ( ( Item[ usItem ].usItemClass & IC_GUN && !ItemIsRocketLauncher(usItem) ) )
 
@@ -1683,8 +1683,8 @@ void HandleRenderInvSlots( SOLDIERTYPE *pSoldier, UINT8 fDirtyLevel )
 #if defined( _DEBUG ) /* Sergeant_Kolja, to be removed later again */
 				if ( pSoldier->inv[cnt][0]->data.gun.ubGunAmmoType >= gMAXITEMS_READ )
 				{
-					DebugMsg( TOPIC_JA2, DBG_LEVEL_1, String( "pObject (%S) corrupted! GetHelpTextForItem() can crash.",	(pSoldier->inv[cnt].usItem<gMAXITEMS_READ) ? Item[pSoldier->inv[cnt].usItem].szItemName : L"???" ) );
-					ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"pObject (%s) corrupted! GetHelpTextForItem() can crash.",			(pSoldier->inv[cnt].usItem<gMAXITEMS_READ) ? Item[pSoldier->inv[cnt].usItem].szItemName : L"???" );
+					DebugMsg( TOPIC_JA2, DBG_LEVEL_1, String( "pObject (%S) corrupted! GetHelpTextForItem() can crash.",	(pSoldier->inv[cnt].usItem<gMAXITEMS_READ) ? Item[pSoldier->inv[cnt].usItem].szItemName : JA2_TEXT("???") ) );
+					ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("pObject (%s) corrupted! GetHelpTextForItem() can crash."),			(pSoldier->inv[cnt].usItem<gMAXITEMS_READ) ? Item[pSoldier->inv[cnt].usItem].szItemName : JA2_TEXT("???") );
 					DebugBreak();
 					AssertMsg( 0, "pObject corrupted! GetHelpTextForItem() can crash." );
 				}
@@ -1835,7 +1835,7 @@ INT16 pocketTypeInSlot(SOLDIERTYPE *pSoldier, INT16 sPocket){
 
 //THE_BOB: mag-making popups
 static POPUP * sPocketPopup = NULL;
-static BOOL sPocketPopupInitialized = FALSE;
+static BOOLEAN sPocketPopupInitialized = FALSE;
 
 void popupCallbackAmmo(UINT16 item, UINT16 pocket, SOLDIERTYPE* pSoldier ){
 
@@ -2103,7 +2103,7 @@ void addItemsToPocketPopup( SOLDIERTYPE *pSoldier, INT16 sPocket, POPUP* popup, 
 
 		if( optsTotal > 0 && optsTotal%15 == 0 ){ // divide to subBoxes every 10 items
 
-			POPUP * currPopupTmp = currPopup->addSubMenuOption( std::wstring( gszPocketPopupText[POCKET_POPUP_MOAR] ) );	// the new popup
+			POPUP * currPopupTmp = currPopup->addSubMenuOption( ja2::text::Utf16String( gszPocketPopupText[POCKET_POPUP_MOAR] ) );	// the new popup
 			POPUP_SUB_POPUP_OPTION * currSubPopupTmp = currPopup->getSubPopupOption( currPopup->subPopupOptionCount-1 );	// the sub-popup option in prev popup
 
 			
@@ -2136,16 +2136,16 @@ void addItemsToPocketPopup( SOLDIERTYPE *pSoldier, INT16 sPocket, POPUP* popup, 
 		if( numObjectsToPlace > 1 ){	// add number of items that will be placed
 
 			static CHAR16 pStr[ 100 ];
-			swprintf( pStr, L"%s (%d)", Item[ itr->first ].szItemName, numObjectsToPlace );
+			swprintf( pStr, JA2_TEXT("%s (%d)"), Item[ itr->first ].szItemName, numObjectsToPlace );
 
 			currPopup->addOption( 
-								std::wstring( pStr ), 
+								ja2::text::Utf16String( pStr ), 
 								new popupCallbackFunction3<void,OBJECTTYPE*,UINT16,SOLDIERTYPE*>(&popupCallbackPlaceLeastDamagedFromStack,itr->second,sPocket,pSoldier) 
 								);
 
 		} else {
 			currPopup->addOption( 
-								std::wstring( Item[ itr->first ].szItemName ), 
+								ja2::text::Utf16String( Item[ itr->first ].szItemName ), 
 								new popupCallbackFunction3<void,OBJECTTYPE*,UINT16,SOLDIERTYPE*>(&popupCallbackPlaceLeastDamagedFromStack,itr->second,sPocket,pSoldier) 
 								);		
 		}
@@ -2178,7 +2178,7 @@ void addWeaponGroupsToPocketPopup( SOLDIERTYPE *pSoldier, INT16 sPocket, POPUP* 
 
 	POPUP * subPopup = NULL;
 
-	subPopup = popup->addSubMenuOption( std::wstring(BobbyRFilter[17]/*Guns*/) );
+	subPopup = popup->addSubMenuOption( ja2::text::Utf16String(BobbyRFilter[17]/*Guns*/) );
 	popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,
 																				10,
 																				POPUP_POSITION_RELATIVE );
@@ -2193,33 +2193,33 @@ void addWeaponGroupsToPocketPopup( SOLDIERTYPE *pSoldier, INT16 sPocket, POPUP* 
 	UINT8 weaponTypeCtr;
 	for( weaponTypeCtr = 1; weaponTypeCtr <= 8; weaponTypeCtr++ ){
 		
-		weaponTypePopup = subPopup->addSubMenuOption( std::wstring( WeaponType[weaponTypeCtr] ) );
+		weaponTypePopup = subPopup->addSubMenuOption( ja2::text::Utf16String( WeaponType[weaponTypeCtr] ) );
 
 		for(std::map<UINT32,OBJECTTYPE*>::iterator itr = bestItems.begin(); itr != bestItems.end(); ++itr){
 
 			if ( Weapon[ itr->first ].ubWeaponType == weaponTypeCtr )
 			weaponTypePopup->addOption( 
-								std::wstring( Item[ itr->first ].szItemName ), 
+								ja2::text::Utf16String( Item[ itr->first ].szItemName ), 
 								new popupCallbackFunction3<void,OBJECTTYPE*,UINT16,SOLDIERTYPE*>(&popupCallbackPlaceLeastDamagedFromStack,itr->second,sPocket,pSoldier) 
 								);
 		}
 
 	}
 	
-	subPopup = popup->addSubMenuOption( std::wstring( gszPocketPopupText[POCKET_POPUP_GRENADE_LAUNCHERS] ) );
+	subPopup = popup->addSubMenuOption( ja2::text::Utf16String( gszPocketPopupText[POCKET_POPUP_GRENADE_LAUNCHERS] ) );
 	popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,
 																				10,
 																				POPUP_POSITION_RELATIVE );
 	addItemsToPocketPopup( pSoldier, sPocket, subPopup, IC_LAUNCHER, -1, -1, 0 );
 
-	subPopup = popup->addSubMenuOption( std::wstring( gszPocketPopupText[POCKET_POPUP_ROCKET_LAUNCHERS] ) );
+	subPopup = popup->addSubMenuOption( ja2::text::Utf16String( gszPocketPopupText[POCKET_POPUP_ROCKET_LAUNCHERS] ) );
 	popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,
 																				10,
 																				POPUP_POSITION_RELATIVE );
 	addItemsToPocketPopup( pSoldier, sPocket, subPopup, IC_GUN, -1, 0, 0);
 
 
-	subPopup = popup->addSubMenuOption( std::wstring( gszPocketPopupText[POCKET_POPUP_MEELE_AND_THROWN] ) );
+	subPopup = popup->addSubMenuOption( ja2::text::Utf16String( gszPocketPopupText[POCKET_POPUP_MEELE_AND_THROWN] ) );
 	popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,
 																				10,
 																				POPUP_POSITION_RELATIVE );
@@ -2286,7 +2286,7 @@ void addAmmoToPocketPopup( SOLDIERTYPE *pSoldier, INT16 sPocket, POPUP* popup )
 		{
 			UINT8 ammoFound = 0;
 
-			POPUP_OPTION * o = popup->addOption( std::wstring( Item[ (*gun)->usItem ].szItemName ), NULL );
+			POPUP_OPTION * o = popup->addOption( ja2::text::Utf16String( Item[ (*gun)->usItem ].szItemName ), NULL );
 			o->color_shade = COLOR_LTGREY;
 			//o->color_background = COLOR_LTGREY;
 					
@@ -2333,9 +2333,9 @@ void addAmmoToPocketPopup( SOLDIERTYPE *pSoldier, INT16 sPocket, POPUP* popup )
 								}
 										
 								static CHAR16 pStr[ 100 ];
-								swprintf( pStr, L"%s (%d)", Item[loop].szItemName,capacity );
+								swprintf( pStr, JA2_TEXT("%s (%d)"), Item[loop].szItemName,capacity );
 
-								popup->addOption( std::wstring( pStr ), new popupCallbackFunction3<void,UINT16,UINT16,SOLDIERTYPE*>(&popupCallbackAmmo,loop,sPocket,pSoldier) );
+								popup->addOption( ja2::text::Utf16String( pStr ), new popupCallbackFunction3<void,UINT16,UINT16,SOLDIERTYPE*>(&popupCallbackAmmo,loop,sPocket,pSoldier) );
 
 							} // found ammo crate, crate matches mag
 						} // inv loop
@@ -2344,7 +2344,7 @@ void addAmmoToPocketPopup( SOLDIERTYPE *pSoldier, INT16 sPocket, POPUP* popup )
 			} // mag loop
 
 			if (!ammoFound){
-				POPUP_OPTION * o = popup->addOption( std::wstring( gszPocketPopupText[POCKET_POPUP_NO_AMMO] ), NULL );
+				POPUP_OPTION * o = popup->addOption( ja2::text::Utf16String( gszPocketPopupText[POCKET_POPUP_NO_AMMO] ), NULL );
 				o->color_shade = COLOR_RED;
 			}
 
@@ -2354,7 +2354,7 @@ void addAmmoToPocketPopup( SOLDIERTYPE *pSoldier, INT16 sPocket, POPUP* popup )
 	} // found guns
 	else 
 	{
-		POPUP_OPTION * o = popup->addOption( std::wstring( gszPocketPopupText[POCKET_POPUP_NO_GUNS] ), NULL );
+		POPUP_OPTION * o = popup->addOption( ja2::text::Utf16String( gszPocketPopupText[POCKET_POPUP_NO_GUNS] ), NULL );
 		o->color_shade = COLOR_RED;
 	}
 }
@@ -2427,31 +2427,31 @@ void PocketPopupFull( SOLDIERTYPE *pSoldier, INT16 sPocket ){
 
 		POPUP * subPopup = NULL;
 
-		subPopup = popup->addSubMenuOption( std::wstring( iEditorItemsToolbarText[0]/*Weapons*/ ) );
+		subPopup = popup->addSubMenuOption( ja2::text::Utf16String( iEditorItemsToolbarText[0]/*Weapons*/ ) );
 		popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,10,POPUP_POSITION_RELATIVE );
 		addWeaponGroupsToPocketPopup( pSoldier, sPocket, subPopup );
 
-		subPopup = popup->addSubMenuOption( std::wstring( BobbyRText[BOBBYR_GUNS_AMMO]/*Ammo*/ ) );
+		subPopup = popup->addSubMenuOption( ja2::text::Utf16String( BobbyRText[BOBBYR_GUNS_AMMO]/*Ammo*/ ) );
 		popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,10,POPUP_POSITION_RELATIVE );
 		addAmmoToPocketPopup( pSoldier, sPocket, subPopup );
 
-		subPopup = popup->addSubMenuOption( std::wstring( BobbyRText[BOBBYR_GUNS_ARMOR]/*Amour*/ ) );
+		subPopup = popup->addSubMenuOption( ja2::text::Utf16String( BobbyRText[BOBBYR_GUNS_ARMOR]/*Amour*/ ) );
 		popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,10,POPUP_POSITION_RELATIVE );
 		addArmorToPocketPopup( pSoldier, sPocket, subPopup );
 
-		subPopup = popup->addSubMenuOption( std::wstring( BobbyRFilter[BOBBYR_FILTER_USED_LBEGEAR] /*"LBE"*/) );
+		subPopup = popup->addSubMenuOption( ja2::text::Utf16String( BobbyRFilter[BOBBYR_FILTER_USED_LBEGEAR] /*"LBE"*/) );
 		popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,10,POPUP_POSITION_RELATIVE );
 		addLBEToPocketPopup( pSoldier, sPocket, subPopup );
 
-		subPopup = popup->addSubMenuOption( std::wstring( BobbyRFilter[BOBBYR_FILTER_MISC_GRENADE]/*Grenades*/ ) );
+		subPopup = popup->addSubMenuOption( ja2::text::Utf16String( BobbyRFilter[BOBBYR_FILTER_MISC_GRENADE]/*Grenades*/ ) );
 		popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,10,POPUP_POSITION_RELATIVE );
 		addGrenadesToPocketPopup( pSoldier, sPocket, subPopup );
 
-		subPopup = popup->addSubMenuOption( std::wstring( BobbyRFilter[BOBBYR_FILTER_MISC_BOMB] ) );
+		subPopup = popup->addSubMenuOption( ja2::text::Utf16String( BobbyRFilter[BOBBYR_FILTER_MISC_BOMB] ) );
 		popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,10,POPUP_POSITION_RELATIVE );
 		addBombsToPocketPopup( pSoldier, sPocket, subPopup );
 
-		subPopup = popup->addSubMenuOption( std::wstring( BobbyRFilter[BOBBYR_FILTER_MISC_FACE] ) );
+		subPopup = popup->addSubMenuOption( ja2::text::Utf16String( BobbyRFilter[BOBBYR_FILTER_MISC_FACE] ) );
 		popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,10,POPUP_POSITION_RELATIVE );
 		addFaceGearToPocketPopup( pSoldier, sPocket, subPopup );
 
@@ -2529,7 +2529,7 @@ void PocketPopupDefault( SOLDIERTYPE *pSoldier, INT16 sPocket ){
 					// default for LBE slots - grenades + ammo for merc's guns
 					addAmmoToPocketPopup( pSoldier, sPocket, popup );
 
-					POPUP * subPopup = popup->addSubMenuOption( std::wstring( BobbyRFilter[28]/*Grenades*/ ) );
+					POPUP * subPopup = popup->addSubMenuOption( ja2::text::Utf16String( BobbyRFilter[28]/*Grenades*/ ) );
 					popup->getSubPopupOption( popup->subPopupOptionCount-1 )->setPopupPosition(	10,10,POPUP_POSITION_RELATIVE );
 					addGrenadesToPocketPopup( pSoldier, sPocket, subPopup );
 				} else {
@@ -3621,23 +3621,23 @@ void RenderPocketItemCapacity( UINT32 uiWhichBuffer, INT8 pCapacity, INT16 bPos,
 			SetFontForeground( FONT_LTGREEN );
 			pCapacity = pCapacity - pObj->ubNumberOfObjects;
 			if(pCapacity > 0)
-				swprintf( pStr, L"+%d", pCapacity );
+				swprintf( pStr, JA2_TEXT("+%d"), pCapacity );
 			else
-				swprintf( pStr, L"-" );
+				swprintf( pStr, JA2_TEXT("-") );
 		}
 		else
-			swprintf( pStr, L"%d", pCapacity );
+			swprintf( pStr, JA2_TEXT("%d"), pCapacity );
 	}
 	else if(CompatibleAmmoForGun(gpItemPointer, &pSoldier->inv[bPos]) || ValidLaunchable(gpItemPointer->usItem, pSoldier->inv[bPos].usItem))
 	{
 		SetFontForeground( FONT_YELLOW );
-		swprintf( pStr, L"L" );
+		swprintf( pStr, JA2_TEXT("L") );
 	}
 	else if((UsingNewAttachmentSystem()==false && ValidAttachment(gpItemPointer->usItem, &(pSoldier->inv[bPos]) )) ||
 		(UsingNewAttachmentSystem()==true && ValidItemAttachmentSlot(&(pSoldier->inv[bPos]), gpItemPointer->usItem, FALSE, FALSE)))
 	{
 		SetFontForeground( FONT_YELLOW );
-		swprintf( pStr, L"A" );
+		swprintf( pStr, JA2_TEXT("A") );
 	}
 	sX = sX + 1;
 
@@ -3799,7 +3799,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 					SetFontForeground( FONT_GRAY4 );
 
 					sNewY = sY + sHeight - 10;
-					swprintf( pStr, L"%d", pObject->ubNumberOfObjects );
+					swprintf( pStr, JA2_TEXT("%d"), pObject->ubNumberOfObjects );
 
 					// Get length of string
 					uiStringLength=StringPixLength(pStr, ITEM_FONT );
@@ -3882,11 +3882,11 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 					{
 						// Soldier doesn't know.
 						EstimateBulletsLeft( pSoldier, pObjShown );
-						swprintf( pStr, L"%s", gBulletCount );
+						swprintf( pStr, JA2_TEXT("%s"), gBulletCount );
 					}
 					else
 					{
-						swprintf( pStr, L"%d", (*pObjShown)[iter]->data.gun.ubGunShotsLeft );
+						swprintf( pStr, JA2_TEXT("%d"), (*pObjShown)[iter]->data.gun.ubGunShotsLeft );
 					}
 					
 					if ( uiBuffer == guiSAVEBUFFER )
@@ -3933,7 +3933,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 				}
 
 				sNewY = sY;
-				swprintf( pStr, L"*" );
+				swprintf( pStr, JA2_TEXT("*") );
 
 				// Get length of string
 				uiStringLength=StringPixLength(pStr, ITEM_FONT );
@@ -3991,7 +3991,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 				SetRGBFontForeground( 95, 160, 154 );
 												
 				sNewY = sY;
-				swprintf( pStr, L"M" );
+				swprintf( pStr, JA2_TEXT("M") );
 
 				// Get length of string
 				uiStringLength=StringPixLength(pStr, ITEM_FONT );
@@ -4068,10 +4068,10 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 					INT16 sMagX = sNewX + 9;
 
 					if ( scopemagfactor > (INT8)scopemagfactor )
-						swprintf( pStr, L"%2.1f", scopemagfactor );
+						swprintf( pStr, JA2_TEXT("%2.1f"), scopemagfactor );
 					else
 					{
-						swprintf( pStr, L"%2.0f", scopemagfactor );
+						swprintf( pStr, JA2_TEXT("%2.0f"), scopemagfactor );
 					}
 
 					// Get length of string
@@ -4093,7 +4093,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 
 					INT16 sMagX = sNewX + 13;
 
-					swprintf( pStr, L"*" );
+					swprintf( pStr, JA2_TEXT("*") );
 
 					// Get length of string
 					uiStringLength=StringPixLength(pStr, ITEM_FONT );
@@ -4127,7 +4127,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 					SetFontForeground( FONT_BLUE );
 
 					sNewY = sY;
-					swprintf( pStr, L"*" );
+					swprintf( pStr, JA2_TEXT("*") );
 
 					// Get length of string
 					uiStringLength=StringPixLength(pStr, ITEM_FONT );
@@ -4150,7 +4150,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 
 				if ( pSoldier->bWeaponMode == WM_NORMAL )
 				{
-					swprintf( pStr, L"" );
+					swprintf( pStr, JA2_TEXT("") );
 					SetFontForeground( FONT_RED );
 				}
 				else if ( pSoldier->bWeaponMode == WM_BURST )
@@ -4208,9 +4208,9 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 
 				// Flugente: display barrel mode if necessary
 				if ( pSoldier->usBarrelMode > 1 )
-					swprintf( pStr2, L"%s x%d", pStr, pSoldier->usBarrelMode );
+					swprintf( pStr2, JA2_TEXT("%s x%d"), pStr, pSoldier->usBarrelMode );
 				else
-					swprintf( pStr2, L"%s", pStr );
+					swprintf( pStr2, JA2_TEXT("%s"), pStr );
 								
 				// Get length of string
 				uiStringLength=StringPixLength( pStr2, ITEM_FONT );
@@ -4271,24 +4271,24 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 					SetRGBFontForeground( 250, 0, 0 );
 
 					if ( defusefrequency > 0 )
-						swprintf( pStr, L"%d/%d", timeleft, defusefrequency );
+						swprintf( pStr, JA2_TEXT("%d/%d"), timeleft, defusefrequency );
 					else
-						swprintf( pStr, L"%d", timeleft );
+						swprintf( pStr, JA2_TEXT("%d"), timeleft );
 				}
 				else if ( detfrequency > 0 )
 				{
 					SetRGBFontForeground( 207, 211, 39 );
 
 					if ( defusefrequency > 0 )
-						swprintf( pStr, L"%d/%d", detfrequency, defusefrequency );
+						swprintf( pStr, JA2_TEXT("%d/%d"), detfrequency, defusefrequency );
 					else
-						swprintf( pStr, L"%d", detfrequency );
+						swprintf( pStr, JA2_TEXT("%d"), detfrequency );
 				}
 				else
 				{
 					SetRGBFontForeground( 7, 243, 143 );
 
-					swprintf( pStr, L"-/%d", defusefrequency );
+					swprintf( pStr, JA2_TEXT("-/%d"), defusefrequency );
 				}
 				
 				// Get length of string
@@ -4309,7 +4309,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 			{
 				sNewY = sY + sHeight - 10;
 				SetRGBFontForeground( 120, 120, 120 );
-				swprintf( pStr, L"*" );
+				swprintf( pStr, JA2_TEXT("*") );
 
 				// Get length of string
 				uiStringLength=StringPixLength(pStr, ITEM_FONT );
@@ -4344,7 +4344,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 				for (i=0; i < pObject->ubNumberOfObjects; ++i)
 					totalammo += (*pObject)[i]->data.ubShotsLeft;
 
-				swprintf( pStr, L"%d", totalammo );
+				swprintf( pStr, JA2_TEXT("%d"), totalammo );
 
 				// Get length of string
 				uiStringLength=StringPixLength(pStr, ITEM_FONT );
@@ -4373,13 +4373,13 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 			// Set string
 			if ( ubStatusIndex < RENDER_ITEM_ATTACHMENT1 )
 			{
-				swprintf( pStr, L"%s", ShortItemNames[ pObject->usItem ] );
+				swprintf( pStr, JA2_TEXT("%s"), ShortItemNames[ pObject->usItem ] );
 			}
 			else
 			{
 				OBJECTTYPE* pAttachment = (*pObject)[iter]->GetAttachmentAtIndex(ubStatusIndex - RENDER_ITEM_ATTACHMENT1);
 				if (pAttachment->exists()) {
-					swprintf( pStr, L"%s", ShortItemNames[ pAttachment->usItem ] );
+					swprintf( pStr, JA2_TEXT("%s"), ShortItemNames[ pAttachment->usItem ] );
 				}
 			}
 
@@ -4464,7 +4464,7 @@ void INVRenderSteeringWheel( UINT32 uiBuffer, UINT32 uiSteeringWheelIndex, SOLDI
 			SetFontBackground( FONT_MCOLOR_BLACK );
 			SetFontForeground( FONT_MCOLOR_DKGRAY );
 
-			swprintf( pStr, L"%d", pVehicle->bActionPoints );
+			swprintf( pStr, JA2_TEXT("%d"), pVehicle->bActionPoints );
 			mprintf( sNewX, sNewY, pStr );
 			gprintfinvalidate( sNewX, sNewY, pStr );
 		}
@@ -4542,7 +4542,7 @@ void MAPINVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pOb
 		SetFontForeground( FONT_GRAY4 );
 
 		// Get number of objects in this slot
-		swprintf( pStr, L"x%d", pObject->ubNumberOfObjects );
+		swprintf( pStr, JA2_TEXT("x%d"), pObject->ubNumberOfObjects );
 
 		// Get length of string
 		uiStringLength=StringPixLength(pStr, ITEM_FONT );
@@ -4583,11 +4583,11 @@ void MAPINVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pOb
 		if ( (gTacticalStatus.uiFlags & TURNBASED) && (gTacticalStatus.uiFlags & INCOMBAT) )
 		{
 			// Soldier doesn't know.
-			swprintf( pStr, L"%s", L"??" );
+			swprintf( pStr, JA2_TEXT("%s"), JA2_TEXT("??") );
 		}
 		else
 		{
-			swprintf( pStr, L"%d", (*pObject)[0]->data.gun.ubGunShotsLeft );
+			swprintf( pStr, JA2_TEXT("%d"), (*pObject)[0]->data.gun.ubGunShotsLeft );
 		}
 
 		// Restore background
@@ -4605,7 +4605,7 @@ void MAPINVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pOb
 
 		// Set font properties
 		SetFontForeground( FONT_GRAY4 );
-		swprintf( pStr, L"/" );
+		swprintf( pStr, JA2_TEXT("/") );
 		sNewX += usAmmoWidth;
 		mprintf( sNewX, sNewY, pStr );
 		usAmmoWidth = StringPixLength( pStr, LARGEFONT1 );
@@ -4623,7 +4623,7 @@ void MAPINVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pOb
 		sNewY += sFontHeightDifference;
 
 		// Print total magazine size
-		swprintf( pStr, L"%d", GetMagSize(pObject) );
+		swprintf( pStr, JA2_TEXT("%d"), GetMagSize(pObject) );
 		
 		mprintf( sNewX, sNewY, pStr );
 		gprintfinvalidate( sNewX, sNewY, pStr );
@@ -4667,11 +4667,11 @@ void MAPINVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pOb
 		if ( (gTacticalStatus.uiFlags & TURNBASED) && (gTacticalStatus.uiFlags & INCOMBAT) )
 		{
 			// Soldier doesn't know.
-			swprintf( pStr, L"%s", L"??" );
+			swprintf( pStr, JA2_TEXT("%s"), JA2_TEXT("??") );
 		}
 		else
 		{
-			swprintf( pStr, L"%d", (*pObject)[0]->data.ubShotsLeft );
+			swprintf( pStr, JA2_TEXT("%d"), (*pObject)[0]->data.ubShotsLeft );
 		}
 
 		// Restore background
@@ -4689,7 +4689,7 @@ void MAPINVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pOb
 
 		// Set font properties
 		SetFontForeground( FONT_GRAY4 );
-		swprintf( pStr, L"/" );
+		swprintf( pStr, JA2_TEXT("/") );
 		sNewX += usAmmoWidth;
 		mprintf( sNewX, sNewY, pStr );
 		usAmmoWidth = StringPixLength( pStr, LARGEFONT1 );
@@ -4707,7 +4707,7 @@ void MAPINVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pOb
 		sNewY += sFontHeightDifference;
 
 		// Print total magazine size
-		swprintf( pStr, L"%d", Magazine[Item[ pObject->usItem ].ubClassIndex].ubMagSize );
+		swprintf( pStr, JA2_TEXT("%d"), Magazine[Item[ pObject->usItem ].ubClassIndex].ubMagSize );
 		
 		mprintf( sNewX, sNewY, pStr );
 		gprintfinvalidate( sNewX, sNewY, pStr );
@@ -4920,7 +4920,7 @@ void MAPINVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pOb
 			uiTotalAmmo += (*pObject)[x]->data.ubShotsLeft;
 		}
 
-		swprintf( pStr, L"(%d)", uiTotalAmmo );
+		swprintf( pStr, JA2_TEXT("(%d)"), uiTotalAmmo );
 
 		sNewX = ((sX + sWidth) - 4) - StringPixLength( pStr, FONT10ARIAL );
 		sNewY = sY + 3;
@@ -5127,7 +5127,7 @@ BOOLEAN InternalInitItemDescriptionBox( OBJECTTYPE *pObject, INT16 sX, INT16 sY,
 	//if (Item[ pObject->usItem].usItemClass & IC_MONEY && gpItemPointer != NULL && gpItemPointer->usItem != 0) {
 	if(pObject->usItem == MONEY && gpItemPointer != NULL && gpItemPointer->usItem != 0 && gpItemPointer->usItem != MONEY) {
 		//ADB oops, money splits and puts a new item on the cursor, which would replace what's already on the cursor!
-//		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Unable to split money due to having an item on your cursor." );
+//		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Unable to split money due to having an item on your cursor.") );
 		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, New113Message[MSG113_UNABLETOSPLITMONEY] );
 		return FALSE;
 	}
@@ -5240,11 +5240,11 @@ BOOLEAN InternalInitItemDescriptionBox( OBJECTTYPE *pObject, INT16 sX, INT16 sY,
 			if ( (gTacticalStatus.uiFlags & TURNBASED) && (gTacticalStatus.uiFlags & INCOMBAT) )
 			{
 				EstimateBulletsLeft( pSoldier, pObject );
-				swprintf(pStr, L"%s/%d", gBulletCount, GetMagSize(gpItemDescObject) );
+				swprintf(pStr, JA2_TEXT("%s/%d"), gBulletCount, GetMagSize(gpItemDescObject) );
 			}
 			else
 			{
-				swprintf( pStr, L"%d/%d", (*gpItemDescObject)[ubStatusIndex]->data.gun.ubGunShotsLeft, GetMagSize(gpItemDescObject));
+				swprintf( pStr, JA2_TEXT("%d/%d"), (*gpItemDescObject)[ubStatusIndex]->data.gun.ubGunShotsLeft, GetMagSize(gpItemDescObject));
 			}
 		}
 		else
@@ -5253,11 +5253,11 @@ BOOLEAN InternalInitItemDescriptionBox( OBJECTTYPE *pObject, INT16 sX, INT16 sY,
 			if ( (gTacticalStatus.uiFlags & TURNBASED) && (gTacticalStatus.uiFlags & INCOMBAT) )
 			{
 				EstimateBulletsLeft( pSoldier, pObject );
-				swprintf( pStr, L"%s", gBulletCount );
+				swprintf( pStr, JA2_TEXT("%s"), gBulletCount );
 			}
 			else
 			{
-				swprintf( pStr, L"%d", (*gpItemDescObject)[ubStatusIndex]->data.gun.ubGunShotsLeft );
+				swprintf( pStr, JA2_TEXT("%d"), (*gpItemDescObject)[ubStatusIndex]->data.gun.ubGunShotsLeft );
 			}
 		}
 
@@ -5298,7 +5298,7 @@ BOOLEAN InternalInitItemDescriptionBox( OBJECTTYPE *pObject, INT16 sX, INT16 sY,
 			SpecifyDisabledButtonStyle( giItemDescAmmoButton, DISABLED_STYLE_HATCHED );
 
 			DisableButton( giItemDescAmmoButton );
-			SetButtonFastHelpText( giItemDescAmmoButton, L"\0" );
+			SetButtonFastHelpText( giItemDescAmmoButton, JA2_TEXT("\0") );
 		}
 		else
 		{
@@ -5342,7 +5342,7 @@ BOOLEAN InternalInitItemDescriptionBox( OBJECTTYPE *pObject, INT16 sX, INT16 sY,
 			if (cnt == 0)
 			{
 				wcscpy( gzFullItemPros, gzProsLabel );
-				wcscat( gzFullItemPros, L" " );
+				wcscat( gzFullItemPros, JA2_TEXT(" ") );
 				// use temp variable to prevent an initial comma from being displayed
 				GenerateProsString( gzFullItemTemp, gpItemDescObject, 1000 );
 				wcscat( gzFullItemPros, gzFullItemTemp );
@@ -5351,7 +5351,7 @@ BOOLEAN InternalInitItemDescriptionBox( OBJECTTYPE *pObject, INT16 sX, INT16 sY,
 			else
 			{
 				wcscpy( gzFullItemCons, gzConsLabel );
-				wcscat( gzFullItemCons, L" " );
+				wcscat( gzFullItemCons, JA2_TEXT(" ") );
 				// use temp variable to prevent an initial comma from being displayed
 				GenerateConsString( gzFullItemTemp, gpItemDescObject, 1000 );
 				wcscat( gzFullItemCons, gzFullItemTemp );
@@ -5700,9 +5700,9 @@ void UpdateAttachmentTooltips(OBJECTTYPE *pObject, UINT8 ubStatusIndex)
 		}
 
 		//Empty those Strings
-		swprintf( attachStr, L"" );
-		swprintf( attachStr2, L"" );
-		swprintf( attachStr3, L"" );
+		swprintf( attachStr, JA2_TEXT("") );
+		swprintf( attachStr2, JA2_TEXT("") );
+		swprintf( attachStr3, JA2_TEXT("") );
 
 		fAttachmentsFound = FALSE;
 
@@ -5900,19 +5900,19 @@ void UpdateAttachmentTooltips(OBJECTTYPE *pObject, UINT8 ubStatusIndex)
 						if (wcslen( attachStr3 ) + wcslen(Item[usAttachment].szItemName) > 3600)
 						{
 							// End list early to avoid overflow
-							wcscat( attachStr3, L"\n..." );
+							wcscat( attachStr3, JA2_TEXT("\n...") );
 							break;
 						}
 						else
 						{// Add the attachment's name to the list.
 							fAttachmentsFound = TRUE;
-							swprintf( attachStr2, L"\n%s", Item[ usAttachment ].szItemName );
+							swprintf( attachStr2, JA2_TEXT("\n%s"), Item[ usAttachment ].szItemName );
 							wcscat( attachStr3, attachStr2);
 						}
 
 						if (showAttachmentPopups)
 						{	// add the current attachment to the popup assigned to this attachment slot
-							POPUP_OPTION * o = new POPUP_OPTION(	std::wstring( Item[ usAttachment ].szItemName ), 
+					POPUP_OPTION * o = new POPUP_OPTION(	ja2::text::Utf16String( Item[ usAttachment ].szItemName ), 
 																	new popupCallbackFunction<void,UINT16>(&popupCallbackItem,usAttachment));
 							
 							gPopupAttachmentInfos.push_back(new PopupAttachmentInfo(usAttachment, pObject, ubStatusIndex, slotCount, o, gItemDescAttachmentPopups[slotCount]));
@@ -5921,7 +5921,7 @@ void UpdateAttachmentTooltips(OBJECTTYPE *pObject, UINT8 ubStatusIndex)
 							o->setAvail(new popupCallbackFunction<bool, PopupAttachmentInfo*>(&popupCallbackItemInSector, (gPopupAttachmentInfos.back())));
 						
 							if (loop == 11 && attachList.size() > 11){ // if there's too much stuff to list, we create a subpopup for the rest
-								gItemDescAttachmentPopups[slotCount]->addSubMenuOption( std::wstring(L"More...") );
+								gItemDescAttachmentPopups[slotCount]->addSubMenuOption( ja2::text::Utf16String(JA2_TEXT("More...")) );
 								POPUP_SUB_POPUP_OPTION * tmp = gItemDescAttachmentPopups[slotCount]->getSubPopupOption(0);
 
 								// positioning sub popups is handled through the option that holds them
@@ -5956,11 +5956,11 @@ void UpdateAttachmentTooltips(OBJECTTYPE *pObject, UINT8 ubStatusIndex)
 				if (fAttachmentsFound)
 				{
 					// Add extra empty line and attachment list title
-					swprintf( attachStr, L"%s:\n ", Message[ STR_ATTACHMENTS ] );
+					swprintf( attachStr, JA2_TEXT("%s:\n "), Message[ STR_ATTACHMENTS ] );
 					// Print the attachments
 					wcscat( attachStr, attachStr3 );
 				} else if(usLoopSlotID != 0) {
-					swprintf( attachStr2, L"\n%s", AttachmentSlots[usLoopSlotID].szSlotName );
+					swprintf( attachStr2, JA2_TEXT("\n%s"), AttachmentSlots[usLoopSlotID].szSlotName );
 					wcscat( attachStr, attachStr2);
 				} else {
 					wcscat( attachStr, Message[ STR_ATTACHMENTS ] );
@@ -6012,8 +6012,8 @@ BOOLEAN ReloadItemDesc( )
 	}
 	else
 	{
-		wcscpy( gzItemPros, L"" );
-		wcscpy( gzItemCons, L"" );
+		wcscpy( gzItemPros, JA2_TEXT("") );
+		wcscpy( gzItemCons, JA2_TEXT("") );
 	}
 	*/
 
@@ -6036,9 +6036,9 @@ void RenderBulletIcon(OBJECTTYPE *pObject, UINT32 ubStatusIndex)
 
 	UINT16 magsize = GetMagSize( pObject );
 	if ( magsize <= 99 )
-		swprintf( pStr, L"%d/%d", (*pObject)[ubStatusIndex]->data.gun.ubGunShotsLeft, magsize );
+		swprintf( pStr, JA2_TEXT("%d/%d"), (*pObject)[ubStatusIndex]->data.gun.ubGunShotsLeft, magsize );
 	else
-		swprintf( pStr, L"%d", (*pObject)[ubStatusIndex]->data.gun.ubGunShotsLeft );
+		swprintf( pStr, JA2_TEXT("%d"), (*pObject)[ubStatusIndex]->data.gun.ubGunShotsLeft );
 
 	SpecifyButtonText( giItemDescAmmoButton, pStr );
 
@@ -7208,9 +7208,9 @@ void RenderItemDescriptionBox( )
 		// Render name
 		// SET CLIPPING RECT FOR FONTS
 		#ifdef JA2TESTVERSION
-			mprintf( ITEMDESC_NAME_X, ITEMDESC_NAME_Y, L"%s (%d)", gzItemName, gpItemDescObject->usItem );
+			mprintf( ITEMDESC_NAME_X, ITEMDESC_NAME_Y, JA2_TEXT("%s (%d)"), gzItemName, gpItemDescObject->usItem );
 		#else
-			mprintf( ITEMDESC_NAME_X, ITEMDESC_NAME_Y, L"%s", gzItemName );
+			mprintf( ITEMDESC_NAME_X, ITEMDESC_NAME_Y, JA2_TEXT("%s"), gzItemName );
 		#endif
 
 		// Render extra data on name bar for weapons and launchers (Caliber, Fingerprints, Coolness)
@@ -7222,12 +7222,12 @@ void RenderItemDescriptionBox( )
 			if ( ItemHasFingerPrintID(gpItemDescObject->usItem) && (*gpItemDescObject)[gubItemDescStatusIndex]->data.ubImprintID < NO_PROFILE )
 			{
 				// Fingerprint ID
-				swprintf( pStr, L"%s %s (%s)", AmmoCaliber[ Weapon[ gpItemDescObject->usItem ].ubCalibre ], WeaponType[ Weapon[ gpItemDescObject->usItem ].ubWeaponType ], gMercProfiles[ (*gpItemDescObject)[gubItemDescStatusIndex]->data.ubImprintID ].zNickname );
+				swprintf( pStr, JA2_TEXT("%s %s (%s)"), AmmoCaliber[ Weapon[ gpItemDescObject->usItem ].ubCalibre ], WeaponType[ Weapon[ gpItemDescObject->usItem ].ubWeaponType ], gMercProfiles[ (*gpItemDescObject)[gubItemDescStatusIndex]->data.ubImprintID ].zNickname );
 			}
 			else
 			{
 				// No Fingerprint ID
- 				swprintf( pStr, L"%s %s", AmmoCaliber[ Weapon[ gpItemDescObject->usItem ].ubCalibre ], WeaponType[ Weapon[ gpItemDescObject->usItem ].ubWeaponType ] );
+ 				swprintf( pStr, JA2_TEXT("%s %s"), AmmoCaliber[ Weapon[ gpItemDescObject->usItem ].ubCalibre ], WeaponType[ Weapon[ gpItemDescObject->usItem ].ubWeaponType ] );
 			}
 
 			FindFontRightCoordinates( (INT16) ITEMDESC_CALIBER_X, (INT16) ITEMDESC_CALIBER_Y, ITEMDESC_CALIBER_WIDTH, ITEM_STATS_HEIGHT, pStr, ITEMDESC_FONT, &usX, &usY);
@@ -7290,7 +7290,7 @@ void RenderItemDescriptionBox( )
 						// UDB system displays a string with colored condition text.
 						int regionindex = 8;
 						SetFontForeground( ForegroundColor );
-						swprintf( pStr, L"%s", gTemperatureDesc[0] ); // "Temperature is "
+						swprintf( pStr, JA2_TEXT("%s"), gTemperatureDesc[0] ); // "Temperature is "
 						mprintf( gItemDescTextRegions[regionindex].sLeft, gItemDescTextRegions[regionindex].sTop, pStr );
 						// Record length
 						INT16 indent = StringPixLength( gTemperatureDesc[0], ITEMDESC_FONT );
@@ -7299,7 +7299,7 @@ void RenderItemDescriptionBox( )
 
 						UINT32 red, green, blue;
 						UINT8 TemperatureStringNum = GetTemperatureString( overheatjampercentage, &red, &green, &blue );
-						swprintf( pStr, L"%s", gTemperatureDesc[TemperatureStringNum+1 ] );
+						swprintf( pStr, JA2_TEXT("%s"), gTemperatureDesc[TemperatureStringNum+1 ] );
 
 						// text is coloured only in case of danger
 						if ( overheatjampercentage >= 1.0 )
@@ -7310,11 +7310,11 @@ void RenderItemDescriptionBox( )
 						indent += StringPixLength( gTemperatureDesc[TemperatureStringNum + 1], ITEMDESC_FONT );
 
 						SetFontForeground( ForegroundColor );
-						swprintf( pStr, L"%s", gTemperatureDesc[10] ); // "."
+						swprintf( pStr, JA2_TEXT("%s"), gTemperatureDesc[10] ); // "."
 						mprintf( gItemDescTextRegions[regionindex].sLeft + indent + 2, gItemDescTextRegions[regionindex].sTop, pStr );
 
 						// to get the text to the left side...
-						swprintf( pStr, L"");
+						swprintf( pStr, JA2_TEXT(""));
 
 						FindFontRightCoordinates( gItemDescTextRegions[regionindex].sLeft, gItemDescTextRegions[regionindex].sTop, gItemDescTextRegions[regionindex].sRight - gItemDescTextRegions[regionindex].sLeft ,gItemDescTextRegions[regionindex].sBottom - gItemDescTextRegions[regionindex].sTop ,pStr, BLOCKFONT2, &usX, &usY);
 
@@ -7346,12 +7346,12 @@ void RenderItemDescriptionBox( )
 							// UDB system displays a string with colored condition text.
 							int regionindex = 7;
 							SetFontForeground( ForegroundColor );
-							swprintf( pStr, L"%s", gFoodDesc[0] ); // "Temperature is "
+							swprintf( pStr, JA2_TEXT("%s"), gFoodDesc[0] ); // "Temperature is "
 							mprintf( gItemDescTextRegions[regionindex].sLeft, gItemDescTextRegions[regionindex].sTop, pStr );
 							// Record length
 							INT16 indent = StringPixLength( gFoodDesc[0], ITEMDESC_FONT );
 						
-							swprintf( pStr, L"%s", gFoodDesc[FoodStringNum] );
+							swprintf( pStr, JA2_TEXT("%s"), gFoodDesc[FoodStringNum] );
 
 							SetRGBFontForeground( red, green, blue );
 
@@ -7360,11 +7360,11 @@ void RenderItemDescriptionBox( )
 							indent += StringPixLength( gFoodDesc[FoodStringNum], ITEMDESC_FONT );
 
 							SetFontForeground( ForegroundColor );
-							swprintf( pStr, L"%s", gFoodDesc[7] ); // "."
+							swprintf( pStr, JA2_TEXT("%s"), gFoodDesc[7] ); // "."
 							mprintf( gItemDescTextRegions[regionindex].sLeft + indent + 2, gItemDescTextRegions[regionindex].sTop, pStr );
 
 							// to get the text to the left side...
-							swprintf( pStr, L"");
+							swprintf( pStr, JA2_TEXT(""));
 
 							FindFontRightCoordinates( gItemDescTextRegions[regionindex].sLeft, gItemDescTextRegions[regionindex].sTop, gItemDescTextRegions[regionindex].sRight - gItemDescTextRegions[regionindex].sLeft ,gItemDescTextRegions[regionindex].sBottom - gItemDescTextRegions[regionindex].sTop ,pStr, BLOCKFONT2, &usX, &usY);
 
@@ -7374,27 +7374,27 @@ void RenderItemDescriptionBox( )
 
 					// UDB system displays a string with colored condition text.
 					SetFontForeground( ForegroundColor );
-					swprintf( pStr, L"%s", gConditionDesc[0] ); // "In "
+					swprintf( pStr, JA2_TEXT("%s"), gConditionDesc[0] ); // "In "
 					mprintf( gItemDescTextRegions[1].sLeft, gItemDescTextRegions[1].sTop, pStr );
 					// Record length
 					INT16 indent = StringPixLength( gConditionDesc[0], ITEMDESC_FONT );
 
 					UINT8 ConditionColor = 0;
 					UINT8 ConditionStringNum = GetConditionString( status, &ConditionColor );
-					swprintf( pStr, L"%s", gConditionDesc[ConditionStringNum+1 ] );
+					swprintf( pStr, JA2_TEXT("%s"), gConditionDesc[ConditionStringNum+1 ] );
 					SetFontForeground( ConditionColor );
 					mprintf( gItemDescTextRegions[1].sLeft+indent+2, gItemDescTextRegions[1].sTop, pStr );
 					// Record length
 					indent += StringPixLength( gConditionDesc[ConditionStringNum + 1], ITEMDESC_FONT );
 
 					SetFontForeground( ForegroundColor );
-					swprintf( pStr, L"%s", gConditionDesc[8] ); // " Condition."
+					swprintf( pStr, JA2_TEXT("%s"), gConditionDesc[8] ); // " Condition."
 					mprintf( gItemDescTextRegions[1].sLeft + indent + 2, gItemDescTextRegions[1].sTop, pStr );
 				}
 				else
 				{
 					SetFontForeground( ForegroundColor );
-					swprintf( pStr, L"%s", gWeaponStatsDesc[ 0 ] );
+					swprintf( pStr, JA2_TEXT("%s"), gWeaponStatsDesc[ 0 ] );
 					mprintf( gODBItemDescRegions[0][0].sLeft, gODBItemDescRegions[0][0].sTop, pStr );
 				}
 
@@ -7402,7 +7402,7 @@ void RenderItemDescriptionBox( )
 
 				// value
 				// This is gross, but to get the % to work out right...
-				swprintf( pStr, L"%2d%%", status);
+				swprintf( pStr, JA2_TEXT("%2d%%"), status);
 				
 				if (UsingEDBSystem())
 				{
@@ -7416,7 +7416,7 @@ void RenderItemDescriptionBox( )
 				if( g_lang == i18n::Lang::zh ) {
 					wcscat( pStr, ChineseSpecString1 );
 				} else {
-					wcscat( pStr, L"%%" );
+					wcscat( pStr, JA2_TEXT("%%") );
 				}
 
 				mprintf( usX, usY, pStr );
@@ -7457,7 +7457,7 @@ void RenderItemDescriptionBox( )
 					SetFontForeground( 5 );
 				}
 				//Print
-				swprintf( pStr, L"%1.1f %s", fWeight, GetWeightUnitString() );
+				swprintf( pStr, JA2_TEXT("%1.1f %s"), fWeight, GetWeightUnitString() );
 				if (UsingEDBSystem())
 				{
 					FindFontRightCoordinates( gItemDescTextRegions[2].sLeft, gItemDescTextRegions[2].sTop, gItemDescTextRegions[2].sRight - gItemDescTextRegions[2].sLeft ,gItemDescTextRegions[2].sBottom - gItemDescTextRegions[2].sTop ,pStr, BLOCKFONT2, &usX, &usY);
@@ -7581,7 +7581,7 @@ void RenderItemDescriptionBox( )
 				{
 					// RANGE
 					SetFontForeground( 6 );
-					mprintf( gODBItemDescRegions[2][4].sLeft, gODBItemDescRegions[2][4].sTop, L"%s", gWeaponStatsDesc[ 3 ] );
+					mprintf( gODBItemDescRegions[2][4].sLeft, gODBItemDescRegions[2][4].sTop, JA2_TEXT("%s"), gWeaponStatsDesc[ 3 ] );
 
 					if ( GunRange( gpItemDescObject, NULL ) >= EXCEPTIONAL_RANGE)
 					{
@@ -7593,22 +7593,22 @@ void RenderItemDescriptionBox( )
 					}
 					if( !fComparisonMode )
 					{
-						swprintf( pStr, L"%2d", ( GunRange( gpItemDescObject, NULL ) ) / 10 );
+						swprintf( pStr, JA2_TEXT("%2d"), ( GunRange( gpItemDescObject, NULL ) ) / 10 );
 					}
 					else
 					{
 						if( GunRange( gpComparedItemDescObject, NULL ) > GunRange( gpItemDescObject, NULL ) )
 						{
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
-							swprintf( pStr, L"+%2d", ( GunRange( gpComparedItemDescObject, NULL ) - GunRange( gpItemDescObject, NULL ) ) / 10 );
+							swprintf( pStr, JA2_TEXT("+%2d"), ( GunRange( gpComparedItemDescObject, NULL ) - GunRange( gpItemDescObject, NULL ) ) / 10 );
 						}
 						else if( GunRange( gpComparedItemDescObject, NULL ) < GunRange( gpItemDescObject, NULL ) )
 						{
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
-							swprintf( pStr, L"%2d", ( GunRange( gpComparedItemDescObject, NULL ) - GunRange( gpItemDescObject, NULL ) ) / 10 );
+							swprintf( pStr, JA2_TEXT("%2d"), ( GunRange( gpComparedItemDescObject, NULL ) - GunRange( gpItemDescObject, NULL ) ) / 10 );
 						}
 						else
-							swprintf( pStr, L"=");
+							swprintf( pStr, JA2_TEXT("="));
 					}
 					FindFontRightCoordinates( gODBItemDescRegions[2][7].sLeft, gODBItemDescRegions[2][7].sTop, gODBItemDescRegions[2][7].sRight - gODBItemDescRegions[2][7].sLeft, gODBItemDescRegions[2][7].sBottom - gODBItemDescRegions[2][7].sTop ,pStr, BLOCKFONT2, &usX, &usY);
 					mprintf( usX, usY, pStr );
@@ -7617,7 +7617,7 @@ void RenderItemDescriptionBox( )
 				{
 					// DAMAGE
 					SetFontForeground( 6 );
-					mprintf( gODBItemDescRegions[2][0].sLeft, gODBItemDescRegions[2][0].sTop, L"%s", gWeaponStatsDesc[ 4 ] );
+					mprintf( gODBItemDescRegions[2][0].sLeft, gODBItemDescRegions[2][0].sTop, JA2_TEXT("%s"), gWeaponStatsDesc[ 4 ] );
 
 					UINT8 ubImpact = GetDamage(gpItemDescObject);
 
@@ -7645,22 +7645,22 @@ void RenderItemDescriptionBox( )
 					//Damage
 					if( !fComparisonMode )
 					{
-						swprintf( pStr, L"%2d", ubImpact );
+						swprintf( pStr, JA2_TEXT("%2d"), ubImpact );
 					}
 					else
 					{
 						if( GetDamage(gpComparedItemDescObject) > ubImpact )
 						{
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
-							swprintf( pStr, L"+%2d", GetDamage(gpComparedItemDescObject) - ubImpact );
+							swprintf( pStr, JA2_TEXT("+%2d"), GetDamage(gpComparedItemDescObject) - ubImpact );
 						}
 						else if( GetDamage(gpComparedItemDescObject) < ubImpact )
 						{
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
-							swprintf( pStr, L"%2d", GetDamage(gpComparedItemDescObject) - ubImpact );
+							swprintf( pStr, JA2_TEXT("%2d"), GetDamage(gpComparedItemDescObject) - ubImpact );
 						}
 						else
-							swprintf( pStr, L"=");
+							swprintf( pStr, JA2_TEXT("="));
 					}				
 					FindFontRightCoordinates( gODBItemDescRegions[2][3].sLeft, gODBItemDescRegions[2][3].sTop, gODBItemDescRegions[2][3].sRight - gODBItemDescRegions[2][3].sLeft, gODBItemDescRegions[2][3].sBottom - gODBItemDescRegions[2][3].sTop ,pStr, BLOCKFONT2, &usX, &usY);
 					mprintf( usX, usY, pStr );
@@ -7668,17 +7668,17 @@ void RenderItemDescriptionBox( )
 
 				//LABELS
 				SetFontForeground( 6 );
-				mprintf( gODBItemDescRegions[3][0].sLeft, gODBItemDescRegions[3][0].sTop, L"%s", gWeaponStatsDesc[ 6 ] );
+				mprintf( gODBItemDescRegions[3][0].sLeft, gODBItemDescRegions[3][0].sTop, JA2_TEXT("%s"), gWeaponStatsDesc[ 6 ] );
 				if ( Item[ gpItemDescObject->usItem ].usItemClass & IC_GUN || Item[ gpItemDescObject->usItem ].usItemClass & IC_LAUNCHER)
 				{
 					// equals sign
 					if ( !Weapon[gpItemDescObject->usItem].NoSemiAuto )
-						mprintf( gODBItemDescRegions[3][2].sLeft, gODBItemDescRegions[3][2].sTop, L"%s", gWeaponStatsDesc[ 7 ] );
+						mprintf( gODBItemDescRegions[3][2].sLeft, gODBItemDescRegions[3][2].sTop, JA2_TEXT("%s"), gWeaponStatsDesc[ 7 ] );
 				}
 
 				if (GetShotsPerBurst(gpItemDescObject) > 0 || GetAutofireShotsPerFiveAPs(gpItemDescObject) > 0 )
 				{
-					mprintf( gODBItemDescRegions[3][6].sLeft, gODBItemDescRegions[3][6].sTop, L"%s", gWeaponStatsDesc[ 8 ] );
+					mprintf( gODBItemDescRegions[3][6].sLeft, gODBItemDescRegions[3][6].sTop, JA2_TEXT("%s"), gWeaponStatsDesc[ 8 ] );
 				}
 
 				sAttackAPs = BaseAPsToShootOrStab( APBPConstants[DEFAULT_APS], APBPConstants[DEFAULT_AIMSKILL], gpItemDescObject, NULL );
@@ -7700,7 +7700,7 @@ void RenderItemDescriptionBox( )
 					{
 						if( !fComparisonMode )
 						{
-							swprintf( pStr, L"%2d", sAttackAPs );
+							swprintf( pStr, JA2_TEXT("%2d"), sAttackAPs );
 						}
 						else
 						{
@@ -7710,20 +7710,20 @@ void RenderItemDescriptionBox( )
 								if ( sComparedAttackAPs > sAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTNEGATIVE );
-									swprintf( pStr, L"+%2d", sComparedAttackAPs - sAttackAPs );
+									swprintf( pStr, JA2_TEXT("+%2d"), sComparedAttackAPs - sAttackAPs );
 								}
 								else if ( sComparedAttackAPs < sAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTPOSITIVE );
-									swprintf( pStr, L"%2d", sComparedAttackAPs - sAttackAPs );
+									swprintf( pStr, JA2_TEXT("%2d"), sComparedAttackAPs - sAttackAPs );
 								}
 								else
-									swprintf( pStr, L"=");
+									swprintf( pStr, JA2_TEXT("="));
 							}
 							else
 							{
 								SetFontForeground( ITEMDESC_FONTNEGATIVE );
-								swprintf( pStr, L"-" );
+								swprintf( pStr, JA2_TEXT("-") );
 							}
 						}					
 						FindFontRightCoordinates( gODBItemDescRegions[3][3].sLeft, gODBItemDescRegions[3][3].sTop, gODBItemDescRegions[3][3].sRight - gODBItemDescRegions[3][3].sLeft, gODBItemDescRegions[3][3].sBottom - gODBItemDescRegions[3][3].sTop ,pStr, BLOCKFONT2, &usX, &usY);
@@ -7732,7 +7732,7 @@ void RenderItemDescriptionBox( )
 					else if ( fComparisonMode && !Weapon[gpComparedItemDescObject->usItem].NoSemiAuto )
 					{
 						INT16 sComparedAttackAPs = BaseAPsToShootOrStab( APBPConstants[DEFAULT_APS], APBPConstants[DEFAULT_AIMSKILL], gpComparedItemDescObject, NULL );
-						swprintf( pStr, L"%2d", sComparedAttackAPs );
+						swprintf( pStr, JA2_TEXT("%2d"), sComparedAttackAPs );
 						FindFontRightCoordinates( gODBItemDescRegions[3][3].sLeft, gODBItemDescRegions[3][3].sTop, gODBItemDescRegions[3][3].sRight - gODBItemDescRegions[3][3].sLeft, gODBItemDescRegions[3][3].sBottom - gODBItemDescRegions[3][3].sTop ,pStr, BLOCKFONT2, &usX, &usY);
 						mprintf( usX, usY, pStr );
 					}
@@ -7749,7 +7749,7 @@ void RenderItemDescriptionBox( )
 						}
 						if( !fComparisonMode )
 						{
-							swprintf( pStr, L"%2d", sAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], gpItemDescObject, NULL ) );
+							swprintf( pStr, JA2_TEXT("%2d"), sAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], gpItemDescObject, NULL ) );
 						}
 						else
 						{
@@ -7761,15 +7761,15 @@ void RenderItemDescriptionBox( )
 								if( sComparedBurstAttackAPs > sBurstAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTNEGATIVE );
-									swprintf( pStr, L"+%2d", sComparedBurstAttackAPs - sBurstAttackAPs );
+									swprintf( pStr, JA2_TEXT("+%2d"), sComparedBurstAttackAPs - sBurstAttackAPs );
 								}
 								else if( sComparedBurstAttackAPs < sBurstAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTPOSITIVE );
-									swprintf( pStr, L"%2d", sComparedBurstAttackAPs - sBurstAttackAPs );
+									swprintf( pStr, JA2_TEXT("%2d"), sComparedBurstAttackAPs - sBurstAttackAPs );
 								}
 								else
-									swprintf( pStr, L"=");
+									swprintf( pStr, JA2_TEXT("="));
 							}
 							else if (GetAutofireShotsPerFiveAPs(gpComparedItemDescObject) > 0)
 							{			
@@ -7778,20 +7778,20 @@ void RenderItemDescriptionBox( )
 								if( sComparedBurstAttackAPs > sBurstAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTNEGATIVE );
-									swprintf( pStr, L"+%2d", sComparedBurstAttackAPs - sBurstAttackAPs );
+									swprintf( pStr, JA2_TEXT("+%2d"), sComparedBurstAttackAPs - sBurstAttackAPs );
 								}
 								else if( sComparedBurstAttackAPs < sBurstAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTPOSITIVE );
-									swprintf( pStr, L"%2d", sComparedBurstAttackAPs - sBurstAttackAPs );
+									swprintf( pStr, JA2_TEXT("%2d"), sComparedBurstAttackAPs - sBurstAttackAPs );
 								}
 								else
-									swprintf( pStr, L"=");
+									swprintf( pStr, JA2_TEXT("="));
 							}
 							else
 							{
 								SetFontForeground( ITEMDESC_FONTNEGATIVE );
-								swprintf( pStr, L"-" );
+								swprintf( pStr, JA2_TEXT("-") );
 							}
 						}					
 						FindFontRightCoordinates( gODBItemDescRegions[3][7].sLeft, gODBItemDescRegions[3][7].sTop, gODBItemDescRegions[3][7].sRight - gODBItemDescRegions[3][7].sLeft, gODBItemDescRegions[3][7].sBottom - gODBItemDescRegions[3][7].sTop ,pStr, BLOCKFONT2, &usX, &usY);
@@ -7802,7 +7802,7 @@ void RenderItemDescriptionBox( )
 						SetFontForeground( 5 );
 						if( !fComparisonMode )
 						{
-							swprintf( pStr, L"%2d", sAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], gpItemDescObject, 3, NULL ) );
+							swprintf( pStr, JA2_TEXT("%2d"), sAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], gpItemDescObject, 3, NULL ) );
 						}
 						else
 						{
@@ -7814,15 +7814,15 @@ void RenderItemDescriptionBox( )
 								if( sComparedBurstAttackAPs > sBurstAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTNEGATIVE );
-									swprintf( pStr, L"+%2d", sComparedBurstAttackAPs - sBurstAttackAPs );
+									swprintf( pStr, JA2_TEXT("+%2d"), sComparedBurstAttackAPs - sBurstAttackAPs );
 								}
 								else if( sComparedBurstAttackAPs < sBurstAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTPOSITIVE );
-									swprintf( pStr, L"%2d", sComparedBurstAttackAPs - sBurstAttackAPs );
+									swprintf( pStr, JA2_TEXT("%2d"), sComparedBurstAttackAPs - sBurstAttackAPs );
 								}
 								else
-									swprintf( pStr, L"=");
+									swprintf( pStr, JA2_TEXT("="));
 							}
 							else if (GetAutofireShotsPerFiveAPs(gpComparedItemDescObject) > 0)
 							{			
@@ -7831,20 +7831,20 @@ void RenderItemDescriptionBox( )
 								if( sComparedBurstAttackAPs > sBurstAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTNEGATIVE );
-									swprintf( pStr, L"+%2d", sComparedBurstAttackAPs - sBurstAttackAPs );
+									swprintf( pStr, JA2_TEXT("+%2d"), sComparedBurstAttackAPs - sBurstAttackAPs );
 								}
 								else if( sComparedBurstAttackAPs < sBurstAttackAPs )
 								{
 									SetFontForeground( ITEMDESC_FONTPOSITIVE );
-									swprintf( pStr, L"%2d", sComparedBurstAttackAPs - sBurstAttackAPs );
+									swprintf( pStr, JA2_TEXT("%2d"), sComparedBurstAttackAPs - sBurstAttackAPs );
 								}
 								else
-									swprintf( pStr, L"=");
+									swprintf( pStr, JA2_TEXT("="));
 							}
 							else
 							{
 								SetFontForeground( ITEMDESC_FONTNEGATIVE );
-								swprintf( pStr, L"-" );
+								swprintf( pStr, JA2_TEXT("-") );
 							}
 						}					
 						FindFontRightCoordinates( gODBItemDescRegions[3][7].sLeft, gODBItemDescRegions[3][7].sTop, gODBItemDescRegions[3][7].sRight - gODBItemDescRegions[3][7].sLeft, gODBItemDescRegions[3][7].sBottom - gODBItemDescRegions[3][7].sTop ,pStr, BLOCKFONT2, &usX, &usY);
@@ -7857,7 +7857,7 @@ void RenderItemDescriptionBox( )
 							INT16 sComparedBurstAttackAPs = BaseAPsToShootOrStab( APBPConstants[DEFAULT_APS], APBPConstants[DEFAULT_AIMSKILL], gpComparedItemDescObject, NULL )
 								+ CalcAPsToBurst( APBPConstants[DEFAULT_APS], gpComparedItemDescObject, NULL );
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
-							swprintf( pStr, L"%2d", sComparedBurstAttackAPs );
+							swprintf( pStr, JA2_TEXT("%2d"), sComparedBurstAttackAPs );
 							FindFontRightCoordinates( gODBItemDescRegions[3][7].sLeft, gODBItemDescRegions[3][7].sTop, gODBItemDescRegions[3][7].sRight - gODBItemDescRegions[3][7].sLeft, gODBItemDescRegions[3][7].sBottom - gODBItemDescRegions[3][7].sTop ,pStr, BLOCKFONT2, &usX, &usY);
 							mprintf( usX, usY, pStr );
 						}
@@ -7866,7 +7866,7 @@ void RenderItemDescriptionBox( )
 							INT16 sComparedBurstAttackAPs = BaseAPsToShootOrStab( APBPConstants[DEFAULT_APS], APBPConstants[DEFAULT_AIMSKILL], gpComparedItemDescObject, NULL )
 								+ CalcAPsToAutofire( APBPConstants[DEFAULT_APS], gpComparedItemDescObject, 3, NULL );
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
-							swprintf( pStr, L"%2d", sComparedBurstAttackAPs );
+							swprintf( pStr, JA2_TEXT("%2d"), sComparedBurstAttackAPs );
 							FindFontRightCoordinates( gODBItemDescRegions[3][7].sLeft, gODBItemDescRegions[3][7].sTop, gODBItemDescRegions[3][7].sRight - gODBItemDescRegions[3][7].sLeft, gODBItemDescRegions[3][7].sBottom - gODBItemDescRegions[3][7].sTop ,pStr, BLOCKFONT2, &usX, &usY);
 							mprintf( usX, usY, pStr );
 						}
@@ -7902,37 +7902,37 @@ void RenderItemDescriptionBox( )
 				if( gfAddingMoneyToMercFromPlayersAccount )
 				{
 					//Display the 'Removing'
-					mprintf( gMoneyStats[ 0 ].sX, gMoneyStats[ 0 ].sY, L"%s", gMoneyStatsDesc[ MONEY_DESC_PLAYERS ] );
+					mprintf( gMoneyStats[ 0 ].sX, gMoneyStats[ 0 ].sY, JA2_TEXT("%s"), gMoneyStatsDesc[ MONEY_DESC_PLAYERS ] );
 					//Display the 'REmaining'
-					mprintf( gMoneyStats[ 2 ].sX, gMoneyStats[ 2 ].sY, L"%s", gMoneyStatsDesc[ MONEY_DESC_AMOUNT_2_WITHDRAW ] );
+					mprintf( gMoneyStats[ 2 ].sX, gMoneyStats[ 2 ].sY, JA2_TEXT("%s"), gMoneyStatsDesc[ MONEY_DESC_AMOUNT_2_WITHDRAW ] );
 				}
 				else
 				{
 					//Display the 'Removing'
-					mprintf( gMoneyStats[ 0 ].sX, gMoneyStats[ 0 ].sY, L"%s", gMoneyStatsDesc[ MONEY_DESC_AMOUNT ] );
+					mprintf( gMoneyStats[ 0 ].sX, gMoneyStats[ 0 ].sY, JA2_TEXT("%s"), gMoneyStatsDesc[ MONEY_DESC_AMOUNT ] );
 					//Display the 'REmaining'
-					mprintf( gMoneyStats[ 2 ].sX, gMoneyStats[ 2 ].sY, L"%s", gMoneyStatsDesc[ MONEY_DESC_AMOUNT_2_SPLIT ] );
+					mprintf( gMoneyStats[ 2 ].sX, gMoneyStats[ 2 ].sY, JA2_TEXT("%s"), gMoneyStatsDesc[ MONEY_DESC_AMOUNT_2_SPLIT ] );
 				}
 
 				// if the player is taking money from their account
 				if( gfAddingMoneyToMercFromPlayersAccount )
 				{
 					//Display the 'Amt removing'
-					mprintf( gMoneyStats[ 1 ].sX, gMoneyStats[ 1 ].sY, L"%s", gMoneyStatsDesc[ MONEY_DESC_BALANCE ] );
+					mprintf( gMoneyStats[ 1 ].sX, gMoneyStats[ 1 ].sY, JA2_TEXT("%s"), gMoneyStatsDesc[ MONEY_DESC_BALANCE ] );
 					//Display the 'REmaining amount'
-					mprintf( gMoneyStats[ 3 ].sX, gMoneyStats[ 3 ].sY, L"%s", gMoneyStatsDesc[ MONEY_DESC_TO_WITHDRAW ] );
+					mprintf( gMoneyStats[ 3 ].sX, gMoneyStats[ 3 ].sY, JA2_TEXT("%s"), gMoneyStatsDesc[ MONEY_DESC_TO_WITHDRAW ] );
 				}
 				else
 				{
 					//Display the 'Amt removing'
-					mprintf( gMoneyStats[ 1 ].sX, gMoneyStats[ 1 ].sY, L"%s", gMoneyStatsDesc[ MONEY_DESC_REMAINING ] );
+					mprintf( gMoneyStats[ 1 ].sX, gMoneyStats[ 1 ].sY, JA2_TEXT("%s"), gMoneyStatsDesc[ MONEY_DESC_REMAINING ] );
 					//Display the 'REmaining amount'
-					mprintf( gMoneyStats[ 3 ].sX, gMoneyStats[ 3 ].sY, L"%s", gMoneyStatsDesc[ MONEY_DESC_TO_SPLIT ] );
+					mprintf( gMoneyStats[ 3 ].sX, gMoneyStats[ 3 ].sY, JA2_TEXT("%s"), gMoneyStatsDesc[ MONEY_DESC_TO_SPLIT ] );
 				}
 
 				//Display the total amount of money remaining
 				SetFontForeground( 5 );
-				swprintf( pStr, L"%s", FormatMoney(gRemoveMoney.uiMoneyRemaining).data() );
+				swprintf( pStr, JA2_TEXT("%s"), FormatMoney(gRemoveMoney.uiMoneyRemaining).data() );
 				if (UsingNewInventorySystem() == true)
 					FindFontRightCoordinates( gMoneyStats[ 4 ].sX + 50, gMoneyStats[ 4 ].sY, ITEM_STATS_WIDTH ,ITEM_STATS_HEIGHT ,pStr, BLOCKFONT2, &usX, &usY);
 				else
@@ -7941,7 +7941,7 @@ void RenderItemDescriptionBox( )
 
 				//Display the total amount of money removing
 				SetFontForeground( 5 );
-				swprintf( pStr, L"%s", FormatMoney(gRemoveMoney.uiMoneyRemoving).data() );
+				swprintf( pStr, JA2_TEXT("%s"), FormatMoney(gRemoveMoney.uiMoneyRemoving).data() );
 				if (UsingNewInventorySystem() == true)
 					FindFontRightCoordinates( gMoneyStats[ 5 ].sX + 50, gMoneyStats[ 5 ].sY, ITEM_STATS_WIDTH ,ITEM_STATS_HEIGHT ,pStr, BLOCKFONT2, &usX, &usY);
 				else
@@ -7970,7 +7970,7 @@ void RenderItemDescriptionBox( )
 //		{
 			SetFontForeground( FONT_FCOLOR_WHITE );
 			SetFontShadow( DEFAULT_SHADOW );
-			swprintf( pStr, L"%s", FormatMoney((*gpItemDescObject)[gubItemDescStatusIndex]->data.money.uiMoneyAmount).data() );
+			swprintf( pStr, JA2_TEXT("%s"), FormatMoney((*gpItemDescObject)[gubItemDescStatusIndex]->data.money.uiMoneyAmount).data() );
 			if( guiCurrentItemDescriptionScreen == MAP_SCREEN )
 				FindFontRightCoordinates( (INT16)(ITEMDESC_NAME_X), (INT16)(ITEMDESC_NAME_Y ), 245, ITEM_STATS_HEIGHT ,pStr, BLOCKFONT2, &usX, &usY);
 			else if ( UsingEDBSystem() > 0 )
@@ -7987,23 +7987,23 @@ void RenderItemDescriptionBox( )
 			if(UsingEDBSystem() > 0 && gubDescBoxPage == 0)
 			{
 				// build description for keys .. the sector found
-				swprintf( pStr, L"%s", sKeyDescriptionStrings[ 0 ] );
+				swprintf( pStr, JA2_TEXT("%s"), sKeyDescriptionStrings[ 0 ] );
 				mprintf( gItemDescTextRegions[3].sLeft, gItemDescTextRegions[3].sTop, pStr );
-				swprintf( pStr, L"%s", sKeyDescriptionStrings[ 1 ] );
+				swprintf( pStr, JA2_TEXT("%s"), sKeyDescriptionStrings[ 1 ] );
 				mprintf( gItemDescTextRegions[5].sLeft, gItemDescTextRegions[5].sTop, pStr );
 			}
 			else if(UsingEDBSystem() == 0)
 			{
 				// build description for keys .. the sector found
-				swprintf( pStr, L"%s", sKeyDescriptionStrings[ 0 ] );
+				swprintf( pStr, JA2_TEXT("%s"), sKeyDescriptionStrings[ 0 ] );
 				mprintf( gODBItemDescRegions[2][0].sLeft, gODBItemDescRegions[2][0].sTop, pStr );
-				swprintf( pStr, L"%s", sKeyDescriptionStrings[ 1 ] );
+				swprintf( pStr, JA2_TEXT("%s"), sKeyDescriptionStrings[ 1 ] );
 				mprintf( gODBItemDescRegions[3][0].sLeft, gODBItemDescRegions[3][0].sTop, pStr );
 			}
 
 			SetFontForeground( 5 );
 			GetShortSectorString( ( INT16 ) SECTORX( KeyTable[ (*gpItemDescObject)[gubItemDescStatusIndex]->data.key.ubKeyID ].usSectorFound ), ( INT16 ) SECTORY( KeyTable[ (*gpItemDescObject)[gubItemDescStatusIndex]->data.key.ubKeyID ].usSectorFound ), sTempString  );
-			swprintf( pStr, L"%s", sTempString );
+			swprintf( pStr, JA2_TEXT("%s"), sTempString );
 			if(UsingEDBSystem() > 0 && gubDescBoxPage == 0)
 			{
 				FindFontRightCoordinates( gItemDescTextRegions[4].sLeft, gItemDescTextRegions[4].sTop, gItemDescTextRegions[4].sRight - gItemDescTextRegions[4].sLeft ,gItemDescTextRegions[4].sBottom - gItemDescTextRegions[4].sTop ,pStr, BLOCKFONT2, &sStrX, &usY);
@@ -8015,7 +8015,7 @@ void RenderItemDescriptionBox( )
 				mprintf( usX, usY, pStr );
 			}
 
-			swprintf( pStr, L"%d", KeyTable[ (*gpItemDescObject)[gubItemDescStatusIndex]->data.key.ubKeyID ].usDateFound );
+			swprintf( pStr, JA2_TEXT("%d"), KeyTable[ (*gpItemDescObject)[gubItemDescStatusIndex]->data.key.ubKeyID ].usDateFound );
 			if(UsingEDBSystem() > 0 && gubDescBoxPage == 0)
 			{
 				FindFontRightCoordinates( gItemDescTextRegions[6].sLeft, gItemDescTextRegions[6].sTop, gItemDescTextRegions[6].sRight - gItemDescTextRegions[6].sLeft ,gItemDescTextRegions[6].sBottom - gItemDescTextRegions[6].sTop ,pStr, BLOCKFONT2, &sStrX, &usY);
@@ -8040,13 +8040,13 @@ void RenderItemDescriptionBox( )
 					DrawAmmoValues(gpItemDescObject,shotsLeft);
 				else
 				{
-					mprintf( gODBItemDescRegions[0][0].sLeft, gODBItemDescRegions[0][0].sTop, L"%s", gWeaponStatsDesc[ 5 ] );
+					mprintf( gODBItemDescRegions[0][0].sLeft, gODBItemDescRegions[0][0].sTop, JA2_TEXT("%s"), gWeaponStatsDesc[ 5 ] );
 
 					// Values
 					SetFontForeground( 5 );
 
 					// Ammo
-					swprintf( pStr, L"%d/%d", shotsLeft, Magazine[ Item[ gpItemDescObject->usItem ].ubClassIndex ].ubMagSize ); //Pulmu: Correct # of rounds for stacked ammo.
+					swprintf( pStr, JA2_TEXT("%d/%d"), shotsLeft, Magazine[ Item[ gpItemDescObject->usItem ].ubClassIndex ].ubMagSize ); //Pulmu: Correct # of rounds for stacked ammo.
 					uiStringLength=StringPixLength(pStr, ITEMDESC_FONT );
 					FindFontRightCoordinates( gODBItemDescRegions[0][0].sLeft, gODBItemDescRegions[0][0].sTop, gODBItemDescRegions[0][0].sRight - gODBItemDescRegions[0][0].sLeft ,gODBItemDescRegions[0][0].sBottom - gODBItemDescRegions[0][0].sTop ,pStr, BLOCKFONT2, &sStrX, &usY);
 					mprintf( sStrX, usY, pStr );
@@ -8226,7 +8226,7 @@ void RenderLBENODEItems( OBJECTTYPE *pObj, int subObject )
 			// Flugente: if LBE inv des not exist (corrupted memory?), don't try to access it. This doesn't solve the issue of HOW it got corrupted, but at least we don't crash the game anymore...
 			if ( pLBE->inv.size() <= cnt )
 			{
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Error in RenderLBENODEItems(...): contents of %s likely corrupted!", Item[pObj->usItem].szItemName );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Error in RenderLBENODEItems(...): contents of %s likely corrupted!"), Item[pObj->usItem].szItemName );
 				continue;
 			}
 
@@ -10328,7 +10328,7 @@ UINT32 GetInterfaceGraphicForItem( INVTYPE *pItem )
 	if ( ubGraphicType == 0 )
 	{
 		SGP_TRYCATCH_RETHROW( id = g_bUsePngItemImages ? g_oGUNSM.getVObjectForItem(pItem->ubGraphicNum) : guiGUNSM,
-			L"Failed to retrieve gun image" );
+			JA2_TEXT("Failed to retrieve gun image") );
 	}
 	else 
 	{
@@ -11148,7 +11148,7 @@ void SetupPickupPage( INT8 bPage )
   // Clear help text!
 	for ( cnt = 0; cnt < NUM_PICKUP_SLOTS; cnt++ )
 	{
-  	SetRegionFastHelpText( &(gItemPickupMenu.Regions[cnt]), L"" );
+  	SetRegionFastHelpText( &(gItemPickupMenu.Regions[cnt]), JA2_TEXT("") );
   }
 
 	for ( cnt = 0; cnt < iEnd; )
@@ -11174,14 +11174,14 @@ void SetupPickupPage( INT8 bPage )
 	    // Adjust for ammo, other thingys..
 	    if( Item[ pObject->usItem ].usItemClass & IC_AMMO || Item[ pObject->usItem ].usItemClass & IC_KEY )
 	    {
-        swprintf( pStr, L"" );
+        swprintf( pStr, JA2_TEXT("") );
 	    }
       else
       {
 		if( g_lang == i18n::Lang::zh ) {
 			swprintf( pStr, ChineseSpecString3, sValue );
 		} else {
-			swprintf( pStr, L"%d%%", sValue );
+			swprintf( pStr, JA2_TEXT("%d%%"), sValue );
 		}
       }
 
@@ -11388,7 +11388,7 @@ void RenderItemPickupMenu( )
 				  sCenX = sX - 4;
 				  sCenY = sY + 14;
 
-				  swprintf( pStr, L"%d", pObject->ubNumberOfObjects );
+				  swprintf( pStr, JA2_TEXT("%d"), pObject->ubNumberOfObjects );
 
 				  VarFindFontRightCoordinates( sCenX, sCenY, 42, 1 , ITEM_FONT, &sFontX, &sFontY, pStr );
 				  mprintf_buffer( pDestBuf, uiDestPitchBYTES, ITEM_FONT, sFontX, sFontY, pStr );
@@ -11403,7 +11403,7 @@ void RenderItemPickupMenu( )
 					SetFontShadow( DEFAULT_SHADOW );
 
 				  sNewY = sCenY + 2;
-				  swprintf( pStr, L"*" );
+				  swprintf( pStr, JA2_TEXT("*") );
 
 				  // Get length of string
 				  uiStringLength=StringPixLength( pStr, ITEM_FONT );
@@ -11423,7 +11423,7 @@ void RenderItemPickupMenu( )
 						SetFontShadow( DEFAULT_SHADOW );
 
 					  sNewY = sCenY + 2;
-					  swprintf( pStr, L"*" );
+					  swprintf( pStr, JA2_TEXT("*") );
 
 					  // Get length of string
 					  uiStringLength=StringPixLength( pStr, ITEM_FONT );
@@ -11465,9 +11465,9 @@ void RenderItemPickupMenu( )
 				if ( Item[ pObject->usItem ].usItemClass == IC_MONEY )
 				{
 					CHAR16		pStr2[20];
-					swprintf( pStr2, L"%s", FormatMoney((*pObject)[0]->data.money.uiMoneyAmount ).data());
+					swprintf( pStr2, JA2_TEXT("%s"), FormatMoney((*pObject)[0]->data.money.uiMoneyAmount ).data());
 
-					swprintf( pStr, L"%s (%ls)", ItemNames[ pObject->usItem ], pStr2 );
+					swprintf( pStr, JA2_TEXT("%s (%ls)"), ItemNames[ pObject->usItem ], pStr2 );
 				}
 				else
 				{
@@ -11477,10 +11477,10 @@ void RenderItemPickupMenu( )
 						LoadBearingEquipment[Item[gWorldItems[gItemPickupMenu.ItemPoolSlots[cnt]->iItemIndex].object.usItem].ubClassIndex].lbeClass == BACKPACK &&
 						gWorldItems[gItemPickupMenu.ItemPoolSlots[cnt]->iItemIndex].soldierID != NOBODY &&
 						gWorldItems[gItemPickupMenu.ItemPoolSlots[cnt]->iItemIndex].soldierID)
-						//swprintf(pStr, L"%s (%s)", ShortItemNames[pObject->usItem], MercPtrs[gWorldItems[gItemPickupMenu.ItemPoolSlots[cnt]->iItemIndex].soldierID]->GetName());
-						swprintf(pStr, L"(%s)", gWorldItems[gItemPickupMenu.ItemPoolSlots[cnt]->iItemIndex].soldierID->GetName());
+						//swprintf(pStr, JA2_TEXT("%s (%s)"), ShortItemNames[pObject->usItem], MercPtrs[gWorldItems[gItemPickupMenu.ItemPoolSlots[cnt]->iItemIndex].soldierID]->GetName());
+						swprintf(pStr, JA2_TEXT("(%s)"), gWorldItems[gItemPickupMenu.ItemPoolSlots[cnt]->iItemIndex].soldierID->GetName());
 					else
-						swprintf( pStr, L"%s", ShortItemNames[ pObject->usItem ] );
+						swprintf( pStr, JA2_TEXT("%s"), ShortItemNames[ pObject->usItem ] );
 				}
 				VarFindFontCenterCoordinates( sCenX, sCenY, ITEMPICK_TEXT_WIDTH, 1 , ITEMDESC_FONT, &sFontX, &sFontY, pStr );
 				mprintf_buffer( pDestBuf, uiDestPitchBYTES, ITEMDESC_FONT, sFontX, sFontY, pStr );
@@ -12025,7 +12025,7 @@ void RemoveMoney()
 		//CHRISL: If what we have in the cursor is more money, just add to what we have in the cursor.
 		if (gpItemPointer != NULL && gpItemPointer->exists() == true && gpItemPointer->usItem != MONEY) {
 			//ADB oops, let's not overwrite what's on the cursor!
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Unable to split money due to having an item on your cursor." );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Unable to split money due to having an item on your cursor.") );
 
 			//after this returns it will call DeleteItemDescriptionBox which will totally destroy the remaining money
 			//if the uiMoneyRemaining is 0, so reset it, because we aren't moving anything!
@@ -12138,8 +12138,8 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 	{
 		if ( pSoldier->flags.uiStatusFlags & SOLDIER_DEAD )
 		{
-			swprintf( pStr, L"" );
-			swprintf( pzStr, L"%s", pStr );
+			swprintf( pStr, JA2_TEXT("") );
+			swprintf( pzStr, JA2_TEXT("%s"), pStr );
 			return;
 		}
 	}
@@ -12151,8 +12151,8 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 # if defined( _DEBUG )
 	if ( ((*pObject)[0]->data.gun.ubGunAmmoType >= gMAXITEMS_READ) )
 	{
-		DebugMsg( TOPIC_JA2, DBG_LEVEL_1, String( "corrupted pObject (%S) found in GetHelpTextForItem()",	(usItem<gMAXITEMS_READ) ? Item[usItem].szItemName : L"???" ) );
-		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"corrupted pObject (%s) found in GetHelpTextForItem()",		(usItem<gMAXITEMS_READ) ? Item[usItem].szItemName : L"???" );
+		DebugMsg( TOPIC_JA2, DBG_LEVEL_1, String( "corrupted pObject (%S) found in GetHelpTextForItem()",	(usItem<gMAXITEMS_READ) ? Item[usItem].szItemName : JA2_TEXT("???") ) );
+		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("corrupted pObject (%s) found in GetHelpTextForItem()"),		(usItem<gMAXITEMS_READ) ? Item[usItem].szItemName : JA2_TEXT("???") );
 		DebugBreak();
 		AssertMsg( 0, "GetHelpTextForItem() would crash" );
 	}
@@ -12209,7 +12209,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 		case MONEY:
 			//Money
 			{
-				swprintf( pStr, L"%s", FormatMoney((*pObject)[subObject]->data.money.uiMoneyAmount ).data());
+				swprintf( pStr, JA2_TEXT("%s"), FormatMoney((*pObject)[subObject]->data.money.uiMoneyAmount ).data());
 			}
 			break;
 
@@ -12218,9 +12218,9 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 			//if ( Item[ usItem ].usItemClass == IC_MONEY )
 			{
 				CHAR16		pStr2[20];
-				swprintf( pStr2, L"%s", FormatMoney((*pObject)[subObject]->data.money.uiMoneyAmount ).data());
+				swprintf( pStr2, JA2_TEXT("%s"), FormatMoney((*pObject)[subObject]->data.money.uiMoneyAmount ).data());
 
-				swprintf( pStr, L"%s (%ls)", ItemNames[ usItem ], pStr2 );
+				swprintf( pStr, JA2_TEXT("%s (%ls)"), ItemNames[ usItem ], pStr2 );
 			}
 			break;
 
@@ -12233,31 +12233,31 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 
 				if ( Weapon[ usItem ].NoSemiAuto )
 				{
-					swprintf( apStr, L"-" );
+					swprintf( apStr, JA2_TEXT("-") );
 				}
 				else
 				{
-					swprintf( apStr, L"%d", ubAttackAPs );
+					swprintf( apStr, JA2_TEXT("%d"), ubAttackAPs );
 				}
 
 				if (GetShotsPerBurst(pObject) > 0)
 				{
-					swprintf( apStr2, L" / %d", ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], pObject, NULL ) );
+					swprintf( apStr2, JA2_TEXT(" / %d"), ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], pObject, NULL ) );
 					wcscat( apStr, apStr2 );
 				}
 				else
 				{
-					wcscat( apStr, L" / -" );
+					wcscat( apStr, JA2_TEXT(" / -") );
 				}
 
 				if (GetAutofireShotsPerFiveAPs(pObject) > 0)
 				{
-					swprintf( apStr2, L" / %d", ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], pObject, 3, NULL ) );
+					swprintf( apStr2, JA2_TEXT(" / %d"), ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], pObject, 3, NULL ) );
 					wcscat( apStr, apStr2 );
 				}
 				else
 				{
-					wcscat( apStr, L" / -" );
+					wcscat( apStr, JA2_TEXT(" / -") );
 				}
 
 				// Flugente: If overheating is allowed, an overheated gun receives a slight malus to accuracy
@@ -12295,7 +12295,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 					GetWeightUnitString()		//Weight units
 					);
 					} else {
-						swprintf( pStr, L"%s (%s) [%d%%(%d%%)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s (%s) [%d%%(%d%%)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s"),
 					ItemNames[ usItem ],
 					AmmoCaliber[ Weapon[ usItem ].ubCalibre ],
 					sValue,
@@ -12339,7 +12339,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 					);
 					} else {
 
-						swprintf( pStr, L"%s (%s) [%d%%]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s (%s) [%d%%]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s"),
 					ItemNames[ usItem ],
 					AmmoCaliber[ Weapon[ usItem ].ubCalibre ],
 					sValue,
@@ -12370,26 +12370,26 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 				CHAR16 apStr2[20];
 				INT16 ubAttackAPs = BaseAPsToShootOrStab( APBPConstants[DEFAULT_APS], APBPConstants[DEFAULT_AIMSKILL], pObject, pSoldier );
 
-				swprintf( apStr, L"%d", ubAttackAPs );
+				swprintf( apStr, JA2_TEXT("%d"), ubAttackAPs );
 
 				if (GetShotsPerBurst(pObject) > 0)
 				{
-					swprintf( apStr2, L" / %d", ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], pObject, NULL ) );
+					swprintf( apStr2, JA2_TEXT(" / %d"), ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], pObject, NULL ) );
 					wcscat( apStr, apStr2 );
 				}
 				else
 				{
-					wcscat( apStr, L" / -" );
+					wcscat( apStr, JA2_TEXT(" / -") );
 				}
 
 				if (GetAutofireShotsPerFiveAPs(pObject) > 0)
 				{
-					swprintf( apStr2, L" / %d", ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], pObject, 3, NULL ) );
+					swprintf( apStr2, JA2_TEXT(" / %d"), ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], pObject, 3, NULL ) );
 					wcscat( apStr, apStr2 );
 				}
 				else
 				{
-					wcscat( apStr, L" / -" );
+					wcscat( apStr, JA2_TEXT(" / -") );
 				}
 
 				// Flugente: If overheating is allowed, an overheated gun receives a slight malus to accuracy
@@ -12408,7 +12408,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 				if ( gGameExternalOptions.fAdvRepairSystem && sThreshold < 100 )
 				{
 					if( g_lang == i18n::Lang::zh ) {
-						swprintf( pStr, L"%s [%d%\uFF05(%d%\uFF05)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s [%d%\uFF05(%d%\uFF05)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s"),
 					ItemNames[ usItem ],
 					sValue,
 					sThreshold,
@@ -12427,7 +12427,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 					GetWeightUnitString()		//Weight units
 					);
 					} else {
-						swprintf( pStr, L"%s [%d%%(%d%%)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s [%d%%(%d%%)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s"),
 					ItemNames[ usItem ],
 					sValue,
 					sThreshold,
@@ -12450,7 +12450,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 				else
 				{
 					if( g_lang == i18n::Lang::zh ) {
-						swprintf( pStr, L"%s [%d%\uFF05]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s [%d%\uFF05]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s"),
 					ItemNames[ usItem ],
 					sValue,
 					gWeaponStatsDesc[ 9 ],		//Accuracy String
@@ -12468,7 +12468,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 					GetWeightUnitString()		//Weight units
 					);
 					} else {
-						swprintf( pStr, L"%s [%d%%]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s [%d%%]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s"),
 					ItemNames[ usItem ],
 					sValue,
 					gWeaponStatsDesc[ 9 ],		//Accuracy String
@@ -12510,7 +12510,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 						GetWeightUnitString()					//Weight units
 						);
 					} else {
-						swprintf( pStr, L"%s [%d%%(%d%%)]\n%s %d\n%s %d\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s [%d%%(%d%%)]\n%s %d\n%s %d\n%s %1.1f %s"),
 					ItemNames[ usItem ],
 						sValue,
 						sThreshold,
@@ -12539,7 +12539,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 						GetWeightUnitString()					//Weight units
 						);
 					} else {
-						swprintf( pStr, L"%s [%d%%]\n%s %d\n%s %d\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s [%d%%]\n%s %d\n%s %d\n%s %1.1f %s"),
 					ItemNames[ usItem ],
 						sValue,
 						gWeaponStatsDesc[ 11 ],					//Damage String
@@ -12567,7 +12567,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 					);
 
 				//Lal: do not delete, commented out for next version
-				//swprintf( pStr, L"%s %s %s %d [%d rnds]\n%s %1.1f %s",
+				//swprintf( pStr, JA2_TEXT("%s %s %s %d [%d rnds]\n%s %1.1f %s"),
 				//	AmmoCaliber[ Magazine[ Item[usItem].ubClassIndex ].ubCalibre ],			//Ammo calibre
 				//	AmmoTypes[Magazine[ Item[usItem].ubClassIndex ].ubAmmoType].ammoName,	//Ammo type
 				//	MagNames[Magazine[ Item[usItem].ubClassIndex ].ubMagType],				//Magazine type
@@ -12603,7 +12603,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 					GetWeightUnitString()		//Weight units
 					);
 				} else {
-					swprintf( pStr, L"%s [%d%%]\n%s %d\n%s %d\n%s %1.1f %s",
+					swprintf( pStr, JA2_TEXT("%s [%d%%]\n%s %d\n%s %d\n%s %1.1f %s"),
 				ItemNames[ usItem ],
 					sValue,
 					gWeaponStatsDesc[ 11 ],		//Damage String
@@ -12660,7 +12660,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 					GetWeightUnitString()		//Weight units
 					);
 					} else {
-						swprintf( pStr, L"%s [%d%%(%d%%)]\n%s %d%% (%d/%d)\n%s %d%%\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s [%d%%(%d%%)]\n%s %d%% (%d/%d)\n%s %d%%\n%s %1.1f %s"),
 					ItemNames[ usItem ],		//Item long name
 					sValue,						//Item condition
 					sThreshold,					//repair threshold
@@ -12693,7 +12693,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 					GetWeightUnitString()		//Weight units
 					);
 					} else {
-						swprintf( pStr, L"%s [%d%%]\n%s %d%% (%d/%d)\n%s %d%%\n%s %1.1f %s",
+						swprintf( pStr, JA2_TEXT("%s [%d%%]\n%s %d%% (%d/%d)\n%s %d%%\n%s %1.1f %s"),
 					ItemNames[ usItem ],		//Item long name
 					sValue,						//Item condition
 					pInvPanelTitleStrings[ 4 ],	//Protection string
@@ -12728,7 +12728,7 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 					GetWeightUnitString()		//Weight units
 					);
 				} else {
-					swprintf( pStr, L"%s [%d%%]\n%s %1.1f %s",
+					swprintf( pStr, JA2_TEXT("%s [%d%%]\n%s %1.1f %s"),
 					ItemNames[ usItem ],		//Item long name
 					sValue,						//Item condition
 					gWeaponStatsDesc[ 12 ],		//Weight String
@@ -12745,12 +12745,12 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 		if ( ItemHasFingerPrintID(pObject->usItem) && (*pObject)[subObject]->data.ubImprintID < NO_PROFILE )
 		{
 			CHAR16		pStr2[20];
-			swprintf( pStr2, L" [%s]", gMercProfiles[ (*pObject)[subObject]->data.ubImprintID ].zNickname );
+			swprintf( pStr2, JA2_TEXT(" [%s]"), gMercProfiles[ (*pObject)[subObject]->data.ubImprintID ].zNickname );
 			wcscat( pStr, pStr2 );
 		}
 		if ( Item[usItem].usItemClass == IC_LBEGEAR){
 			CHAR16 plbeStr[20];
-			swprintf( plbeStr, L"\n%s %d/%d", gWeaponStatsDesc[19], GetVolumeAlreadyTaken(pObject, -1), LoadBearingEquipment[Item[usItem].ubClassIndex].lbeAvailableVolume);
+			swprintf( plbeStr, JA2_TEXT("\n%s %d/%d"), gWeaponStatsDesc[19], GetVolumeAlreadyTaken(pObject, -1), LoadBearingEquipment[Item[usItem].ubClassIndex].lbeAvailableVolume);
 			wcscat( pStr, plbeStr );
 		}
 
@@ -12767,11 +12767,11 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 				iNumAttachments++;
 				if (iNumAttachments == 1)
 				{
-					swprintf(tempString, L"\n \n%s:\n", Message[STR_ATTACHMENTS]);
+					swprintf(tempString, JA2_TEXT("\n \n%s:\n"), Message[STR_ATTACHMENTS]);
 				}
 				else
 				{
-					swprintf(tempString, L"\n");
+					swprintf(tempString, JA2_TEXT("\n"));
 				}
 				wcscat(tempString, ItemNames[iter->usItem]);
 
@@ -12779,10 +12779,10 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 				auto tempStringLength = wcslen(tempString);
 				auto totalLength = attachStringLength + tempStringLength;
 				// Break off if the string to be added does not fit.
-				// attachStringLength[300] - L"\n...." -> 294
+				// attachStringLength[300] - JA2_TEXT("\n....") -> 294
 				if (totalLength > 294)
 				{
-					wcscat(attachString, L"\n....");
+					wcscat(attachString, JA2_TEXT("\n...."));
 					break;
 				}
 				else
@@ -12802,11 +12802,11 @@ void GetHelpTextForItem( STR16 pzStr, OBJECTTYPE *pObject, SOLDIERTYPE *pSoldier
 	}
 	else
 	{
-		swprintf( pStr, L"" );
+		swprintf( pStr, JA2_TEXT("") );
 	}
 
 	// Copy over...
-	swprintf( pzStr, L"%s", pStr );
+	swprintf( pzStr, JA2_TEXT("%s"), pStr );
 }
 
 
@@ -13411,7 +13411,7 @@ void ItemDescTransformRegionCallback( MOUSE_REGION *pRegion, INT32 reason )
 			if ((*gpItemDescObject)[0]->data.gun.bGunAmmoStatus < 0) 
 			{
 				// Add option
-				POPUP_OPTION *pOption = new POPUP_OPTION(std::wstring( L"Unjam" ), new popupCallbackFunction<void,void>( &TransformationMenuPopup_Unjam ));
+				POPUP_OPTION *pOption = new POPUP_OPTION(ja2::text::Utf16String( JA2_TEXT("Unjam") ), new popupCallbackFunction<void,void>( &TransformationMenuPopup_Unjam ));
 				gItemDescTransformPopup->addOption( *pOption );
 				fFoundTransformations = true;
 			}
@@ -13464,7 +13464,7 @@ void ItemDescTransformRegionCallback( MOUSE_REGION *pRegion, INT32 reason )
 								CHAR16 MenuRowText[300];
 								swprintf( MenuRowText, gzTransformationMessage[ 7 ], usMagSize );
 								// Generate a new option for the menu
-								POPUP_OPTION *pOption = new POPUP_OPTION(std::wstring( MenuRowText ), new popupCallbackFunction<void,UINT16>( TransformationMenuPopup_SplitCrate, x ) );
+								POPUP_OPTION *pOption = new POPUP_OPTION(ja2::text::Utf16String( MenuRowText ), new popupCallbackFunction<void,UINT16>( TransformationMenuPopup_SplitCrate, x ) );
 								// Add the option to the menu.
 								gItemDescTransformPopup->addOption( *pOption );
 								// Set this flag so we know we have at least one Transformation available.
@@ -13475,7 +13475,7 @@ void ItemDescTransformRegionCallback( MOUSE_REGION *pRegion, INT32 reason )
 				}
 				else
 				{
-					POPUP_OPTION *pOption = new POPUP_OPTION(std::wstring( gzTransformationMessage[ 6 ] ), new popupCallbackFunction<void,void>( TransformationMenuPopup_SplitCrateInInventory ) );
+					POPUP_OPTION *pOption = new POPUP_OPTION(ja2::text::Utf16String( gzTransformationMessage[ 6 ] ), new popupCallbackFunction<void,void>( TransformationMenuPopup_SplitCrateInInventory ) );
 					gItemDescTransformPopup->addOption( *pOption );
 					fFoundTransformations = true;
 				}
@@ -13528,7 +13528,7 @@ void ItemDescTransformRegionCallback( MOUSE_REGION *pRegion, INT32 reason )
 					}
 
 					// Generate a new option for the menu
-					POPUP_OPTION *pOption = new POPUP_OPTION(std::wstring( MenuRowText ), new popupCallbackFunction<void, OBJECTTYPE*>( &TransformationMenuPopup_Arm, gpItemDescObject ) );
+					POPUP_OPTION *pOption = new POPUP_OPTION(ja2::text::Utf16String( MenuRowText ), new popupCallbackFunction<void, OBJECTTYPE*>( &TransformationMenuPopup_Arm, gpItemDescObject ) );
 					// Set the function that tests whether it's valid at the moment.
 					pOption->setAvail(new popupCallbackFunction<bool,OBJECTTYPE*>( &TransformationMenuPopup_Arm_TestValid, gpItemDescObject ));
 					// Add the option to the menu.
@@ -13554,7 +13554,7 @@ void ItemDescTransformRegionCallback( MOUSE_REGION *pRegion, INT32 reason )
 					}
 
 					// Generate a new option for the menu
-					POPUP_OPTION *pOption = new POPUP_OPTION(std::wstring( MenuRowText ), new popupCallbackFunction<void, OBJECTTYPE*>( &TransformationMenuPopup_Arm, gpItemDescObject ) );
+					POPUP_OPTION *pOption = new POPUP_OPTION(ja2::text::Utf16String( MenuRowText ), new popupCallbackFunction<void, OBJECTTYPE*>( &TransformationMenuPopup_Arm, gpItemDescObject ) );
 					// Set the function that tests whether it's valid at the moment.
 					pOption->setAvail(new popupCallbackFunction<bool,OBJECTTYPE*>( &TransformationMenuPopup_Arm_TestValid, gpItemDescObject ));
 					// Add the option to the menu.
@@ -13592,7 +13592,7 @@ void ItemDescTransformRegionCallback( MOUSE_REGION *pRegion, INT32 reason )
 					}
 
 					// Add option
-					POPUP_OPTION *pOption = new POPUP_OPTION(std::wstring( MenuRowText ), new popupCallbackFunction<void,void>( &TransformationMenuPopup_DelayedGrenadeExplosion ));
+					POPUP_OPTION *pOption = new POPUP_OPTION(ja2::text::Utf16String( MenuRowText ), new popupCallbackFunction<void,void>( &TransformationMenuPopup_DelayedGrenadeExplosion ));
 					pOption->setAvail(new popupCallbackFunction<bool,OBJECTTYPE*>( &TransformationMenuPopup_DelayedGrenadeExplosion_TestValid, gpItemDescObject ));
 					gItemDescTransformPopup->addOption( *pOption );
 					fFoundTransformations = true;
@@ -13611,7 +13611,7 @@ void ItemDescTransformRegionCallback( MOUSE_REGION *pRegion, INT32 reason )
 						CHAR16 MenuRowText[300];
 						if ( Transform[x].usAPCost > 0 && gTacticalStatus.uiFlags & INCOMBAT && gTacticalStatus.uiFlags & TURNBASED )
 						{
-							swprintf (MenuRowText, L"%s (%d AP)", Transform[x].szMenuRowText, Transform[x].usAPCost );
+							swprintf (MenuRowText, JA2_TEXT("%s (%d AP)"), Transform[x].szMenuRowText, Transform[x].usAPCost );
 						}
 						else
 						{
@@ -13619,7 +13619,7 @@ void ItemDescTransformRegionCallback( MOUSE_REGION *pRegion, INT32 reason )
 						}
 
 						// Generate a new option for the menu
-						POPUP_OPTION *pOption = new POPUP_OPTION(std::wstring( MenuRowText ), new popupCallbackFunction<void,TransformInfoStruct*>( &TransformationMenuPopup_Transform, &Transform[x] ) );
+						POPUP_OPTION *pOption = new POPUP_OPTION(ja2::text::Utf16String( MenuRowText ), new popupCallbackFunction<void,TransformInfoStruct*>( &TransformationMenuPopup_Transform, &Transform[x] ) );
 						// Set the function that tests whether it's valid at the moment.
 						pOption->setAvail(new popupCallbackFunction<bool,TransformInfoStruct*>( &TransformationMenuPopup_TestValid, &Transform[x] ));
 						// Add the option to the menu.
@@ -13633,7 +13633,7 @@ void ItemDescTransformRegionCallback( MOUSE_REGION *pRegion, INT32 reason )
 		
 		if (!fFoundTransformations)
 		{
-			POPUP_OPTION * pOption = new POPUP_OPTION( std::wstring( gzTransformationMessage[ 0 ] ), new popupCallbackFunction<void,TransformInfoStruct*>( &TransformationMenuPopup_Transform, NULL ) );
+			POPUP_OPTION * pOption = new POPUP_OPTION( ja2::text::Utf16String( gzTransformationMessage[ 0 ] ), new popupCallbackFunction<void,TransformInfoStruct*>( &TransformationMenuPopup_Transform, NULL ) );
 			pOption->setAvail(new popupCallbackFunction<bool,TransformInfoStruct*>( &TransformationMenuPopup_TestValid, NULL ));
 			gItemDescTransformPopup->addOption( *pOption );
 		}
@@ -13861,22 +13861,22 @@ void TransformationMenuPopup_Arm( OBJECTTYPE* pObj )
 		}
 		else if ( HasAttachmentOfClass( gpItemDescObject, (AC_DEFUSE ) ) )
 		{
-			wcscpy( gzUserDefinedButton[0], L"1-A" );
-			wcscpy( gzUserDefinedButton[1], L"1-B" );
-			wcscpy( gzUserDefinedButton[2], L"1-C" );
-			wcscpy( gzUserDefinedButton[3], L"1-D" );
-			wcscpy( gzUserDefinedButton[4], L"2-A" );
-			wcscpy( gzUserDefinedButton[5], L"2-B" );
-			wcscpy( gzUserDefinedButton[6], L"2-C" );
-			wcscpy( gzUserDefinedButton[7], L"2-D" );
-			wcscpy( gzUserDefinedButton[8], L"3-A" );
-			wcscpy( gzUserDefinedButton[9], L"3-B" );
-			wcscpy( gzUserDefinedButton[10], L"3-C" );
-			wcscpy( gzUserDefinedButton[11], L"3-D" );
-			wcscpy( gzUserDefinedButton[12], L"4-A" );
-			wcscpy( gzUserDefinedButton[13], L"4-B" );
-			wcscpy( gzUserDefinedButton[14], L"4-C" );
-			wcscpy( gzUserDefinedButton[15], L"4-D" );
+			wcscpy( gzUserDefinedButton[0], JA2_TEXT("1-A") );
+			wcscpy( gzUserDefinedButton[1], JA2_TEXT("1-B") );
+			wcscpy( gzUserDefinedButton[2], JA2_TEXT("1-C") );
+			wcscpy( gzUserDefinedButton[3], JA2_TEXT("1-D") );
+			wcscpy( gzUserDefinedButton[4], JA2_TEXT("2-A") );
+			wcscpy( gzUserDefinedButton[5], JA2_TEXT("2-B") );
+			wcscpy( gzUserDefinedButton[6], JA2_TEXT("2-C") );
+			wcscpy( gzUserDefinedButton[7], JA2_TEXT("2-D") );
+			wcscpy( gzUserDefinedButton[8], JA2_TEXT("3-A") );
+			wcscpy( gzUserDefinedButton[9], JA2_TEXT("3-B") );
+			wcscpy( gzUserDefinedButton[10], JA2_TEXT("3-C") );
+			wcscpy( gzUserDefinedButton[11], JA2_TEXT("3-D") );
+			wcscpy( gzUserDefinedButton[12], JA2_TEXT("4-A") );
+			wcscpy( gzUserDefinedButton[13], JA2_TEXT("4-B") );
+			wcscpy( gzUserDefinedButton[14], JA2_TEXT("4-C") );
+			wcscpy( gzUserDefinedButton[15], JA2_TEXT("4-D") );
 
            // sevenfm: zero out color values
            for( INT32 cnt = 0; cnt< NUM_CUSTOM_BUTTONS; cnt++)
@@ -13983,7 +13983,7 @@ void BombInventoryMessageBoxCallBack( UINT8 ubExitValue )
 			{
 				gpItemDescSoldier->DoMercBattleSound( BATTLE_SOUND_CURSE1 );
 
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Arming of bomb failed. Resulting explosion damages %s's inventory and health", gpItemDescSoldier->name );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Arming of bomb failed. Resulting explosion damages %s's inventory and health"), gpItemDescSoldier->name );
 
 				INT8 screen = guiCurrentScreen;
 				if ( screen == GAME_SCREEN )
@@ -14167,7 +14167,7 @@ void BombInventoryDisArmMessageBoxCallBack( UINT8 ubExitValue )
 
 			StatChange( gpItemDescSoldier, EXPLODEAMT, (INT8) (3 * trapdifficulty ), FROM_FAILURE );
 
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Disarming of bomb failed. Resulting explosion damages %s's inventory and health", gpItemDescSoldier->name );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Disarming of bomb failed. Resulting explosion damages %s's inventory and health"), gpItemDescSoldier->name );
 
 			if ( guiCurrentScreen == GAME_SCREEN )
 			{
@@ -14188,7 +14188,7 @@ void BombInventoryDisArmMessageBoxCallBack( UINT8 ubExitValue )
 			gfSkipDestroyTransformPopup = FALSE;
 
 #ifdef JA2TESTVERSION
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Arming failed, explosion here" );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Arming failed, explosion here") );
 #endif
 		}
 	}
@@ -14238,7 +14238,7 @@ void TransformationMenuPopup_Unjam()
 	}
 	else
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s does not have enough APs to unjam this weapon.", gpItemDescSoldier->name);
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s does not have enough APs to unjam this weapon."), gpItemDescSoldier->name);
 	}
 	*/
 }
@@ -14651,7 +14651,7 @@ void UpdateMercBodyRegionHelpText( )
 		CHAR16 pMoraleStr[128];
 		SOLDIERTYPE *pSoldier = NULL;
 
-		wcscpy( sString, L"" );
+		wcscpy( sString, JA2_TEXT("") );
 
 		// valid soldier selected
 		pSoldier = gCharactersList[bSelectedInfoChar].usSolID;
@@ -14664,12 +14664,12 @@ void UpdateMercBodyRegionHelpText( )
 				if ( AM_A_ROBOT( pSoldier ) )
 				{
 					// robot (condition only)
-					swprintf( sString, L"%s: %d/%d", pMapScreenStatusStrings[3], pSoldier->stats.bLife, pSoldier->stats.bLifeMax );
+					swprintf( sString, JA2_TEXT("%s: %d/%d"), pMapScreenStatusStrings[3], pSoldier->stats.bLife, pSoldier->stats.bLifeMax );
 				}
 				else if (pSoldier->flags.uiStatusFlags & SOLDIER_VEHICLE )
 				{
 					// vehicle (condition/fuel)
-					swprintf( sString, L"%s: %d/%d, %s: %d/%d",
+					swprintf( sString, JA2_TEXT("%s: %d/%d, %s: %d/%d"),
 							  pMapScreenStatusStrings[3], pSoldier->stats.bLife, pSoldier->stats.bLifeMax,
 							  pMapScreenStatusStrings[4], pSoldier->bBreath, pSoldier->bBreathMax );
 				}
@@ -14679,7 +14679,7 @@ void UpdateMercBodyRegionHelpText( )
 					GetMoraleString( pSoldier, pMoraleStr );
 											
 					{
-						swprintf( sString, L"%s: %d/%d, %s: %d/%d, %s: %s",
+						swprintf( sString, JA2_TEXT("%s: %d/%d, %s: %d/%d, %s: %s"),
 								  pMapScreenStatusStrings[0], pSoldier->stats.bLife, pSoldier->stats.bLifeMax,
 								  pMapScreenStatusStrings[1], pSoldier->bBreath, pSoldier->bBreathMax,
 								  pMapScreenStatusStrings[2], pMoraleStr );

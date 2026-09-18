@@ -107,7 +107,7 @@ BOOLEAN MultiplayerTeams::ReadXMLFile(STR fileName)
 	}
 
 	uiFSize = FileGetSize(hFile);
-	lpcBuffer = (CHAR*) MemAlloc(uiFSize);
+	lpcBuffer = (CHAR8*) MemAlloc(uiFSize);
 
 	// read in block
 	if (!FileRead(hFile, lpcBuffer, uiFSize, &uiBytesRead))

@@ -2507,7 +2507,7 @@ BOOLEAN UseGunNCTH( SOLDIERTYPE *pSoldier , INT32 sTargetGridNo )
 	#ifdef JA2BETAVERSION
 	if ( gfReportHitChances )
 	{
-		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Hit chance was %ld, roll %ld (range %d)", uiHitChance, uiDiceRoll, PythSpacesAway( pSoldier->sGridNo, pSoldier->sTargetGridNo ) );
+		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Hit chance was %ld, roll %ld (range %d)"), uiHitChance, uiDiceRoll, PythSpacesAway( pSoldier->sGridNo, pSoldier->sTargetGridNo ) );
 	}
 	#endif
 
@@ -2584,7 +2584,7 @@ BOOLEAN UseGunNCTH( SOLDIERTYPE *pSoldier , INT32 sTargetGridNo )
 						if ( !PreRandom( uiDepreciateTest ) && ( (*pObjAttHand)[0]->data.objectStatus > 1) )
 						{
 							(*pA)[0]->data.objectStatus--;
-							//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"rel =%d ",Item[ iter->usItem ].bReliability );
+							//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("rel =%d "),Item[ iter->usItem ].bReliability );
 
 							if ( Random(100) < Item[pA->usItem].usDamageChance )
 							{
@@ -2882,7 +2882,7 @@ BOOLEAN UseGunNCTH( SOLDIERTYPE *pSoldier , INT32 sTargetGridNo )
 		}
 	}	
 
-	//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, L"ammotype %d", Magazine[Item[(*pObjAttHand)[0]->data.gun.usGunAmmoItem].ubClassIndex].ubAmmoType);	
+	//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("ammotype %d"), Magazine[Item[(*pObjAttHand)[0]->data.gun.usGunAmmoItem].ubClassIndex].ubAmmoType);	
 	if (IS_MERC_BODY_TYPE(pSoldier) &&
 		pSoldier->bVisible == TRUE &&
 		Item[usUBItem].usItemClass == IC_GUN &&
@@ -3370,7 +3370,7 @@ BOOLEAN UseGun( SOLDIERTYPE *pSoldier , INT32 sTargetGridNo )
 						if ( !PreRandom( uiDepreciateTest ) && ( (*pObjUsed)[0]->data.objectStatus > 1) )
 						{
 							(*pA)[0]->data.objectStatus--;
-							//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"rel =%d ",Item[ iter->usItem ].bReliability );
+							//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("rel =%d "),Item[ iter->usItem ].bReliability );
 
 							// Flugente: reduce repair threshold
 							if ( Random(100) < Item[pA->usItem].usDamageChance )
@@ -3475,7 +3475,7 @@ BOOLEAN UseGun( SOLDIERTYPE *pSoldier , INT32 sTargetGridNo )
 	#ifdef JA2BETAVERSION
 	if ( gfReportHitChances )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Hit chance was %ld, roll %ld (range %d)", uiHitChance, uiDiceRoll, PythSpacesAway( pSoldier->sGridNo, pSoldier->sTargetGridNo ) );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Hit chance was %ld, roll %ld (range %d)"), uiHitChance, uiDiceRoll, PythSpacesAway( pSoldier->sGridNo, pSoldier->sTargetGridNo ) );
 	}
 	#endif
 
@@ -3701,7 +3701,7 @@ BOOLEAN UseGun( SOLDIERTYPE *pSoldier , INT32 sTargetGridNo )
 		}
 	}
 
-	//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, L"ammotype %d", Magazine[Item[(*pObjAttHand)[0]->data.gun.usGunAmmoItem].ubClassIndex].ubAmmoType);
+	//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("ammotype %d"), Magazine[Item[(*pObjAttHand)[0]->data.gun.usGunAmmoItem].ubClassIndex].ubAmmoType);
 	if (IS_MERC_BODY_TYPE(pSoldier) &&
 		pSoldier->bVisible == TRUE &&
 		Item[usUBItem].usItemClass == IC_GUN &&
@@ -4275,7 +4275,7 @@ BOOLEAN UseHandToHand( SOLDIERTYPE *pSoldier, INT32 sTargetGridNo, BOOLEAN fStea
 		#ifdef JA2BETAVERSION
 		if ( gfReportHitChances )
 		{
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Hit chance was %ld, roll %ld", iHitChance, iDiceRoll );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Hit chance was %ld, roll %ld"), iHitChance, iDiceRoll );
 		}
 		#endif
 
@@ -4948,7 +4948,7 @@ BOOLEAN UseThrown( SOLDIERTYPE *pSoldier, INT32 sTargetGridNo )
 	#ifdef JA2BETAVERSION
 	if ( gfReportHitChances )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Hit chance was %ld, (range %d)", uiHitChance, PythSpacesAway( pSoldier->sGridNo, sTargetGridNo ) );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Hit chance was %ld, (range %d)"), uiHitChance, PythSpacesAway( pSoldier->sGridNo, sTargetGridNo ) );
 	}
 	#endif
 
@@ -5216,7 +5216,7 @@ BOOLEAN UseLauncher( SOLDIERTYPE *pSoldier, INT32 sTargetGridNo )
 	#ifdef JA2BETAVERSION
 	if ( gfReportHitChances )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Hit chance was %ld, (range %d)", uiHitChance, PythSpacesAway( pSoldier->sGridNo, sTargetGridNo ) );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Hit chance was %ld, (range %d)"), uiHitChance, PythSpacesAway( pSoldier->sGridNo, sTargetGridNo ) );
 	}
 	#endif
 	
@@ -11063,14 +11063,14 @@ void EstimateBulletsLeft( SOLDIERTYPE *pSoldier, OBJECTTYPE *pObj )
 	if ( pSoldier == NULL )
 	{
 		// No soldier... Return true count.
-		swprintf(gBulletCount, L"%d", usRealBulletCount);
+		swprintf(gBulletCount, JA2_TEXT("%d"), usRealBulletCount);
 		return;
 	}
 
 	if ( gGameExternalOptions.usBulletHideIntensity <= 0 )
 	{
 		// Feature is disabled. Print the real bullet count.
-		swprintf( gBulletCount, L"%d", usRealBulletCount );
+		swprintf( gBulletCount, JA2_TEXT("%d"), usRealBulletCount );
 		return;
 	}
 
@@ -11089,7 +11089,7 @@ void EstimateBulletsLeft( SOLDIERTYPE *pSoldier, OBJECTTYPE *pObj )
 	{
 		// Soldier is not skilled enough to know how many bullets are left in the gun. Print a "??" indicating that
 		// the real bullet count may be anywhere between empty and full.
-		swprintf(gBulletCount, L"%s", L"??");
+		swprintf(gBulletCount, JA2_TEXT("%s"), JA2_TEXT("??"));
 		return;
 	}
 	else // Soldier good enough for at least a rough estimate.
@@ -11101,14 +11101,14 @@ void EstimateBulletsLeft( SOLDIERTYPE *pSoldier, OBJECTTYPE *pObj )
 		if (usRealBulletCount == ubMagSize)
 		{
 			// Magazine is fresh. Let the soldier know this.
-			swprintf(gBulletCount, L"%d", usRealBulletCount);
+			swprintf(gBulletCount, JA2_TEXT("%d"), usRealBulletCount);
 			return;
 		}
 
 		if (usRealBulletCount == 0)
 		{
 			// Magazine is empty, so it will also show as empty.
-			swprintf(gBulletCount, L"%d", usRealBulletCount);
+			swprintf(gBulletCount, JA2_TEXT("%d"), usRealBulletCount);
 			return;
 		}
 		//-------------------------
@@ -11161,22 +11161,22 @@ void EstimateBulletsLeft( SOLDIERTYPE *pSoldier, OBJECTTYPE *pObj )
 	{
 		if (usRealBulletCount >= (ubMagSize*2)/3)
 		{
-			swprintf(gBulletCount, L"%s", L"?H");
+			swprintf(gBulletCount, JA2_TEXT("%s"), JA2_TEXT("?H"));
 		}
 		else if (usRealBulletCount < (ubMagSize*2)/3 && usRealBulletCount >= ubMagSize/3)
 		{
-			swprintf(gBulletCount, L"%s", L"?M");
+			swprintf(gBulletCount, JA2_TEXT("%s"), JA2_TEXT("?M"));
 		}
 		else// if (usRealBulletCount < ubMagSize/3)
 		{
-			swprintf(gBulletCount, L"%s", L"?L");
+			swprintf(gBulletCount, JA2_TEXT("%s"), JA2_TEXT("?L"));
 		}
 
 		return;
 	}
 
 	// Default - return true count.
-	swprintf(gBulletCount, L"%d", usRealBulletCount);
+	swprintf(gBulletCount, JA2_TEXT("%d"), usRealBulletCount);
 }
 
 // HEADROCK HAM 4: Calculate the ratio between current Mag Factor and Target Factor. Used for the CTH bars.

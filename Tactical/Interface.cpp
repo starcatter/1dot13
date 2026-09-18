@@ -1940,7 +1940,7 @@ void DrawSelectedUIAboveGuy( SoldierID usSoldierID )
 		// anv: if soldier is in vehicle, write its name instead of "vehicle"
 		else if ( pSoldier->bAssignment == VEHICLE )
 		{
-			swprintf( NameStr, L"(%s)", GetSoldierStructureForVehicle( pSoldier->iVehicleId )->GetName() );
+			swprintf( NameStr, JA2_TEXT("(%s)"), GetSoldierStructureForVehicle( pSoldier->iVehicleId )->GetName() );
 			FindFontCenterCoordinates( sXPos, (INT16)(sYPos ), (INT16)(80 ), 1, NameStr, TINYFONT1, &sX, &sY );
 			gprintfdirty( sX, sY, NameStr );
 			mprintf( sX, sY, NameStr );
@@ -1949,7 +1949,7 @@ void DrawSelectedUIAboveGuy( SoldierID usSoldierID )
 		else if ( pSoldier->bAssignment >= ON_DUTY )
 		{
 			SetFontForeground( FONT_YELLOW );
-			swprintf( NameStr, L"(%s)", pAssignmentStrings[ pSoldier->bAssignment ] );
+			swprintf( NameStr, JA2_TEXT("(%s)"), pAssignmentStrings[ pSoldier->bAssignment ] );
 			FindFontCenterCoordinates( sXPos, (INT16)(sYPos ), (INT16)(80 ), 1, NameStr, TINYFONT1, &sX, &sY );
 			gprintfdirty( sX, sY, NameStr );
 			mprintf( sX, sY, NameStr );
@@ -2001,11 +2001,11 @@ void DrawSelectedUIAboveGuy( SoldierID usSoldierID )
 			}
 			else if ( zHiddenNames[pSoldier->ubProfile].Hidden == TRUE )
 			{
-				swprintf( NameStr, L"???" );
+				swprintf( NameStr, JA2_TEXT("???") );
 			}
 			else
 			{
-				swprintf( NameStr, L"%s", pSoldier->name );
+				swprintf( NameStr, JA2_TEXT("%s"), pSoldier->name );
 			}
 
 			INT16 sNameY = fRaiseName ? sYPos - 10 : sYPos;
@@ -2039,7 +2039,7 @@ void DrawSelectedUIAboveGuy( SoldierID usSoldierID )
 						gTacticalStatus.ubCurrentTeam == OUR_TEAM)
 					{
 						INT16 len;
-						swprintf( NameStr,L"%d", pSoldier->bActionPoints );
+						swprintf( NameStr,JA2_TEXT("%d"), pSoldier->bActionPoints );
 						len = StringPixLength ( NameStr, TINYFONT1 );
 						SetFont( TINYFONT1 );
 						if(pSoldier->bActionPoints > APBPConstants[MIN_APS_TO_INTERRUPT])
@@ -2323,7 +2323,7 @@ void DrawSelectedUIAboveGuy( SoldierID usSoldierID )
 					}
 				}
 
-				//FindFontCenterCoordinates( sXPos, (INT16)( sYPos ), (INT16)(80 ), 1, L"", TINYFONT1, &sX, &sY );
+				//FindFontCenterCoordinates( sXPos, (INT16)( sYPos ), (INT16)(80 ), 1, JA2_TEXT(""), TINYFONT1, &sX, &sY );
 
 				// sevenfm: show weapon name and additional info
 				ShowEnemyWeapon( sX, sY, pSoldier );
@@ -2356,7 +2356,7 @@ void DrawSelectedUIAboveGuy( SoldierID usSoldierID )
 				}
 
 				// sevenfm: show weapon name and additional info
-				FindFontCenterCoordinates( sXPos, (INT16)( sYPos ), (INT16)(80 ), 1, L"", TINYFONT1, &sX, &sY );
+				FindFontCenterCoordinates( sXPos, (INT16)( sYPos ), (INT16)(80 ), 1, JA2_TEXT(""), TINYFONT1, &sX, &sY );
 				ShowEnemyWeapon( sX, sY, pSoldier );
 			}
 		}
@@ -2684,13 +2684,13 @@ BOOLEAN DrawCTHIndicator()
 		SetFontForeground( FONT_MCOLOR_WHITE );
 
 		// Find coordinates, using the full string ("XX AP")
-		swprintf( pStr, L"%d %s", gsCurrentActionPoints, gzNCTHlabels[ 1 ] );
+		swprintf( pStr, JA2_TEXT("%d %s"), gsCurrentActionPoints, gzNCTHlabels[ 1 ] );
 		FindFontCenterCoordinates( (INT16)APRect.left, (INT16)APRect.top, (INT16)APRect.right-(INT16)APRect.left, 10, pStr, TINYFONT1, &curX, &curY);
 		// Find width of this string.
 		UINT16 usTotalWidth = StringPixLength ( pStr, TINYFONT1 );
 
 		// Cut string to just the number of APs
-		swprintf( pStr, L"%d", gsCurrentActionPoints );
+		swprintf( pStr, JA2_TEXT("%d"), gsCurrentActionPoints );
 		// Find out how wide this string is
 		UINT16 usWidth = StringPixLength( pStr, TINYFONT1 );
 		// Draw to screen
@@ -2699,7 +2699,7 @@ BOOLEAN DrawCTHIndicator()
 
 		// Draw the "AP" label 4 pixels forward.
 		SetFontForeground(FONT_MCOLOR_LTYELLOW);
-		swprintf( pStr, L"%s", gzNCTHlabels[ 1 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzNCTHlabels[ 1 ] );
 		curX += usWidth + 4;
 
 		// sevenfm: improved NCTH indicator - change color of 'AP' depending on the remaining APs after shooting
@@ -2727,13 +2727,13 @@ BOOLEAN DrawCTHIndicator()
 		SetFont( TINYFONT1 );
 
 		// Find coordinates, using full string ("X.X x")
-		swprintf( pStr, L"%1.1f x", gCTHDisplay.FinalMagFactor );
+		swprintf( pStr, JA2_TEXT("%1.1f x"), gCTHDisplay.FinalMagFactor );
 		FindFontCenterCoordinates( (INT16)MagRect.left, (INT16)MagRect.top, (INT16)MagRect.right-(INT16)MagRect.left, 10, pStr, TINYFONT1, &curX, &curY);
 		// Find width of this string.
 		UINT16 usTotalWidth = StringPixLength ( pStr, TINYFONT1 );
 
 		// Cut string to just the float
-		swprintf( pStr, L"%1.1f", gCTHDisplay.FinalMagFactor );
+		swprintf( pStr, JA2_TEXT("%1.1f"), gCTHDisplay.FinalMagFactor );
 		// Record the width of the float
 		UINT16 usWidth = StringPixLength( pStr, TINYFONT1 );
 
@@ -2780,7 +2780,7 @@ BOOLEAN DrawCTHIndicator()
 		{
 			// Add an "x" 4 pixels forward.
 			SetFontForeground( FONT_MCOLOR_LTYELLOW );
-			swprintf( pStr, L"x" );
+			swprintf( pStr, JA2_TEXT("x") );
 			curX += usWidth + 4;
 			gprintfdirty( curX, curY, pStr );
 			mprintf( curX, curY, pStr);
@@ -2802,7 +2802,7 @@ BOOLEAN DrawCTHIndicator()
 		SetFontForeground( FONT_MCOLOR_WHITE );
 
 		// Find coordinates, using the full string ("XX AP")
-		swprintf( pStr, L"%3.2f", iAperture );
+		swprintf( pStr, JA2_TEXT("%3.2f"), iAperture );
 		FindFontCenterCoordinates( (INT16)APRect.left, (INT16)APRect.top-5, (INT16)APRect.right-(INT16)APRect.left, 5, pStr, TINYFONT1, &curX, &curY);
 		// Find width of this string.
 		UINT16 usTotalWidth = StringPixLength ( pStr, TINYFONT1 );
@@ -2823,7 +2823,7 @@ BOOLEAN DrawCTHIndicator()
 		SetFont( TINYFONT1 );
 
 		// Find coordinates, using full string ("X.X x")
-		swprintf( pStr, L"%3.2f", iDistanceAperture );
+		swprintf( pStr, JA2_TEXT("%3.2f"), iDistanceAperture );
 		FindFontCenterCoordinates( (INT16)MagRect.left, (INT16)MagRect.top-5, (INT16)MagRect.right-(INT16)MagRect.left, 5, pStr, TINYFONT1, &curX, &curY);
 		// Find width of this string.
 		UINT16 usTotalWidth = StringPixLength ( pStr, TINYFONT1 );
@@ -3835,7 +3835,7 @@ void PopupDoorOpenMenu( BOOLEAN fClosingDoor )
 	}
 	else
 	{
-		swprintf( zDisp, L"%s ( %d )", pTacticalPopupButtonStrings[ USE_KEYRING_ICON ], APBPConstants[AP_UNLOCK_DOOR] );
+		swprintf( zDisp, JA2_TEXT("%s ( %d )"), pTacticalPopupButtonStrings[ USE_KEYRING_ICON ], APBPConstants[AP_UNLOCK_DOOR] );
 	}
 	SetButtonFastHelpText( iActionIcons[ USE_KEYRING_ICON ], zDisp );
 
@@ -3866,7 +3866,7 @@ void PopupDoorOpenMenu( BOOLEAN fClosingDoor )
 	}
 	else
 	{
-		swprintf( zDisp, L"%s ( %d )", pTacticalPopupButtonStrings[ USE_CROWBAR_ICON ], APBPConstants[AP_USE_CROWBAR] );
+		swprintf( zDisp, JA2_TEXT("%s ( %d )"), pTacticalPopupButtonStrings[ USE_CROWBAR_ICON ], APBPConstants[AP_USE_CROWBAR] );
 	}
 	SetButtonFastHelpText( iActionIcons[ USE_CROWBAR_ICON ], zDisp );
 
@@ -3896,7 +3896,7 @@ void PopupDoorOpenMenu( BOOLEAN fClosingDoor )
 	}
 	else
 	{
-		swprintf( zDisp, L"%s ( %d )", pTacticalPopupButtonStrings[ LOCKPICK_DOOR_ICON ], GetAPsToPicklock( gOpenDoorMenu.pSoldier ) ); // SANDRO
+		swprintf( zDisp, JA2_TEXT("%s ( %d )"), pTacticalPopupButtonStrings[ LOCKPICK_DOOR_ICON ], GetAPsToPicklock( gOpenDoorMenu.pSoldier ) ); // SANDRO
 	}
 	SetButtonFastHelpText( iActionIcons[ LOCKPICK_DOOR_ICON ], zDisp );
 
@@ -3928,7 +3928,7 @@ void PopupDoorOpenMenu( BOOLEAN fClosingDoor )
 	}
 	else
 	{
-		swprintf( zDisp, L"%s ( %d )", pTacticalPopupButtonStrings[ EXPLOSIVE_DOOR_ICON ], GetAPsToBombDoor( gOpenDoorMenu.pSoldier ) ); // SANDRO
+		swprintf( zDisp, JA2_TEXT("%s ( %d )"), pTacticalPopupButtonStrings[ EXPLOSIVE_DOOR_ICON ], GetAPsToBombDoor( gOpenDoorMenu.pSoldier ) ); // SANDRO
 	}
 	SetButtonFastHelpText( iActionIcons[ EXPLOSIVE_DOOR_ICON ], zDisp );
 
@@ -3962,7 +3962,7 @@ void PopupDoorOpenMenu( BOOLEAN fClosingDoor )
 		}
 		else
 		{
-			swprintf( zDisp, L"%s ( %d )", pTacticalPopupButtonStrings[ CANCEL_ICON + 1 ], GetAPsToOpenDoor( gOpenDoorMenu.pSoldier ) ); // SANDRO
+			swprintf( zDisp, JA2_TEXT("%s ( %d )"), pTacticalPopupButtonStrings[ CANCEL_ICON + 1 ], GetAPsToOpenDoor( gOpenDoorMenu.pSoldier ) ); // SANDRO
 		}
 	}
 	else
@@ -3973,7 +3973,7 @@ void PopupDoorOpenMenu( BOOLEAN fClosingDoor )
 		}
 		else
 		{
-			swprintf( zDisp, L"%s ( %d )", pTacticalPopupButtonStrings[ OPEN_DOOR_ICON ], GetAPsToOpenDoor( gOpenDoorMenu.pSoldier ) ); // SANDRO
+			swprintf( zDisp, JA2_TEXT("%s ( %d )"), pTacticalPopupButtonStrings[ OPEN_DOOR_ICON ], GetAPsToOpenDoor( gOpenDoorMenu.pSoldier ) ); // SANDRO
 		}
 	}
 	SetButtonFastHelpText( iActionIcons[ OPEN_DOOR_ICON ], zDisp );
@@ -4000,7 +4000,7 @@ void PopupDoorOpenMenu( BOOLEAN fClosingDoor )
 	}
 	else
 	{
-		swprintf( zDisp, L"%s ( %d )", pTacticalPopupButtonStrings[ EXAMINE_DOOR_ICON ], APBPConstants[AP_EXAMINE_DOOR] );
+		swprintf( zDisp, JA2_TEXT("%s ( %d )"), pTacticalPopupButtonStrings[ EXAMINE_DOOR_ICON ], APBPConstants[AP_EXAMINE_DOOR] );
 	}
 	SetButtonFastHelpText( iActionIcons[ EXAMINE_DOOR_ICON ], zDisp );
 
@@ -4024,7 +4024,7 @@ void PopupDoorOpenMenu( BOOLEAN fClosingDoor )
 	}
 	else
 	{
-		swprintf( zDisp, L"%s ( %d )", pTacticalPopupButtonStrings[ BOOT_DOOR_ICON ], APBPConstants[AP_BOOT_DOOR] );
+		swprintf( zDisp, JA2_TEXT("%s ( %d )"), pTacticalPopupButtonStrings[ BOOT_DOOR_ICON ], APBPConstants[AP_BOOT_DOOR] );
 	}
 	SetButtonFastHelpText( iActionIcons[ BOOT_DOOR_ICON ], zDisp );
 
@@ -4049,7 +4049,7 @@ void PopupDoorOpenMenu( BOOLEAN fClosingDoor )
 	}
 	else
 	{
-		swprintf( zDisp, L"%s ( %d )", pTacticalPopupButtonStrings[ UNTRAP_DOOR_ICON ], GetAPsToUntrapDoor( gOpenDoorMenu.pSoldier ) ); // SANDRO
+		swprintf( zDisp, JA2_TEXT("%s ( %d )"), pTacticalPopupButtonStrings[ UNTRAP_DOOR_ICON ], GetAPsToUntrapDoor( gOpenDoorMenu.pSoldier ) ); // SANDRO
 	}
 	SetButtonFastHelpText( iActionIcons[ UNTRAP_DOOR_ICON ], zDisp );
 
@@ -4887,7 +4887,7 @@ void CheckForAndHandleEndPlayerTimeLimit( )
 						gTacticalStatus.usTactialTurnLimitCounter++;
 
 						// OK, set message that time limit has expired....
-						//DoMessageBox( MSG_BOX_BASIC_STYLE, L"Turn has Expired!", GAME_SCREEN, ( UINT8 )MSG_BOX_FLAG_OK, TurnExpiredCallBack, NULL );
+						//DoMessageBox( MSG_BOX_BASIC_STYLE, JA2_TEXT("Turn has Expired!"), GAME_SCREEN, ( UINT8 )MSG_BOX_FLAG_OK, TurnExpiredCallBack, NULL );
 
 						// End turn...
 						UIHandleEndTurn( NULL );
@@ -5279,7 +5279,7 @@ STR16 GetSoldierHealthString( SOLDIERTYPE *pSoldier )
 	// sevenfm: show enemy health as text only when SHOW_ENEMY_HEALTH = 1
 	if ( ( gGameExternalOptions.ubShowEnemyHealth != 1 ) && (pSoldier->bTeam == ENEMY_TEAM || pSoldier->bTeam == CREATURE_TEAM))
 	{
-		return L"";
+		return JA2_TEXT("");
 	}
 	else	
 	{
@@ -5970,23 +5970,23 @@ void GetEnemyInfoString( SOLDIERTYPE* pSelectedSoldier, SOLDIERTYPE* pTargetSold
 		{
 			if( showExactInfo && gGameExternalOptions.fShowEnemyExtendedInfo )
 			{	// in range, show exact armour name
-				swprintf( NameStr, L"%s", ItemNames[ usItemID ] );
+				swprintf( NameStr, JA2_TEXT("%s"), ItemNames[ usItemID ] );
 			}
 			else
 			{	// show general armour type
 				switch( pSelectedSoldier->bAimShotLocation )
 				{
 				case AIM_SHOT_HEAD:
-					swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_HELMET] );
-					//swprintf( NameStr, L"%s", L"Helmet" );
+					swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_HELMET] );
+					//swprintf( NameStr, JA2_TEXT("%s"), JA2_TEXT("Helmet") );
 					break;
 				case AIM_SHOT_TORSO:
-					swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_VEST] );
-					//swprintf( NameStr, L"%s", L"Vest" );
+					swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_VEST] );
+					//swprintf( NameStr, JA2_TEXT("%s"), JA2_TEXT("Vest") );
 					break;
 				case AIM_SHOT_LEGS:
-					swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_LEGGINGS] );
-					//swprintf( NameStr, L"%s", L"Leggings" );
+					swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_LEGGINGS] );
+					//swprintf( NameStr, JA2_TEXT("%s"), JA2_TEXT("Leggings") );
 					break;
 				}								
 			}
@@ -6016,7 +6016,7 @@ void GetEnemyInfoString( SOLDIERTYPE* pSelectedSoldier, SOLDIERTYPE* pTargetSold
 			if( pTargetSoldier->inv[HEAD2POS].exists() )
 			{
 				if( pTargetSoldier->inv[HEAD1POS].exists() )
-					wcscat( NameStr, L", " );
+					wcscat( NameStr, JA2_TEXT(", ") );
 				if(gGameExternalOptions.fShowEnemyExtendedInfo)
 				{	// show exact name
 					wcscat( NameStr, ItemNames[ pTargetSoldier->inv[HEAD2POS].usItem ] );
@@ -6038,7 +6038,7 @@ void GetEnemyInfoString( SOLDIERTYPE* pSelectedSoldier, SOLDIERTYPE* pTargetSold
 			{
 				if ( showExactInfo )
 				{
-					swprintf( NameStr, L"%s", ShortItemNames[ pTargetSoldier->inv[ HANDPOS ].usItem ] );
+					swprintf( NameStr, JA2_TEXT("%s"), ShortItemNames[ pTargetSoldier->inv[ HANDPOS ].usItem ] );
 				}
 				else
 				{
@@ -6046,25 +6046,25 @@ void GetEnemyInfoString( SOLDIERTYPE* pSelectedSoldier, SOLDIERTYPE* pTargetSold
 					switch( Weapon[pTargetSoldier->inv[ HANDPOS ].usItem].ubWeaponClass )
 					{
 					case HANDGUNCLASS:
-						swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_HANDGUN] );
+						swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_HANDGUN] );
 						break;
 					case SMGCLASS:
-						swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_SMG] );
+						swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_SMG] );
 						break;
 					case RIFLECLASS:
-						swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_RIFLE] );
+						swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_RIFLE] );
 						break;
 					case MGCLASS:
-						swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_MG] );
+						swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_MG] );
 						break;
 					case SHOTGUNCLASS:
-						swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_SHOTGUN] );
+						swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_SHOTGUN] );
 						break;
 					case KNIFECLASS:
-						swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_KNIFE] );
+						swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_KNIFE] );
 						break;
 					default:
-						swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_HEAVY_WEAPON] );
+						swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_HEAVY_WEAPON] );
 						break;
 					}
 				}
@@ -6074,16 +6074,16 @@ void GetEnemyInfoString( SOLDIERTYPE* pSelectedSoldier, SOLDIERTYPE* pTargetSold
 				if( showExactInfo )
 				{							
 					if( pTargetSoldier->inv[ HANDPOS ].usItem )
-						swprintf( NameStr, L"%s", Item[ pTargetSoldier->inv[ HANDPOS ].usItem ].szItemName );
+						swprintf( NameStr, JA2_TEXT("%s"), Item[ pTargetSoldier->inv[ HANDPOS ].usItem ].szItemName );
 					else
-						swprintf( NameStr, L"%s", gzTooltipStrings[STR_TT_NO_WEAPON] );
+						swprintf( NameStr, JA2_TEXT("%s"), gzTooltipStrings[STR_TT_NO_WEAPON] );
 				}
 				else
 				{
 					if( pTargetSoldier->inv[ HANDPOS ].usItem )
-						swprintf( NameStr, L"%s", TacticalStr[ GENERAL_INFO_ITEM ] );
+						swprintf( NameStr, JA2_TEXT("%s"), TacticalStr[ GENERAL_INFO_ITEM ] );
 					else
-						swprintf( NameStr, L"%s", L"" );
+						swprintf( NameStr, JA2_TEXT("%s"), JA2_TEXT("") );
 				}								
 			}
 		}
@@ -6126,7 +6126,7 @@ void ShowEnemyWeapon( INT16 sX, INT16 sY, SOLDIERTYPE* pTargetSoldier )
 		SetFont( TINYFONT1 );
 		SetFontBackground( FONT_MCOLOR_BLACK );		
 
-		swprintf( NameStr, L"" );
+		swprintf( NameStr, JA2_TEXT("") );
 		GetEnemyInfoString( pSelectedSoldier, pTargetSoldier, showExactInfo, NameStr );
 		usTotalWidth = StringPixLength ( NameStr, TINYFONT1 );
 		sX -= usTotalWidth/2;
@@ -6559,9 +6559,9 @@ void NCTHShowAimLevels( SOLDIERTYPE* pSoldier, INT16 curX, INT16 curY )
 			SetFontForeground( FONT_MCOLOR_LTGRAY );
 
 		if( ubAllowedLevels > 0 )
-			swprintf( pStr, L"%d/%d", pSoldier->aiData.bShownAimTime, ubAllowedLevels );
+			swprintf( pStr, JA2_TEXT("%d/%d"), pSoldier->aiData.bShownAimTime, ubAllowedLevels );
 		else
-			swprintf( pStr, L"-/-" );
+			swprintf( pStr, JA2_TEXT("-/-") );
 		FindFontCenterCoordinates( (INT16)AimRect.left, (INT16)AimRect.top, (INT16)AimRect.right-(INT16)AimRect.left, 10, pStr, TINYFONT1, &curX, &curY);
 		gprintfdirty( curX, curY, pStr );
 		mprintf( curX, curY, pStr);

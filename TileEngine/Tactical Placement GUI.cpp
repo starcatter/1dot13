@@ -149,9 +149,9 @@ static void FindValidInsertionCode( UINT8 *pubStrategicInsertionCode )
 			gMapInformation.sWestGridNo		!= -1 && !gps1stWestEdgepointArray		)
 	{
 		InvalidateScreen();
-		DrawTextToScreen( L"Map doesn't has entrypoints without corresponding edgepoints. LC:1",
+		DrawTextToScreen( JA2_TEXT("Map doesn't has entrypoints without corresponding edgepoints. LC:1"),
 			iOffsetHorizontal + 30, iOffsetVertical + 150, 600, FONT10ARIALBOLD, FONT_RED, FONT_MCOLOR_BLACK, TRUE, LEFT_JUSTIFIED	);
-		DrawTextToScreen( L"GENERATING MAP EDGEPOINTS!	Please wait...",
+		DrawTextToScreen( JA2_TEXT("GENERATING MAP EDGEPOINTS!	Please wait..."),
 			iOffsetHorizontal + 30, iOffsetVertical + 160, 600, FONT10ARIALBOLD, FONT_YELLOW, FONT_MCOLOR_BLACK, TRUE, LEFT_JUSTIFIED	);
 
 		RefreshScreen( NULL );
@@ -1069,7 +1069,7 @@ void RenderTacticalPlacementGUI()
 
 		GetSectorIDString( gubPBSectorX, gubPBSectorY, gubPBSectorZ, str, TRUE );
 
-		mprintf(120 + xResOffset, SCREEN_HEIGHT - 145, L"%s %s -- %s...", gpStrategicString[ STR_TP_SECTOR ], str, gpStrategicString[ STR_TP_CHOOSEENTRYPOSITIONS ] );
+		mprintf(120 + xResOffset, SCREEN_HEIGHT - 145, JA2_TEXT("%s %s -- %s..."), gpStrategicString[ STR_TP_SECTOR ], str, gpStrategicString[ STR_TP_CHOOSEENTRYPOSITIONS ] );
 
 		//Shade out the part of the tactical map that isn't considered placable.
 		BlitBufferToBuffer(FRAME_BUFFER, guiSAVEBUFFER, 0, SCREEN_HEIGHT - 160, SCREEN_WIDTH, 160);
@@ -1451,7 +1451,7 @@ void RenderTacticalPlacementGUI()
 		}
 		else
 		{
-			mprintf( xp + 16, yp + 14, L"?" );
+			mprintf( xp + 16, yp + 14, JA2_TEXT("?") );
 			InvalidateRegion( xp + 16, yp + 14, xp + 24, yp + 22 );
 		}
 		SetFont( BLOCKFONT );
@@ -1776,7 +1776,7 @@ void KillTacticalPlacementGUI()
 	#ifdef JA2BETAVERSION
 	if( gfChangedEntrySide )
 	{
-		ScreenMsg( FONT_RED, MSG_ERROR, L"Substituted different entry side due to invalid entry points or map edgepoints.	KM, LC : 1" );
+		ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Substituted different entry side due to invalid entry points or map edgepoints.	KM, LC : 1") );
 	}
 	#endif
 

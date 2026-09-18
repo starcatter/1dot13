@@ -75,13 +75,13 @@ static void ReportMapscreenErrorLock()
 	switch( gubReportMapscreenLock )
 	{
 		case 1:
-			DoScreenIndependantMessageBox( L"You have just loaded the game which is in a state that you shouldn't be able to.	You can still play, but there should be a sector with enemies co-existing with mercs.	Please don't report that.", MSG_BOX_FLAG_OK, NULL );
+			DoScreenIndependantMessageBox( JA2_TEXT("You have just loaded the game which is in a state that you shouldn't be able to.	You can still play, but there should be a sector with enemies co-existing with mercs.	Please don't report that."), MSG_BOX_FLAG_OK, NULL );
 			fDisableDueToBattleRoster = FALSE;
 			fDisableMapInterfaceDueToBattle = FALSE;
 			gubReportMapscreenLock = 0;
 			break;
 		case 2:
-			DoScreenIndependantMessageBox( L"You have just saved the game which is in a state that you shouldn't be able to.	Please report circumstances (ex:	merc in other sector pipes up about enemies), etc.	Autocorrected, but if you reload the save, don't report the error appearing in load.", MSG_BOX_FLAG_OK, NULL );
+			DoScreenIndependantMessageBox( JA2_TEXT("You have just saved the game which is in a state that you shouldn't be able to.	Please report circumstances (ex:	merc in other sector pipes up about enemies), etc.	Autocorrected, but if you reload the save, don't report the error appearing in load."), MSG_BOX_FLAG_OK, NULL );
 			fDisableDueToBattleRoster = FALSE;
 			fDisableMapInterfaceDueToBattle = FALSE;
 			gubReportMapscreenLock = 0;
@@ -312,12 +312,12 @@ void GameLoop(void)
 					UINT32	uiSpaceOnDrive;
 					CHAR16	zSizeNeeded[512];
 
-					swprintf( zSizeNeeded, L"%d", REQUIRED_FREE_SPACE / BYTESINMEGABYTE );
+					swprintf( zSizeNeeded, JA2_TEXT("%d"), REQUIRED_FREE_SPACE / BYTESINMEGABYTE );
 					InsertCommasForDollarFigure( zSizeNeeded );
 
 					uiSpaceOnDrive = GetFreeSpaceOnHardDriveWhereGameIsRunningFrom( );
 
-					swprintf( zSpaceOnDrive, L"%.2f", uiSpaceOnDrive / (FLOAT)BYTESINMEGABYTE );
+					swprintf( zSpaceOnDrive, JA2_TEXT("%.2f"), uiSpaceOnDrive / (FLOAT)BYTESINMEGABYTE );
 
 					swprintf( zText, pMessageStrings[ MSG_LOWDISKSPACE_WARNING ], zSpaceOnDrive, zSizeNeeded );
 

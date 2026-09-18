@@ -5,10 +5,11 @@
 #include "types.h"
 #include "mapscreen.h"
 #include "XML_Language.h"
+#include "UtfConversion.h"
 
 #define STRING_LENGTH 255
 
-auto FormatMoney(INT32) -> std::wstring;
+auto FormatMoney(INT32) -> ja2::text::Utf16String;
 
 enum
 {
@@ -2587,18 +2588,18 @@ extern STR16* MPServerMessage;
 extern STR16* MPClientMessage;
 
 // WANNE: Some Chinese specific strings that needs to be in unicode!
-inline constexpr STR16 ChineseSpecString1 = L"%％";			//defined in _ChineseText.cpp as this file is already unicode
-inline constexpr STR16 ChineseSpecString2 = L"*%3d%％%%";	//defined in _ChineseText.cpp as this file is already unicode
-inline constexpr STR16 ChineseSpecString3 = L"%d%％";		//defined in _ChineseText.cpp as this file is already unicode
-inline constexpr STR16 ChineseSpecString4 = L"%s (%s) [%d%％]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s";
-inline constexpr STR16 ChineseSpecString5 = L"%s [%d%％]\n%s %d\n%s %d\n%s %1.1f %s";
-inline constexpr STR16 ChineseSpecString6 = L"%s [%d%％]\n%s %d%％ (%d/%d)\n%s %d%％\n%s %1.1f %s";
-inline constexpr STR16 ChineseSpecString7 = L"%s [%d%％]\n%s %1.1f %s";
-inline constexpr STR16 ChineseSpecString8 = L"%s (%s) [%d%％(%d%％)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s\n%s %.2f%%";	// added by Flugente
-inline constexpr STR16 ChineseSpecString9 = L"%s [%d%％(%d%％)]\n%s %d\n%s %d\n%s %1.1f %s";								// added by Flugente
-inline constexpr STR16 ChineseSpecString10 = L"%s [%d%％(%d%％)]\n%s %d%％ (%d/%d)\n%s %d%％\n%s %1.1f %s";						// added by Flugente
-inline constexpr STR16 ChineseSpecString11 = L"%s (%s) [%d%％(%d%％)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s";	// added by Flugente
-inline constexpr STR16 ChineseSpecString12 = L"%s (%s) [%d%％]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s\n%s %.2f%%";	// added by Flugente
+inline constexpr STR16 ChineseSpecString1 = JA2_TEXT("%％");			//defined in _ChineseText.cpp as this file is already unicode
+inline constexpr STR16 ChineseSpecString2 = JA2_TEXT("*%3d%％%%");	//defined in _ChineseText.cpp as this file is already unicode
+inline constexpr STR16 ChineseSpecString3 = JA2_TEXT("%d%％");		//defined in _ChineseText.cpp as this file is already unicode
+inline constexpr STR16 ChineseSpecString4 = JA2_TEXT("%s (%s) [%d%％]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s");
+inline constexpr STR16 ChineseSpecString5 = JA2_TEXT("%s [%d%％]\n%s %d\n%s %d\n%s %1.1f %s");
+inline constexpr STR16 ChineseSpecString6 = JA2_TEXT("%s [%d%％]\n%s %d%％ (%d/%d)\n%s %d%％\n%s %1.1f %s");
+inline constexpr STR16 ChineseSpecString7 = JA2_TEXT("%s [%d%％]\n%s %1.1f %s");
+inline constexpr STR16 ChineseSpecString8 = JA2_TEXT("%s (%s) [%d%％(%d%％)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s\n%s %.2f%%");	// added by Flugente
+inline constexpr STR16 ChineseSpecString9 = JA2_TEXT("%s [%d%％(%d%％)]\n%s %d\n%s %d\n%s %1.1f %s");								// added by Flugente
+inline constexpr STR16 ChineseSpecString10 = JA2_TEXT("%s [%d%％(%d%％)]\n%s %d%％ (%d/%d)\n%s %d%％\n%s %1.1f %s");						// added by Flugente
+inline constexpr STR16 ChineseSpecString11 = JA2_TEXT("%s (%s) [%d%％(%d%％)]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s");	// added by Flugente
+inline constexpr STR16 ChineseSpecString12 = JA2_TEXT("%s (%s) [%d%％]\n%s %d\n%s %d\n%s %d (%d)\n%s (%d) %s\n%s %1.1f %s\n%s %.2f%%");	// added by Flugente
 
 enum
 {

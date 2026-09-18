@@ -1,4 +1,5 @@
 	#include "LegacySGP.h"
+	#include "UtfConversion.h"
 	#include "Isometric Utils.h"
 	#include "Overhead.h"
 	#include "Event Pump.h"
@@ -1208,7 +1209,7 @@ INT16 DistanceVisible(SOLDIERTYPE *pSoldier, INT8 bFacingDir, INT8 bSubjectDir, 
 
 	// Bob: if gridNo isn't set, this would cause a access violation later on
 	if (pSoldier->sGridNo < 0) {
-		// ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"DistanceVisible(): Caught bad LOS distance check!");
+		// ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("DistanceVisible(): Caught bad LOS distance check!"));
 		return(0);
 	}
 
@@ -2581,7 +2582,7 @@ void ManSeesMan(SOLDIERTYPE *pSoldier, SOLDIERTYPE *pOpponent, INT32 sOppGridNo,
 			{
 				fNewOpponent = TRUE;
 				pSoldier->bNewOppCnt++;        // increment looker's NEW opponent count
-				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Soldier %d sees soldier %d!", pSoldier->ubID, pOpponent->ubID );
+				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Soldier %d sees soldier %d!"), pSoldier->ubID, pOpponent->ubID );
 
 				//ExtMen[ptr->guynum].lastCaller = caller;
 				//ExtMen[ptr->guynum].lastCaller2 = caller2;
@@ -3018,7 +3019,7 @@ void RemoveOneOpponent(SOLDIERTYPE *pSoldier)
  {
 	DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("Oppcnt for %d (%s) tried to go below 0", pSoldier->ubID, pSoldier->name ) );
 	#ifdef JA2BETAVERSION
-		ScreenMsg( MSG_FONT_YELLOW, MSG_UI_FEEDBACK,	L"Opponent counter dropped below 0 for person %d (%s). Please inform Sir-tech of this, and what has just been happening in the game.", pSoldier->ubID, pSoldier->name );
+		ScreenMsg( MSG_FONT_YELLOW, MSG_UI_FEEDBACK,	JA2_TEXT("Opponent counter dropped below 0 for person %d (%s). Please inform Sir-tech of this, and what has just been happening in the game."), pSoldier->ubID, pSoldier->name );
 	#endif
 	pSoldier->aiData.bOppCnt = 0;
  }
@@ -3937,168 +3938,168 @@ void DebugSoldierPage1( )
 		GetSoldier( &pSoldier, usSoldierIndex );
 
 		SetFont( LARGEFONT1 );
-		gprintf( 0,0,L"DEBUG SOLDIER PAGE ONE, GRIDNO %d", pSoldier->sGridNo );
+		gprintf( 0,0,JA2_TEXT("DEBUG SOLDIER PAGE ONE, GRIDNO %d"), pSoldier->sGridNo );
 		SetFont( LARGEFONT1 );
 
 		ubLine = 2;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"ID:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("ID:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->ubID );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->ubID );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"TEAM:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("TEAM:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->bTeam );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->bTeam );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SIDE:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SIDE:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->bSide );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->bSide );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"STATUS FLAGS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("STATUS FLAGS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%x", pSoldier->flags.uiStatusFlags );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%x"), pSoldier->flags.uiStatusFlags );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"HUMAN:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("HUMAN:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", gTacticalStatus.Team[pSoldier->bTeam].bHuman);
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), gTacticalStatus.Team[pSoldier->bTeam].bHuman);
 		ubLine++;
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"APs:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("APs:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->bActionPoints );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->bActionPoints );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Breath:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Breath:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->bBreath );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->bBreath );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Life:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Life:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->stats.bLife );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->stats.bLife );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"LifeMax:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("LifeMax:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->stats.bLifeMax );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->stats.bLifeMax );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Bleeding:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Bleeding:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->bBleeding );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->bBleeding );
 
 		ubLine = 2;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Agility:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Agility:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 350, LINE_HEIGHT * ubLine, L"%d ( %d )", pSoldier->stats.bAgility, EffectiveAgility( pSoldier, FALSE ) );
+		gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("%d ( %d )"), pSoldier->stats.bAgility, EffectiveAgility( pSoldier, FALSE ) );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Dexterity:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Dexterity:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 350, LINE_HEIGHT * ubLine, L"%d( %d )", pSoldier->stats.bDexterity, EffectiveDexterity( pSoldier, FALSE ) );
+		gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("%d( %d )"), pSoldier->stats.bDexterity, EffectiveDexterity( pSoldier, FALSE ) );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Strength:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Strength:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 350, LINE_HEIGHT * ubLine, L"%d", pSoldier->stats.bStrength );
+		gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->stats.bStrength );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Wisdom:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Wisdom:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 350, LINE_HEIGHT * ubLine, L"%d ( %d )", pSoldier->stats.bWisdom, EffectiveWisdom( pSoldier ) );
+		gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("%d ( %d )"), pSoldier->stats.bWisdom, EffectiveWisdom( pSoldier ) );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Exp Lvl:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Exp Lvl:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 350, LINE_HEIGHT * ubLine, L"%d ( %d )", pSoldier->stats.bExpLevel, EffectiveExpLevel( pSoldier ) );
+		gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("%d ( %d )"), pSoldier->stats.bExpLevel, EffectiveExpLevel( pSoldier ) );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Mrksmnship:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Mrksmnship:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 350, LINE_HEIGHT * ubLine, L"%d ( %d )", pSoldier->stats.bMarksmanship, EffectiveMarksmanship( pSoldier ) );
+		gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("%d ( %d )"), pSoldier->stats.bMarksmanship, EffectiveMarksmanship( pSoldier ) );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Mechanical:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Mechanical:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 350, LINE_HEIGHT * ubLine, L"%d", pSoldier->stats.bMechanical);
+		gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->stats.bMechanical);
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Explosive:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Explosive:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 350, LINE_HEIGHT * ubLine, L"%d", pSoldier->stats.bExplosive);
+		gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->stats.bExplosive);
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Medical:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Medical:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 350, LINE_HEIGHT * ubLine, L"%d", pSoldier->stats.bMedical);
+		gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->stats.bMedical);
 		ubLine++;
 
 		/*SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Drug Effects:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Drug Effects:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 400, LINE_HEIGHT * ubLine, L"%d", pSoldier->drugs.bDrugEffect[0] );
+		gprintf( 400, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->drugs.bDrugEffect[0] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Drug Side Effects:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Drug Side Effects:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 400, LINE_HEIGHT * ubLine, L"%d", pSoldier->drugs.bDrugSideEffect[0] );
+		gprintf( 400, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->drugs.bDrugSideEffect[0] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Booze Effects:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Booze Effects:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 400, LINE_HEIGHT * ubLine, L"%d", pSoldier->drugs.bDrugEffect[1] );
+		gprintf( 400, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->drugs.bDrugEffect[1] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"Hangover Side Effects:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("Hangover Side Effects:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 400, LINE_HEIGHT * ubLine, L"%d", pSoldier->drugs.bDrugSideEffect[1] );
+		gprintf( 400, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->drugs.bDrugSideEffect[1] );
 		ubLine++;*/
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"AI has Keys:");
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("AI has Keys:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 400, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.bHasKeys );
+		gprintf( 400, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.bHasKeys );
 		ubLine++;
 	}
 	else if ( GetMouseMapPos( &usMapPos ) )
 	{
 		SetFont( LARGEFONT1 );
-		gprintf( 0,0,L"DEBUG LAND PAGE ONE" );
+		gprintf( 0,0,JA2_TEXT("DEBUG LAND PAGE ONE") );
 		SetFont( LARGEFONT1 );
 
 		ubLine++;
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Num dirty rects:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Num dirty rects:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 200, LINE_HEIGHT * ubLine, L"%d", guiNumBackSaves );
+		gprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), guiNumBackSaves );
 		ubLine++;
 
 
@@ -4122,137 +4123,137 @@ void DebugSoldierPage2( )
 		GetSoldier( &pSoldier, usSoldierIndex );
 
 		SetFont( LARGEFONT1 );
-		gprintf( 0,0,L"DEBUG SOLDIER PAGE TWO, GRIDNO %d", pSoldier->sGridNo );
+		gprintf( 0,0,JA2_TEXT("DEBUG SOLDIER PAGE TWO, GRIDNO %d"), pSoldier->sGridNo );
 		SetFont( LARGEFONT1 );
 
 		ubLine = 2;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"ID:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("ID:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->ubID );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->ubID );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Body Type:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Body Type:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->ubBodyType );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->ubBodyType );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Opp Cnt:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Opp Cnt:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->aiData.bOppCnt);
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->aiData.bOppCnt);
 		ubLine++;
 
 		if (pSoldier->bTeam == OUR_TEAM || pSoldier->bTeam == MILITIA_TEAM)	// look at 8 to 15 opplist entries
 		{
 			SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-			gprintf( 0, LINE_HEIGHT * ubLine, L"Opplist B:");
+			gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Opplist B:"));
 			SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%d %d %d %d %d %d %d %d", pSoldier->aiData.bOppList[20],pSoldier->aiData.bOppList[21],pSoldier->aiData.bOppList[22],
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d %d %d %d %d %d %d %d"), pSoldier->aiData.bOppList[20],pSoldier->aiData.bOppList[21],pSoldier->aiData.bOppList[22],
 							pSoldier->aiData.bOppList[23],pSoldier->aiData.bOppList[24],pSoldier->aiData.bOppList[25],pSoldier->aiData.bOppList[26],pSoldier->aiData.bOppList[27]);
 			ubLine++;
 		}
 		else	// team 1 - enemies so look at first 8 (0-7) opplist entries
 		{
 			SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-			gprintf( 0, LINE_HEIGHT * ubLine, L"OppList A:");
+			gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("OppList A:"));
 			SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%d %d %d %d %d %d %d %d", pSoldier->aiData.bOppList[0],pSoldier->aiData.bOppList[1],pSoldier->aiData.bOppList[2],
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d %d %d %d %d %d %d %d"), pSoldier->aiData.bOppList[0],pSoldier->aiData.bOppList[1],pSoldier->aiData.bOppList[2],
 							pSoldier->aiData.bOppList[3],pSoldier->aiData.bOppList[4],pSoldier->aiData.bOppList[5],pSoldier->aiData.bOppList[6],
 							pSoldier->aiData.bOppList[7]);
 			ubLine++;
 		}
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Visible:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Visible:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->bVisible);
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->bVisible);
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Direction:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Direction:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%S", gzDirectionStr[ pSoldier->ubDirection] );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%S"), gzDirectionStr[ pSoldier->ubDirection] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"DesDirection:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("DesDirection:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%S", gzDirectionStr[ pSoldier->pathing.bDesiredDirection] );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%S"), gzDirectionStr[ pSoldier->pathing.bDesiredDirection] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"GridNo:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("GridNo:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->sGridNo );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->sGridNo );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Dest:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Dest:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->pathing.sFinalDestination );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->pathing.sFinalDestination );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Path Size:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Path Size:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->pathing.usPathDataSize);
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->pathing.usPathDataSize);
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Path Index:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Path Index:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->pathing.usPathIndex );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->pathing.usPathIndex );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"First 3 Steps:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("First 3 Steps:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d %d %d", pSoldier->pathing.usPathingData[0],
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d %d %d"), pSoldier->pathing.usPathingData[0],
 		pSoldier->pathing.usPathingData[1],
 		pSoldier->pathing.usPathingData[2] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Next 3 Steps:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Next 3 Steps:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d %d %d", pSoldier->pathing.usPathingData[pSoldier->pathing.usPathIndex],
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d %d %d"), pSoldier->pathing.usPathingData[pSoldier->pathing.usPathIndex],
 		pSoldier->pathing.usPathingData[pSoldier->pathing.usPathIndex + 1],
 		pSoldier->pathing.usPathingData[pSoldier->pathing.usPathIndex + 2] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"FlashInd:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("FlashInd:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.fFlashLocator );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.fFlashLocator );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"ShowInd:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("ShowInd:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.fShowLocator );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.fShowLocator );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Main hand:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Main hand:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[HANDPOS].usItem] );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[HANDPOS].usItem] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Second hand:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Second hand:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SECONDHANDPOS].usItem] );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SECONDHANDPOS].usItem] );
 		ubLine++;
 
 		if ( GetMouseMapPos( &usMapPos ) )
 		{
 			SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-			gprintf( 0, LINE_HEIGHT * ubLine, L"CurrGridNo:");
+			gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("CurrGridNo:"));
 			SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%d", usMapPos );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), usMapPos );
 			ubLine++;
 		}
 
@@ -4260,62 +4261,62 @@ void DebugSoldierPage2( )
 	else if ( GetMouseMapPos( &usMapPos ) )
 	{
 		SetFont( LARGEFONT1 );
-		gprintf( 0,0,L"DEBUG LAND PAGE TWO" );
+		gprintf( 0,0,JA2_TEXT("DEBUG LAND PAGE TWO") );
 		SetFont( LARGEFONT1 );
 
 		ubLine = 1;
 
 		SetFontColors(COLOR1);
-		mprintf( 0, LINE_HEIGHT * ubLine, L"Land Raised:");
+		mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Land Raised:"));
 		SetFontColors(COLOR2);
-		mprintf( 150, LINE_HEIGHT * ubLine, L"%d", gpWorldLevelData[ usMapPos ].sHeight );
+		mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), gpWorldLevelData[ usMapPos ].sHeight );
 		ubLine++;
 
 		SetFontColors(COLOR1);
-		mprintf( 0, LINE_HEIGHT * ubLine, L"Land Node:");
+		mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Land Node:"));
 		SetFontColors(COLOR2);
-		mprintf( 150, LINE_HEIGHT * ubLine, L"%x", gpWorldLevelData[ usMapPos ].pLandHead );
+		mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%x"), gpWorldLevelData[ usMapPos ].pLandHead );
 		ubLine++;
 
 		if ( gpWorldLevelData[ usMapPos ].pLandHead != NULL )
 		{
 			SetFontColors(COLOR1);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"Land Node:");
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Land Node:"));
 			SetFontColors(COLOR2);
-			mprintf( 150, LINE_HEIGHT * ubLine, L"%d", gpWorldLevelData[ usMapPos ].pLandHead->usIndex );
+			mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), gpWorldLevelData[ usMapPos ].pLandHead->usIndex );
 			ubLine++;
 
 			TileElem = gTileDatabase[ gpWorldLevelData[ usMapPos ].pLandHead->usIndex	];
 
 			// Check for full tile
 			SetFontColors(COLOR1);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"Full Land:");
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Full Land:"));
 			SetFontColors(COLOR2);
-			mprintf( 150, LINE_HEIGHT * ubLine, L"%d", TileElem.ubFullTile );
+			mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), TileElem.ubFullTile );
 			ubLine++;
 		}
 
 		SetFontColors(COLOR1);
-		mprintf( 0, LINE_HEIGHT * ubLine, L"Land St Node:");
+		mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Land St Node:"));
 		SetFontColors(COLOR2);
-		mprintf( 150, LINE_HEIGHT * ubLine, L"%x", gpWorldLevelData[ usMapPos ].pLandStart );
+		mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%x"), gpWorldLevelData[ usMapPos ].pLandStart );
 		ubLine++;
 
 		SetFontColors(COLOR1);
-		mprintf( 0, LINE_HEIGHT * ubLine, L"GRIDNO:");
+		mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("GRIDNO:"));
 		SetFontColors(COLOR2);
 		//dnl ch85 060214
 		INT16 sX, sY;
 		ConvertGridNoToXY(usMapPos, &sX, &sY);
-		mprintf( 150, LINE_HEIGHT * ubLine, L"%d (%d,%d)", usMapPos, sX, sY );
+		mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d (%d,%d)"), usMapPos, sX, sY );
 		ubLine++;
 
 		if ( gpWorldLevelData[ usMapPos ].uiFlags & MAPELEMENT_MOVEMENT_RESERVED )
 		{
 			SetFontColors(COLOR2);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"Merc: %d",	gpWorldLevelData[ usMapPos ].ubReservedSoldierID );
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Merc: %d"),	gpWorldLevelData[ usMapPos ].ubReservedSoldierID );
 			SetFontColors(COLOR2);
-			mprintf( 150, LINE_HEIGHT * ubLine, L"RESERVED MOVEMENT FLAG ON:" );
+			mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("RESERVED MOVEMENT FLAG ON:") );
 			ubLine++;
 		}
 
@@ -4325,9 +4326,9 @@ void DebugSoldierPage2( )
 		if ( pNode != NULL )
 		{
 			SetFontColors(COLOR2);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"Tile: %d",	pNode->usIndex );
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Tile: %d"),	pNode->usIndex );
 			SetFontColors(COLOR2);
-			mprintf( 150, LINE_HEIGHT * ubLine, L"ON INT TILE" );
+			mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("ON INT TILE") );
 			ubLine++;
 		}
 
@@ -4335,43 +4336,43 @@ void DebugSoldierPage2( )
 		if ( gpWorldLevelData[ usMapPos ].uiFlags & MAPELEMENT_REVEALED )
 		{
 			SetFontColors(COLOR2);
-			//mprintf( 0, LINE_HEIGHT * 9, L"Merc: %d",	gpWorldLevelData[ sMapPos ].ubReservedSoldierID );
+			//mprintf( 0, LINE_HEIGHT * 9, JA2_TEXT("Merc: %d"),	gpWorldLevelData[ sMapPos ].ubReservedSoldierID );
 			SetFontColors(COLOR2);
-			mprintf( 150, LINE_HEIGHT * ubLine, L"REVEALED" );
+			mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("REVEALED") );
 			ubLine++;
 		}
 
 		if ( gpWorldLevelData[ usMapPos ].uiFlags & MAPELEMENT_RAISE_LAND_START )
 		{
 			SetFontColors(COLOR2);
-			//mprintf( 0, LINE_HEIGHT * 9, L"Merc: %d",	gpWorldLevelData[ sMapPos ].ubReservedSoldierID );
+			//mprintf( 0, LINE_HEIGHT * 9, JA2_TEXT("Merc: %d"),	gpWorldLevelData[ sMapPos ].ubReservedSoldierID );
 			SetFontColors(COLOR2);
-			mprintf( 150, LINE_HEIGHT * ubLine, L"Land Raise Start" );
+			mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("Land Raise Start") );
 			ubLine++;
 		}
 
 		if ( gpWorldLevelData[ usMapPos ].uiFlags & MAPELEMENT_RAISE_LAND_END )
 		{
 			SetFontColors(COLOR2);
-			//mprintf( 0, LINE_HEIGHT * 9, L"Merc: %d",	gpWorldLevelData[ usMapPos ].ubReservedSoldierID );
+			//mprintf( 0, LINE_HEIGHT * 9, JA2_TEXT("Merc: %d"),	gpWorldLevelData[ usMapPos ].ubReservedSoldierID );
 			SetFontColors(COLOR2);
-			mprintf( 150, LINE_HEIGHT * ubLine, L"Raise Land End" );
+			mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("Raise Land End") );
 			ubLine++;
 		}
 
 		if (gusWorldRoomInfo[ usMapPos ] != NO_ROOM )
 		{
 			SetFontColors(COLOR2);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"Room Number" );
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Room Number") );
 			SetFontColors(COLOR2);
-			mprintf( 150, LINE_HEIGHT * ubLine, L"%d", gusWorldRoomInfo[ usMapPos ] );
+			mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), gusWorldRoomInfo[ usMapPos ] );
 			ubLine++;
 		}
 
 		if ( gpWorldLevelData[ usMapPos ].ubExtFlags[0] & MAPELEMENT_EXT_NOBURN_STRUCT )
 		{
 			SetFontColors(COLOR2);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"Don't Use Burn Through For Soldier" );
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Don't Use Burn Through For Soldier") );
 			ubLine++;
 		}
 
@@ -4394,49 +4395,49 @@ void DebugSoldierPage3( )
 		GetSoldier( &pSoldier, usSoldierIndex );
 
 		SetFont( LARGEFONT1 );
-		gprintf( 0,0,L"DEBUG SOLDIER PAGE THREE, GRIDNO %d", pSoldier->sGridNo );
+		gprintf( 0,0,JA2_TEXT("DEBUG SOLDIER PAGE THREE, GRIDNO %d"), pSoldier->sGridNo );
 		SetFont( LARGEFONT1 );
 
 		ubLine = 2;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"ID:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("ID:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->ubID );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->ubID );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Action:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Action:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%S", gzActionStr[ pSoldier->aiData.bAction ] );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%S"), gzActionStr[ pSoldier->aiData.bAction ] );
 		if (pSoldier->flags.uiStatusFlags & SOLDIER_ENEMY )
 		{
-			gprintf( 350, LINE_HEIGHT * ubLine, L"Alert %S", gzAlertStr[ pSoldier->aiData.bAlertStatus ] );
+			gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("Alert %S"), gzAlertStr[ pSoldier->aiData.bAlertStatus ] );
 		}
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Action Data:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Action Data:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->aiData.usActionData );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->aiData.usActionData );
 
 		if (pSoldier->flags.uiStatusFlags & SOLDIER_ENEMY )
 		{
-			gprintf( 350, LINE_HEIGHT * ubLine, L"AIMorale %d", pSoldier->aiData.bAIMorale );
+			gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("AIMorale %d"), pSoldier->aiData.bAIMorale );
 		}
 		else
 		{
-			gprintf( 350, LINE_HEIGHT * ubLine, L"Morale %d", pSoldier->aiData.bMorale );
+			gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("Morale %d"), pSoldier->aiData.bMorale );
 		}
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Delayed Movement:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Delayed Movement:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.fDelayedMovement );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.fDelayedMovement );
 		if ( gubWatchedLocPoints[ pSoldier->ubID ][ 0 ] > 0 )
 		{
-			gprintf( 350, LINE_HEIGHT * ubLine, L"Watch %d/%d for %d pts",
+			gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("Watch %d/%d for %d pts"),
 				gsWatchedLoc[ pSoldier->ubID ][ 0 ],
 				gbWatchedLocLevel[ pSoldier->ubID ][ 0 ],
 				gubWatchedLocPoints[ pSoldier->ubID ][ 0 ]
@@ -4446,13 +4447,13 @@ void DebugSoldierPage3( )
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"ActionInProg:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("ActionInProg:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->aiData.bActionInProgress);
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->aiData.bActionInProgress);
 		ubLine++;
 		if ( gubWatchedLocPoints[ pSoldier->ubID ][ 1 ] > 0 )
 		{
-			gprintf( 350, LINE_HEIGHT * ubLine, L"Watch %d/%d for %d pts",
+			gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("Watch %d/%d for %d pts"),
 				gsWatchedLoc[ pSoldier->ubID ][ 1 ],
 				gbWatchedLocLevel[ pSoldier->ubID ][ 1 ],
 				gubWatchedLocPoints[ pSoldier->ubID ][ 1 ]
@@ -4460,14 +4461,14 @@ void DebugSoldierPage3( )
 		}
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Last Action:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Last Action:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%S", gzActionStr[ pSoldier->aiData.bLastAction ]	);
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%S"), gzActionStr[ pSoldier->aiData.bLastAction ]	);
 		ubLine++;
 
 		if ( gubWatchedLocPoints[ pSoldier->ubID ][ 2 ] > 0 )
 		{
-			gprintf( 350, LINE_HEIGHT * ubLine, L"Watch %d/%d for %d pts",
+			gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("Watch %d/%d for %d pts"),
 				gsWatchedLoc[ pSoldier->ubID ][ 2 ],
 				gbWatchedLocLevel[ pSoldier->ubID ][ 2 ],
 				gubWatchedLocPoints[ pSoldier->ubID ][ 2 ]
@@ -4475,15 +4476,15 @@ void DebugSoldierPage3( )
 		}
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Animation:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Animation:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%S", gAnimControl[ pSoldier->usAnimState ].zAnimStr );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%S"), gAnimControl[ pSoldier->usAnimState ].zAnimStr );
 		ubLine++;
 
 /*
 		if ( gubWatchedLocPoints[ pSoldier->ubID ][ 3 ] > 0 )
 		{
-			gprintf( 350, LINE_HEIGHT * ubLine, L"Watch %d/%d for %d pts",
+			gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("Watch %d/%d for %d pts"),
 				gsWatchedLoc[ pSoldier->ubID ][ 3 ],
 				gbWatchedLocLevel[ pSoldier->ubID ][ 3 ],
 				gubWatchedLocPoints[ pSoldier->ubID ][ 3 ]
@@ -4492,92 +4493,92 @@ void DebugSoldierPage3( )
 */
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Getting Hit:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Getting Hit:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.fGettingHit );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.fGettingHit );
 
 		if (pSoldier->ubCivilianGroup != 0)
 		{
-			gprintf( 350, LINE_HEIGHT * ubLine, L"Civ group %d", pSoldier->ubCivilianGroup );
+			gprintf( 350, LINE_HEIGHT * ubLine, JA2_TEXT("Civ group %d"), pSoldier->ubCivilianGroup );
 		}
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Suppress pts:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Suppress pts:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->ubSuppressionPoints );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->ubSuppressionPoints );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Attacker ID:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Attacker ID:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->ubAttackerID );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->ubAttackerID );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"EndAINotCalled:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("EndAINotCalled:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.fTurnInProgress );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.fTurnInProgress );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"PrevAnimation:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("PrevAnimation:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%S", gAnimControl[ pSoldier->usOldAniState ].zAnimStr );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%S"), gAnimControl[ pSoldier->usOldAniState ].zAnimStr );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"PrevAniCode:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("PrevAniCode:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", gusAnimInst[ pSoldier->usOldAniState ][ pSoldier->sOldAniCode ] );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), gusAnimInst[ pSoldier->usOldAniState ][ pSoldier->sOldAniCode ] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"GridNo:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("GridNo:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->sGridNo);
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->sGridNo);
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"AniCode:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("AniCode:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", gusAnimInst[ pSoldier->usAnimState ][ pSoldier->usAniCode ] );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), gusAnimInst[ pSoldier->usAnimState ][ pSoldier->usAniCode ] );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"No APS To fin Move:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("No APS To fin Move:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.fNoAPToFinishMove );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.fNoAPToFinishMove );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Reload Delay:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Reload Delay:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->sReloadDelay );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->sReloadDelay );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Reloading:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Reloading:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.fReloading );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.fReloading );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Bullets out:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Bullets out:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->bBulletsLeft );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->bBulletsLeft );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Anim non-int:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Anim non-int:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.fInNonintAnim );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.fInNonintAnim );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"RT Anim non-int:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("RT Anim non-int:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->flags.fRTInNonintAnim );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->flags.fRTInNonintAnim );
 		ubLine++;
 		
 		// OPIONION OF SELECTED MERC
@@ -4588,10 +4589,10 @@ void DebugSoldierPage3( )
 			gMercProfiles[gusSelectedSoldier->ubProfile].Type == PROFILETYPE_IMP ) )
 		{
 			SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-			gprintf( 0, LINE_HEIGHT * ubLine, L"NPC Opinion:");
+			gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("NPC Opinion:"));
 			SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 			if (OKToCheckOpinion(gusSelectedSoldier->ubProfile))
-				gprintf( 150, LINE_HEIGHT * ubLine, L"%d", gMercProfiles[ pSoldier->ubProfile ].bMercOpinion[ gusSelectedSoldier->ubProfile ] );
+				gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), gMercProfiles[ pSoldier->ubProfile ].bMercOpinion[ gusSelectedSoldier->ubProfile ] );
 			ubLine++;
 		}
 	}
@@ -4601,7 +4602,7 @@ void DebugSoldierPage3( )
 		STRUCTURE *pStructure;
 
 		SetFont( LARGEFONT1 );
-		gprintf( 0,0,L"DEBUG LAND PAGE THREE" );
+		gprintf( 0,0,JA2_TEXT("DEBUG LAND PAGE THREE") );
 		SetFont( LARGEFONT1 );
 
 		// OK, display door information here.....
@@ -4612,7 +4613,7 @@ void DebugSoldierPage3( )
 		if ( pDoorStatus == NULL )
 		{
 			SetFontColors(COLOR1);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"No Door Status");
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("No Door Status"));
 			ubLine++;
 			ubLine++;
 			ubLine++;
@@ -4620,43 +4621,43 @@ void DebugSoldierPage3( )
 		else
 		{
 			SetFontColors(COLOR1);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"Door Status Found:");
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Door Status Found:"));
 			SetFontColors(COLOR2);
-			mprintf( 150, LINE_HEIGHT * ubLine, L" %d", usMapPos );
+			mprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT(" %d"), usMapPos );
 			ubLine++;
 
 			SetFontColors(COLOR1);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"Actual Status:");
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Actual Status:"));
 			SetFontColors(COLOR2);
 
 			if ( pDoorStatus->ubFlags & DOOR_OPEN )
 			{
-				mprintf( 200, LINE_HEIGHT * ubLine, L"OPEN" );
+				mprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("OPEN") );
 			}
 			else
 			{
-				mprintf( 200, LINE_HEIGHT * ubLine, L"CLOSED" );
+				mprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("CLOSED") );
 			}
 			ubLine++;
 
 
 			SetFontColors(COLOR1);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"Perceived Status:");
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Perceived Status:"));
 			SetFontColors(COLOR2);
 
 			if ( pDoorStatus->ubFlags & DOOR_PERCEIVED_NOTSET )
 			{
-				mprintf( 200, LINE_HEIGHT * ubLine, L"NOT SET" );
+				mprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("NOT SET") );
 			}
 			else
 			{
 				if ( pDoorStatus->ubFlags & DOOR_PERCEIVED_OPEN )
 				{
-					mprintf( 200, LINE_HEIGHT * ubLine, L"OPEN" );
+					mprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("OPEN") );
 				}
 				else
 				{
-					mprintf( 200, LINE_HEIGHT * ubLine, L"CLOSED" );
+					mprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("CLOSED") );
 				}
 			}
 			ubLine++;
@@ -4668,22 +4669,22 @@ void DebugSoldierPage3( )
 		if ( pStructure == NULL )
 		{
 			SetFontColors(COLOR1);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"No Door Struct Data");
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("No Door Struct Data"));
 			ubLine++;
 		}
 		else
 		{
 
 			SetFontColors(COLOR1);
-			mprintf( 0, LINE_HEIGHT * ubLine, L"State:");
+			mprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("State:"));
 			SetFontColors(COLOR2);
 			if ( !(pStructure->fFlags & STRUCTURE_OPEN) )
 			{
-				mprintf( 200, LINE_HEIGHT * ubLine, L"CLOSED" );
+				mprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("CLOSED") );
 			}
 			else
 			{
-				mprintf( 200, LINE_HEIGHT * ubLine, L"OPEN" );
+				mprintf( 200, LINE_HEIGHT * ubLine, JA2_TEXT("OPEN") );
 			}
 			ubLine++;
 		}
@@ -4696,16 +4697,16 @@ void AppendAttachmentCode( UINT16 usItem, STR16 str )
 	switch( usItem )
 	{
 		case SILENCER:
-			wcscat( str, L" Sil" );
+			wcscat( str, JA2_TEXT(" Sil") );
 			break;
 		case SNIPERSCOPE:
-			wcscat( str, L" Scp" );
+			wcscat( str, JA2_TEXT(" Scp") );
 			break;
 		case BIPOD:
-			wcscat( str, L" Bip" );
+			wcscat( str, JA2_TEXT(" Bip") );
 			break;
 		case LASERSCOPE:
-			wcscat( str, L" Las" );
+			wcscat( str, JA2_TEXT(" Las") );
 			break;
 	}
 }
@@ -4725,12 +4726,12 @@ void WriteQuantityAndAttachments( OBJECTTYPE *pObject, INT32 yp )
 	if( (*pObject)[0]->AttachmentListSize() > 0 )
 	{
 		fAttachments = TRUE;
-		swprintf( szAttach, L"(" );
+		swprintf( szAttach, JA2_TEXT("(") );
 		for (attachmentList::iterator iter = (*pObject)[0]->attachments.begin(); iter != (*pObject)[0]->attachments.end(); ++iter) {
 			if(iter->exists())
 				AppendAttachmentCode( iter->usItem, szAttach );
 		}
-		wcscat( szAttach, L" )" );
+		wcscat( szAttach, JA2_TEXT(" )") );
 	}
 
 	if( Item[pObject->usItem].usItemClass == IC_AMMO )
@@ -4740,36 +4741,36 @@ void WriteQuantityAndAttachments( OBJECTTYPE *pObject, INT32 yp )
 			CHAR16 str[100];
 			CHAR16 temp[10];
 			UINT8 i;
-			swprintf( str, L"Clips:	%d	(%d", pObject->ubNumberOfObjects, (*pObject)[0]->data.objectStatus );
+			swprintf( str, JA2_TEXT("Clips:	%d	(%d"), pObject->ubNumberOfObjects, (*pObject)[0]->data.objectStatus );
 			for( i = 1; i < pObject->ubNumberOfObjects; i++ )
 			{
-				swprintf( temp, L", %d", (*pObject)[0]->data.objectStatus );
+				swprintf( temp, JA2_TEXT(", %d"), (*pObject)[0]->data.objectStatus );
 				wcscat( str, temp );
 			}
-			wcscat( str, L")" );
+			wcscat( str, JA2_TEXT(")") );
 			gprintf( 320, yp, str );
 		}
 		else
-			gprintf( 320, yp, L"%d rounds", (*pObject)[0]->data.objectStatus );
+			gprintf( 320, yp, JA2_TEXT("%d rounds"), (*pObject)[0]->data.objectStatus );
 		return;
 	}
 	if( pObject->ubNumberOfObjects > 1 && fAttachments )
 	{ //everything
-		gprintf( 320, yp, L"%d%%	Qty:	%d	%s",
+		gprintf( 320, yp, JA2_TEXT("%d%%	Qty:	%d	%s"),
 			(*pObject)[0]->data.objectStatus, pObject->ubNumberOfObjects, szAttach );
 	}
 	else if( pObject->ubNumberOfObjects > 1 )
 	{ //condition and quantity
-		gprintf( 320, yp, L"%d%%	Qty:	%d	",
+		gprintf( 320, yp, JA2_TEXT("%d%%	Qty:	%d	"),
 			(*pObject)[0]->data.objectStatus, pObject->ubNumberOfObjects );
 	}
 	else if( fAttachments )
 	{ //condition and attachments
-		gprintf( 320, yp, L"%d%%	%s", (*pObject)[0]->data.objectStatus, szAttach );
+		gprintf( 320, yp, JA2_TEXT("%d%%	%s"), (*pObject)[0]->data.objectStatus, szAttach );
 	}
 	else
 	{ //condition
-		gprintf( 320, yp, L"%d%%", (*pObject)[0]->data.objectStatus );
+		gprintf( 320, yp, JA2_TEXT("%d%%"), (*pObject)[0]->data.objectStatus );
 	}
 }
 
@@ -4788,27 +4789,27 @@ void DebugSoldierPage4( )
 		GetSoldier( &pSoldier, usSoldierIndex );
 
 		SetFont( LARGEFONT1 );
-		gprintf( 0,0,L"DEBUG SOLDIER PAGE FOUR, GRIDNO %d", pSoldier->sGridNo );
+		gprintf( 0,0,JA2_TEXT("DEBUG SOLDIER PAGE FOUR, GRIDNO %d"), pSoldier->sGridNo );
 		SetFont( LARGEFONT1 );
 		ubLine = 2;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"Exp. Level:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("Exp. Level:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d ( %d )", pSoldier->stats.bExpLevel, EffectiveExpLevel(pSoldier) ); // SANDRO - added effective level calc
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d ( %d )"), pSoldier->stats.bExpLevel, EffectiveExpLevel(pSoldier) ); // SANDRO - added effective level calc
 		switch( pSoldier->ubSoldierClass )
 		{
-			case SOLDIER_CLASS_ADMINISTRATOR:		gprintf( 320, LINE_HEIGHT * ubLine, L"(Administrator)" );	break;
-			case SOLDIER_CLASS_ELITE:				gprintf( 320, LINE_HEIGHT * ubLine, L"(Army Elite)" );		break;
-			case SOLDIER_CLASS_ARMY:				gprintf( 320, LINE_HEIGHT * ubLine, L"(Army Troop)" );		break;
-			case SOLDIER_CLASS_CREATURE:			gprintf( 320, LINE_HEIGHT * ubLine, L"(Creature)" );		break;
-			case SOLDIER_CLASS_GREEN_MILITIA:		gprintf( 320, LINE_HEIGHT * ubLine, L"(Green Militia)" );	break;
-			case SOLDIER_CLASS_REG_MILITIA:			gprintf( 320, LINE_HEIGHT * ubLine, L"(Reg Militia)" );		break;
-			case SOLDIER_CLASS_ELITE_MILITIA:		gprintf( 320, LINE_HEIGHT * ubLine, L"(Elite Militia)" );	break;
-			case SOLDIER_CLASS_MINER:				gprintf( 320, LINE_HEIGHT * ubLine, L"(Miner)" );			break;
-			case SOLDIER_CLASS_ZOMBIE:				gprintf( 320, LINE_HEIGHT * ubLine, L"(Zombie)" );			break;
-			case SOLDIER_CLASS_BANDIT:				gprintf( 320, LINE_HEIGHT * ubLine, L"(Bandit)" );			break;
-			case SOLDIER_CLASS_ROBOT:				gprintf( 320, LINE_HEIGHT * ubLine, L"(Army Robot)" );		break;
+			case SOLDIER_CLASS_ADMINISTRATOR:		gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Administrator)") );	break;
+			case SOLDIER_CLASS_ELITE:				gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Army Elite)") );		break;
+			case SOLDIER_CLASS_ARMY:				gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Army Troop)") );		break;
+			case SOLDIER_CLASS_CREATURE:			gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Creature)") );		break;
+			case SOLDIER_CLASS_GREEN_MILITIA:		gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Green Militia)") );	break;
+			case SOLDIER_CLASS_REG_MILITIA:			gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Reg Militia)") );		break;
+			case SOLDIER_CLASS_ELITE_MILITIA:		gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Elite Militia)") );	break;
+			case SOLDIER_CLASS_MINER:				gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Miner)") );			break;
+			case SOLDIER_CLASS_ZOMBIE:				gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Zombie)") );			break;
+			case SOLDIER_CLASS_BANDIT:				gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Bandit)") );			break;
+			case SOLDIER_CLASS_ROBOT:				gprintf( 320, LINE_HEIGHT * ubLine, JA2_TEXT("(Army Robot)") );		break;
 
 			default:	break; //don't care (don't write anything)
 		}
@@ -4819,26 +4820,26 @@ void DebugSoldierPage4( )
 			SOLDIERINITNODE		*pNode;
 			switch( pSoldier->aiData.bOrders )
 			{
-				case STATIONARY:	swprintf( szOrders, L"STATIONARY" );			break;
-				case ONGUARD:			swprintf( szOrders, L"ON GUARD" );				break;
-				case ONCALL:			swprintf( szOrders, L"ON CALL" );					break;
-				case SEEKENEMY:		swprintf( szOrders, L"SEEK ENEMY" );			break;
-				case CLOSEPATROL:	swprintf( szOrders, L"CLOSE PATROL" );		break;
-				case FARPATROL:		swprintf( szOrders, L"FAR PATROL" );			break;
-				case POINTPATROL:	swprintf( szOrders, L"POINT PATROL" );		break;
-				case RNDPTPATROL:	swprintf( szOrders, L"RND PT PATROL" );		break;
-				case SNIPER:		swprintf( szOrders, L"SNIPER" );		break;
-				default:					swprintf( szOrders, L"UNKNOWN" );					break;
+				case STATIONARY:	swprintf( szOrders, JA2_TEXT("STATIONARY") );			break;
+				case ONGUARD:			swprintf( szOrders, JA2_TEXT("ON GUARD") );				break;
+				case ONCALL:			swprintf( szOrders, JA2_TEXT("ON CALL") );					break;
+				case SEEKENEMY:		swprintf( szOrders, JA2_TEXT("SEEK ENEMY") );			break;
+				case CLOSEPATROL:	swprintf( szOrders, JA2_TEXT("CLOSE PATROL") );		break;
+				case FARPATROL:		swprintf( szOrders, JA2_TEXT("FAR PATROL") );			break;
+				case POINTPATROL:	swprintf( szOrders, JA2_TEXT("POINT PATROL") );		break;
+				case RNDPTPATROL:	swprintf( szOrders, JA2_TEXT("RND PT PATROL") );		break;
+				case SNIPER:		swprintf( szOrders, JA2_TEXT("SNIPER") );		break;
+				default:					swprintf( szOrders, JA2_TEXT("UNKNOWN") );					break;
 			}
 			switch( pSoldier->aiData.bAttitude )
 			{
-				case DEFENSIVE:		swprintf( szAttitude, L"DEFENSIVE" );			break;
-				case BRAVESOLO:		swprintf( szAttitude, L"BRAVE SOLO" );		break;
-				case BRAVEAID:		swprintf( szAttitude, L"BRAVE AID" );			break;
-				case AGGRESSIVE:	swprintf( szAttitude, L"AGGRESSIVE" );		break;
-				case CUNNINGSOLO:	swprintf( szAttitude, L"CUNNING SOLO" );	break;
-				case CUNNINGAID:	swprintf( szAttitude, L"CUNNING AID"	);	break;
-				default:					swprintf( szAttitude, L"UNKNOWN" );				break;
+				case DEFENSIVE:		swprintf( szAttitude, JA2_TEXT("DEFENSIVE") );			break;
+				case BRAVESOLO:		swprintf( szAttitude, JA2_TEXT("BRAVE SOLO") );		break;
+				case BRAVEAID:		swprintf( szAttitude, JA2_TEXT("BRAVE AID") );			break;
+				case AGGRESSIVE:	swprintf( szAttitude, JA2_TEXT("AGGRESSIVE") );		break;
+				case CUNNINGSOLO:	swprintf( szAttitude, JA2_TEXT("CUNNING SOLO") );	break;
+				case CUNNINGAID:	swprintf( szAttitude, JA2_TEXT("CUNNING AID")	);	break;
+				default:					swprintf( szAttitude, JA2_TEXT("UNKNOWN") );				break;
 			}
 			pNode = gSoldierInitHead;
 			while( pNode )
@@ -4850,413 +4851,413 @@ void DebugSoldierPage4( )
 			SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 			if( pNode )
 			{
-				gprintf( 0, LINE_HEIGHT * ubLine, L"%s, %s, REL EQUIP: %d, REL ATTR: %d",
+				gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("%s, %s, REL EQUIP: %d, REL ATTR: %d"),
 					szOrders, szAttitude, pNode->pBasicPlacement->bRelativeEquipmentLevel,
 					pNode->pBasicPlacement->bRelativeAttributeLevel );
 			}
 			else
 			{
-				gprintf( 0, LINE_HEIGHT * ubLine, L"%s, %s", szOrders, szAttitude );
+				gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("%s, %s"), szOrders, szAttitude );
 			}
 			ubLine++;
 		}
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"ID:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("ID:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
-		gprintf( 150, LINE_HEIGHT * ubLine, L"%d", pSoldier->ubID );
+		gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%d"), pSoldier->ubID );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"HELMETPOS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("HELMETPOS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[HELMETPOS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[HELMETPOS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[HELMETPOS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[HELMETPOS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"VESTPOS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("VESTPOS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[VESTPOS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[VESTPOS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[VESTPOS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[VESTPOS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"LEGPOS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("LEGPOS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[LEGPOS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[LEGPOS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[LEGPOS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[LEGPOS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"HEAD1POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("HEAD1POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[HEAD1POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[HEAD1POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[HEAD1POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[HEAD1POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"HEAD2POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("HEAD2POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[HEAD2POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[HEAD2POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[HEAD2POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[HEAD2POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"HANDPOS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("HANDPOS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[HANDPOS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[HANDPOS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[HANDPOS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[HANDPOS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SECONDHANDPOS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SECONDHANDPOS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SECONDHANDPOS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SECONDHANDPOS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SECONDHANDPOS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SECONDHANDPOS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"BIGPOCK1POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("BIGPOCK1POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[BIGPOCK1POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[BIGPOCK1POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[BIGPOCK1POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[BIGPOCK1POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"BIGPOCK2POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("BIGPOCK2POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[BIGPOCK2POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[BIGPOCK2POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[BIGPOCK2POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[BIGPOCK2POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"BIGPOCK3POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("BIGPOCK3POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[BIGPOCK3POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[BIGPOCK3POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[BIGPOCK3POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[BIGPOCK3POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"BIGPOCK4POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("BIGPOCK4POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[BIGPOCK4POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[BIGPOCK4POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[BIGPOCK4POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[BIGPOCK4POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		// CHRISL: Added entries for all the new inventory pockets.
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"BIGPOCK5POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("BIGPOCK5POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[BIGPOCK5POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[BIGPOCK5POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[BIGPOCK5POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[BIGPOCK5POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"BIGPOCK6POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("BIGPOCK6POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[BIGPOCK6POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[BIGPOCK6POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[BIGPOCK6POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[BIGPOCK6POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"BIGPOCK7POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("BIGPOCK7POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[BIGPOCK7POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[BIGPOCK7POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[BIGPOCK7POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[BIGPOCK7POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"MEDPOCK1POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("MEDPOCK1POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[MEDPOCK1POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[MEDPOCK1POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[MEDPOCK1POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[MEDPOCK1POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"MEDPOCK2POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("MEDPOCK2POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[MEDPOCK2POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[MEDPOCK2POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[MEDPOCK2POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[MEDPOCK2POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"MEDPOCK3POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("MEDPOCK3POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[MEDPOCK3POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[MEDPOCK3POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[MEDPOCK3POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[MEDPOCK3POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"MEDPOCK4POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("MEDPOCK4POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[MEDPOCK4POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[MEDPOCK4POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[MEDPOCK4POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[MEDPOCK4POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK1POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK1POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK1POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK1POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK1POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK1POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK2POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK2POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK2POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK2POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK2POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK2POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK3POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK3POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK3POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK3POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK3POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK3POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK4POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK4POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK4POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK4POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK4POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK4POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK5POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK5POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK5POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK5POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK5POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK5POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK6POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK6POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK6POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK6POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK6POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK6POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK7POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK7POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK7POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK7POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK7POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK7POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		// CHRISL: Added entries for all the new inventory pockets
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK8POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK8POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK8POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK8POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK8POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK8POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK9POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK9POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK9POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK9POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK9POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK9POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK10POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK10POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK10POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK10POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK10POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK10POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK11POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK11POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK11POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK11POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK11POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK11POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK12POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK12POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK12POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK12POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK12POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK12POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK13POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK13POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK13POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK13POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK13POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK13POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK14POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK14POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK14POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK14POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK14POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK14POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK15POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK15POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK15POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK15POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK15POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK15POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK16POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK16POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK16POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK16POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK16POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK16POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK17POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK17POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK17POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK17POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK17POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK17POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK18POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK18POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK18POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK18POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK18POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK18POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK19POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK19POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK19POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK19POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK19POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK19POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK20POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK20POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK20POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK20POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK20POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK20POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK21POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK21POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK21POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK21POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK21POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK21POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK22POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK22POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK22POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK22POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK22POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK22POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK23POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK23POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK23POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK23POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK23POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK23POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK24POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK24POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK24POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK24POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK24POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK24POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK25POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK25POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK25POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK25POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK25POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK25POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK26POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK26POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK26POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK26POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK26POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK26POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK27POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK27POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK27POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK27POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK27POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK27POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK28POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK28POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK28POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK28POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK28POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK28POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK29POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK29POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK29POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK29POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK29POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK29POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 
 		SetFontShade(LARGEFONT1, FONT_SHADE_GREEN);
-		gprintf( 0, LINE_HEIGHT * ubLine, L"SMALLPOCK30POS:");
+		gprintf( 0, LINE_HEIGHT * ubLine, JA2_TEXT("SMALLPOCK30POS:"));
 		SetFontShade(LARGEFONT1, FONT_SHADE_NEUTRAL);
 		if( pSoldier->inv[SMALLPOCK30POS].usItem )
-			gprintf( 150, LINE_HEIGHT * ubLine, L"%s", ShortItemNames[pSoldier->inv[SMALLPOCK30POS].usItem] );
+			gprintf( 150, LINE_HEIGHT * ubLine, JA2_TEXT("%s"), ShortItemNames[pSoldier->inv[SMALLPOCK30POS].usItem] );
 		WriteQuantityAndAttachments( &pSoldier->inv[SMALLPOCK30POS], LINE_HEIGHT*ubLine );
 		ubLine++;
 	}
 	else
 	{
 		SetFont( LARGEFONT1 );
-		gprintf( 0,0,L"DEBUG LAND PAGE FOUR" );
+		gprintf( 0,0,JA2_TEXT("DEBUG LAND PAGE FOUR") );
 		SetFont( LARGEFONT1 );
 	}
 }
@@ -5529,7 +5530,7 @@ void MakeNoise(SoldierID ubNoiseMaker, INT32 sGridNo, INT8 bLevel, UINT8 ubTerrT
 	SNoise.ubTerrType = ubTerrType;
 	SNoise.ubVolume = ubVolume;
 	SNoise.ubNoiseType = ubNoiseType;
-	swprintf( SNoise.zNoiseMessage, L"%s", zNoiseMessage );
+	swprintf( SNoise.zNoiseMessage, JA2_TEXT("%s"), zNoiseMessage );
 	//SNoise.zNoiseMessage = zNoiseMessage;
 
 	if ( gTacticalStatus.ubAttackBusyCount )
@@ -5887,7 +5888,7 @@ void ProcessNoise( SoldierID ubNoiseMaker, INT32 sGridNo, INT8 bLevel, UINT8 ubT
 				/*
 				else if ( (ubNoiseMaker->bVisible == TRUE) && (bTeam == gbPlayerNum) )
 				{
-					ScreenMsg( MSG_FONT_YELLOW, MSG_TESTVERSION, L"Handling noise from person not currently seen in player's public opplist" );
+					ScreenMsg( MSG_FONT_YELLOW, MSG_TESTVERSION, JA2_TEXT("Handling noise from person not currently seen in player's public opplist") );
 				}
 				*/
 
@@ -6731,8 +6732,8 @@ void TellPlayerAboutNoise( SOLDIERTYPE *pSoldier, SoldierID ubNoiseMaker, INT32 
 	if ( ubNoiseMaker != NOBODY && pSoldier->bTeam == gbPlayerNum && pSoldier->bTeam == ubNoiseMaker->bTeam )
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( MSG_FONT_RED, MSG_ERROR, L"ERROR! TAKE SCREEN CAPTURE AND TELL CAMFIELD NOW!" );
-			ScreenMsg( MSG_FONT_RED, MSG_ERROR, L"%s (%d) heard noise from %s (%d), noise at %dL%d, type %d", pSoldier->name, pSoldier->ubID, ubNoiseMaker->name, ubNoiseMaker, sGridNo, bLevel, ubNoiseType );
+			ScreenMsg( MSG_FONT_RED, MSG_ERROR, JA2_TEXT("ERROR! TAKE SCREEN CAPTURE AND TELL CAMFIELD NOW!") );
+			ScreenMsg( MSG_FONT_RED, MSG_ERROR, JA2_TEXT("%s (%d) heard noise from %s (%d), noise at %dL%d, type %d"), pSoldier->name, pSoldier->ubID, ubNoiseMaker->name, ubNoiseMaker, sGridNo, bLevel, ubNoiseType );
 		#endif
 	}
 
@@ -6768,8 +6769,7 @@ void TellPlayerAboutNoise( SOLDIERTYPE *pSoldier, SoldierID ubNoiseMaker, INT32 
 			if (gTauntsSettings.fTauntVoiceShowInfo)
 				ScreenMsg(FONT_ORANGE, MSG_INTERFACE, zNoiseMessage);
 
-			// convert wchar to char			
-			wcstombs(filename, zNoiseMessage, wcslen(zNoiseMessage) + 1);
+			ja2::text::copyUtf16ToUtf8(zNoiseMessage, filename);
 			// sevenfm: play voice taunt (check that noise string is a filename)
 			if (gTauntsSettings.fTauntVoice	 &&
 				strlen(filename) != 0 &&
@@ -6777,7 +6777,7 @@ void TellPlayerAboutNoise( SOLDIERTYPE *pSoldier, SoldierID ubNoiseMaker, INT32 
 			{
 				UINT32 playResult = PlayJA2SampleFromFile(filename, RATE_11025, SoundVolume(HIGHVOLUME, pSoldier->sGridNo), 1, SoundDir(pSoldier->sGridNo));
 				if (playResult == SOUND_ERROR && gTauntsSettings.fTauntVoiceShowInfo)
-					ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"Noise: Failed to play taunt");
+					ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("Noise: Failed to play taunt"));
 			}
 			else
 			{
@@ -6787,14 +6787,14 @@ void TellPlayerAboutNoise( SOLDIERTYPE *pSoldier, SoldierID ubNoiseMaker, INT32 
 					if (gTauntsSettings.fTauntShowPopupBox == TRUE)
 						ShowTauntPopupBox(ubNoiseMaker, zNoiseMessage);
 					if (gTauntsSettings.fTauntShowInLog == TRUE)
-						ScreenMsg(FONT_GRAY2, MSG_INTERFACE, L"%s: %s", ubNoiseMaker->GetName(), zNoiseMessage);
+						ScreenMsg(FONT_GRAY2, MSG_INTERFACE, JA2_TEXT("%s: %s"), ubNoiseMaker->GetName(), zNoiseMessage);
 				}
 				else
 				{
 					if (gTauntsSettings.fTauntShowPopupBox == TRUE && gTauntsSettings.fTauntShowPopupBoxIfHeard == TRUE)
 						ShowTauntPopupBox(ubNoiseMaker, zNoiseMessage);
 					if (gTauntsSettings.fTauntShowInLog == TRUE && gTauntsSettings.fTauntShowInLogIfHeard == TRUE)
-						ScreenMsg(FONT_GRAY2, MSG_INTERFACE, L"%s: %s", pTauntUnknownVoice[0], zNoiseMessage);
+						ScreenMsg(FONT_GRAY2, MSG_INTERFACE, JA2_TEXT("%s: %s"), pTauntUnknownVoice[0], zNoiseMessage);
 				}
 			}			
 		}
@@ -7563,7 +7563,7 @@ INT8 GetWatchedLocPoints( UINT16 ubID, INT32 sGridNo, INT8 bLevel )
 			/*
 			if (gubWatchedLocPoints[ ubID ][ bLoc ] > 1)
 			{
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Soldier %d getting %d points for interrupt in watched location", ubID, gubWatchedLocPoints[ ubID ][ bLoc ] - 1 );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Soldier %d getting %d points for interrupt in watched location"), ubID, gubWatchedLocPoints[ ubID ][ bLoc ] - 1 );
 			}
 			*/
 		#endif

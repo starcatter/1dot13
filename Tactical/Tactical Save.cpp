@@ -882,7 +882,7 @@ BOOLEAN AddWorldItemsToUnLoadedSector(INT16 sMapX, INT16 sMapY, INT8 bMapZ, INT3
 			pWorldItems[uiLastItemPos].usFlags |= WORLD_ITEM_GRIDNO_NOT_SET_USE_ENTRY_POINT;
 
 			// Display warning.....
-			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Error: Trying to add item ( %d: %s ) to invalid gridno in unloaded sector. Please Report.", pWorldItems[uiLoop].object.usItem, ItemNames[pWorldItems[uiLoop].object.usItem]);
+			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Error: Trying to add item ( %d: %s ) to invalid gridno in unloaded sector. Please Report."), pWorldItems[uiLoop].object.usItem, ItemNames[pWorldItems[uiLoop].object.usItem]);
 		}
 
 
@@ -966,7 +966,7 @@ BOOLEAN AddItemsToUnLoadedSector(INT16 sMapX, INT16 sMapY, INT8 bMapZ, INT32 sGr
 			pWorldItems[cnt].usFlags |= WORLD_ITEM_GRIDNO_NOT_SET_USE_ENTRY_POINT;
 
 			// Display warning.....
-			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Error: Trying to add item ( %d: %s ) to invalid gridno in unloaded sector. Please Report.", pWorldItems[cnt].object.usItem, ItemNames[pWorldItems[cnt].object.usItem]);
+			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Error: Trying to add item ( %d: %s ) to invalid gridno in unloaded sector. Please Report."), pWorldItems[cnt].object.usItem, ItemNames[pWorldItems[cnt].object.usItem]);
 		}
 
 
@@ -1444,7 +1444,7 @@ void SetLastTimePlayerWasInSector()
 			pTempNode = pTempNode->next;
 		}
 		#ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Failed to Set the 'uiTimeCurrentSectorWasLastLoaded' for an underground sector" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Failed to Set the 'uiTimeCurrentSectorWasLastLoaded' for an underground sector") );
 		#endif
 	}
 }
@@ -1474,7 +1474,7 @@ void SetLastTimePlayerWasInSector(INT16 sMapX, INT16 sMapY, INT8 sMapZ)
 			pTempNode = pTempNode->next;
 		}
 		#ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Failed to Set the 'uiTimeCurrentSectorWasLastLoaded' for an underground sector" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Failed to Set the 'uiTimeCurrentSectorWasLastLoaded' for an underground sector") );
 		#endif
 	}
 }
@@ -1504,7 +1504,7 @@ UINT32 GetLastTimePlayerWasInSector()
 		}
 
 		#ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Failed to Get the 'uiTimeCurrentSectorWasLastLoaded' from an underground sector" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Failed to Get the 'uiTimeCurrentSectorWasLastLoaded' from an underground sector") );
 		#endif
 
 		return( 0 );
@@ -1537,7 +1537,7 @@ UINT32 GetLastTimePlayerWasInSector(INT16 sMapX, INT16 sMapY, INT8 sMapZ)
 		}
 
 		#ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Failed to Get the 'uiTimeCurrentSectorWasLastLoaded' from an underground sector" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Failed to Get the 'uiTimeCurrentSectorWasLastLoaded' from an underground sector") );
 		#endif
 
 		return( 0 );
@@ -2996,7 +2996,7 @@ BOOLEAN JA2EncryptedFileWrite( HWFILE hFile, PTR pDest, UINT32 uiBytesToWrite, U
 
 void GetMapTempFileName( UINT32 uiType, STR pMapName, INT16 sMapX, INT16 sMapY, INT8 bMapZ )
 {
-	CHAR	zTempName[512];
+	CHAR8	zTempName[512];
 
 	//Convert the current sector location into a file name
 	GetMapFileName( sMapX,sMapY, bMapZ, zTempName, FALSE, FALSE );

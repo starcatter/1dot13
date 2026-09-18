@@ -478,8 +478,8 @@ void InitCreatureQuest()
 			#ifdef JA2BETAVERSION
 			{
 				CHAR16 str[512];
-				swprintf( str, L"Creature quest never chose a lair and won't infect any mines.	Infectible mines = %d, iRandom = %d.	"
-											L"This isn't a bug if you are not receiving income from any mines.", iNumMinesInfectible, iOrigRandom );
+				swprintf( str, JA2_TEXT("Creature quest never chose a lair and won't infect any mines.	Infectible mines = %d, iRandom = %d.	")
+											JA2_TEXT("This isn't a bug if you are not receiving income from any mines."), iNumMinesInfectible, iOrigRandom );
 				DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 			}
 			#endif
@@ -691,7 +691,7 @@ static void AddCreaturesToBattle( UINT8 ubNumYoungMales, UINT8 ubNumYoungFemales
 	}
 
 	#ifdef JA2TESTVERSION
-		ScreenMsg( FONT_RED, MSG_INTERFACE, L"Creature attackers have arrived!" );
+		ScreenMsg( FONT_RED, MSG_INTERFACE, JA2_TEXT("Creature attackers have arrived!") );
 	#endif
 
 	if( gsCreatureInsertionCode != INSERTION_CODE_GRIDNO )
@@ -777,7 +777,7 @@ static void AddCreaturesToBattle_Other( UINT8 ubNum )
 	}
 
 #ifdef JA2TESTVERSION
-	ScreenMsg( FONT_RED, MSG_INTERFACE, L"Creature attackers have arrived!" );
+	ScreenMsg( FONT_RED, MSG_INTERFACE, JA2_TEXT("Creature attackers have arrived!") );
 #endif
 
 	if ( gsCreatureInsertionCode != INSERTION_CODE_GRIDNO )
@@ -1601,7 +1601,7 @@ BOOLEAN MineClearOfMonsters( UINT8 ubMineIndex )
 
 			default:
 				#ifdef JA2BETAVERSION
-					ScreenMsg( FONT_RED, MSG_ERROR, L"Attempting to check if mine is clear but mine index is invalid (%d).", ubMineIndex );
+					ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Attempting to check if mine is clear but mine index is invalid (%d)."), ubMineIndex );
 				#endif
 				break;
 		}
@@ -1770,7 +1770,7 @@ BOOLEAN PrepareCreaturesForBattle()
 		}
 
 		//if( ubNumColors != 1 )
-		//	ScreenMsg( FONT_RED, MSG_ERROR, L"This map has more than one light color -- KM, LC : 1" );
+		//	ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("This map has more than one light color -- KM, LC : 1") );
 
 		//By default, we only play creature music in the cave levels (the creature levels all consistently
 		//have blue lights while human occupied mines have red lights.	We always play creature music
@@ -1890,7 +1890,7 @@ BOOLEAN PrepareCreaturesForBattle()
 			break;
 		default:
 			#ifdef JA2BETAVERSION
-				ScreenMsg( FONT_RED, MSG_ERROR, L"Invalid creature habitat ID of %d for PrepareCreaturesForBattle.	Ignoring...", ubCreatureHabitat );
+				ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Invalid creature habitat ID of %d for PrepareCreaturesForBattle.	Ignoring..."), ubCreatureHabitat );
 			#endif
 			return FALSE;
 	}
@@ -2195,7 +2195,7 @@ BOOLEAN LoadCreatureDirectives( HWFILE hFile, UINT32 uiSavedGameVersion )
 			break;
 		default:
 			#ifdef JA2BETAVERSION
-				ScreenMsg( FONT_RED, MSG_ERROR, L"Invalid restoration of creature lair ID of %d.	Save game potentially hosed.", giLairID );
+				ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Invalid restoration of creature lair ID of %d.	Save game potentially hosed."), giLairID );
 			#endif
 			break;
 	}
@@ -2221,7 +2221,7 @@ BOOLEAN LoadCreatureDirectives( HWFILE hFile, UINT32 uiSavedGameVersion )
 	else
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_RED, MSG_ERROR, L"Invalid restoration of creature lair ID of %d.	Save game potentially hosed.", giLairID );
+			ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Invalid restoration of creature lair ID of %d.	Save game potentially hosed."), giLairID );
 		#endif
 	}
 

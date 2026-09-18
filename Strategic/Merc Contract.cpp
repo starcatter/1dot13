@@ -1071,7 +1071,7 @@ BOOLEAN StrategicRemoveMerc( SOLDIERTYPE *pSoldier )
 	if( ( pSoldier->ubWhatKindOfMercAmI == MERC_TYPE__PLAYER_CHARACTER ) &&
 		( gMercProfiles[ pSoldier->ubProfile ].bMercStatus == MERC_IS_DEAD ) ) {
 		// Replace the name with an empty string
-		wcsncpy( gMercProfiles[ pSoldier->ubProfile ].zName, L"", 1 );
+		wcsncpy( gMercProfiles[ pSoldier->ubProfile ].zName, JA2_TEXT(""), 1 );
 	}
 
 	// ATE: update team panels....
@@ -1180,7 +1180,7 @@ void NotifyPlayerOfMercDepartureAndPromptEquipmentPlacement( SOLDIERTYPE *pSoldi
 	GetShortSectorString( pSoldier->sSectorX ,pSoldier->sSectorY, zShortTownIDString );
 
 	// Set string for generic button
-	swprintf( gzUserDefinedButton1, L"%s", zShortTownIDString );
+	swprintf( gzUserDefinedButton1, JA2_TEXT("%s"), zShortTownIDString );
 
 
 	pLeaveSoldier = pSoldier;
@@ -1234,7 +1234,7 @@ void NotifyPlayerOfMercDepartureAndPromptEquipmentPlacement( SOLDIERTYPE *pSoldi
 		{
 			// Set string for generic button
 			GetShortSectorString( AIRPORT_X, AIRPORT_Y, zShortDropOffString );
-			swprintf( gzUserDefinedButton2, L"%s", zShortDropOffString ); //B13
+			swprintf( gzUserDefinedButton2, JA2_TEXT("%s"), zShortDropOffString ); //B13
 
 			if( gMercProfiles[ pSoldier->ubProfile ].bSex == MALE )
 			{
@@ -1266,7 +1266,7 @@ void NotifyPlayerOfMercDepartureAndPromptEquipmentPlacement( SOLDIERTYPE *pSoldi
 		{
 			// Set string for generic button
 			GetShortSectorString( OMERTA_LEAVE_EQUIP_SECTOR_X, OMERTA_LEAVE_EQUIP_SECTOR_Y, zShortDropOffString );
-			swprintf( gzUserDefinedButton2, L"%s", zShortDropOffString ); //A9
+			swprintf( gzUserDefinedButton2, JA2_TEXT("%s"), zShortDropOffString ); //A9
 
 			if( gMercProfiles[ pSoldier->ubProfile ].bSex == MALE )
 			{

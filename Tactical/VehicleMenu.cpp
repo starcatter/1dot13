@@ -35,7 +35,7 @@ void HideVehicleMenu( void )
 BOOLEAN Popup_VehicleMenuOptionOff( void )	{ return FALSE; }
 
 void
-VehicleMenuItem::SetupPopup(CHAR* name)
+VehicleMenuItem::SetupPopup(CHAR8* name)
 {
 	// create a popup
 	gPopup = new POPUP(name);
@@ -81,7 +81,7 @@ VehicleSelection::Setup( UINT32 aVal )
 	{
 		swprintf( pStr, gNewVehicle[ pVehicleList[ bVehicleID ].ubVehicleType ].VehicleSeats[i].zSeatName );
 
-		pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &Wrapper_Function_VehicleSelection, i ));
+		pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &Wrapper_Function_VehicleSelection, i ));
 
 		// if seat is already taken, grey it out
 		if ( pVehicleList[ bVehicleID ].pPassengers[ i ] != NULL )
@@ -125,7 +125,7 @@ VehicleSelection::Setup( UINT32 aVal )
 
 	// cancel option
 	swprintf( pStr, pSkillMenuStrings[SKILLMENU_CANCEL] );
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &Wrapper_Cancel_VehicleSelection, 0 ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &Wrapper_Cancel_VehicleSelection, 0 ) );
 	GetPopup()->addOption( *pOption );
 		
 	// grab soldier's x,y screen position

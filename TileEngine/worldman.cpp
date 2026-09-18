@@ -18,15 +18,15 @@ extern BOOLEAN	gfBasement;
 UINT32 guiLNCount[9];
 static CHAR16 gzLevelString[9][15] =
 {
-	L"",
-	L"Land		%d",
-	L"Object	%d",
-	L"Struct	%d",
-	L"Shadow	%d",
-	L"Merc		%d",
-	L"Roof		%d",
-	L"Onroof	%d",
-	L"Topmost	%d",
+	JA2_TEXT(""),
+	JA2_TEXT("Land		%d"),
+	JA2_TEXT("Object	%d"),
+	JA2_TEXT("Struct	%d"),
+	JA2_TEXT("Shadow	%d"),
+	JA2_TEXT("Merc		%d"),
+	JA2_TEXT("Roof		%d"),
+	JA2_TEXT("Onroof	%d"),
+	JA2_TEXT("Topmost	%d"),
 };
 
 // World management routines ( specific Double Linked list functions
@@ -96,15 +96,15 @@ void DebugLevelNodePage( void )
 	UINT32 uiLoop;
 
 	SetFont( LARGEFONT1 );
-	gprintf( 0, 0, L"DEBUG LEVELNODES PAGE 1 OF 1" );
+	gprintf( 0, 0, JA2_TEXT("DEBUG LEVELNODES PAGE 1 OF 1") );
 
 	for (uiLoop = 1; uiLoop < 9; uiLoop++)
 	{
 		gprintf( 0, LINE_HEIGHT * (uiLoop + 1), gzLevelString[uiLoop], guiLNCount[uiLoop] );
 	}
-	gprintf( 0, LINE_HEIGHT * 12, L"%d land nodes in excess of world max", guiLNCount[1] - WORLD_MAX);
-	gprintf( 0, LINE_HEIGHT * 13, L"Total # levelnodes %d, %d bytes each", guiLNCount[0], sizeof( LEVELNODE ) );
-	gprintf( 0, LINE_HEIGHT * 14, L"Total memory for levelnodes %d", guiLNCount[0] * sizeof( LEVELNODE ) );
+	gprintf( 0, LINE_HEIGHT * 12, JA2_TEXT("%d land nodes in excess of world max"), guiLNCount[1] - WORLD_MAX);
+	gprintf( 0, LINE_HEIGHT * 13, JA2_TEXT("Total # levelnodes %d, %d bytes each"), guiLNCount[0], sizeof( LEVELNODE ) );
+	gprintf( 0, LINE_HEIGHT * 14, JA2_TEXT("Total memory for levelnodes %d"), guiLNCount[0] * sizeof( LEVELNODE ) );
 }
 
 BOOLEAN TypeExistsInLevel( LEVELNODE *pStartNode, UINT32 fType, UINT16 *pusIndex )
@@ -2564,7 +2564,7 @@ BOOLEAN AddMercStructureInfoFromAnimSurface( INT32 sGridNo, SOLDIERTYPE *pSoldie
 		if ( fReturn == FALSE )
 		{
 			// try to add default
-			ScreenMsg( MSG_FONT_YELLOW, MSG_DEBUG, L"FAILED: add struct info for merc: %d, at %d direction %d, trying default instead", pSoldier->ubID, sGridNo, pSoldier->ubDirection );
+			ScreenMsg( MSG_FONT_YELLOW, MSG_DEBUG, JA2_TEXT("FAILED: add struct info for merc: %d, at %d direction %d, trying default instead"), pSoldier->ubID, sGridNo, pSoldier->ubDirection );
 
 			pStructureFileRef = GetDefaultStructureRef( pSoldier->ubID );
 			if ( pStructureFileRef )
@@ -2578,7 +2578,7 @@ BOOLEAN AddMercStructureInfoFromAnimSurface( INT32 sGridNo, SOLDIERTYPE *pSoldie
 		{
 
 			// Debug msg
-			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"FAILED: add struct info for merc %d (%s), at %d direction %d", pSoldier->ubID, pSoldier->name, sGridNo, pSoldier->ubDirection );
+			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("FAILED: add struct info for merc %d (%s), at %d direction %d"), pSoldier->ubID, pSoldier->name, sGridNo, pSoldier->ubDirection );
 
 			if ( pStructureFileRef->pDBStructureRef[ gOneCDirection[ pSoldier->ubDirection ] ].pDBStructure->ubNumberOfTiles > 1 )
 			{

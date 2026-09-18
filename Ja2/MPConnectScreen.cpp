@@ -238,7 +238,7 @@ BOOLEAN		EnterMPCScreen()
 	CreateLoadingScreenProgressBar(TRUE);
 	// default to red connecting color
 	SetProgressBarColor(0,150,0,0);
-	SetRelativeStartAndEndPercentage(0,0,100,L"");
+	SetRelativeStartAndEndPercentage(0,0,100,JA2_TEXT(""));
 
 	//Cancel button
 	/*giMPCCancelBtnImage = LoadButtonImage("INTERFACE\\PreferencesButtons.sti", -1,0,-1,2,-1 );

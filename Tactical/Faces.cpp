@@ -1871,7 +1871,7 @@ void HandleRenderFaceAdjustments( FACETYPE *pFace, BOOLEAN fDisplayBuffer, BOOLE
 
 				//SetFontDestBuffer( uiRenderBuffer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
 
-				//swprintf( sString, L"%d", pSoldier->aiData.bOppCnt );
+				//swprintf( sString, JA2_TEXT("%d"), pSoldier->aiData.bOppCnt );
 
 				//SetFont( TINYFONT1 );
 				//SetFontForeground( FONT_DKRED );
@@ -2177,12 +2177,12 @@ void HandleRenderFaceAdjustments( FACETYPE *pFace, BOOLEAN fDisplayBuffer, BOOLE
 				if (pSoldier->bAssignment == DOCTOR_MILITIA)
 				{
 					// show percentage that we can heal
-					swprintf(sString, L"%3.1f/%3.1f", (FLOAT)(sPtsAvailable * gGameExternalOptions.dIndividualMilitiaDoctorHealModifier), (FLOAT)(usMaximumPts * gGameExternalOptions.dIndividualMilitiaDoctorHealModifier));
+					swprintf(sString, JA2_TEXT("%3.1f/%3.1f"), (FLOAT)(sPtsAvailable * gGameExternalOptions.dIndividualMilitiaDoctorHealModifier), (FLOAT)(usMaximumPts * gGameExternalOptions.dIndividualMilitiaDoctorHealModifier));
 				}
 				else
 				{
 					// shos HP we can heal
-					swprintf(sString, L"%3.1f/%3.1f", (FLOAT)(sPtsAvailable) / 100.0f, (FLOAT)(usMaximumPts) / 100.0f);
+					swprintf(sString, JA2_TEXT("%3.1f/%3.1f"), (FLOAT)(sPtsAvailable) / 100.0f, (FLOAT)(usMaximumPts) / 100.0f);
 				}
 
 				usTextWidth = StringPixLength(sString, FONT10ARIAL);
@@ -2372,14 +2372,14 @@ void HandleRenderFaceAdjustments( FACETYPE *pFace, BOOLEAN fDisplayBuffer, BOOLE
 
 				if (pSoldier->usSkillCooldown[SOLDIER_COOLDOWN_INTEL_PENALTY] > 10)
 				{
-					swprintf(sString, L"Hide %dh", pSoldier->usSkillCooldown[SOLDIER_COOLDOWN_INTEL_PENALTY] / 10);
+					swprintf(sString, JA2_TEXT("Hide %dh"), pSoldier->usSkillCooldown[SOLDIER_COOLDOWN_INTEL_PENALTY] / 10);
 				}
 				else
 				{
 					bPtsAvailable = pSoldier->GetIntelGain();
 					usMaximumPts = (UINT16)(pSoldier->GetUncoverRisk());
 
-					swprintf(sString, L"%4.2f/%d%%%%", bPtsAvailable, usMaximumPts);
+					swprintf(sString, JA2_TEXT("%4.2f/%d%%%%"), bPtsAvailable, usMaximumPts);
 
 					usTextWidth = StringPixLength(sString, FONT10ARIAL) - 10;
 				}
@@ -2391,7 +2391,7 @@ void HandleRenderFaceAdjustments( FACETYPE *pFace, BOOLEAN fDisplayBuffer, BOOLE
 				fShowCustomText = TRUE;
 				bPtsAvailable = pSoldier->GetBurialPoints(&usMaximumPts);
 
-				swprintf(sString, L"%3.1f/%d", bPtsAvailable, usMaximumPts);
+				swprintf(sString, JA2_TEXT("%3.1f/%d"), bPtsAvailable, usMaximumPts);
 				break;
 
 			case ADMINISTRATION:
@@ -2401,7 +2401,7 @@ void HandleRenderFaceAdjustments( FACETYPE *pFace, BOOLEAN fDisplayBuffer, BOOLE
 				sPtsAvailable = (INT16)pSoldier->GetAdministrationPoints();
 				bPtsAvailable = GetAdministrationPercentage(pSoldier->sSectorX, pSoldier->sSectorY);
 
-				swprintf(sString, L"%d/%3.1f", sPtsAvailable, bPtsAvailable);
+				swprintf(sString, JA2_TEXT("%d/%3.1f"), sPtsAvailable, bPtsAvailable);
 				break;
 
 			case EXPLORATION:
@@ -2411,7 +2411,7 @@ void HandleRenderFaceAdjustments( FACETYPE *pFace, BOOLEAN fDisplayBuffer, BOOLE
 				sPtsAvailable = (INT16)pSoldier->GetExplorationPoints();
 
 				// we only show our points, not how far we are with the task, lest the player deduct how many items there are to find in the first place
-				swprintf( sString, L"%d", sPtsAvailable );
+				swprintf( sString, JA2_TEXT("%d"), sPtsAvailable );
 				break;
 			}
 
@@ -2443,11 +2443,11 @@ void HandleRenderFaceAdjustments( FACETYPE *pFace, BOOLEAN fDisplayBuffer, BOOLE
 					{
 						if (fShowMaximum)
 						{
-							swprintf(sString, L"%d/%d", sPtsAvailable, usMaximumPts);
+							swprintf(sString, JA2_TEXT("%d/%d"), sPtsAvailable, usMaximumPts);
 						}
 						else
 						{
-							swprintf(sString, L"%d", sPtsAvailable);
+							swprintf(sString, JA2_TEXT("%d"), sPtsAvailable);
 						}
 					}
 
@@ -2499,7 +2499,7 @@ void HandleRenderFaceAdjustments( FACETYPE *pFace, BOOLEAN fDisplayBuffer, BOOLE
 						}
 					}
 
-					swprintf(sString, L"%d", pSoldier->bActionPoints);
+					swprintf(sString, JA2_TEXT("%d"), pSoldier->bActionPoints);
 					SetFontDestBuffer(uiRenderBuffer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE);
 
 					if (!usTextWidth)
@@ -2567,7 +2567,7 @@ void HandleRenderFaceAdjustments( FACETYPE *pFace, BOOLEAN fDisplayBuffer, BOOLE
 	{
 		SetFontDestBuffer( uiRenderBuffer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
 
-		swprintf( sString, L"%d", pSoldier->aiData.bOppCnt );
+		swprintf( sString, JA2_TEXT("%d"), pSoldier->aiData.bOppCnt );
 
 		SetFont( TINYFONT1 );
 		SetFontForeground( FONT_DKRED );

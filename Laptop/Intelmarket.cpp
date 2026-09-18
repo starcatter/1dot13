@@ -333,7 +333,7 @@ void HandleIntelmarket()
 void RenderIntelmarket()
 {
 	CHAR16		sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 	HVOBJECT	hPixHandle;
 
@@ -471,7 +471,7 @@ void HandleIntelmarket_About()
 void RenderIntelmarket_About()
 {
 	CHAR16		sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 	HVOBJECT	hPixHandle;
 
@@ -575,7 +575,7 @@ void AddPhotoFactTaken(UINT8 aType, INT16 asIndex, STR16 aText)
 	{
 	case PHOTOFACT_TAKEN:
 		{
-			swprintf( gIntelPhotoTakenTextChar16[asIndex], L"%s", aText );
+			swprintf( gIntelPhotoTakenTextChar16[asIndex], JA2_TEXT("%s"), aText );
 
 			gPhotoFactsTakenVector.push_back( std::make_pair( asIndex, gIntelPhotoTakenTextChar16[asIndex] ) );
 		}
@@ -583,7 +583,7 @@ void AddPhotoFactTaken(UINT8 aType, INT16 asIndex, STR16 aText)
 
 	case PHOTOFACT_VERIFIED:
 		{
-			swprintf( gIntelPhotoVerifiedTextChar16[asIndex], L"%s", aText );
+			swprintf( gIntelPhotoVerifiedTextChar16[asIndex], JA2_TEXT("%s"), aText );
 			
 			gPhotoFactsVerifiedVector.push_back( std::make_pair( asIndex, gIntelPhotoVerifiedTextChar16[asIndex] ) );
 		}
@@ -644,7 +644,7 @@ void HandleIntelmarket_Sell()
 void RenderIntelmarket_Sell()
 {
 	CHAR16		sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 	HVOBJECT	hPixHandle;
 

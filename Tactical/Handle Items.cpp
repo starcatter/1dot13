@@ -148,8 +148,8 @@ std::string FoldAsciiFileName( std::string name )
 }
 }
 
-extern BOOL GetBetterObject_InventoryPool( UINT16 usItem, INT16 status, UINT32& arLoop, UINT8& arIndex );
-extern BOOL GetFittingAmmo_InventoryPool( UINT8 usCalibre, UINT8 usAmmoType, UINT32& arLoop );
+extern BOOLEAN GetBetterObject_InventoryPool( UINT16 usItem, INT16 status, UINT32& arLoop, UINT8& arIndex );
+extern BOOLEAN GetFittingAmmo_InventoryPool( UINT8 usCalibre, UINT8 usAmmoType, UINT32& arLoop );
 
 extern BOOLEAN HandleNailsVestFetish( SOLDIERTYPE *pSoldier, UINT32 uiHandPos, UINT16 usReplaceItem );
 extern void PlaySplashSound(INT32 sGridNo);
@@ -548,7 +548,7 @@ INT32 HandleItem( SOLDIERTYPE *pSoldier, INT32 sGridNo, INT8 bLevel, UINT16 usHa
 						{
 							PlayJA2Sample( RG_ID_IMPRINTED, RATE_11025, HIGHVOLUME, 1, MIDDLE );
 
-							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"\"%s\"", TacticalStr[ GUN_GOT_FINGERPRINT ] );
+							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("\"%s\""), TacticalStr[ GUN_GOT_FINGERPRINT ] );
 
 							return( ITEM_HANDLE_BROKEN );
 						}
@@ -779,7 +779,7 @@ INT32 HandleItem( SOLDIERTYPE *pSoldier, INT32 sGridNo, INT8 bLevel, UINT16 usHa
 					DebugMsg(TOPIC_JA2,DBG_LEVEL_3,"HandleItem: auto fire - Rolling dice");
 					roll = PreRandom(diceSides); // changed Random to PreRandom - SANDRO
 					//roll = rand();//Random(diceSides);
-					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Rolled %d vs %d", roll, ((pSoldier->inv[ pSoldier->ubAttackingHand ][0]->data.gun.ubGunShotsLeft >= pSoldier->bDoAutofire)?chanceToMisfire:chanceToMisfireDry));
+					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Rolled %d vs %d"), roll, ((pSoldier->inv[ pSoldier->ubAttackingHand ][0]->data.gun.ubGunShotsLeft >= pSoldier->bDoAutofire)?chanceToMisfire:chanceToMisfireDry));
 
 					misfirePenalty = misfirePenaltyConst + (Chance(misfirePenaltyRand)?1:0); //apply the base integral cost and the fractional cost (in the form of probablilite)
 
@@ -816,7 +816,7 @@ INT32 HandleItem( SOLDIERTYPE *pSoldier, INT32 sGridNo, INT8 bLevel, UINT16 usHa
 				}
 
 
-				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Chance:%d.%d, AvgAps=%f, APs=%d", chanceToMisfire/(diceSides/100),chanceToMisfire%(diceSides/100), avgAPadded,sAPCost-startAPcost);
+				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Chance:%d.%d, AvgAps=%f, APs=%d"), chanceToMisfire/(diceSides/100),chanceToMisfire%(diceSides/100), avgAPadded,sAPCost-startAPcost);
 
 			}
 
@@ -844,7 +844,7 @@ INT32 HandleItem( SOLDIERTYPE *pSoldier, INT32 sGridNo, INT8 bLevel, UINT16 usHa
 						if(is_server || (is_client && pSoldier->ubID <20) ) 
 							send_fire( pSoldier, pSoldier->sSpreadLocations[ 0 ] );
 
-						//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Handle Items.cpp: SendBeginFireWeaponEvent" );
+						//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Handle Items.cpp: SendBeginFireWeaponEvent") );
 					}
 					else
 					{
@@ -852,7 +852,7 @@ INT32 HandleItem( SOLDIERTYPE *pSoldier, INT32 sGridNo, INT8 bLevel, UINT16 usHa
 						if(is_server || (is_client && pSoldier->ubID <20) ) 
 							send_fire( pSoldier, sTargetGridNo );
 
-						//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Handle Items.cpp: SendBeginFireWeaponEvent" );
+						//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Handle Items.cpp: SendBeginFireWeaponEvent") );
 					}
 				}
 				else
@@ -2826,7 +2826,7 @@ void HandleSoldierPickupItem( SOLDIERTYPE *pSoldier, INT32 iItemIndex, INT32 sGr
 				if (iItemIndex == -1)
 				{
 					// WTF????
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, L"Cannot find bomb item in gridno %d", sGridNo );
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, JA2_TEXT("Cannot find bomb item in gridno %d"), sGridNo );
 					return;
 				}
 #endif
@@ -2840,22 +2840,22 @@ void HandleSoldierPickupItem( SOLDIERTYPE *pSoldier, INT32 iItemIndex, INT32 sGr
 
 				// WDS - Use local buffer for storing modified string instead of original copy
 				CHAR16 buffer[99];
-				wchar_t * ptr;
+				CHAR16 * ptr;
 				wcscpy(buffer,TacticalStr[ DISARM_TRAP_PROMPT ]);
 				if((gTacticalStatus.uiFlags & INCOMBAT) || (gTacticalStatus.fEnemyInSector))
 				{
-					wchar_t * string = L" (";
-					wchar_t string2[20];
+					const CHAR16 * string = JA2_TEXT(" (");
+					CHAR16 string2[20];
 
 					ptr = wcscat(buffer, string);
 					_ltow(GetAPsToDisarmMine( pSoldier ), string2, 10); // SANDRO
 					ptr = wcscat(buffer, string2);
-					string = L"AP)";
+					string = JA2_TEXT("AP)");
 					ptr = wcscat(buffer, string);
 				}
 				else
 				{
-					ptr = wcscat(buffer, L"");
+					ptr = wcscat(buffer, JA2_TEXT(""));
 				}
 
 //				DoMessageBox( MSG_BOX_BASIC_STYLE, ptr, GAME_SCREEN, ( UINT8 )MSG_BOX_FLAG_YESNO, BoobyTrapMessageBoxCallBack, NULL );
@@ -3030,7 +3030,7 @@ OBJECTTYPE* InternalAddItemToPool( INT32 *psGridNo, OBJECTTYPE *pObject, INT8 bV
 	if (TileIsOutOfBounds((*psGridNo)))
 	{
 		// Display warning.....
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Error: Item %d was given invalid grid location %d for item pool. Please Report.", pObject->usItem, (*psGridNo) );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Error: Item %d was given invalid grid location %d for item pool. Please Report."), pObject->usItem, (*psGridNo) );
 
 		(*psGridNo) = sNewGridNo = gMapInformation.sCenterGridNo;
 
@@ -4348,9 +4348,9 @@ BOOLEAN DrawItemPoolList( ITEM_POOL *pItemPool, INT32 sGridNo, UINT8 bCommand, I
 					Item[gWorldItems[pItemPool->iItemIndex].object.usItem].usItemClass == IC_LBEGEAR &&
 					LoadBearingEquipment[Item[gWorldItems[pItemPool->iItemIndex].object.usItem].ubClassIndex].lbeClass == BACKPACK &&
 					gWorldItems[pItemPool->iItemIndex].soldierID != NOBODY)
-					swprintf(pStr, L"%s (%d) (%s)", ShortItemNames[gWorldItems[pTempItemPool->iItemIndex].object.usItem], gWorldItems[pTempItemPool->iItemIndex].object.ubNumberOfObjects, gWorldItems[pItemPool->iItemIndex].soldierID->GetName());
+					swprintf(pStr, JA2_TEXT("%s (%d) (%s)"), ShortItemNames[gWorldItems[pTempItemPool->iItemIndex].object.usItem], gWorldItems[pTempItemPool->iItemIndex].object.ubNumberOfObjects, gWorldItems[pItemPool->iItemIndex].soldierID->GetName());
 				else
-					swprintf( pStr, L"%s (%d)", ShortItemNames[ gWorldItems[ pTempItemPool->iItemIndex ].object.usItem ], gWorldItems[ pTempItemPool->iItemIndex ].object.ubNumberOfObjects );
+					swprintf( pStr, JA2_TEXT("%s (%d)"), ShortItemNames[ gWorldItems[ pTempItemPool->iItemIndex ].object.usItem ], gWorldItems[ pTempItemPool->iItemIndex ].object.ubNumberOfObjects );
 			}
 			else
 			{
@@ -4358,9 +4358,9 @@ BOOLEAN DrawItemPoolList( ITEM_POOL *pItemPool, INT32 sGridNo, UINT8 bCommand, I
 					Item[gWorldItems[pItemPool->iItemIndex].object.usItem].usItemClass == IC_LBEGEAR &&
 					LoadBearingEquipment[Item[gWorldItems[pItemPool->iItemIndex].object.usItem].ubClassIndex].lbeClass == BACKPACK &&
 					gWorldItems[pItemPool->iItemIndex].soldierID != NOBODY)
-					swprintf(pStr, L"%s (%s)", ShortItemNames[gWorldItems[pTempItemPool->iItemIndex].object.usItem], gWorldItems[pItemPool->iItemIndex].soldierID->GetName());
+					swprintf(pStr, JA2_TEXT("%s (%s)"), ShortItemNames[gWorldItems[pTempItemPool->iItemIndex].object.usItem], gWorldItems[pItemPool->iItemIndex].soldierID->GetName());
 				else
-					swprintf( pStr, L"%s", ShortItemNames[ gWorldItems[ pTempItemPool->iItemIndex ].object.usItem ] );
+					swprintf( pStr, JA2_TEXT("%s"), ShortItemNames[ gWorldItems[ pTempItemPool->iItemIndex ].object.usItem ] );
 			}
 
 			// Get Width
@@ -4467,9 +4467,9 @@ BOOLEAN DrawItemPoolList( ITEM_POOL *pItemPool, INT32 sGridNo, UINT8 bCommand, I
 					Item[gWorldItems[pItemPool->iItemIndex].object.usItem].usItemClass == IC_LBEGEAR &&
 					LoadBearingEquipment[Item[gWorldItems[pItemPool->iItemIndex].object.usItem].ubClassIndex].lbeClass == BACKPACK &&
 					gWorldItems[pItemPool->iItemIndex].soldierID != NOBODY)
-					swprintf(pStr, L"%s (%d) (%s)", ShortItemNames[gWorldItems[pItemPool->iItemIndex].object.usItem], gWorldItems[pItemPool->iItemIndex].object.ubNumberOfObjects, gWorldItems[pItemPool->iItemIndex].soldierID->GetName());
+					swprintf(pStr, JA2_TEXT("%s (%d) (%s)"), ShortItemNames[gWorldItems[pItemPool->iItemIndex].object.usItem], gWorldItems[pItemPool->iItemIndex].object.ubNumberOfObjects, gWorldItems[pItemPool->iItemIndex].soldierID->GetName());
 				else
-					swprintf( pStr, L"%s (%d)", ShortItemNames[ gWorldItems[ pItemPool->iItemIndex ].object.usItem ], gWorldItems[ pItemPool->iItemIndex ].object.ubNumberOfObjects );
+					swprintf( pStr, JA2_TEXT("%s (%d)"), ShortItemNames[ gWorldItems[ pItemPool->iItemIndex ].object.usItem ], gWorldItems[ pItemPool->iItemIndex ].object.ubNumberOfObjects );
 			}
 			else
 			{
@@ -4477,9 +4477,9 @@ BOOLEAN DrawItemPoolList( ITEM_POOL *pItemPool, INT32 sGridNo, UINT8 bCommand, I
 					Item[gWorldItems[pItemPool->iItemIndex].object.usItem].usItemClass == IC_LBEGEAR &&
 					LoadBearingEquipment[Item[gWorldItems[pItemPool->iItemIndex].object.usItem].ubClassIndex].lbeClass == BACKPACK &&
 					gWorldItems[pItemPool->iItemIndex].soldierID != NOBODY)
-					swprintf(pStr, L"%s (%s)", ShortItemNames[gWorldItems[pItemPool->iItemIndex].object.usItem], gWorldItems[pItemPool->iItemIndex].soldierID->GetName());
+					swprintf(pStr, JA2_TEXT("%s (%s)"), ShortItemNames[gWorldItems[pItemPool->iItemIndex].object.usItem], gWorldItems[pItemPool->iItemIndex].soldierID->GetName());
 				else
-					swprintf( pStr, L"%s", ShortItemNames[ gWorldItems[ pItemPool->iItemIndex ].object.usItem ] );
+					swprintf( pStr, JA2_TEXT("%s"), ShortItemNames[ gWorldItems[ pItemPool->iItemIndex ].object.usItem ] );
 			}
 
 			gprintfdirty( sFontX, sY, pStr );
@@ -5206,14 +5206,14 @@ void StartBombMessageBox( SOLDIERTYPE * pSoldier, INT32 sGridNo )
 	gsTempGridNo = sGridNo;
 	if (ItemIsRemoteTrigger(pSoldier->inv[HANDPOS].usItem))
 	{
-		wcscpy( gzUserDefinedButton[0], L"1" );
-		wcscpy( gzUserDefinedButton[1], L"2" );
-		wcscpy( gzUserDefinedButton[2], L"3" );
-		wcscpy( gzUserDefinedButton[3], L"4" );
-		wcscpy( gzUserDefinedButton[4], L"A" );
-		wcscpy( gzUserDefinedButton[5], L"B" );
-		wcscpy( gzUserDefinedButton[6], L"C" );
-		wcscpy( gzUserDefinedButton[7], L"D" );
+		wcscpy( gzUserDefinedButton[0], JA2_TEXT("1") );
+		wcscpy( gzUserDefinedButton[1], JA2_TEXT("2") );
+		wcscpy( gzUserDefinedButton[2], JA2_TEXT("3") );
+		wcscpy( gzUserDefinedButton[3], JA2_TEXT("4") );
+		wcscpy( gzUserDefinedButton[4], JA2_TEXT("A") );
+		wcscpy( gzUserDefinedButton[5], JA2_TEXT("B") );
+		wcscpy( gzUserDefinedButton[6], JA2_TEXT("C") );
+		wcscpy( gzUserDefinedButton[7], JA2_TEXT("D") );
 
 		DoMessageBox( MSG_BOX_BASIC_SMALL_BUTTONS, TacticalStr[ CHOOSE_BOMB_OR_DEFUSE_FREQUENCY_STR ], GAME_SCREEN, MSG_BOX_FLAG_GENERIC_EIGHT_BUTTONS, BombMessageBoxCallBack, NULL );
 	}
@@ -5255,22 +5255,22 @@ void StartBombMessageBox( SOLDIERTYPE * pSoldier, INT32 sGridNo )
 	}
 	else if ( HasAttachmentOfClass( &(pSoldier->inv[HANDPOS]), AC_DEFUSE ) )
 	{
-		wcscpy( gzUserDefinedButton[0], L"1-A" );
-		wcscpy( gzUserDefinedButton[1], L"1-B" );
-		wcscpy( gzUserDefinedButton[2], L"1-C" );
-		wcscpy( gzUserDefinedButton[3], L"1-D" );
-		wcscpy( gzUserDefinedButton[4], L"2-A" );
-		wcscpy( gzUserDefinedButton[5], L"2-B" );
-		wcscpy( gzUserDefinedButton[6], L"2-C" );
-		wcscpy( gzUserDefinedButton[7], L"2-D" );
-		wcscpy( gzUserDefinedButton[8], L"3-A" );
-		wcscpy( gzUserDefinedButton[9], L"3-B" );
-		wcscpy( gzUserDefinedButton[10], L"3-C" );
-		wcscpy( gzUserDefinedButton[11], L"3-D" );
-		wcscpy( gzUserDefinedButton[12], L"4-A" );
-		wcscpy( gzUserDefinedButton[13], L"4-B" );
-		wcscpy( gzUserDefinedButton[14], L"4-C" );
-		wcscpy( gzUserDefinedButton[15], L"4-D" );
+		wcscpy( gzUserDefinedButton[0], JA2_TEXT("1-A") );
+		wcscpy( gzUserDefinedButton[1], JA2_TEXT("1-B") );
+		wcscpy( gzUserDefinedButton[2], JA2_TEXT("1-C") );
+		wcscpy( gzUserDefinedButton[3], JA2_TEXT("1-D") );
+		wcscpy( gzUserDefinedButton[4], JA2_TEXT("2-A") );
+		wcscpy( gzUserDefinedButton[5], JA2_TEXT("2-B") );
+		wcscpy( gzUserDefinedButton[6], JA2_TEXT("2-C") );
+		wcscpy( gzUserDefinedButton[7], JA2_TEXT("2-D") );
+		wcscpy( gzUserDefinedButton[8], JA2_TEXT("3-A") );
+		wcscpy( gzUserDefinedButton[9], JA2_TEXT("3-B") );
+		wcscpy( gzUserDefinedButton[10], JA2_TEXT("3-C") );
+		wcscpy( gzUserDefinedButton[11], JA2_TEXT("3-D") );
+		wcscpy( gzUserDefinedButton[12], JA2_TEXT("4-A") );
+		wcscpy( gzUserDefinedButton[13], JA2_TEXT("4-B") );
+		wcscpy( gzUserDefinedButton[14], JA2_TEXT("4-C") );
+		wcscpy( gzUserDefinedButton[15], JA2_TEXT("4-D") );
 
        // sevenfm: zero out color values
        for( INT32 cnt = 0; cnt< NUM_CUSTOM_BUTTONS; cnt++)
@@ -5301,22 +5301,22 @@ void StartBombMessageBox( SOLDIERTYPE * pSoldier, INT32 sGridNo )
 	}
 	else if (ItemIsTripwire((&(pSoldier->inv[HANDPOS]))->usItem))
 	{
-		wcscpy( gzUserDefinedButton[0], L"1-A" );
-		wcscpy( gzUserDefinedButton[1], L"1-B" );
-		wcscpy( gzUserDefinedButton[2], L"1-C" );
-		wcscpy( gzUserDefinedButton[3], L"1-D" );
-		wcscpy( gzUserDefinedButton[4], L"2-A" );
-		wcscpy( gzUserDefinedButton[5], L"2-B" );
-		wcscpy( gzUserDefinedButton[6], L"2-C" );
-		wcscpy( gzUserDefinedButton[7], L"2-D" );
-		wcscpy( gzUserDefinedButton[8], L"3-A" );
-		wcscpy( gzUserDefinedButton[9], L"3-B" );
-		wcscpy( gzUserDefinedButton[10], L"3-C" );
-		wcscpy( gzUserDefinedButton[11], L"3-D" );
-		wcscpy( gzUserDefinedButton[12], L"4-A" );
-		wcscpy( gzUserDefinedButton[13], L"4-B" );
-		wcscpy( gzUserDefinedButton[14], L"4-C" );
-		wcscpy( gzUserDefinedButton[15], L"4-D" );
+		wcscpy( gzUserDefinedButton[0], JA2_TEXT("1-A") );
+		wcscpy( gzUserDefinedButton[1], JA2_TEXT("1-B") );
+		wcscpy( gzUserDefinedButton[2], JA2_TEXT("1-C") );
+		wcscpy( gzUserDefinedButton[3], JA2_TEXT("1-D") );
+		wcscpy( gzUserDefinedButton[4], JA2_TEXT("2-A") );
+		wcscpy( gzUserDefinedButton[5], JA2_TEXT("2-B") );
+		wcscpy( gzUserDefinedButton[6], JA2_TEXT("2-C") );
+		wcscpy( gzUserDefinedButton[7], JA2_TEXT("2-D") );
+		wcscpy( gzUserDefinedButton[8], JA2_TEXT("3-A") );
+		wcscpy( gzUserDefinedButton[9], JA2_TEXT("3-B") );
+		wcscpy( gzUserDefinedButton[10], JA2_TEXT("3-C") );
+		wcscpy( gzUserDefinedButton[11], JA2_TEXT("3-D") );
+		wcscpy( gzUserDefinedButton[12], JA2_TEXT("4-A") );
+		wcscpy( gzUserDefinedButton[13], JA2_TEXT("4-B") );
+		wcscpy( gzUserDefinedButton[14], JA2_TEXT("4-C") );
+		wcscpy( gzUserDefinedButton[15], JA2_TEXT("4-D") );
 
        // sevenfm: zero out color values
        for( INT32 cnt = 0; cnt< NUM_CUSTOM_BUTTONS; cnt++)
@@ -7060,7 +7060,7 @@ BOOLEAN CanPlayerUseRocketRifle( SOLDIERTYPE *pSoldier, BOOLEAN fDisplay )
 
 						if ( fDisplay )
 						{
-							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"\"%s\"", TacticalStr[ GUN_NOGOOD_FINGERPRINT ] );
+							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("\"%s\""), TacticalStr[ GUN_NOGOOD_FINGERPRINT ] );
 						}
 					}
 					return( FALSE );
@@ -8367,7 +8367,7 @@ std::vector<std::pair<INT16, STR16> > GetCurrentSectorTileSetVector()
 	// search wether structure exists in the current tilesets. If not, well, too bad
 	for ( INT32 iType = 0; iType < giNumberOfTileTypes; ++iType )
 	{
-		swprintf( gCurrentSectorTileNamesChar16[iType], L"" );
+		swprintf( gCurrentSectorTileNamesChar16[iType], JA2_TEXT("") );
 
 		// if tileset is from the current tileset, check that
 		if ( gTilesets[giCurrentTilesetID].TileSurfaceFilenames[iType][0] )
@@ -8400,7 +8400,7 @@ std::vector<std::pair<INT16, STR16> > GetCurrentSectorAllowedFortificationTileSe
 	// search wether structure exists in the current tilesets. If not, well, too bad
 	for ( UINT16 i = 0; i < STRUCTURE_CONSTRUCT_MAX; ++i )
 	{
-		swprintf( gCurrentSectorTileNamesChar16[i], L"" );
+		swprintf( gCurrentSectorTileNamesChar16[i], JA2_TEXT("") );
 
 		for ( INT32 iType = 0; iType < giNumberOfTileTypes; ++iType )
 		{
@@ -8456,7 +8456,7 @@ std::vector<std::pair<INT16, STR16> > GetTileSetIndexVector( INT16 aKey )
 
 		for ( std::set<UINT8>::iterator it = indexset.begin( ); it != indexset.end( ); ++it )
 		{
-			swprintf( gCurrentSectorTileIndexNamesChar16[(*it)], L"%d", (*it) );
+			swprintf( gCurrentSectorTileIndexNamesChar16[(*it)], JA2_TEXT("%d"), (*it) );
 
 			vec.push_back( std::make_pair( (*it), gCurrentSectorTileIndexNamesChar16[(*it)] ) );
 		}
@@ -9215,7 +9215,7 @@ void HandleFortificationUpdate()
 
 				for ( std::set<UINT16>::iterator it = missingitemsmap.begin( ); it != missingitemsmap.end(); ++it )
 				{
-					ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L" - %s", Item[(*it)].szLongItemName );
+					ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT(" - %s"), Item[(*it)].szLongItemName );
 				}
 			}
 		}
@@ -9271,13 +9271,13 @@ void ExtendedDisarmMessageBox(void)
 
 	if( (gTacticalStatus.uiFlags & TURNBASED ) && (gTacticalStatus.uiFlags & INCOMBAT) )
 	{
-		swprintf( buf, L"%s %d", TacticalStr[ DISARM_DIALOG_DISARM ], disarmAP );
+		swprintf( buf, JA2_TEXT("%s %d"), TacticalStr[ DISARM_DIALOG_DISARM ], disarmAP );
 		wcscpy( gzUserDefinedButton[0], buf );
-		swprintf( buf, L"%s %d", TacticalStr[ DISARM_DIALOG_INSPECT ], disarmAP / 2 );
+		swprintf( buf, JA2_TEXT("%s %d"), TacticalStr[ DISARM_DIALOG_INSPECT ], disarmAP / 2 );
 		wcscpy( gzUserDefinedButton[1], buf );
-		swprintf( buf, L"%s %d", TacticalStr[ DISARM_DIALOG_REMOVE_BLUEFLAG ], disarmAP /2 );
+		swprintf( buf, JA2_TEXT("%s %d"), TacticalStr[ DISARM_DIALOG_REMOVE_BLUEFLAG ], disarmAP /2 );
 		wcscpy( gzUserDefinedButton[2], buf );
-		swprintf( buf, L"%s %d", TacticalStr[ DISARM_DIALOG_BLOWUP ], disarmAP /4 );
+		swprintf( buf, JA2_TEXT("%s %d"), TacticalStr[ DISARM_DIALOG_BLOWUP ], disarmAP /4 );
 		wcscpy( gzUserDefinedButton[3], buf );
 	}
 	else
@@ -9514,7 +9514,7 @@ void DoInteractiveActionDefaultResult( INT32 sGridNo, SoldierID ubID, BOOLEAN aS
 						aSuccess = FALSE;
 
 						// not enough money for a soda, hu? Too bad for you Flugente played the old Crusader Games, which teach you how to handle that particular issue!
-						ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, L"The World Economic Consortium does not condone moochers!" );
+						ScreenMsg( FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("The World Economic Consortium does not condone moochers!") );
 
 						INT16 direction    = GetDirectionToGridNoFromGridNo( sGridNo, pSoldier->sGridNo );
 						INT32 startgridno  = NewGridNo( sGridNo, DirectionInc(direction) );
@@ -9896,7 +9896,7 @@ void ReadEquipmentTable( SOLDIERTYPE* pSoldier, std::string name )
 						}
 
 						//if ( !pSoldier->inv[node.slot].exists( ) )
-							//ScreenMsg( color, MSG_INTERFACE, L"%s found no %s to equip.", pSoldier->GetName( ), Item[node.item].szItemName );
+							//ScreenMsg( color, MSG_INTERFACE, JA2_TEXT("%s found no %s to equip."), pSoldier->GetName( ), Item[node.item].szItemName );
 					}
 				}
 
@@ -9931,7 +9931,7 @@ void ReadEquipmentTable( SOLDIERTYPE* pSoldier, std::string name )
 										{
 											attachmentsound = TRUE;
 
-											//ScreenMsg( color, MSG_INTERFACE, L"%s could not attach %s to %s", pSoldier->GetName( ), Item[item_attachment].szItemName, Item[pObj->usItem].szItemName );
+											//ScreenMsg( color, MSG_INTERFACE, JA2_TEXT("%s could not attach %s to %s"), pSoldier->GetName( ), Item[item_attachment].szItemName, Item[pObj->usItem].szItemName );
 
 											AutoPlaceObjectInInventoryStash( &gItemPointer, pSoldier->sGridNo, pSoldier->pathing.bLevel );
 											DeleteObj( &gItemPointer );
@@ -10197,7 +10197,7 @@ void ReadEquipmentTable( SOLDIERTYPE* pSoldier, std::string name )
 								{
 									attachmentsound = TRUE;
 
-									//ScreenMsg( color, MSG_INTERFACE, L"%s could not attach %s to %s", pSoldier->GetName( ), Item[item_attachment].szItemName, Item[pObj->usItem].szItemName );
+									//ScreenMsg( color, MSG_INTERFACE, JA2_TEXT("%s could not attach %s to %s"), pSoldier->GetName( ), Item[item_attachment].szItemName, Item[pObj->usItem].szItemName );
 
 									AutoPlaceObjectInInventoryStash( &gItemPointer, pSoldier->sGridNo, pSoldier->pathing.bLevel );
 									DeleteObj( &gItemPointer );

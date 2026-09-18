@@ -30,6 +30,24 @@ public:
 	virtual HostPumpResult waitAndDispatchOne(
 		std::uint32_t timeoutMilliseconds) = 0;
 };
+
+// The legacy assertion screen runs its own nested game loop. Registering the
+// process host lets that path pump events without reaching into Win32 or SDL.
+inline ApplicationHost*& CurrentApplicationHostStorage() noexcept
+{
+	static ApplicationHost* host = nullptr;
+	return host;
+}
+
+inline void SetCurrentApplicationHost(ApplicationHost* host) noexcept
+{
+	CurrentApplicationHostStorage() = host;
+}
+
+inline ApplicationHost* GetCurrentApplicationHost() noexcept
+{
+	return CurrentApplicationHostStorage();
+}
 }
 
 #endif

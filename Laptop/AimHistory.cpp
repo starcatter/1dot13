@@ -212,7 +212,7 @@ void RenderAimHistory()
 			}
 			else
 			{
-				Loc::GetString(Loc::AIM_HISTORY, L"Line", COLONEL_MOHANNED, sText, 400);
+				Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), COLONEL_MOHANNED, sText, 400);
 			}
 			DisplayWrappedString(AIM_HISTORY_PARAGRAPH_X, iScreenHeightOffset + 210+LAPTOP_SCREEN_WEB_DELTA_Y, AIM_HISTORY_PARAGRAPH_WIDTH, 2, AIM_HISTORY_TEXT_FONT, AIM_HISTORY_TEXT_COLOR, sText, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 			break;
@@ -229,7 +229,7 @@ void RenderAimHistory()
 			}
 			else
 			{
-				Loc::GetString(Loc::AIM_HISTORY, L"Line", DUNN_AND_BRADROAD, sText, 400);
+				Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), DUNN_AND_BRADROAD, sText, 400);
 			}
 			DisplayWrappedString(AIM_HISTORY_PARAGRAPH_X, iScreenHeightOffset + 270+LAPTOP_SCREEN_WEB_DELTA_Y, AIM_HISTORY_PARAGRAPH_WIDTH, 2, AIM_HISTORY_TEXT_FONT, AIM_HISTORY_TEXT_COLOR, sText, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 
@@ -241,7 +241,7 @@ void RenderAimHistory()
 			}
 			else
 			{
-				Loc::GetString(Loc::AIM_HISTORY, L"Line", INCORPORATION_3, sText, 400);
+				Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), INCORPORATION_3, sText, 400);
 			}
 			DisplayWrappedString(AIM_HISTORY_PARAGRAPH_X, iScreenHeightOffset + 290+LAPTOP_SCREEN_WEB_DELTA_Y, AIM_HISTORY_PARAGRAPH_WIDTH, 2, AIM_HISTORY_TEXT_FONT, AIM_HISTORY_TEXT_COLOR, sText, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 			break;
@@ -387,7 +387,7 @@ BOOLEAN DisplayAimHistoryParagraph(UINT8	ubPageNum, UINT8 ubNumParagraphs)
 	}
 	else
 	{
-		Loc::GetString(Loc::AIM_HISTORY, L"Line", ubPageNum, sText, 400);
+		Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), ubPageNum, sText, 400);
 	}
 	DrawTextToScreen(sText, AIM_HISTORY_PARAGRAPH_X, AIM_HISTORY_SUBTITLE_Y, 0, AIM_HISTORY_PARAGRAPH_TITLE_FONT, AIM_HISTORY_PARAGRAPH_TITLE_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
@@ -402,7 +402,7 @@ BOOLEAN DisplayAimHistoryParagraph(UINT8	ubPageNum, UINT8 ubNumParagraphs)
 		}
 		else
 		{
-			Loc::GetString(Loc::AIM_HISTORY, L"Line", ubPageNum+1, sText, 400);
+			Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), ubPageNum+1, sText, 400);
 		}
 		usNumPixels = DisplayWrappedString(AIM_HISTORY_PARAGRAPH_X, usPosY, AIM_HISTORY_PARAGRAPH_WIDTH, 2, AIM_HISTORY_TEXT_FONT, AIM_HISTORY_TEXT_COLOR, sText, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	}
@@ -418,7 +418,7 @@ BOOLEAN DisplayAimHistoryParagraph(UINT8	ubPageNum, UINT8 ubNumParagraphs)
 		}
 		else
 		{
-			Loc::GetString(Loc::AIM_HISTORY, L"Line", ubPageNum+2, sText, 400);
+			Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), ubPageNum+2, sText, 400);
 		}
 		DisplayWrappedString(AIM_HISTORY_PARAGRAPH_X, usPosY, AIM_HISTORY_PARAGRAPH_WIDTH, 2, AIM_HISTORY_TEXT_FONT, AIM_HISTORY_TEXT_COLOR, sText, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	}
@@ -434,7 +434,7 @@ BOOLEAN DisplayAimHistoryParagraph(UINT8	ubPageNum, UINT8 ubNumParagraphs)
 		}
 		else
 		{
-			Loc::GetString(Loc::AIM_HISTORY, L"Line", ubPageNum+3, sText, 400);
+			Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), ubPageNum+3, sText, 400);
 		}
 		DisplayWrappedString(AIM_HISTORY_PARAGRAPH_X, usPosY, AIM_HISTORY_PARAGRAPH_WIDTH, 2, AIM_HISTORY_TEXT_FONT, AIM_HISTORY_TEXT_COLOR, sText, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	}
@@ -472,7 +472,7 @@ BOOLEAN InitTocMenu()
 		}
 		else
 		{
-			Loc::GetString(Loc::AIM_HISTORY, L"Line", ubLocInFile[i], sText, 400);
+			Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), ubLocInFile[i], sText, 400);
 		}
 		usWidth = StringPixLength(sText, AIM_HISTORY_TOC_TEXT_FONT);
 

@@ -1,4 +1,7 @@
+#include "fileio/LogStore.h"
+
 #include "LegacySGP.h"
+#include "UtfConversion.h"
 #include "ai.h"
 #include "Isometric Utils.h"
 #include "Overhead.h"
@@ -49,8 +52,6 @@
 #include "Soldier Functions.h" // added by SANDRO
 #include "Text.h"	// sevenfm
 #include "english.h" // sevenfm: for ESC key
-#include "fileio/LogStore.h"
-
 #include <string>
 
 #include "connect.h"
@@ -235,7 +236,7 @@ void DebugAI( INT8 bMsgType, SOLDIERTYPE *pSoldier, STR szOutput, INT8 bAction )
 
 	if (pSoldier->ubProfile != NO_PROFILE)
 	{
-		wcstombs(buf, pSoldier->GetName(), 1024 - 1);
+		ja2::text::copyUtf16ToUtf8(pSoldier->GetName(), buf);
 		strcat(msg, " ");
 		strcat(msg, buf);
 	}
@@ -419,7 +420,7 @@ void HandleSoldierAI( SOLDIERTYPE *pSoldier ) // FIXME - this function is named 
 		if ( pSoldier->bTeam != gTacticalStatus.ubCurrentTeam )
 		{
 #ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, L"Turning off AI flag for %d because trying to act out of turn", pSoldier->ubID );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, JA2_TEXT("Turning off AI flag for %d because trying to act out of turn"), pSoldier->ubID );
 #endif
 			pSoldier->flags.uiStatusFlags &= ~SOLDIER_UNDERAICONTROL;
 			return;
@@ -660,7 +661,12 @@ void HandleSoldierAI( SOLDIERTYPE *pSoldier ) // FIXME - this function is named 
 			// ATE: Display message that deadlock occured...
 			LiveMessage( "Breaking Deadlock" );
 
-			ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"Aborting AI deadlock for [%d] %s %s data %d", pSoldier->ubID.i, pSoldier->GetName(), utf8_to_wstring(std::string(szAction[pSoldier->aiData.bAction])).c_str(), pSoldier->aiData.usActionData);
+			const ja2::text::Utf16String actionName =
+				ja2::text::utf8ToUtf16ReplacingInvalid(szAction[pSoldier->aiData.bAction]);
+			ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE,
+				JA2_TEXT("Aborting AI deadlock for [%d] %s %s data %d"),
+				pSoldier->ubID.i, pSoldier->GetName(), actionName.c_str(),
+				pSoldier->aiData.usActionData);
 			DebugAI(String("Aborting AI deadlock for [%d] %s data %d", pSoldier->ubID, szAction[pSoldier->aiData.bAction], pSoldier->aiData.usActionData));
 
 #ifdef JA2TESTVERSION
@@ -671,7 +677,7 @@ void HandleSoldierAI( SOLDIERTYPE *pSoldier ) // FIXME - this function is named 
 
 			// If we are in beta version, also report message!
 #ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, L"Aborting AI deadlock for %d. Please sent DEBUG.TXT file and SAVE.", pSoldier->ubID.i );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, JA2_TEXT("Aborting AI deadlock for %d. Please sent DEBUG.TXT file and SAVE."), pSoldier->ubID.i );
 #endif
 			// just abort
 			EndAIDeadlock();
@@ -2066,7 +2072,7 @@ INT8 ExecuteAction(SOLDIERTYPE *pSoldier)
                     // Check if we were told to move by NPC stuff				
                     if ( !TileIsOutOfBounds(pSoldier->sAbsoluteFinalDestination) && !(gTacticalStatus.uiFlags & INCOMBAT) )
                     {
-                        //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, L"AI %s failed to get path for dialogue-related move!", pSoldier->name );
+                        //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, JA2_TEXT("AI %s failed to get path for dialogue-related move!"), pSoldier->name );
 
                         // Are we close enough?
                         if ( !ACTING_ON_SCHEDULE( pSoldier ) && SpacesAway( pSoldier->sGridNo, pSoldier->sAbsoluteFinalDestination ) < 4 )
@@ -2245,7 +2251,7 @@ INT8 ExecuteAction(SOLDIERTYPE *pSoldier)
                 if ( iRetCode != ITEM_HANDLE_BROKEN ) // if the item broke, this is 'legal' and doesn't need reporting
                 {
                     DebugAI( String( "AI %d got error code %ld from HandleItem, doing action %d, has %d APs... aborting deadlock!", pSoldier->ubID, iRetCode, pSoldier->aiData.bAction, pSoldier->bActionPoints ) );
-                    ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"AI %d got error code %ld from HandleItem, doing action %d... aborting deadlock!", pSoldier->ubID, iRetCode, pSoldier->aiData.bAction );
+                    ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("AI %d got error code %ld from HandleItem, doing action %d... aborting deadlock!"), pSoldier->ubID, iRetCode, pSoldier->aiData.bAction );
                 }
 				DebugAI(AI_MSG_INFO, pSoldier, String("CancelAIAction: !ITEM_HANDLE_OK"));
                 CancelAIAction( pSoldier, FORCE);
@@ -2314,10 +2320,10 @@ INT8 ExecuteAction(SOLDIERTYPE *pSoldier)
 				PossiblyStartEnemyTaunt( pSoldier, TAUNT_INFORM_ABOUT );
 			}
             
-            //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Debug: AI radios your position!" );
+            //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Debug: AI radios your position!") );
             // DROP THROUGH HERE!
         case AI_ACTION_YELLOW_ALERT:          // tell friends opponent(s) heard
-            //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Debug: AI radios about a noise!" );
+            //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Debug: AI radios about a noise!") );
             /*
             NetSend.msgType = NET_RADIO_SIGHTINGS;
             NetSend.ubID  = pSoldier->ubID;
@@ -2427,7 +2433,7 @@ INT8 ExecuteAction(SOLDIERTYPE *pSoldier)
             {
 				DebugAI(AI_MSG_INFO, pSoldier, String("CancelAIAction: AI_ACTION_GIVE_AID: !ITEM_HANDLE_OK"));
 #ifdef JA2BETAVERSION
-                ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, L"AI %d got error code %ld from HandleItem, doing action %d... aborting deadlock!", pSoldier->ubID, iRetCode, pSoldier->aiData.bAction );
+                ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, JA2_TEXT("AI %d got error code %ld from HandleItem, doing action %d... aborting deadlock!"), pSoldier->ubID, iRetCode, pSoldier->aiData.bAction );
 #endif
                 CancelAIAction( pSoldier, FORCE);
 #ifdef TESTAICONTROL
@@ -2462,7 +2468,7 @@ INT8 ExecuteAction(SOLDIERTYPE *pSoldier)
                 if (pStructure == NULL)
                 {
 #ifdef JA2TESTVERSION
-                    ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, L"AI %d tried to open door it could not then find in %d", pSoldier->ubID, sDoorGridNo );
+                    ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_ERROR, JA2_TEXT("AI %d tried to open door it could not then find in %d"), pSoldier->ubID, sDoorGridNo );
 #endif
 					DebugAI(AI_MSG_INFO, pSoldier, String("CancelAIAction: door: cannot find structure"));
                     CancelAIAction( pSoldier, FORCE);
@@ -2727,7 +2733,7 @@ void HandleInitialRedAlert( INT8 bTeam, UINT8 ubCommunicate)
 	if ( gTacticalStatus.Team[bTeam].bAwareOfOpposition == FALSE )
 	{
 #ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_ERROR, L"Enemies on team %d prompted to go on RED ALERT!", bTeam );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_ERROR, JA2_TEXT("Enemies on team %d prompted to go on RED ALERT!"), bTeam );
 #endif
 	}
 

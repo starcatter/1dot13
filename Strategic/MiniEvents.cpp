@@ -1637,7 +1637,7 @@ static int MiniEventsLua_ScreenMsg(lua_State* LS)
 	CHAR16 w_str[250];
 	ja2::text::copyUtf8ToUtf16( std::string_view( text, len ).substr( 0, 250 ), w_str );
 
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s", w_str );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s"), w_str );
 	return 0;
 }
 

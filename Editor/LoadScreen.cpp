@@ -45,7 +45,7 @@
 //===========================================================================
 
 BOOLEAN gfErrorCatch = FALSE;
-CHAR16 gzErrorCatchString[ 256 ] = L"";
+CHAR16 gzErrorCatchString[ 256 ] = JA2_TEXT("");
 INT32	giErrorCatchMessageBox = 0;
 
 extern void RemoveMercsInSector();
@@ -223,9 +223,9 @@ void LoadSaveScreenEntry()
 	}
 	while(FileList && FileList->pPrev)
 		FileList = FileList->pPrev;
-	swprintf( zOrigName, L"%s Map (*.dat)", iCurrentAction == ACTION_SAVE_MAP ? L"Save" : L"Load" );
+	swprintf( zOrigName, JA2_TEXT("%s Map (*.dat)"), iCurrentAction == ACTION_SAVE_MAP ? JA2_TEXT("Save") : JA2_TEXT("Load") );
 
-	swprintf( gzFilename, L"%S", gubFilename );
+	swprintf( gzFilename, JA2_TEXT("%S"), gubFilename );
 
 	CreateFileDialog( zOrigName );
 
@@ -279,17 +279,17 @@ UINT32 ProcessLoadSaveScreenMessageBoxResult()
 				if( !temp )
 					temp = curr->pPrev;
 				if( !temp )
-					wcscpy( gzFilename, L"" );
+					wcscpy( gzFilename, JA2_TEXT("") );
 				else
-					swprintf( gzFilename, L"%S", temp->FileInfo.zFileName );
+					swprintf( gzFilename, JA2_TEXT("%S"), temp->FileInfo.zFileName );
 				if( ValidFilename() )
 				{
 					SetInputFieldStringWith16BitString( 0, gzFilename );
 				}
 				else
 				{
-					SetInputFieldStringWith16BitString( 0, L"" );
-					wcscpy( gzFilename, L"" );
+					SetInputFieldStringWith16BitString( 0, JA2_TEXT("") );
+					wcscpy( gzFilename, JA2_TEXT("") );
 				}
 				RemoveFromFDlgList( &FileList, curr );
 				iTotalFiles--;
@@ -395,7 +395,7 @@ UINT32 LoadSaveScreenHandle(void)
 	{
 		SetFontForeground( FONT_LTRED );
 		SetFontBackground( 142 );
-	  mprintf( iScreenWidthOffset + 226, iScreenHeightOffset + 126, L"NO FILES IN \\MAPS DIRECTORY" );
+	  mprintf( iScreenWidthOffset + 226, iScreenHeightOffset + 126, JA2_TEXT("NO FILES IN \\MAPS DIRECTORY") );
 	}
 	else for(x=iTopFileShown;x<(iTopFileShown+8) && x<iTotalFiles && FListNode != NULL; x++)
 	{
@@ -409,7 +409,7 @@ UINT32 LoadSaveScreenHandle(void)
 			SetFontForeground( FONT_BLACK );
 			SetFontBackground( 142 );
 		}
-		mprintf( iScreenWidthOffset + 186,(iScreenHeightOffset + 73+ (x-iTopFileShown)*15 ), L"%S", FListNode->FileInfo.zFileName);
+		mprintf( iScreenWidthOffset + 186,(iScreenHeightOffset + 73+ (x-iTopFileShown)*15 ), JA2_TEXT("%S"), FListNode->FileInfo.zFileName);
 		FListNode = FListNode->pNext;
 	}
 
@@ -433,11 +433,11 @@ UINT32 LoadSaveScreenHandle(void)
 				CHAR16 str[40];
 				if( FileInfo.uiFileAttribs & (FILE_IS_READONLY|FILE_IS_HIDDEN|FILE_IS_SYSTEM) )
 				{
-					swprintf( str, L" Delete READ-ONLY file %s? ", gzFilename );
+					swprintf( str, JA2_TEXT(" Delete READ-ONLY file %s? "), gzFilename );
 					gfReadOnly = TRUE;
 				}
 				else
-					swprintf( str, L" Delete file %s? ", gzFilename );
+					swprintf( str, JA2_TEXT(" Delete file %s? "), gzFilename );
 				gfDeleteFile = TRUE;
 				CreateMessageBox( str );
 			}
@@ -446,7 +446,7 @@ UINT32 LoadSaveScreenHandle(void)
 		{
 			if(!ExtractFilenameFromFields())
 			{
-				CreateMessageBox(L" Illegal filename.  Try another filename? ");
+				CreateMessageBox(JA2_TEXT(" Illegal filename.  Try another filename? "));
 				gfIllegalName = TRUE;
 				iFDlgState = DIALOG_NONE;
 				return(LOADSAVE_SCREEN);
@@ -471,12 +471,12 @@ UINT32 LoadSaveScreenHandle(void)
 			}
 			if(gfReadOnly)
 			{
-				CreateMessageBox(L" File is read only!  Choose a different name? ");
+				CreateMessageBox(JA2_TEXT(" File is read only!  Choose a different name? "));
 				return( LOADSAVE_SCREEN);
 			}
 			else if(gfFileExists)
 			{
-				CreateMessageBox(L" File exists, Overwrite? ");
+				CreateMessageBox(JA2_TEXT(" File exists, Overwrite? "));
 				return(LOADSAVE_SCREEN);
 			}
 			RemoveFileDialog();
@@ -486,7 +486,7 @@ UINT32 LoadSaveScreenHandle(void)
 		case DIALOG_LOAD:
 			if( !ExtractFilenameFromFields() )
 			{
-				CreateMessageBox( L" Illegal filename.  Try another filename? " );
+				CreateMessageBox( JA2_TEXT(" Illegal filename.  Try another filename? ") );
 				gfIllegalName = TRUE;
 				iFDlgState = DIALOG_NONE;
 				return LOADSAVE_SCREEN;
@@ -494,7 +494,7 @@ UINT32 LoadSaveScreenHandle(void)
 			RemoveFileDialog();
 			CreateProgressBar( 0, iScreenWidthOffset + 118, iScreenHeightOffset + 183, iScreenWidthOffset + 522, iScreenHeightOffset + 202 );
 			DefineProgressBarPanel( 0, 65, 79, 94, iScreenWidthOffset + 100, iScreenHeightOffset + 155, iScreenWidthOffset + 540, iScreenHeightOffset + 235 );
-			swprintf( zOrigName, L"Loading map:  %s", gzFilename );
+			swprintf( zOrigName, JA2_TEXT("Loading map:  %s"), gzFilename );
 			SetProgressBarTitle( 0, zOrigName, BLOCKFONT2, FONT_RED, FONT_NEARBLACK );
 			gbCurrentFileIOStatus = INITIATE_MAP_LOAD;
 			return LOADSAVE_SCREEN ;
@@ -516,9 +516,9 @@ void CreateFileDialog( STR16 zTitle )
 	MSYS_DefineRegion( &BlanketRegion, 0, 0, gsVIEWPORT_END_X, gsVIEWPORT_END_Y, MSYS_PRIORITY_HIGH - 5, 0, 0, 0 );
 
 	//Okay and cancel buttons
-	iFileDlgButtons[0] = CreateTextButton( L"Okay", FONT12POINT1, FONT_BLACK, FONT_BLACK,
+	iFileDlgButtons[0] = CreateTextButton( JA2_TEXT("Okay"), FONT12POINT1, FONT_BLACK, FONT_BLACK,
 		BUTTON_USE_DEFAULT, iScreenWidthOffset + 354, iScreenHeightOffset + 225, 50, 30, BUTTON_NO_TOGGLE,	MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, FDlgOkCallback );
-	iFileDlgButtons[1] = CreateTextButton( L"Cancel", FONT12POINT1, FONT_BLACK, FONT_BLACK,
+	iFileDlgButtons[1] = CreateTextButton( JA2_TEXT("Cancel"), FONT12POINT1, FONT_BLACK, FONT_BLACK,
 		BUTTON_USE_DEFAULT, iScreenWidthOffset + 406, iScreenHeightOffset + 225, 50, 30, BUTTON_NO_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, FDlgCancelCallback );
 
 	//dnl ch36 150909 Scroll buttons
@@ -634,11 +634,11 @@ void DrawFileDialog(void)
 	SetFontForeground( FONT_LTKHAKI );
 	SetFontShadow( FONT_DKKHAKI );
 	SetFontBackground( FONT_BLACK );
-	mprintf( iScreenWidthOffset + 183, iScreenHeightOffset + 217, L"Filename" );
+	mprintf( iScreenWidthOffset + 183, iScreenHeightOffset + 217, JA2_TEXT("Filename") );
 	
 	if( iFileDlgButtons[6] != -1 ) 
 	{
-		mprintf( iScreenWidthOffset + 200, iScreenHeightOffset + 231, L"Update world info" );
+		mprintf( iScreenWidthOffset + 200, iScreenHeightOffset + 231, JA2_TEXT("Update world info") );
 	}
 }
 
@@ -669,15 +669,15 @@ void SelectFileDialogYPos( UINT16 usRelativeYPos )
 			INT32 iCurrClickTime;
 			iCurrFileShown = x;
 			FListNode->FileInfo.zFileName[30] = 0;
-			swprintf( gzFilename, L"%S", FListNode->FileInfo.zFileName );
+			swprintf( gzFilename, JA2_TEXT("%S"), FListNode->FileInfo.zFileName );
 			if( ValidFilename() )
 			{
 				SetInputFieldStringWith16BitString( 0, gzFilename );
 			}
 			else
 			{
-				SetInputFieldStringWith16BitString( 0, L"" );
-				wcscpy( gzFilename, L"" );
+				SetInputFieldStringWith16BitString( 0, JA2_TEXT("") );
+				wcscpy( gzFilename, JA2_TEXT("") );
 			}
 
 			RenderInactiveTextField( 0 );
@@ -905,14 +905,14 @@ void HandleMainKeyEvents( InputAtom *pEvent )
 		if( curr )
 		{
 			SetInputFieldStringWith8BitString( 0, curr->FileInfo.zFileName );
-			swprintf( gzFilename, L"%S", curr->FileInfo.zFileName );
+			swprintf( gzFilename, JA2_TEXT("%S"), curr->FileInfo.zFileName );
 			//dnl ch84 290114
 			if(ValidFilename())
 				SetInputFieldStringWith16BitString(0, gzFilename);
 			else
 			{
-				SetInputFieldStringWith16BitString(0, L"");
-				wcscpy(gzFilename, L"");
+				SetInputFieldStringWith16BitString(0, JA2_TEXT(""));
+				wcscpy(gzFilename, JA2_TEXT(""));
 			}
 			gzProfileName[0] = 0;
 			while(curr = curr->pPrev)
@@ -979,7 +979,7 @@ UINT32 ProcessFileIO()
 			SetFontForeground( FONT_LTKHAKI );
 			SetFontShadow( FONT_DKKHAKI );
 			SetFontBackground( 0 );
-			swprintf( zOrigName, L"Saving map:  %s", gzFilename );
+			swprintf( zOrigName, JA2_TEXT("Saving map:  %s"), gzFilename );
 			usStartX = iScreenWidthOffset + 320 - StringPixLength( zOrigName, LARGEFONT1 ) / 2;
 			usStartY = iScreenHeightOffset + 180 - GetFontHeight( LARGEFONT1 ) / 2;
 			mprintf( usStartX, usStartY, zOrigName );
@@ -1193,7 +1193,7 @@ BOOLEAN ExtractFilenameFromFields(void)
 	Get16BitStringFromField(0, gzFilename, FILENAME_BUFLEN);
 	size_t len = wcslen(gzFilename);
 	if(gzFilename[len-4] != L'.' && len < (FILENAME_BUFLEN-4))
-		wcscat(gzFilename, L".dat");
+		wcscat(gzFilename, JA2_TEXT(".dat"));
 	return(ValidFilename());
 }
 
@@ -1207,7 +1207,7 @@ BOOLEAN ValidMapFileName(STR16 szFileName)
 		wcscpy(szFileExt, szFileName+len-4);
 		for(int i=0; i<4; i++)
 			szFileExt[i] = towupper(szFileExt[i]);
-		if(wcscmp(szFileExt, L".DAT") == 0)
+		if(wcscmp(szFileExt, JA2_TEXT(".DAT")) == 0)
 			return(TRUE);
 	}
 	return(FALSE);

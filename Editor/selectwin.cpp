@@ -1673,7 +1673,7 @@ BOOLEAN DisplayWindowFunc( DisplayList *pNode, INT16 iTopCutOff, INT16 iBottomCu
 		if ( sCount != 0)
 		{
 			SetFontShade(LARGEFONT1, FONT_SHADE_WHITE);
-			gprintf( pNode->iX, iCurrY, L"%d", sCount );
+			gprintf( pNode->iX, iCurrY, JA2_TEXT("%d"), sCount );
 		}
 
 		pETRLEObject->sOffsetX = sTempOffsetX;

@@ -734,7 +734,7 @@ INT32 InternalGoAsFarAsPossibleTowards(SOLDIERTYPE *pSoldier, INT32 sDesGrid, IN
 	}
 
 #ifdef DEBUGDECISIONS
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"%d to %d with %d APs left", pSoldier->ubID, sGoToGrid, pSoldier->bActionPoints );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("%d to %d with %d APs left"), pSoldier->ubID, sGoToGrid, pSoldier->bActionPoints );
  #endif
 
 

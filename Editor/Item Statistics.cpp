@@ -39,46 +39,46 @@ CHAR16 gszActionItemDesc[ NUM_ACTIONITEMS ][ 30 ];
 /*
 CHAR16 gszActionItemDesc[ NUM_ACTIONITEMS ][ 30 ] =
 {
-	L"Klaxon Mine",
-	L"Flare Mine",
-	L"Teargas Explosion",
-	L"Stun Explosion",
-	L"Smoke Explosion",
-	L"Mustard Gas",
-	L"Land Mine",
-	L"Open Door",
-	L"Close Door",
-	L"3x3 Hidden Pit",
-	L"5x5 Hidden Pit",
-	L"Small Explosion",
-	L"Medium Explosion",
-	L"Large Explosion",
-	L"Toggle Door",
-	L"Toggle Action1s",
-	L"Toggle Action2s",
-	L"Toggle Action3s",
-	L"Toggle Action4s",
-	L"Enter Brothel",
-	L"Exit Brothel",
-	L"Kingpin Alarm",
-	L"Sex with Prostitute",
-	L"Reveal Room",
-	L"Local Alarm",
-	L"Global Alarm",
-	L"Klaxon Sound",
-	L"Unlock door",
-	L"Toggle lock",
-	L"Untrap door",
-	L"Tog pressure items",
-	L"Museum alarm",
-	L"Bloodcat alarm",
-	L"Big teargas",
+	JA2_TEXT("Klaxon Mine"),
+	JA2_TEXT("Flare Mine"),
+	JA2_TEXT("Teargas Explosion"),
+	JA2_TEXT("Stun Explosion"),
+	JA2_TEXT("Smoke Explosion"),
+	JA2_TEXT("Mustard Gas"),
+	JA2_TEXT("Land Mine"),
+	JA2_TEXT("Open Door"),
+	JA2_TEXT("Close Door"),
+	JA2_TEXT("3x3 Hidden Pit"),
+	JA2_TEXT("5x5 Hidden Pit"),
+	JA2_TEXT("Small Explosion"),
+	JA2_TEXT("Medium Explosion"),
+	JA2_TEXT("Large Explosion"),
+	JA2_TEXT("Toggle Door"),
+	JA2_TEXT("Toggle Action1s"),
+	JA2_TEXT("Toggle Action2s"),
+	JA2_TEXT("Toggle Action3s"),
+	JA2_TEXT("Toggle Action4s"),
+	JA2_TEXT("Enter Brothel"),
+	JA2_TEXT("Exit Brothel"),
+	JA2_TEXT("Kingpin Alarm"),
+	JA2_TEXT("Sex with Prostitute"),
+	JA2_TEXT("Reveal Room"),
+	JA2_TEXT("Local Alarm"),
+	JA2_TEXT("Global Alarm"),
+	JA2_TEXT("Klaxon Sound"),
+	JA2_TEXT("Unlock door"),
+	JA2_TEXT("Toggle lock"),
+	JA2_TEXT("Untrap door"),
+	JA2_TEXT("Tog pressure items"),
+	JA2_TEXT("Museum alarm"),
+	JA2_TEXT("Bloodcat alarm"),
+	JA2_TEXT("Big teargas"),
 #ifdef JA2UB
-	L"BIGGENS BOMBS",
-	L"ABIGGENS WARNING",
-	L"SEE FORTIFIED DOOR",
-	L"OPEN FORTIFED DOOR",
-	L"SEE POWER GEN FAN",
+	JA2_TEXT("BIGGENS BOMBS"),
+	JA2_TEXT("ABIGGENS WARNING"),
+	JA2_TEXT("SEE FORTIFIED DOOR"),
+	JA2_TEXT("OPEN FORTIFED DOOR"),
+	JA2_TEXT("SEE POWER GEN FAN"),
 #endif
 };
 */
@@ -770,15 +770,15 @@ void SetupGunGUI()
 	CHAR16 str[20];
 	INT16 yp;
 	memset( gfAttachment, 0, NUM_ATTACHMENT_BUTTONS );
-	swprintf( str, L"%d", (*gpItem)[0]->data.gun.bGunStatus );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.gun.bGunStatus );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 380, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", (*gpItem)[0]->data.gun.ubGunShotsLeft );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.gun.ubGunShotsLeft );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 400, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", (*gpItem)[0]->data.bTrap );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.bTrap );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 420, 25, 15, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 	//Attachments are a dynamic part of guns.	None, some, or all attachments could be available
@@ -914,13 +914,13 @@ void ExtractAndUpdateGunGUI()
 void SetupAmmoGUI()
 {
 	CHAR16 str[20];
-	swprintf( str, L"%d", gpItem->ubNumberOfObjects );
+	swprintf( str, JA2_TEXT("%d"), gpItem->ubNumberOfObjects );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 380, 25, 15, MSYS_PRIORITY_NORMAL, str, 1, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", (*gpItem)[0]->data.bTrap );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.bTrap );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 400, 25, 15, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 }
@@ -958,13 +958,13 @@ void ExtractAndUpdateAmmoGUI()
 void SetupArmourGUI()
 {
 	CHAR16 str[20];
-	swprintf( str, L"%d", (*gpItem)[0]->data.objectStatus );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.objectStatus );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 380, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", (*gpItem)[0]->data.bTrap );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.bTrap );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 400, 25, 15, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 
@@ -1019,13 +1019,13 @@ void ExtractAndUpdateArmourGUI()
 void SetupLBEGUI()
 {
 	CHAR16 str[20];
-	swprintf( str, L"%d", (*gpItem)[0]->data.objectStatus );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.objectStatus );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 380, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", (*gpItem)[0]->data.bTrap );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.bTrap );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 400, 25, 15, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 }
@@ -1063,13 +1063,13 @@ void ExtractAndUpdateLBEGUI()
 void SetupEquipGUI()
 {
 	CHAR16 str[20];
-	swprintf( str, L"%d", (*gpItem)[0]->data.objectStatus );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.objectStatus );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 380, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", (*gpItem)[0]->data.bTrap );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.bTrap );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 400, 25, 15, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 }
@@ -1108,19 +1108,19 @@ void SetupExplosivesGUI()
 {
 	CHAR16 str[20];
 	INT16 yp;
-	swprintf( str, L"%d", (*gpItem)[0]->data.objectStatus );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.objectStatus );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 380, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", gpItem->ubNumberOfObjects );
+	swprintf( str, JA2_TEXT("%d"), gpItem->ubNumberOfObjects );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 400, 25, 15, MSYS_PRIORITY_NORMAL, str, 1, INPUTTYPE_NUMERICSTRICT );
 	if( ItemSlotLimit(gpItem, STACK_SIZE_LIMIT)== 1 )
 	{
 		DisableTextField( 2 );
 	}
-	swprintf( str, L"%d", (*gpItem)[0]->data.bTrap );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.bTrap );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 420, 25, 15, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 	yp = 2 * iScreenHeightOffset + 375;
@@ -1188,11 +1188,11 @@ void ExtractAndUpdateExplosivesGUI()
 void SetupMoneyGUI()
 {
 	CHAR16 str[20];
-	swprintf( str, L"%d", (*gpItem)[0]->data.money.uiMoneyAmount );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.money.uiMoneyAmount );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 380, 45, 15, MSYS_PRIORITY_NORMAL, str, 5, INPUTTYPE_NUMERICSTRICT );
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 }
@@ -1227,7 +1227,7 @@ void SetupOwnershipGUI()
 {
 	CHAR16 str[20];
 
-	swprintf( str, L"%d", (*gpItem)[0]->data.owner.ubOwnerProfile );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.owner.ubOwnerProfile );
 
 	// WANNE: Check for valid profile id range, if not, set to NO_PROFILE, which defines an "invalid" profile in the source
 	UINT16 ownerProfileId = (*gpItem)[0]->data.owner.ubOwnerProfile;
@@ -1284,7 +1284,7 @@ void SetupKeysGUI()
 	CHAR16 str[20];
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 }
@@ -1308,13 +1308,13 @@ void RemoveKeysGUI()
 void SetupRandomItemGUI()
 {
 	CHAR16 str[20];
-	swprintf( str, L"%d", ( *gpItem )[0]->data.objectStatus );
+	swprintf( str, JA2_TEXT("%d"), ( *gpItem )[0]->data.objectStatus );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 380, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", ( *gpItem )[0]->data.bTrap );
+	swprintf( str, JA2_TEXT("%d"), ( *gpItem )[0]->data.bTrap );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 400, 25, 15, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 	if ( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[gpEditingItemPool->iItemIndex].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[gpEditingItemPool->iItemIndex].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 }
@@ -1354,13 +1354,13 @@ void SetupActionItemsGUI()
 {
 	CHAR16 str[4];
 	STR16 pStr;
-	swprintf( str, L"%d", (*gpItem)[0]->data.objectStatus );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.objectStatus );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 365, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", (*gpItem)[0]->data.bTrap );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.bTrap );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 385, 25, 15, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	}
 	pStr = GetActionItemName( gpItem );
@@ -1420,13 +1420,13 @@ void AlarmTriggerCheckboxCallback( GUI_BUTTON *btn, INT32 reason )
 void SetupTriggersGUI()
 {
 	CHAR16 str[4];
-	swprintf( str, L"%d", (*gpItem)[0]->data.bTrap );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.bTrap );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 365, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", (*gpItem)[0]->data.misc.ubTolerance );
+	swprintf( str, JA2_TEXT("%d"), (*gpItem)[0]->data.misc.ubTolerance );
 	AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 385, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 	if( gpEditingItemPool )
 	{
-		swprintf( str, L"%d", 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
+		swprintf( str, JA2_TEXT("%d"), 100 - gWorldItems[ gpEditingItemPool->iItemIndex ].ubNonExistChance );
 		AddTextInputField( iScreenWidthOffset + 485, 2 * iScreenHeightOffset + 440, 25, 15, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 		if( (*gpItem)[0]->data.misc.bFrequency <= PANIC_FREQUENCY && (*gpItem)[0]->data.misc.bFrequency >= PANIC_FREQUENCY_3 )
 		{

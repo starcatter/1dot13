@@ -594,14 +594,14 @@ int AStarPathfinder::GetPath(SOLDIERTYPE *s ,
 	if (StartNode < 0 || StartNode > WORLD_MAX) 
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"ERROR!  Trying to calculate path from off-world gridno %d to %d", StartNode, DestNode );
+			ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("ERROR!  Trying to calculate path from off-world gridno %d to %d"), StartNode, DestNode );
 		#endif
 		return( 0 );
 	}
 	else if (!GridNoOnVisibleWorldTile( StartNode ) ) 
 	{
 		#ifdef JA2BETAVERSION
-			if(!is_networked)ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"ERROR!  Trying to calculate path from non-visible gridno %d to %d", StartNode, DestNode );
+			if(!is_networked)ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("ERROR!  Trying to calculate path from non-visible gridno %d to %d"), StartNode, DestNode );
 		#endif
 		return( 0 );
 	}
@@ -2038,7 +2038,7 @@ bool AStarPathfinder::WantToTraverse()
 			)
 		{
 			return false;
-			//ScreenMsg( MSG_FONT_YELLOW, MSG_INTERFACE, L"svet!" );
+			//ScreenMsg( MSG_FONT_YELLOW, MSG_INTERFACE, JA2_TEXT("svet!") );
 				/*INT32 tcnt = gTacticalStatus.Team[ gbPlayerNum ].bFirstID;
 				SOLDIERTYPE *tS;
 				// look for all mercs on the same team,
@@ -2283,14 +2283,14 @@ if(!GridNoOnVisibleWorldTile(iDestination))
 	if ( TileIsOutOfBounds( iOrigination ) )
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"ERROR!	Trying to calculate path from off-world gridno %d to %d", iOrigination, sDestination );
+			ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("ERROR!	Trying to calculate path from off-world gridno %d to %d"), iOrigination, sDestination );
 		#endif
 		return( 0 );
 	}
 	else if (!GridNoOnVisibleWorldTile( iOrigination ))
 	{
 		#ifdef JA2BETAVERSION
-			if(!is_networked)ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"ERROR!	Trying to calculate path from non-visible gridno %d to %d", iOrigination, sDestination );
+			if(!is_networked)ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("ERROR!	Trying to calculate path from non-visible gridno %d to %d"), iOrigination, sDestination );
 		#endif
 		return( 0 );
 	}

@@ -1141,12 +1141,12 @@ UINT32 UIHandleNewMerc( UI_EVENT *pUIEvent )
 
 		if( bReturnCode == MERC_HIRE_FAILED )
 		{
-			ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"Merc hire failed:	Either already hired or dislikes you." );
+			ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("Merc hire failed:	Either already hired or dislikes you.") );
 		}
 		// WDS - make number of mercenaries, etc. be configurable
 		else if( bReturnCode == MERC_HIRE_OVER_PLAYER_LIMIT )
 		{
-			ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, L"Can't hire that many mercs." );
+			ScreenMsg( FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("Can't hire that many mercs.") );
 		}
 		else
 		{
@@ -1348,7 +1348,7 @@ UINT32 UIHandleEndTurn( UI_EVENT *pUIEvent )
 			if( guiLastSaveGameNum == 2 )
 				guiLastSaveGameNum = 0;
 			
-			swprintf( zString, L"%s%d",pMessageStrings[ MSG_SAVE_END_TURN_SAVE_TEXT ], guiLastSaveGameNum + 1);
+			swprintf( zString, JA2_TEXT("%s%d"),pMessageStrings[ MSG_SAVE_END_TURN_SAVE_TEXT ], guiLastSaveGameNum + 1);
 			SaveGame(SAVE__END_TURN_NUM, zString ); 
 		}
 
@@ -1367,7 +1367,7 @@ UINT32 UIHandleEndTurn( UI_EVENT *pUIEvent )
 				// The crash occurd at ~index 16000 when calling the method IsCorpseAtGridNo() ...
 				// I don't know what causes it ...
 				// Just try/catch (ugly, but works).	 
-				__try
+				try
 				{		 
 					for(UINT32 i=0; i<(UINT32)WORLD_MAX; i+=4) 
 					{			
@@ -1381,7 +1381,7 @@ UINT32 UIHandleEndTurn( UI_EVENT *pUIEvent )
 						gubIsCorpseThere[i+3]		= IsCorpseAtGridNo( i+3, gpWorldLevelData[ i+3 ].sHeight );
 					}	
 				}
-				__except( EXCEPTION_EXECUTE_HANDLER  )
+				catch (...)
 				{
 					// WANNE: Ignore, so the game can continue ...
 				}
@@ -7132,7 +7132,7 @@ void SetInterfaceHeightLevel( )
 	{
 		// we're merely interested in the terrain height. If the map has no entry points at all, we will have other problems than rooftops, so just use height of 0 and be done with it
 		// however, print out a warning, so that a mapper can fix this!
-		ScreenMsg( MSG_FONT_YELLOW, MSG_ERROR, L"Map has no entry points - please fix this!" );
+		ScreenMsg( MSG_FONT_YELLOW, MSG_ERROR, JA2_TEXT("Map has no entry points - please fix this!") );
 		sHeight = 0;
 	}
 

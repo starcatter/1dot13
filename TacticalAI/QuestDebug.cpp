@@ -39,7 +39,7 @@ void ToggleQuestDebugModes( UINT8 ubType )
 
 	if( ubType == QD_NPC_MSG )
 	{
-		wcscpy( sType, L"NPC Debug:");
+		wcscpy( sType, JA2_TEXT("NPC Debug:"));
 
 		//check to see if its out of range
 		if( gubNPCDebugOutPutLevel <= QD_OUTPUT_NONE+1 )
@@ -54,7 +54,7 @@ void ToggleQuestDebugModes( UINT8 ubType )
 	}
 	else
 	{
-		wcscpy( sType, L"QUEST Debug:");
+		wcscpy( sType, JA2_TEXT("QUEST Debug:"));
 
 		//check to see if its out of range
 		if( gubQuestDebugOutPutLevel <= QD_OUTPUT_NONE )
@@ -70,11 +70,11 @@ void ToggleQuestDebugModes( UINT8 ubType )
 
 	//Display a messasge to the screen
 	if( ubLevel == QD_OUTPUT_NONE )
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"%s No Output", sType );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("%s No Output"), sType );
 	else if( ubLevel == QD_OUTPUT_LEVEL_ALL )
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"%s All messages", sType );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("%s All messages"), sType );
 	else
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"%s Level %d", sType, ubLevel );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("%s Level %d"), sType, ubLevel );
 }
 
 

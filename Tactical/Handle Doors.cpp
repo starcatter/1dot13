@@ -56,7 +56,7 @@ void HandleDoorChangeFromGridNo( SOLDIERTYPE *pSoldier, INT32 sGridNo, BOOLEAN f
 	if ( pStructure == NULL )
 	{
 #ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"ERROR: Told to handle door that does not exist at %d.", sGridNo );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("ERROR: Told to handle door that does not exist at %d."), sGridNo );
 #endif
 		return;
 	}
@@ -73,7 +73,7 @@ void HandleDoorChangeFromGridNo( SOLDIERTYPE *pSoldier, INT32 sGridNo, BOOLEAN f
 	if ( pDoorStatus == NULL )
 	{
 #ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"ERROR: Told to set door busy but can't get door status at %d!", sGridNo );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("ERROR: Told to set door busy but can't get door status at %d!"), sGridNo );
 #endif
 		return;
 	}

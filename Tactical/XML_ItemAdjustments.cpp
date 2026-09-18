@@ -52,8 +52,8 @@ transformStartElementHandle(void *userData, const XML_Char *name, const XML_Char
 				pData->curTransform.usResult[x] = 0;
 			}
 			pData->curTransform.usAPCost = 0;
-			swprintf(pData->curTransform.szMenuRowText, L"");
-			swprintf(pData->curTransform.szTooltipText, L"");
+			swprintf(pData->curTransform.szMenuRowText, JA2_TEXT(""));
+			swprintf(pData->curTransform.szTooltipText, JA2_TEXT(""));
 
 			pData->maxReadDepth++; //we are not skipping this element
 			pData->curIndex++;

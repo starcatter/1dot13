@@ -1065,7 +1065,7 @@ void HandleMoraleEvent( SOLDIERTYPE *pSoldier, INT8 bMoraleEvent, INT16 sMapX, I
 
 		default:
 			// debug message
-			ScreenMsg( MSG_FONT_RED, MSG_BETAVERSION, L"Invalid morale event type = %d.	AM/CC-1", bMoraleEvent );
+			ScreenMsg( MSG_FONT_RED, MSG_BETAVERSION, JA2_TEXT("Invalid morale event type = %d.	AM/CC-1"), bMoraleEvent );
 			break;
 	}
 

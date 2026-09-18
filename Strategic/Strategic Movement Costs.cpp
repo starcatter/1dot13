@@ -5723,8 +5723,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 				if ( fDisplayMessages )
 				{
 					sprintf( zMapName, "Maps\\%c%d", iRow + 'A' -1, iCol );
-					ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map file does not exist." );
+					ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map file does not exist.") );
 				}
 			}
 			//return;
@@ -5749,8 +5749,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			{
 				if ( fDisplayMessages )
 				{
-					ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map has already been visited." );
+					ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map has already been visited.") );
 					
 					SectorInfo[ ( SECTOR( iCol , iRow ) ) ].fValidSector = TRUE;
 					sBadSectorsList[iCol][iRow] = 0;					
@@ -5769,8 +5769,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 				{
 					if ( fDisplayMessages )
 					{
-						ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-						ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map has already been visited." );
+						ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+						ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map has already been visited.") );
 						sBadSectorsList[iCol][iRow] = 0;
 					}
 					continue;
@@ -5783,8 +5783,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 		{
 			if ( fDisplayMessages )
 			{
-				ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-				ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map is the current sector." );
+				ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+				ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map is the current sector.") );
 				sBadSectorsList[iCol][iRow] = 0;
 			}
 			continue;
@@ -5794,7 +5794,7 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			//We're good!
 			if ( fDisplayMessages )
 			{
-				ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, L"Added Custom map: %S.", zMapName );
+				ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, JA2_TEXT("Added Custom map: %S."), zMapName );
 			}
 			
 			if ( bLevel == 0 )
@@ -5848,7 +5848,7 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 							 }
 							 else
 							 {
-								ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, L"Added Random Enemy to sector : %S.", zMapName );
+								ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, JA2_TEXT("Added Random Enemy to sector : %S."), zMapName );
 								RandomAddEnemy( iCol, iRow, bLevel );
 							 }
 					}
@@ -5861,11 +5861,11 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 				pSector = FindUnderGroundSector( (UINT8)iCol, (UINT8)iRow, bLevel );
 				if ( pSector )
 				{
-					//ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
+					//ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
 				}
 				else
 				{
-					ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, L"Added New Underground : %S.", zMapName );
+					ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, JA2_TEXT("Added New Underground : %S."), zMapName );
 					pSector = NewUndergroundNode( (UINT8)iCol, (UINT8)iRow, bLevel );
 					sBadSectorsList[iCol][iRow] = 0;
 					if ( gGameUBOptions.AddRandomEnemyToSector == TRUE )
@@ -5884,7 +5884,7 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 							 }
 							 else
 							 {
-								ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, L"Added Random Enemy to sector : %S.", zMapName );
+								ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, JA2_TEXT("Added Random Enemy to sector : %S."), zMapName );
 								RandomAddEnemy( iCol, iRow, bLevel );
 							 }
 			
@@ -5903,11 +5903,11 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			if ( fDisplayMessages )
 			{
 				// Spew message
-				ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
+				ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
 				
 				if ( gfTriedToLoadOldMapVersion )
 				{
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Incompatible map." );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Incompatible map.") );
 				}
 			}
 		}
@@ -5943,8 +5943,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			{
 				if ( fDisplayMessages )
 				{
-					ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map needs NORTH entry point." );
+					ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map needs NORTH entry point.") );
 				}
 				MemFree( pSummary );
 				continue;
@@ -5954,8 +5954,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			{
 				if ( fDisplayMessages )
 				{
-					ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map needs EAST entry point." );
+					ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map needs EAST entry point.") );
 				}
 				MemFree( pSummary );
 				continue;
@@ -5965,8 +5965,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			{
 				if ( fDisplayMessages )
 				{
-					ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map needs WEST entry point." );
+					ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map needs WEST entry point.") );
 				}
 				MemFree( pSummary );
 				continue;
@@ -5976,8 +5976,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			{
 				if ( fDisplayMessages )
 				{
-					ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map needs SOUTH entry point." );
+					ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map needs SOUTH entry point.") );
 				}
 				MemFree( pSummary );
 				continue;
@@ -5987,8 +5987,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			{
 				if ( fDisplayMessages )
 				{
-					ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map needs CENTER entry point." );
+					ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map needs CENTER entry point.") );
 				}
 				MemFree( pSummary );
 				continue;
@@ -5999,8 +5999,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			{
 				if ( fDisplayMessages )
 				{
-					ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map requires 32 enemy placements." );
+					ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map requires 32 enemy placements.") );
 				}
 				MemFree( pSummary );
 				continue;
@@ -6011,8 +6011,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			{
 				if ( fDisplayMessages )
 				{
-					ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Map population total must be less than 32." );
+					ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+					ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Map population total must be less than 32.") );
 				}
 				MemFree( pSummary );
 				continue;
@@ -6025,8 +6025,8 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 				{
 					if ( fDisplayMessages )
 					{
-						ScreenMsg( MSG_FONT_RED, MSG_CHAT, L"Failed to add map: %S.", zMapName );
-						ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Underground level needs invasion insertion gridno value." );
+						ScreenMsg( MSG_FONT_RED, MSG_CHAT, JA2_TEXT("Failed to add map: %S."), zMapName );
+						ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Underground level needs invasion insertion gridno value.") );
 					}
 					MemFree( pSummary );
 					continue;					
@@ -6036,7 +6036,7 @@ void AddCustomMap( INT32 iRow, INT32 iCol, BOOLEAN fDisplayMessages, BOOLEAN fMe
 			//We're good!
 			if ( fDisplayMessages )
 			{
-				ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, L"Added Custom map: %S.", zMapName );
+				ScreenMsg( FONT_MCOLOR_WHITE, MSG_CHAT, JA2_TEXT("Added Custom map: %S."), zMapName );
 			}
 			
 			//if the sector shoulnd have a map there

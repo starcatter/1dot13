@@ -1,6 +1,12 @@
 	#include "types.h"
 	#include "GameVersion.h"
 
+#ifdef _WIN32
+#define JA2_VERSION_TEXT(value) L##value
+#else
+#define JA2_VERSION_TEXT(value) u##value
+#endif
+
 //
 //	Keeps track of the game version
 //
@@ -8,38 +14,38 @@
 #ifdef JA2EDITOR // map editor
 	
 	#ifdef JA2UB
-		CHAR16 zProductLabel[64]		= { L"JA2 1.13 Unfinished Business - Map Editor" };
+		CHAR16 zProductLabel[64]		= { JA2_VERSION_TEXT("JA2 1.13 Unfinished Business - Map Editor") };
 	#else
-		CHAR16 zProductLabel[64]		= { L"JA2 1.13 - Map Editor" };
+		CHAR16 zProductLabel[64]		= { JA2_VERSION_TEXT("JA2 1.13 - Map Editor") };
 	#endif
 
 #elif defined JA2BETAVERSION // debug
 
 	#ifdef JA2UB
-		CHAR16 zProductLabel[64]		= { L"Debug: JA2 1.13 Unfinished Business" };
+		CHAR16 zProductLabel[64]		= { JA2_VERSION_TEXT("Debug: JA2 1.13 Unfinished Business") };
 	#elif defined (JA113DEMO)
-		CHAR16 zProductLabel[64]		= { L"Debug: JA2 1.13 Demo" };
+		CHAR16 zProductLabel[64]		= { JA2_VERSION_TEXT("Debug: JA2 1.13 Demo") };
 	#else
-		CHAR16 zProductLabel[64]		= { L"Debug: JA2 1.13" };
+		CHAR16 zProductLabel[64]		= { JA2_VERSION_TEXT("Debug: JA2 1.13") };
 	#endif
 
 #elif defined CRIPPLED_VERSION
 
-	CHAR16 zProductLabel[64]		= { L"JA2 113 Beta-0.98" };
+	CHAR16 zProductLabel[64]		= { JA2_VERSION_TEXT("JA2 113 Beta-0.98") };
 
 #else // release
 
 	#ifdef JA2UB
-		CHAR16		zProductLabel[64]		= { L"JA2 1.13 Unfinished Business" };
+		CHAR16		zProductLabel[64]		= { JA2_VERSION_TEXT("JA2 1.13 Unfinished Business") };
 	#elif defined (JA113DEMO)
-		CHAR16		zProductLabel[64]		= { L"JA2 1.13 Demo" };
+		CHAR16		zProductLabel[64]		= { JA2_VERSION_TEXT("JA2 1.13 Demo") };
 	#else
-		CHAR16		zProductLabel[64]		= { L"JA2 1.13" };
+		CHAR16		zProductLabel[64]		= { JA2_VERSION_TEXT("JA2 1.13") };
 	#endif
 
 #endif
 
 CHAR8          czVersionString[16]     = { "@GIT_SHA@" };
-CHAR16         zBuildInformation[256]  = { L"@GAME_BUILD_INFORMATION@" };
+CHAR16         zBuildInformation[256]  = { JA2_VERSION_TEXT("@GAME_BUILD_INFORMATION@") };
 
 // SAVE_GAME_VERSION is defined in header, change it there

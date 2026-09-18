@@ -1676,7 +1676,7 @@ void HandleEquipmentLeftInOmerta( UINT32 uiSlotIndex )
 		}
 		else
 		{
-			swprintf( sString, L"A departing merc has left their equipment in Omerta." );
+			swprintf( sString, JA2_TEXT("A departing merc has left their equipment in Omerta.") );
 			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, sString);
 		}
 	}
@@ -1719,7 +1719,7 @@ void HandleEquipmentLeftInDrassen( UINT32 uiSlotIndex )
 		}
 		else
 		{
-			swprintf( sString, L"A departing merc has left their equipment in Drassen." );
+			swprintf( sString, JA2_TEXT("A departing merc has left their equipment in Drassen.") );
 			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, sString);
 		}
 	}
@@ -1948,12 +1948,12 @@ void UpdateCharRegionHelpText( void )
 				if ( AM_A_ROBOT(pSoldier) )
 				{
 					// robot (condition only)
-					swprintf( sString, L"%s: %d/%d", pMapScreenStatusStrings[ 3 ], pSoldier->stats.bLife, pSoldier->stats.bLifeMax );
+					swprintf( sString, JA2_TEXT("%s: %d/%d"), pMapScreenStatusStrings[ 3 ], pSoldier->stats.bLife, pSoldier->stats.bLifeMax );
 				}
 				else if (pSoldier->flags.uiStatusFlags & SOLDIER_VEHICLE )
 				{
 					// vehicle (condition/fuel)
-					swprintf( sString, L"%s: %d/%d, %s: %d/%d",
+					swprintf( sString, JA2_TEXT("%s: %d/%d, %s: %d/%d"),
 													pMapScreenStatusStrings[ 3 ], pSoldier->stats.bLife, pSoldier->stats.bLifeMax,
 													pMapScreenStatusStrings[ 4 ], pSoldier->bBreath, pSoldier->bBreathMax );
 				}
@@ -1963,7 +1963,7 @@ void UpdateCharRegionHelpText( void )
 					GetMoraleString( pSoldier, pMoraleStr );
 									
 					{
-						swprintf( sString, L"%s: %d/%d, %s: %d/%d, %s: %s",
+						swprintf( sString, JA2_TEXT("%s: %d/%d, %s: %d/%d, %s: %s"),
 														pMapScreenStatusStrings[ 0 ], pSoldier->stats.bLife, pSoldier->stats.bLifeMax,
 														pMapScreenStatusStrings[ 1 ], pSoldier->bBreath, pSoldier->bBreathMax,
 														pMapScreenStatusStrings[ 2 ], pMoraleStr );
@@ -1978,13 +1978,13 @@ void UpdateCharRegionHelpText( void )
 			}
 			else
 			{
-				wcscpy( sString, L"" );
+				wcscpy( sString, JA2_TEXT("") );
 			}
 		}
 		else
 		{
 			// POW/mini event - stats unknown
-			swprintf( sString, L"%s: ??, %s: ??, %s: ??", pMapScreenStatusStrings[ 0 ], pMapScreenStatusStrings[ 1 ], pMapScreenStatusStrings[ 2 ] );
+			swprintf( sString, JA2_TEXT("%s: ??, %s: ??, %s: ??"), pMapScreenStatusStrings[ 0 ], pMapScreenStatusStrings[ 1 ], pMapScreenStatusStrings[ 2 ] );
 		}
 
 		SetRegionFastHelpText( &gMapStatusBarsRegion, sString );
@@ -1993,7 +1993,7 @@ void UpdateCharRegionHelpText( void )
 		if( ( pSoldier->stats.bLife != 0 ) && !AM_A_ROBOT( pSoldier ) && !IsVehicle( pSoldier ) )
 		{
 			// clear pStr value
-			swprintf( sString, L"");
+			swprintf( sString, JA2_TEXT(""));
 
 			if (gGameOptions.fNewTraitSystem) // SANDRO - old/new traits check
 			{
@@ -2018,13 +2018,13 @@ void UpdateCharRegionHelpText( void )
 
 				if ( bNumSkillTraits == 0 )
 				{
-					swprintf( sString, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+					swprintf( sString, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 				}
 				else
 				{
 					for ( UINT8 ubCnt = 0; ubCnt < bNumSkillTraits; ubCnt++ )
 					{
-						swprintf( sTemp, L"%s\n", gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
+						swprintf( sTemp, JA2_TEXT("%s\n"), gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
 						wcscat( sString, sTemp );
 					}
 				}
@@ -2037,26 +2037,26 @@ void UpdateCharRegionHelpText( void )
 
 				if ( bSkill1 == 0 && bSkill2 == 0 )
 				{
-					swprintf( sString, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+					swprintf( sString, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 				}
 				else
 				{
 					//if the 2 skills are the same, add the '(expert)' at the end
 					if( bSkill1 == bSkill2 )
 					{
-						swprintf( sString, L"%s %s", gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
+						swprintf( sString, JA2_TEXT("%s %s"), gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
 					}
 					else
 					{
 						//Display the first skill
 						if( bSkill1 != 0 )
 						{
-							swprintf( sString, L"%s\n", gzMercSkillText[bSkill1] );
+							swprintf( sString, JA2_TEXT("%s\n"), gzMercSkillText[bSkill1] );
 						}
 
 						if( bSkill2 != 0 )
 						{
-							swprintf( sTemp, L"%s", gzMercSkillText[bSkill2] );
+							swprintf( sTemp, JA2_TEXT("%s"), gzMercSkillText[bSkill2] );
 							wcscat( sString, sTemp );
 						}
 					}
@@ -2066,7 +2066,7 @@ void UpdateCharRegionHelpText( void )
 		}
 		else
 		{
-			SetRegionFastHelpText( &gCharInfoFaceRegion, L"" );
+			SetRegionFastHelpText( &gCharInfoFaceRegion, JA2_TEXT("") );
 		}
 
 		// update CONTRACT button help text
@@ -2077,7 +2077,7 @@ void UpdateCharRegionHelpText( void )
 		}
 		else
 		{
-			SetButtonFastHelpText( giMapContractButton, L"" );
+			SetButtonFastHelpText( giMapContractButton, JA2_TEXT("") );
 			DisableButton( giMapContractButton );
 		}
 
@@ -2095,15 +2095,15 @@ void UpdateCharRegionHelpText( void )
 		}
 		else	// can't toggle it, don't show any inventory help text
 		{
-			SetRegionFastHelpText( &gCharInfoHandRegion, L"" );
+			SetRegionFastHelpText( &gCharInfoHandRegion, JA2_TEXT("") );
 		}
 	}
 	else
 	{
 		// invalid soldier
-		SetRegionFastHelpText( &(gMapStatusBarsRegion), L"" );
-		SetButtonFastHelpText( giMapContractButton, L"" );
-		SetRegionFastHelpText( &gCharInfoHandRegion, L"" );
+		SetRegionFastHelpText( &(gMapStatusBarsRegion), JA2_TEXT("") );
+		SetButtonFastHelpText( giMapContractButton, JA2_TEXT("") );
+		SetRegionFastHelpText( &gCharInfoHandRegion, JA2_TEXT("") );
 		DisableButton( giMapContractButton );
 	}
 }
@@ -3791,28 +3791,28 @@ void AddStringsToMoveBox( void )
 
 	// add title
 	GetShortSectorString( sSelMapX, sSelMapY, sStringB );
-	swprintf( sString, L"%s %s", pMovementMenuStrings[ 0 ], sStringB );
+	swprintf( sString, JA2_TEXT("%s %s"), pMovementMenuStrings[ 0 ], sStringB );
 	AddMonoString(&hStringHandle, sString, 0 );
 	// Add empty lines to other columns
 	for ( size_t i = 1; i < MAX_POPUP_BOX_COLUMNS; i++ )
 	{
-		AddMonoString( &hStringHandle, L"", i);
+		AddMonoString( &hStringHandle, JA2_TEXT(""), i);
 	}
 
 	// blank line
 	for ( size_t i = 0; i < MAX_POPUP_BOX_COLUMNS; i++ )
 	{
-		AddMonoString( &hStringHandle, L"", i );
+		AddMonoString( &hStringHandle, JA2_TEXT(""), i );
 	}
 
 	// add Select all line
 	if (giNumberOfSquadsInSectorMoving > 1)
 	{
-		swprintf(sString, L"%s", pMovementMenuStrings[4]);
+		swprintf(sString, JA2_TEXT("%s"), pMovementMenuStrings[4]);
 		AddMonoString( &hStringHandle, sString, 0 );
 		for ( size_t i = 1; i < MAX_POPUP_BOX_COLUMNS; i++ )
 		{
-			AddMonoString( &hStringHandle, L"", i );
+			AddMonoString( &hStringHandle, JA2_TEXT(""), i );
 		}
 	}
 
@@ -3824,16 +3824,16 @@ void AddStringsToMoveBox( void )
 		if( fSquadIsMoving[ iCount ] )
 		{
 			if ( gGameExternalOptions.fUseXMLSquadNames && iSquadMovingList[iCount] < gSquadNameVector.size() )
-				swprintf( sString, L"*%s*", gSquadNameVector[iSquadMovingList[iCount]].c_str() );
+				swprintf( sString, JA2_TEXT("*%s*"), gSquadNameVector[iSquadMovingList[iCount]].c_str() );
 			else
-				swprintf( sString, L"*%s*", pSquadMenuStrings[iSquadMovingList[ iCount ] ] );
+				swprintf( sString, JA2_TEXT("*%s*"), pSquadMenuStrings[iSquadMovingList[ iCount ] ] );
 		}
 		else
 		{
 			if ( gGameExternalOptions.fUseXMLSquadNames && iSquadMovingList[iCount] < gSquadNameVector.size() )
-				swprintf( sString, L"%s", gSquadNameVector[iSquadMovingList[iCount]].c_str() );
+				swprintf( sString, JA2_TEXT("%s"), gSquadNameVector[iSquadMovingList[iCount]].c_str() );
 			else
-				swprintf( sString, L"%s", pSquadMenuStrings[iSquadMovingList[ iCount ] ] );
+				swprintf( sString, JA2_TEXT("%s"), pSquadMenuStrings[iSquadMovingList[ iCount ] ] );
 		}
 		// Determine which column to add
 		if (!isFirstColumnFull)
@@ -3865,11 +3865,11 @@ void AddStringsToMoveBox( void )
 				// add mercs in squads
 				if( IsSoldierSelectedForMovement( pSoldierMovingList[ iCountB ] ) == TRUE )
 				{
-					swprintf( sString, L"  *%s*", pSoldierMovingList[ iCountB ]->name );
+					swprintf( sString, JA2_TEXT("  *%s*"), pSoldierMovingList[ iCountB ]->name );
 				}
 				else
 				{
-					swprintf( sString, L"  %s", pSoldierMovingList[ iCountB ]->name );
+					swprintf( sString, JA2_TEXT("  %s"), pSoldierMovingList[ iCountB ]->name );
 				}
 
 				if ( !isFirstColumnFull )
@@ -3917,11 +3917,11 @@ void AddStringsToMoveBox( void )
 		// add this vehicle
 		if( fVehicleIsMoving[ iCount ] )
 		{
-			swprintf( sString, L"*%s*", gNewVehicle[ pVehicleList[ iVehicleMovingList[ iCount ] ].ubVehicleType ].NewVehicleStrings );
+			swprintf( sString, JA2_TEXT("*%s*"), gNewVehicle[ pVehicleList[ iVehicleMovingList[ iCount ] ].ubVehicleType ].NewVehicleStrings );
 		}
 		else
 		{
-			swprintf( sString, L"%s", gNewVehicle[ pVehicleList[ iVehicleMovingList[ iCount ]	].ubVehicleType ].NewVehicleStrings);
+			swprintf( sString, JA2_TEXT("%s"), gNewVehicle[ pVehicleList[ iVehicleMovingList[ iCount ]	].ubVehicleType ].NewVehicleStrings);
 		}
 
 		if ( !isFirstColumnFull )
@@ -3953,11 +3953,11 @@ void AddStringsToMoveBox( void )
 				// add mercs in vehicles
 				if( IsSoldierSelectedForMovement( pSoldierMovingList[ iCountB ] ) == TRUE )
 				{
-					swprintf( sString, L"  *%s*", pSoldierMovingList[ iCountB ]->name );
+					swprintf( sString, JA2_TEXT("  *%s*"), pSoldierMovingList[ iCountB ]->name );
 				}
 				else
 				{
-					swprintf( sString, L"  %s", pSoldierMovingList[ iCountB ]->name );
+					swprintf( sString, JA2_TEXT("  %s"), pSoldierMovingList[ iCountB ]->name );
 				}
 
 				if ( !isFirstColumnFull )
@@ -4013,11 +4013,11 @@ void AddStringsToMoveBox( void )
 				// add OTHER header line
 				if( AllOtherSoldiersInListAreSelected( ) )
 				{
-					swprintf( sString, L"*%s*", pMovementMenuStrings[ 3 ] );
+					swprintf( sString, JA2_TEXT("*%s*"), pMovementMenuStrings[ 3 ] );
 				}
 				else
 				{
-					swprintf( sString, L"%s", pMovementMenuStrings[ 3 ] );
+					swprintf( sString, JA2_TEXT("%s"), pMovementMenuStrings[ 3 ] );
 				}
 				AddMonoString(&hStringHandle, sString );
 
@@ -4027,11 +4027,11 @@ void AddStringsToMoveBox( void )
 			// add OTHER soldiers (not on duty nor in a vehicle)
 			if( IsSoldierSelectedForMovement( pSoldierMovingList[ iCount ] ) == TRUE )
 			{
-				swprintf( sString, L" *%s ( %s )*", pSoldierMovingList[ iCount ]->name, pAssignmentStrings[	pSoldierMovingList[ iCount ]->bAssignment ] );
+				swprintf( sString, JA2_TEXT(" *%s ( %s )*"), pSoldierMovingList[ iCount ]->name, pAssignmentStrings[	pSoldierMovingList[ iCount ]->bAssignment ] );
 			}
 			else
 			{
-				swprintf( sString, L" %s ( %s )", pSoldierMovingList[ iCount ]->name, pAssignmentStrings[	pSoldierMovingList[ iCount ]->bAssignment ] );
+				swprintf( sString, JA2_TEXT(" %s ( %s )"), pSoldierMovingList[ iCount ]->name, pAssignmentStrings[	pSoldierMovingList[ iCount ]->bAssignment ] );
 			}
 			AddMonoString(&hStringHandle, sString );
 		}
@@ -4039,24 +4039,24 @@ void AddStringsToMoveBox( void )
 
 
 	// blank line
-	AddMonoString(&hStringHandle, L"" );
+	AddMonoString(&hStringHandle, JA2_TEXT("") );
 
 
 	if ( IsAnythingSelectedForMoving() )
 	{
 		// add PLOT MOVE line
-		swprintf( sString, L"%s", pMovementMenuStrings[ 1 ] );
+		swprintf( sString, JA2_TEXT("%s"), pMovementMenuStrings[ 1 ] );
 		AddMonoString(&hStringHandle, sString );
 	}
 	else
 	{
 		// blank line
-		AddMonoString(&hStringHandle, L"" );
+		AddMonoString(&hStringHandle, JA2_TEXT("") );
 	}
 
 
 	// add cancel line
-	swprintf( sString, L"%s", pMovementMenuStrings[ 2 ] );
+	swprintf( sString, JA2_TEXT("%s"), pMovementMenuStrings[ 2 ] );
 	AddMonoString(&hStringHandle, sString );
 
 	return;
@@ -5539,7 +5539,7 @@ void DisplaySoldierUpdateBox( )
 			RenderSoldierSmallFaceForUpdatePanel( iCounter, iFaceX, iFaceY );
 
 			// display the mercs name
-			swprintf( sString, L"%s", pUpdateSoldierBox[ iCounter ]->name );
+			swprintf( sString, JA2_TEXT("%s"), pUpdateSoldierBox[ iCounter ]->name );
 			DrawTextToScreen( sString, (UINT16)(iFaceX-5), (UINT16)(iFaceY + 31), 57, TINYFONT1, FONT_LTRED, FONT_BLACK, 0, CENTER_JUSTIFIED );
 		}
 	}
@@ -5735,7 +5735,7 @@ void CreateUpdateBoxStrings( void )
 	CHAR16 sString[ 64 ];
 	INT32 hStringHandle;
 
-	swprintf( sString, L"%s", pUpdateMercStrings[ iReasonForSoldierUpDate ] );
+	swprintf( sString, JA2_TEXT("%s"), pUpdateMercStrings[ iReasonForSoldierUpDate ] );
 	AddMonoString(&hStringHandle, sString );
 
 	for( iCounter = 0; iCounter < SIZE_OF_UPDATE_BOX; iCounter++ )
@@ -5743,7 +5743,7 @@ void CreateUpdateBoxStrings( void )
 		// find valid soldier, add name
 		if( pUpdateSoldierBox[ iCounter ] )
 		{
-			swprintf( sString, L"%s", pUpdateSoldierBox[ iCounter ]->name );
+			swprintf( sString, JA2_TEXT("%s"), pUpdateSoldierBox[ iCounter ]->name );
 			AddMonoString(&hStringHandle, sString );
 		}
 	}
@@ -6018,9 +6018,9 @@ void UpdateHelpTextForMapScreenMercIcons( void )
 {
 	if( ( bSelectedInfoChar == -1 ) || ( gCharactersList[ bSelectedInfoChar ].fValid == FALSE ) )
 	{
-		SetRegionFastHelpText( &(gContractIconRegion), L"" );
-		SetRegionFastHelpText( &(gInsuranceIconRegion), L"" );
-		SetRegionFastHelpText( &(gDepositIconRegion), L"" );
+		SetRegionFastHelpText( &(gContractIconRegion), JA2_TEXT("") );
+		SetRegionFastHelpText( &(gInsuranceIconRegion), JA2_TEXT("") );
+		SetRegionFastHelpText( &(gDepositIconRegion), JA2_TEXT("") );
 	}
 	else
 	{
@@ -6031,7 +6031,7 @@ void UpdateHelpTextForMapScreenMercIcons( void )
 		}
 		else
 		{
-			SetRegionFastHelpText( &(gContractIconRegion), L"" );
+			SetRegionFastHelpText( &(gContractIconRegion), JA2_TEXT("") );
 		}
 
 		// if merc has life insurance
@@ -6041,7 +6041,7 @@ void UpdateHelpTextForMapScreenMercIcons( void )
 		}
 		else
 		{
-			SetRegionFastHelpText( &(gInsuranceIconRegion), L"" );
+			SetRegionFastHelpText( &(gInsuranceIconRegion), JA2_TEXT("") );
 		}
 
 		// if merc has a medical deposit
@@ -6051,7 +6051,7 @@ void UpdateHelpTextForMapScreenMercIcons( void )
 		}
 		else
 		{
-			SetRegionFastHelpText( &(gDepositIconRegion), L"" );
+			SetRegionFastHelpText( &(gDepositIconRegion), JA2_TEXT("") );
 		}
 	}
 }
@@ -6257,7 +6257,7 @@ BOOLEAN NotifyPlayerWhenEnemyTakesControlOfImportantSector( INT16 sSectorX, INT1
 			iValue = GetProjectedTotalDailyIncome( );
 
 			// parse the string
-			swprintf( sStringC, L"%s", FormatMoney(iValue).data());
+			swprintf( sStringC, JA2_TEXT("%s"), FormatMoney(iValue).data());
 
 			swprintf( sStringB, pMapErrorString[ 16 ], sString, sStringC );
 
@@ -6571,11 +6571,11 @@ BOOLEAN CanCharacterMoveInStrategic( SOLDIERTYPE *pSoldier, INT8 *pbErrorNumber 
 			// are they male or female
 			if( gMercProfiles[ pSoldier->ubProfile ].bSex == MALE )
 			{
-				swprintf( gsCustomErrorString, L"%s %s", pSoldier->name ,pMapErrorString[ 6 ] );
+				swprintf( gsCustomErrorString, JA2_TEXT("%s %s"), pSoldier->name ,pMapErrorString[ 6 ] );
 			}
 			else
 			{
-				swprintf( gsCustomErrorString, L"%s %s", pSoldier->name ,pMapErrorString[ 7 ] );
+				swprintf( gsCustomErrorString, JA2_TEXT("%s %s"), pSoldier->name ,pMapErrorString[ 7 ] );
 			}
 
 			*pbErrorNumber = -99;	// customized error message!

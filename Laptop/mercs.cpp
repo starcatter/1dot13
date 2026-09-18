@@ -1887,7 +1887,7 @@ void DisplayTextForSpeckVideoPopUp(STR16 pString)
 
 //	wcscpy(gsSpeckDialogueTextPopUp, pString);
 	//add the "" around the speech.
-	swprintf( gsSpeckDialogueTextPopUp, L"\"%s\"", pString );
+	swprintf( gsSpeckDialogueTextPopUp, JA2_TEXT("\"%s\""), pString );
 
 	gfDisplaySpeckTextBox = TRUE;
 

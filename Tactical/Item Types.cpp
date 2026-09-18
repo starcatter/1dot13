@@ -42,7 +42,7 @@ bool checkLBEArrayIntegrity(bool verbose) {
 	bool integrityCheck = TRUE;
 	int itemCnt = 0;
 
-	ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"LBENODE integrity check start: checking soldier items...");
+	ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("LBENODE integrity check start: checking soldier items..."));
 
 	for (int i = 0; i < CODE_MAXIMUM_NUMBER_OF_PLAYER_SLOTS; i++) {
 		if (!gCharactersList[i].fValid || gCharactersList[i].usSolID >= NOBODY) continue;
@@ -50,52 +50,52 @@ bool checkLBEArrayIntegrity(bool verbose) {
 		SoldierID id = gCharactersList[i].usSolID;
 		SOLDIERTYPE *soldier = id;
 
-		if (verbose)ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"LBENODE integrity check start: checking soldier items (%s)...", soldier->name);
+		if (verbose)ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("LBENODE integrity check start: checking soldier items (%s)..."), soldier->name);
 
 		for (int j = 0; j < soldier->inv.size(); j++) {
 			OBJECTTYPE * object = &(soldier->inv[j]);
 			if (object->HasAnyActiveLBEs()) {
 
 				if (!checkObjectLBEIntegrity(object)) {
-					ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"> LBENODE missing: %s -> %s!", soldier->name, Item[object->usItem].szItemName);
+					ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("> LBENODE missing: %s -> %s!"), soldier->name, Item[object->usItem].szItemName);
 					integrityCheck = false;
 				}
 				else {
-					if (verbose)ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"> OK: %s -> %s", soldier->name, Item[object->usItem].szItemName);
+					if (verbose)ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("> OK: %s -> %s"), soldier->name, Item[object->usItem].szItemName);
 				}
 			}
 			else {
-				if (verbose)ScreenMsg(FONT_MCOLOR_LTGRAY, MSG_INTERFACE, L"> SKIP: %s -> %s", soldier->name, Item[object->usItem].szItemName);
+				if (verbose)ScreenMsg(FONT_MCOLOR_LTGRAY, MSG_INTERFACE, JA2_TEXT("> SKIP: %s -> %s"), soldier->name, Item[object->usItem].szItemName);
 			}
 		}
 	}
 
 	
 
-	ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"LBENODE integrity check start: checking around %i world items", gWorldItems.size());
+	ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("LBENODE integrity check start: checking around %i world items"), gWorldItems.size());
 	for (std::vector<WORLDITEM>::iterator worldItem = gWorldItems.begin(); worldItem != gWorldItems.end(); ++worldItem)
 	{
 		OBJECTTYPE* object = &(worldItem->object);
 		if (object->HasAnyActiveLBEs()) {
 			if (!checkObjectLBEIntegrity(object)) {
-				ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"> LBENODE missing: loaded sector -> %s!", Item[object->usItem].szItemName);
+				ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("> LBENODE missing: loaded sector -> %s!"), Item[object->usItem].szItemName);
 				integrityCheck = false;
 			}
 			else {
-				if (verbose)ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"> OK: loaded sector -> %s", Item[object->usItem].szItemName);
+				if (verbose)ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("> OK: loaded sector -> %s"), Item[object->usItem].szItemName);
 			}
 		}
 		else {
-			if (verbose)ScreenMsg(FONT_MCOLOR_LTGRAY, MSG_INTERFACE, L"> SKIP: loaded sector -> %s", Item[object->usItem].szItemName);
+			if (verbose)ScreenMsg(FONT_MCOLOR_LTGRAY, MSG_INTERFACE, JA2_TEXT("> SKIP: loaded sector -> %s"), Item[object->usItem].szItemName);
 		}
 		itemCnt++;
 	}
 
 	if (integrityCheck) {
-		ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"LBENODE integrity check passed!");
+		ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("LBENODE integrity check passed!"));
 	}
 	else {
-		ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"Missing LBENODE(s) detected! Restart the game and check last save for corruption.");
+		ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("Missing LBENODE(s) detected! Restart the game and check last save for corruption."));
 	}
 
 	return integrityCheck;
@@ -568,7 +568,7 @@ LBENODE* OBJECTTYPE::GetLBEPointer(unsigned int index)
 		//BOB: if we got here somehow it means we're missing LBE data for this uniqueID
 		{
 			
-			swprintf(msgTemp, L"> Missing LBENODE for %s!", Item[this->usItem].szItemName);
+			swprintf(msgTemp, JA2_TEXT("> Missing LBENODE for %s!"), Item[this->usItem].szItemName);
 			ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, msgTemp);
 			// mark as no longer active LBE
 			(*this)[index]->data.lbe.bLBE = 0;
@@ -580,7 +580,7 @@ LBENODE* OBJECTTYPE::GetLBEPointer(unsigned int index)
 	{
 		//CHRISL: if the LBEArray is empty, we probably need to force the creation of an entry so that future functions don't crash.
 		
-		swprintf(msgTemp, L"Reinit LBEArray!");
+		swprintf(msgTemp, JA2_TEXT("Reinit LBEArray!"));
 		ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, msgTemp);
 
 		LBEArray.resize(1);

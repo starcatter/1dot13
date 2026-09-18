@@ -549,6 +549,7 @@ void HandleBeginScreenTextEvent( UINT32 uiKey )
 		//
 if(g_lang == i18n::Lang::ru) {
 		// ViSoR (02.02.2013): Fix for Cyrillic layouts
+#ifdef _WIN32
 		DWORD threadId = GetWindowThreadProcessId( ghWindow, 0 );
 		DWORD layout = (DWORD)GetKeyboardLayout( threadId ) & 0xFFFF;
 		if( layout == 0x419 ) // Russian
@@ -569,6 +570,11 @@ if(g_lang == i18n::Lang::ru) {
 		}
 		else if( !CheckIsKeyValid( uiKey ) )
 			uiKey = '#';
+#else
+		// SDL text input already reports Unicode code points.
+		if( !CheckIsKeyValid( uiKey ) )
+			uiKey = '#';
+#endif
 }
 		if( (g_lang != i18n::Lang::ru &&
 			uiKey >= 'A' && uiKey <= 'Z' ||
@@ -1273,12 +1279,12 @@ void RenderGender( void )
 	if( bGenderFlag == IMP_MALE )
 	{
 		// IMP_MALE, render x in IMP_MALE box
-		mprintf( MALE_BOX_X + 9, MALE_BOX_Y + 6, L"X" );
+		mprintf( MALE_BOX_X + 9, MALE_BOX_Y + 6, JA2_TEXT("X") );
 	}
 	else
 	{
 		// IMP_FEMALE, render x in IMP_FEMALE box
-		mprintf(FEMALE_BOX_X + 9, MALE_BOX_Y + 6, L"X");
+		mprintf(FEMALE_BOX_X + 9, MALE_BOX_Y + 6, JA2_TEXT("X"));
 	}
 }
 
@@ -1306,10 +1312,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 #ifndef _DEBUG
 	return( FALSE );
 #else
-	if( ( wcscmp( pFullNameString, L"retraC kraM") == 0 ) && ( wcscmp( pNickNameString, L"BdyCnt") ) )
+	if( ( wcscmp( pFullNameString, JA2_TEXT("retraC kraM")) == 0 ) && ( wcscmp( pNickNameString, JA2_TEXT("BdyCnt")) ) )
 	{
-		wcscpy( pFullNameString, L"Mark Carter");
-		wcscpy( pNickNameString, L"BodyCount");
+		wcscpy( pFullNameString, JA2_TEXT("Mark Carter"));
+		wcscpy( pNickNameString, JA2_TEXT("BodyCount"));
 	bGenderFlag = IMP_MALE;
 		iHealth = 99;
 		iAgility = 99;
@@ -1331,10 +1337,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 		iPortraitNumber = 2;
 	return TRUE;
 	}
-	else if ( ( wcscmp( pFullNameString, L"hcnerF evaD") == 0)&&( wcscmp( pNickNameString, L"Feral") == 0))
+	else if ( ( wcscmp( pFullNameString, JA2_TEXT("hcnerF evaD")) == 0)&&( wcscmp( pNickNameString, JA2_TEXT("Feral")) == 0))
 	{
-	wcscpy( pFullNameString, L"Dave French");
-		wcscpy( pNickNameString, L"Feral");
+	wcscpy( pFullNameString, JA2_TEXT("Dave French"));
+		wcscpy( pNickNameString, JA2_TEXT("Feral"));
 	bGenderFlag = IMP_MALE;
 		iHealth = 90;
 		iAgility = 95;
@@ -1356,10 +1362,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 		iPortraitNumber = 1;
 	return TRUE;
 	}
-	else if ( ( wcscmp( pFullNameString, L"Marnes") == 0)&&( wcscmp( pNickNameString, L"Marnes") == 0))
+	else if ( ( wcscmp( pFullNameString, JA2_TEXT("Marnes")) == 0)&&( wcscmp( pNickNameString, JA2_TEXT("Marnes")) == 0))
 	{
-	wcscpy( pFullNameString, L"Kris Marnes");
-		wcscpy( pNickNameString, L"Marnes");
+	wcscpy( pFullNameString, JA2_TEXT("Kris Marnes"));
+		wcscpy( pNickNameString, JA2_TEXT("Marnes"));
 	bGenderFlag = IMP_MALE;
 		iHealth = 100;
 		iAgility = 100;
@@ -1381,10 +1387,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 		iPortraitNumber = 1;
 	return TRUE;
 	}
-	else if( ( wcscmp( pFullNameString, L"neslO namroN") == 0 ) && ( wcscmp( pNickNameString, L"N.R.G") == 0) )
+	else if( ( wcscmp( pFullNameString, JA2_TEXT("neslO namroN")) == 0 ) && ( wcscmp( pNickNameString, JA2_TEXT("N.R.G")) == 0) )
 	{
-		wcscpy( pFullNameString, L"Norman Olsen");
-		wcscpy( pNickNameString, L"N.R.G");
+		wcscpy( pFullNameString, JA2_TEXT("Norman Olsen"));
+		wcscpy( pNickNameString, JA2_TEXT("N.R.G"));
 	bGenderFlag = IMP_MALE;
 		iHealth = 99;
 		iAgility = 99;
@@ -1409,10 +1415,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 		iPortraitNumber = 4;
 	return TRUE;
 	}
-		else if( ( wcscmp( pFullNameString, L"snommE werdnA") == 0 ) && ( wcscmp( pNickNameString, L"Bubba") == 0) )
+		else if( ( wcscmp( pFullNameString, JA2_TEXT("snommE werdnA")) == 0 ) && ( wcscmp( pNickNameString, JA2_TEXT("Bubba")) == 0) )
 	{
-		wcscpy( pFullNameString, L"Andrew Emmons");
-		wcscpy( pNickNameString, L"Bubba");
+		wcscpy( pFullNameString, JA2_TEXT("Andrew Emmons"));
+		wcscpy( pNickNameString, JA2_TEXT("Bubba"));
 	bGenderFlag =IMP_MALE;
 		iHealth = 97;
 		iAgility = 98;
@@ -1437,10 +1443,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 		iPortraitNumber = 2;
 	return TRUE;
 	}
-	else if( ( wcscmp( pFullNameString, L"nalehW yeoJ") == 0 ) && ( wcscmp( pNickNameString, L"Joeker") == 0) )
+	else if( ( wcscmp( pFullNameString, JA2_TEXT("nalehW yeoJ")) == 0 ) && ( wcscmp( pNickNameString, JA2_TEXT("Joeker")) == 0) )
 	{
-		wcscpy( pFullNameString, L"Joey Whelan");
-		wcscpy( pNickNameString, L"Joeker");
+		wcscpy( pFullNameString, JA2_TEXT("Joey Whelan"));
+		wcscpy( pNickNameString, JA2_TEXT("Joeker"));
 	bGenderFlag = 0;
 		iHealth = 99;
 		iAgility = 99;
@@ -1465,10 +1471,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 		iPortraitNumber = 4;
 	return TRUE;
 	}
-	else if( ( wcscmp( pFullNameString, L"gnehC cirE") == 0 ) && ( wcscmp( pNickNameString, L"BlakAddr") == 0) )
+	else if( ( wcscmp( pFullNameString, JA2_TEXT("gnehC cirE")) == 0 ) && ( wcscmp( pNickNameString, JA2_TEXT("BlakAddr")) == 0) )
 	{
-		wcscpy( pFullNameString, L"Eric Cheng");
-		wcscpy( pNickNameString, L"BlakAddr");
+		wcscpy( pFullNameString, JA2_TEXT("Eric Cheng"));
+		wcscpy( pNickNameString, JA2_TEXT("BlakAddr"));
 	bGenderFlag = IMP_MALE;
 		iHealth = 99;
 		iAgility = 99;
@@ -1493,10 +1499,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 		iPortraitNumber = 3;
 	return TRUE;
 	}
-	else if( ( wcscmp( pFullNameString, L"Karters Killer Kru") == 0 ) && ( wcscmp( pNickNameString, L"Bitchin") == 0) )
+	else if( ( wcscmp( pFullNameString, JA2_TEXT("Karters Killer Kru")) == 0 ) && ( wcscmp( pNickNameString, JA2_TEXT("Bitchin")) == 0) )
 	{
-		wcscpy( pFullNameString, L"Mark Carter");
-		wcscpy( pNickNameString, L"BodyCount");
+		wcscpy( pFullNameString, JA2_TEXT("Mark Carter"));
+		wcscpy( pNickNameString, JA2_TEXT("BodyCount"));
 	bGenderFlag = IMP_MALE;
 		iHealth = 99;
 		iAgility = 99;
@@ -1547,10 +1553,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 
 	return TRUE;
 	}
-	else if( ( wcscmp( pFullNameString, L"dleifmaC sirhC") == 0 ) && ( wcscmp( pNickNameString, L"SSR") == 0) )
+	else if( ( wcscmp( pFullNameString, JA2_TEXT("dleifmaC sirhC")) == 0 ) && ( wcscmp( pNickNameString, JA2_TEXT("SSR")) == 0) )
 	{
-		wcscpy( pFullNameString, L"James Bolivar DiGriz");
-		wcscpy( pNickNameString, L"DiGriz");
+		wcscpy( pFullNameString, JA2_TEXT("James Bolivar DiGriz"));
+		wcscpy( pNickNameString, JA2_TEXT("DiGriz"));
 	bGenderFlag = IMP_MALE;
 		iHealth = 99;
 		iAgility = 80;
@@ -1577,10 +1583,10 @@ BOOLEAN CheckCharacterInputForEgg( void )
 	}
 	#endif
 	#endif
-	if( ( wcscmp( pFullNameString, L"Test Female") == 0 ) && ( wcscmp( pNickNameString, L"Test") == 0) )
+	if( ( wcscmp( pFullNameString, JA2_TEXT("Test Female")) == 0 ) && ( wcscmp( pNickNameString, JA2_TEXT("Test")) == 0) )
 	{
-		wcscpy( pFullNameString, L"Test Female");
-		wcscpy( pNickNameString, L"Test");
+		wcscpy( pFullNameString, JA2_TEXT("Test Female"));
+		wcscpy( pNickNameString, JA2_TEXT("Test"));
 	bGenderFlag = IMP_FEMALE;
 		iHealth = 55;
 		iAgility = 55;

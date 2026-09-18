@@ -105,6 +105,7 @@ void FindIndecies(SGPPaletteEntry *pSrcPalette, SGPPaletteEntry *pMapPalette, UI
 UINT16 usCurIndex, usCurDelta, usCurCount;
 UINT32 *pSavedPtr;
 
+#ifdef _MSC_VER
 __asm {
 
 // Assumes:
@@ -180,6 +181,27 @@ NotThisCol:
 		dec		usCurCount
 		jnz		DoNextIndex
 	}
+#else
+	pTable[0] = 0;
+	for (UINT16 sourceIndex = 1; sourceIndex < 256; ++sourceIndex)
+	{
+		UINT16 closestIndex = 1;
+		UINT16 closestDelta = 0xffff;
+		for (UINT16 mapIndex = 1; mapIndex < 256; ++mapIndex)
+		{
+			const UINT16 delta = static_cast<UINT16>(
+				std::abs(static_cast<int>(pMapPalette[mapIndex].peRed) - pSrcPalette[sourceIndex].peRed) +
+				std::abs(static_cast<int>(pMapPalette[mapIndex].peGreen) - pSrcPalette[sourceIndex].peGreen) +
+				std::abs(static_cast<int>(pMapPalette[mapIndex].peBlue) - pSrcPalette[sourceIndex].peBlue));
+			if (delta < closestDelta)
+			{
+				closestDelta = delta;
+				closestIndex = mapIndex;
+			}
+		}
+		pTable[sourceIndex] = static_cast<UINT8>(closestIndex);
+	}
+#endif
 }
 
 /**********************************************************************************************

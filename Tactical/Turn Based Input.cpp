@@ -513,7 +513,7 @@ void	QueryTBLeftButton( UINT32 *puiNewEvent )
 																//}
 
 															}
-															//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"Invalid move destination." );
+															//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("Invalid move destination.") );
 														}
 													}
 												}
@@ -1618,7 +1618,7 @@ void CheatNewMerc(int nProfileID)
 {
 		if (nProfileID >= NUM_PROFILES || nProfileID < 0)
 		{
-			ScreenMsg(FONT_ORANGE, MSG_BETAVERSION, L"Invalid Profile ID.");
+			ScreenMsg(FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("Invalid Profile ID."));
 			return;
 		}
 
@@ -1643,12 +1643,12 @@ void CheatNewMerc(int nProfileID)
 
 		if (bReturnCode == MERC_HIRE_FAILED)
 		{
-			ScreenMsg(FONT_ORANGE, MSG_BETAVERSION, L"Merc hire failed:	Either already hired or dislikes you.");
+			ScreenMsg(FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("Merc hire failed:	Either already hired or dislikes you."));
 		}
 		// WDS - make number of mercenaries, etc. be configurable
 		else if (bReturnCode == MERC_HIRE_OVER_PLAYER_LIMIT)
 		{
-			ScreenMsg(FONT_ORANGE, MSG_BETAVERSION, L"Can't hire that many mercs.");
+			ScreenMsg(FONT_ORANGE, MSG_BETAVERSION, JA2_TEXT("Can't hire that many mercs."));
 		}
 		else
 		{
@@ -1662,7 +1662,7 @@ void CheatNewMerc(int nProfileID)
 
 void MercCreationCallBack(UINT8 ubResult)
 {
-	if (ubResult == MSG_BOX_RETURN_OK && wcscmp(gszMsgBoxInputString, L"") > 0)
+	if (ubResult == MSG_BOX_RETURN_OK && wcscmp(gszMsgBoxInputString, JA2_TEXT("")) > 0)
 	{
 		CheatNewMerc(_wtoi(gszMsgBoxInputString));
 	}
@@ -1671,7 +1671,7 @@ void MercCreationCallBack(UINT8 ubResult)
 
 void ItemCreationCallBack( UINT8 ubResult )
 {
-	if (ubResult == MSG_BOX_RETURN_OK && wcscmp(gszMsgBoxInputString,L"") > 0)
+	if (ubResult == MSG_BOX_RETURN_OK && wcscmp(gszMsgBoxInputString,JA2_TEXT("")) > 0)
 	{
 		usitem = _wtoi( gszMsgBoxInputString );
 		CheatCreateItem( );
@@ -2327,7 +2327,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 				CalculateLaunchItemChanceToGetThrough( gusSelectedSoldier, &(gusSelectedSoldier->inv[ HANDPOS ] ), usMapPos, 0, 0, &sGridNo, TRUE, (INT8 *)&ubLevel, TRUE );
 			}
 
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Physics 100 times: %d", ( GetJA2Clock( ) - iTime )	);
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Physics 100 times: %d"), ( GetJA2Clock( ) - iTime )	);
 
 		}
 #endif
@@ -2790,13 +2790,13 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 					{
 #ifdef JA2TESTVERSION
 						gTacticalStatus.bRealtimeSpeed = max( 1, gTacticalStatus.bRealtimeSpeed - 1 );
-						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Decreasing Realtime speed to %d", gTacticalStatus.bRealtimeSpeed );
+						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Decreasing Realtime speed to %d"), gTacticalStatus.bRealtimeSpeed );
 #endif
 					}
 					else
 					{
 #ifdef JA2TESTVERSION
-						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Using Normal Scroll Speed"	);
+						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Using Normal Scroll Speed")	);
 						gubCurScrollSpeedID = 1;
 #endif
 					}
@@ -2815,11 +2815,11 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 				else if( fCtrl )
 				{
 					gTacticalStatus.bRealtimeSpeed = min( MAX_REALTIME_SPEED_VAL, gTacticalStatus.bRealtimeSpeed+1 );
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Increasing Realtime speed to %d", gTacticalStatus.bRealtimeSpeed );
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Increasing Realtime speed to %d"), gTacticalStatus.bRealtimeSpeed );
 				}
 				else
 				{
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Using Higher Scroll Speed"	);
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Using Higher Scroll Speed")	);
 					gubCurScrollSpeedID = 2;
 				}
 #endif
@@ -2890,7 +2890,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
  					{
 						if ( gusSelectedSoldier != NOBODY )
 						{
-							DoMessageBox( MSG_BOX_BASIC_SMALL_BUTTONS, L"Enter ItemID", GAME_SCREEN, MSG_BOX_FLAG_INPUTBOX, ItemCreationCallBack, NULL );
+							DoMessageBox( MSG_BOX_BASIC_SMALL_BUTTONS, JA2_TEXT("Enter ItemID"), GAME_SCREEN, MSG_BOX_FLAG_INPUTBOX, ItemCreationCallBack, NULL );
 						}
 					}
 				}
@@ -3544,7 +3544,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 						// sevenfm: code to check ubAdjacentSoldierCnt
 						/*MAP_ELEMENT *pMapElement;
 						pMapElement = &(gpWorldLevelData[usGridNo]);
-						ScreenMsg(FONT_ORANGE, MSG_INTERFACE, L"adjacent soldiers %d", pMapElement->ubAdjacentSoldierCnt);*/
+						ScreenMsg(FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("adjacent soldiers %d"), pMapElement->ubAdjacentSoldierCnt);*/
 
 						// if there is a selected soldier
 						if ( gusSelectedSoldier != NOBODY )
@@ -3563,7 +3563,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 						}
 
 						CHAR16	zOutputString[512];
-						swprintf( zOutputString, L"%s: %d", pUpdateMapInfoText[19], usGridNo);
+						swprintf( zOutputString, JA2_TEXT("%s: %d"), pUpdateMapInfoText[19], usGridNo);
 						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, zOutputString );
 
 						// Flugente: print out structure tileset
@@ -3593,7 +3593,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 
 											ja2::text::copyUtf8ToUtf16( tilesestr, whcarthing );
 
-											swprintf( zOutputString, L"Tileset %d: Tilesetname: %s tileindex: %d", giCurrentTilesetID, whcarthing, pStruct->pDBStructureRef->pDBStructure->usStructureNumber );
+											swprintf( zOutputString, JA2_TEXT("Tileset %d: Tilesetname: %s tileindex: %d"), giCurrentTilesetID, whcarthing, pStruct->pDBStructureRef->pDBStructure->usStructureNumber );
 											ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, zOutputString );
 										}
 									}
@@ -3606,12 +3606,12 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 						UINT16 usRoom;
 						if ( InARoom( usGridNo, &usRoom ) )
 						{
-							swprintf( zOutputString, L"Room number: %d", usRoom );
+							swprintf( zOutputString, JA2_TEXT("Room number: %d"), usRoom );
 							ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, zOutputString );
 						}
 
 						// display height
-						swprintf( zOutputString, L"Floor height: %d", gpWorldLevelData[usGridNo].sHeight );
+						swprintf( zOutputString, JA2_TEXT("Floor height: %d"), gpWorldLevelData[usGridNo].sHeight );
 						ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, zOutputString );
 					}
 				}
@@ -3635,12 +3635,12 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 					{
 						if (gTacticalStatus.uiFlags & GODMODE)
 						{
-							//ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, L"God mode deactivated.");
+							//ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("God mode deactivated."));
 							gTacticalStatus.uiFlags &= (~GODMODE);
 						}
 						else
 						{
-							//ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, L"God mode activated.");
+							//ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("God mode activated."));
 							gTacticalStatus.uiFlags |= GODMODE;
 						}
 					}
@@ -3683,7 +3683,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 						//*puiNewEvent = I_NEW_MERC;
 						if (GetMouseMapPos(&mappos))
 						{
-							DoMessageBox(MSG_BOX_BASIC_SMALL_BUTTONS, L"Enter ProfileID", GAME_SCREEN, MSG_BOX_FLAG_INPUTBOX, MercCreationCallBack, NULL);
+							DoMessageBox(MSG_BOX_BASIC_SMALL_BUTTONS, JA2_TEXT("Enter ProfileID"), GAME_SCREEN, MSG_BOX_FLAG_INPUTBOX, MercCreationCallBack, NULL);
 						}
 					}
 				}
@@ -4002,11 +4002,11 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 				gfDisplayStrategicAILogs ^= TRUE;
 				if (gfDisplayStrategicAILogs)
 				{
-					ScreenMsg(FONT_LTKHAKI, MSG_INTERFACE, L"Strategic AI Log visually enabled.");
+					ScreenMsg(FONT_LTKHAKI, MSG_INTERFACE, JA2_TEXT("Strategic AI Log visually enabled."));
 				}
 				else
 				{
-					ScreenMsg(FONT_LTKHAKI, MSG_INTERFACE, L"Strategic AI Log visually disabled.");
+					ScreenMsg(FONT_LTKHAKI, MSG_INTERFACE, JA2_TEXT("Strategic AI Log visually disabled."));
 				}
 				break;
 #endif
@@ -4047,7 +4047,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 				{
 					if ( INFORMATION_CHEAT_LEVEL( ) )
 					{
-						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Memory Used: %d + %d = %d vs: %d", guiMemTotal, giMemUsedInSurfaces, ( guiMemTotal + giMemUsedInSurfaces), ( giStartingMemValue - MemGetFree() ) );
+						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Memory Used: %d + %d = %d vs: %d"), guiMemTotal, giMemUsedInSurfaces, ( guiMemTotal + giMemUsedInSurfaces), ( giStartingMemValue - MemGetFree() ) );
 					}
 				}
 				else
@@ -4435,7 +4435,7 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 				{
 					if (CHEATER_CHEAT_LEVEL())
 					{
-						swprintf(zString, L"%s cheat", pMessageStrings[MSG_SAVE_AUTOSAVE_TEXT]);
+						swprintf(zString, JA2_TEXT("%s cheat"), pMessageStrings[MSG_SAVE_AUTOSAVE_TEXT]);
 						DoAutoSave(SAVE__TIMED_AUTOSAVE_SLOT1, zString);
 					}
 				}
@@ -4507,17 +4507,17 @@ void GetKeyboardInput( UINT32 *puiNewEvent )
 				{
 #ifdef JA2TESTVERSION
 					if( gfDoVideoScroll ^= TRUE )
-						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Video Scroll ON"	);
+						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Video Scroll ON")	);
 					else
-						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Video Scroll OFF"	);
+						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Video Scroll OFF")	);
 #endif
 				}
 				else if( fCtrl )
 				{
 #ifdef SGP_VIDEO_DEBUGGING
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"VObjects:	%d", guiVObjectSize );
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"VSurfaces:	%d", guiVSurfaceSize );
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"SGPVideoDump.txt updated..." );
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("VObjects:	%d"), guiVObjectSize );
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("VSurfaces:	%d"), guiVSurfaceSize );
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("SGPVideoDump.txt updated...") );
 					PerformVideoInfoDumpIntoFile( "SGPVideoDump.txt", TRUE );
 #else
 					HandleTacticalInventoryMenu();
@@ -5031,7 +5031,7 @@ void ToggleRealTime( UINT32 *puiNewEvent )
 		gTacticalStatus.uiFlags &= (~TURNBASED);
 		gTacticalStatus.uiFlags |= REALTIME;
 
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Switching to Realtime." );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Switching to Realtime.") );
 	}
 	else if ( gTacticalStatus.uiFlags & REALTIME )
 	{
@@ -5041,7 +5041,7 @@ void ToggleRealTime( UINT32 *puiNewEvent )
 
 		*puiNewEvent = M_ON_TERRAIN;
 
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Switching to Turnbased." );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Switching to Turnbased.") );
 	}
 
 	// Plot new path!
@@ -5372,7 +5372,7 @@ void ObliterateSector()
 	cnt = gTacticalStatus.Team[ gbPlayerNum ].bLastID + 1;
 
 #ifdef JA2BETAVERSION
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Obliterating Sector!" );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Obliterating Sector!") );
 #endif
 	const INT32 end = MAX_NUM_SOLDIERS;
 	for ( pTSoldier = MercPtrs[ cnt ]; cnt < end; pTSoldier++, cnt++ )
@@ -5455,14 +5455,14 @@ void ToggleCliffDebug()
 	// Set option to show all mercs
 	if ( gTacticalStatus.uiFlags&DEBUGCLIFFS )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Cliff debug OFF." );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Cliff debug OFF.") );
 
 		gTacticalStatus.uiFlags&= (~DEBUGCLIFFS );
 		SetRenderFlags(RENDER_FLAG_FULL);
 	}
 	else
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Cliff debug ON." );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Cliff debug ON.") );
 
 		gTacticalStatus.uiFlags|= DEBUGCLIFFS;
 	}
@@ -6136,7 +6136,7 @@ BOOLEAN HandleUIReloading( SOLDIERTYPE *pSoldier )
 	if ( guiCurrentUICursor == BAD_RELOAD_UICURSOR )
 	{
 		// OK, we have been told to reload but have no ammo...
-		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"No ammo to reload." );
+		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("No ammo to reload.") );
 		if ( Random( 3 ) == 0 )
 		{
 			TacticalCharacterDialogue( pSoldier, QUOTE_OUT_OF_AMMO );
@@ -6315,12 +6315,12 @@ void ToggleMercsNeverQuit()
 	if( gfMercsNeverQuit )
 	{
 		gfMercsNeverQuit = FALSE;
-		ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Merc contract expiring enabled." );
+		ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Merc contract expiring enabled.") );
 	}
 	else
 	{
 		gfMercsNeverQuit ^= TRUE;
-		ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Merc contract expiring disabled." );
+		ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Merc contract expiring disabled.") );
 	}
 }
 #endif
@@ -6947,7 +6947,7 @@ void SeperateItems()
 						LBENODE * lbePtr = gWorldItems[uiLoop].object.GetLBEPointer(x);
 
 						for (auto lbeInvIter = lbePtr->inv.begin(); lbeInvIter != lbePtr->inv.end(); lbeInvIter++) {
-							OBJECTTYPE * LBEStack = lbeInvIter._Ptr;
+							OBJECTTYPE * LBEStack = &*lbeInvIter;
 							
 							if (LBEStack->usItem != 0 && LBEStack->exists()) {
 								AddItemToPool(gWorldItems[uiLoop].sGridNo, LBEStack, 1, gWorldItems[uiLoop].ubLevel, WORLD_ITEM_REACHABLE, -1);
@@ -7087,7 +7087,7 @@ void	QueryTBWheel( UINT32 *puiNewEvent )
 		if ( gViewportRegion.WheelState != 0 )
 		{
 			//printf("wheel %d\n", gViewportRegion.WheelState);
-			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"wheel %d", gViewportRegion.WheelState);
+			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("wheel %d"), gViewportRegion.WheelState);
 			if ( gpItemPointer == NULL )
 			{
 				// ATE:
@@ -7465,7 +7465,7 @@ void HandleMouseTBWheel( void )
 				return;
 							}
 
-			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"wheel %d", gViewportRegion.WheelState);
+			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("wheel %d"), gViewportRegion.WheelState);
 			if ( gusSelectedSoldier != NOBODY )
 			{ //Select next merc
 				bID = FindNextMercInTeamPanel( gusSelectedSoldier, FALSE, FALSE );
@@ -8764,7 +8764,7 @@ void HandleTacticalTransformItem(void)
 	if (FindTransformation(usItem, &pTransformation, TRUE))
 	{
 		if (pTransformation->usAPCost > 0 && gTacticalStatus.uiFlags & INCOMBAT && gTacticalStatus.uiFlags & TURNBASED)
-			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s (%d AP)", pTransformation->szMenuRowText, pTransformation->usAPCost);
+			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s (%d AP)"), pTransformation->szMenuRowText, pTransformation->usAPCost);
 		else
 			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, pTransformation->szMenuRowText);
 
@@ -9147,7 +9147,7 @@ void HandleTacticalTransformScope(void)
 				Item[usItem].scopemagfactor != Item[pTransformation->usResult[0]].scopemagfactor)
 			{
 				if (pTransformation->usAPCost > 0 && gTacticalStatus.uiFlags & INCOMBAT && gTacticalStatus.uiFlags & TURNBASED)
-					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s (%d AP)", pTransformation->szMenuRowText, pTransformation->usAPCost);
+					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s (%d AP)"), pTransformation->szMenuRowText, pTransformation->usAPCost);
 				else
 					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, pTransformation->szMenuRowText);
 
@@ -9211,7 +9211,7 @@ void HandleTacticalTransformLaser(void)
 				Item[usItem].bestlaserrange != Item[pTransformation->usResult[0]].bestlaserrange)
 			{
 				if (pTransformation->usAPCost > 0 && gTacticalStatus.uiFlags & INCOMBAT && gTacticalStatus.uiFlags & TURNBASED)
-					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s (%d AP)", pTransformation->szMenuRowText, pTransformation->usAPCost);
+					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s (%d AP)"), pTransformation->szMenuRowText, pTransformation->usAPCost);
 				else
 					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, pTransformation->szMenuRowText);
 
@@ -9261,7 +9261,7 @@ void HandleTacticalTransformStock(void)
 	if (FindStockTransformation(usItem, &pTransformation))
 	{
 		if (pTransformation->usAPCost > 0 && (gTacticalStatus.uiFlags & INCOMBAT && gTacticalStatus.uiFlags & TURNBASED))
-			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s (%d AP)", pTransformation->szMenuRowText, pTransformation->usAPCost);
+			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s (%d AP)"), pTransformation->szMenuRowText, pTransformation->usAPCost);
 		else
 			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, pTransformation->szMenuRowText);
 
@@ -9294,7 +9294,7 @@ void HandleTacticalTransformStock(void)
 				pTransformation->usResult[0] != 0)
 			{
 				if (pTransformation->usAPCost > 0 && gTacticalStatus.uiFlags & INCOMBAT && gTacticalStatus.uiFlags & TURNBASED)
-					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s (%d AP)", pTransformation->szMenuRowText, pTransformation->usAPCost);
+					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s (%d AP)"), pTransformation->szMenuRowText, pTransformation->usAPCost);
 				else
 					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, pTransformation->szMenuRowText);
 
@@ -9344,7 +9344,7 @@ void HandleTacticalTransformFlashlight(void)
 	if (FindFlashlightTransformation(usItem, &pTransformation))
 	{
 		if (pTransformation->usAPCost > 0 && gTacticalStatus.uiFlags & INCOMBAT && gTacticalStatus.uiFlags & TURNBASED)
-			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s (%d AP)", pTransformation->szMenuRowText, pTransformation->usAPCost);
+			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s (%d AP)"), pTransformation->szMenuRowText, pTransformation->usAPCost);
 		else
 			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, pTransformation->szMenuRowText);
 
@@ -9377,7 +9377,7 @@ void HandleTacticalTransformFlashlight(void)
 			if (FindFlashlightTransformation(usItem, &pTransformation))
 			{
 				if (pTransformation->usAPCost > 0 && gTacticalStatus.uiFlags & INCOMBAT && gTacticalStatus.uiFlags & TURNBASED)
-					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s (%d AP)", pTransformation->szMenuRowText, pTransformation->usAPCost);
+					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s (%d AP)"), pTransformation->szMenuRowText, pTransformation->usAPCost);
 				else
 					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, pTransformation->szMenuRowText);
 

@@ -76,9 +76,8 @@ POPUP * findPopupInIndex( UINT32 cID )
 		}
 
 		#ifdef JA2TESTVERSION
-			CHAR8 debugStr[120];
-			wsprintf(debugStr,"Failed to find popup id: %i \n",cID);
-			OutputDebugString( debugStr );
+			DebugMsg(TOPIC_JA2, DBG_LEVEL_3,
+				String("Failed to find popup id: %i", cID));
 		#endif
 
 	return NULL;
@@ -113,7 +112,7 @@ void rebuildPopupIndex(void)
 
 POPUP_OPTION::POPUP_OPTION(void)
 {
-	this->name = L"unnamed option";
+	this->name = JA2_TEXT("unnamed option");
 
 	this->action = 0;
 	this->avail = 0;
@@ -140,7 +139,7 @@ POPUP_OPTION::~POPUP_OPTION(void)
 }
 
 
-POPUP_OPTION::POPUP_OPTION(const std::wstring& newName, popupCallback * newFunction)
+POPUP_OPTION::POPUP_OPTION(const ja2::text::Utf16String& newName, popupCallback * newFunction)
 {
 	this->name = newName;
 
@@ -161,7 +160,7 @@ POPUP_OPTION::POPUP_OPTION(const std::wstring& newName, popupCallback * newFunct
 	this->color_shade = FONT_GRAY7 ;
 }
 
-BOOLEAN POPUP_OPTION::setName( const std::wstring& newName )
+BOOLEAN POPUP_OPTION::setName( const ja2::text::Utf16String& newName )
 {
 	this->name = newName;
 	return TRUE;
@@ -236,19 +235,19 @@ BOOLEAN POPUP_OPTION::forceRun()
 //////////////////////////////////////////////////////////////////
 
 // constructor
-POPUP_SUB_POPUP_OPTION::POPUP_SUB_POPUP_OPTION(void) : POPUP_OPTION(L"Unnamed subPopup", NULL)
+POPUP_SUB_POPUP_OPTION::POPUP_SUB_POPUP_OPTION(void) : POPUP_OPTION(JA2_TEXT("Unnamed subPopup"), NULL)
 {
 	this->parent = NULL;
 	this->initSubPopup();
 }
 
-POPUP_SUB_POPUP_OPTION::POPUP_SUB_POPUP_OPTION(const std::wstring& name) : POPUP_OPTION(name, NULL)
+POPUP_SUB_POPUP_OPTION::POPUP_SUB_POPUP_OPTION(const ja2::text::Utf16String& name) : POPUP_OPTION(name, NULL)
 {
 	this->parent = NULL;
 	this->initSubPopup();
 }
 
-POPUP_SUB_POPUP_OPTION::POPUP_SUB_POPUP_OPTION(const std::wstring& newName, const POPUP * parent) : POPUP_OPTION(newName, NULL)
+POPUP_SUB_POPUP_OPTION::POPUP_SUB_POPUP_OPTION(const ja2::text::Utf16String& newName, const POPUP * parent) : POPUP_OPTION(newName, NULL)
 {
 	this->parent = parent;
 	this->initSubPopup();
@@ -341,7 +340,8 @@ static void unShadeOpenSubPopup( POPUP_SUB_POPUP_OPTION * opt ){
 
 void POPUP_SUB_POPUP_OPTION::initSubPopup()
 {
-	this->subPopup = new POPUP( (CHAR*) std::wstring(this->name).c_str() );
+	const std::string debugName = ja2::text::utf16ToUtf8ReplacingInvalid(this->name);
+	this->subPopup = new POPUP(const_cast<CHAR8*>(debugName.c_str()));
 	this->subPopup->setCallback(POPUP_CALLBACK_SHOW,new popupCallbackFunction<void,POPUP_SUB_POPUP_OPTION*>( &shadeOpenSubPopup, this ));
 	this->subPopup->setCallback(POPUP_CALLBACK_HIDE,new popupCallbackFunction<void,POPUP_SUB_POPUP_OPTION*>( &unShadeOpenSubPopup, this ));
 
@@ -380,7 +380,7 @@ POPUP::POPUP(void)
 }
 
 
-POPUP::POPUP(CHAR* name)
+POPUP::POPUP(CHAR8* name)
 {
 	strcpy((char*) this->name, (char*) name);
 	this->optionCount = 0;
@@ -390,7 +390,7 @@ POPUP::POPUP(CHAR* name)
 
 	#ifdef JA2TESTVERSION
 		CHAR8 debugStr[120];
-		wsprintf(debugStr,"Created popup: %s \n",this->name);
+		sprintf(debugStr,"Created popup: %s \n",this->name);
 		OutputDebugString( debugStr );
 	#endif
 }
@@ -415,7 +415,7 @@ POPUP::~POPUP(void)
 
 	#ifdef JA2TESTVERSION
 		CHAR8 debugStr[120];
-		wsprintf(debugStr,"Destroyed popup: %s \n",this->name);
+		sprintf(debugStr,"Destroyed popup: %s \n",this->name);
 		OutputDebugString( debugStr );
 	#endif
 
@@ -509,7 +509,7 @@ BOOLEAN POPUP::removeFromIndex()
 
 	#ifdef JA2TESTVERSION
 		CHAR8 debugStr[120];
-		wsprintf(debugStr,"Failed to remove popup from index: %i \n",this->id);
+		sprintf(debugStr,"Failed to remove popup from index: %i \n",this->id);
 		OutputDebugString( debugStr );
 	#endif
 
@@ -562,7 +562,7 @@ void POPUP::setInitialValues(void)
 
 // setup functions
 
-POPUP_OPTION *  POPUP::addOption(const std::wstring& name, popupCallback* action)
+POPUP_OPTION *  POPUP::addOption(const ja2::text::Utf16String& name, popupCallback* action)
 {	
 	if (this->optionCount < POPUP_MAX_OPTIONS)
 	{
@@ -605,7 +605,7 @@ POPUP_OPTION * POPUP::getOption(UINT16 n)
 	return NULL;
 }
 
-POPUP * POPUP::addSubMenuOption(const std::wstring& name)
+POPUP * POPUP::addSubMenuOption(const ja2::text::Utf16String& name)
 {
 	if (this->subPopupOptionCount < POPUP_MAX_SUB_POPUPS)
 	{
@@ -617,7 +617,7 @@ POPUP * POPUP::addSubMenuOption(const std::wstring& name)
 		return NULL;
 }
 
-BOOL POPUP::addSubMenuOption( POPUP_SUB_POPUP_OPTION* sub )
+BOOLEAN POPUP::addSubMenuOption( POPUP_SUB_POPUP_OPTION* sub )
 {
 	if (this->subPopupOptionCount < POPUP_MAX_SUB_POPUPS)
 	{
@@ -714,7 +714,7 @@ BOOLEAN POPUP::setPosition(UINT16 x, UINT16 y, UINT8 positioningRule )
 
 	#ifdef JA2TESTVERSION
 		CHAR8 debugStr[120];
-		wsprintf(debugStr,"Positioning popup %i at (x/y) %i / %i ; positioning rule: %i \n",this->id, x, y, positioningRule);
+		sprintf(debugStr,"Positioning popup %i at (x/y) %i / %i ; positioning rule: %i \n",this->id, x, y, positioningRule);
 		OutputDebugString( debugStr );
 	#endif
 
@@ -753,7 +753,7 @@ BOOLEAN POPUP::show()
 	
 	#ifdef JA2TESTVERSION
 		CHAR8 debugStr[120];
-		wsprintf(debugStr,"Showing popup id: %i \n",this->boxId);
+		sprintf(debugStr,"Showing popup id: %i \n",this->boxId);
 		OutputDebugString( debugStr );
 	#endif
 
@@ -788,7 +788,7 @@ BOOLEAN POPUP::hide()
 
 	#ifdef JA2TESTVERSION
 		CHAR8 debugStr[120];
-		wsprintf(debugStr,"Hiding popup id: %i \n",this->boxId);
+		sprintf(debugStr,"Hiding popup id: %i \n",this->boxId);
 		OutputDebugString( debugStr );
 	#endif
 
@@ -1184,7 +1184,7 @@ void POPUP::CreateScreenMask( void )
 	if (!registerPopupRegion( this->ScreenMaskRegion.IDNumber, this->id)){
 		#ifdef JA2TESTVERSION
 			CHAR8 debugStr[120];
-			wsprintf(debugStr,"Failed to register screen mask for box id: %i \n",this->boxId);
+			sprintf(debugStr,"Failed to register screen mask for box id: %i \n",this->boxId);
 			OutputDebugString( debugStr );
 		#endif
 	}
@@ -1634,7 +1634,7 @@ void POPUP::DetermineBoxPositions( void )
 		default:
 			#ifdef JA2TESTVERSION
 				CHAR8 debugStr[120];
-				wsprintf(debugStr,"Incorrect positioning rule for box id: %i \n",this->boxId);
+				sprintf(debugStr,"Incorrect positioning rule for box id: %i \n",this->boxId);
 				OutputDebugString( debugStr );
 			#endif
 
@@ -1764,7 +1764,7 @@ PopupIndex * findMouseRegionInIndex(UINT16 regionId)
 
 		#ifdef JA2TESTVERSION
 			CHAR8 debugStr[120];
-			wsprintf(debugStr,"Failed to find callback to mouse region id: %i \n",regionId);
+			sprintf(debugStr,"Failed to find callback to mouse region id: %i \n",regionId);
 			OutputDebugString( debugStr );
 		#endif
 
@@ -1802,7 +1802,7 @@ BOOLEAN unregisterPopupRegion(UINT16 regionId)
 
 		#ifdef JA2TESTVERSION
 			CHAR8 debugStr[120];
-			wsprintf(debugStr,"Failed to erase mouse region index: %i \n",regionId);
+			sprintf(debugStr,"Failed to erase mouse region index: %i \n",regionId);
 			OutputDebugString( debugStr );
 		#endif
 	return FALSE;

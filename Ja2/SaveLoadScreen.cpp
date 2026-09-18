@@ -484,16 +484,16 @@ void InitMSysButtons(BOOLEAN delRegion)
 		// anv: add modification date
 		if( gbSaveGameArray[ VAL_SLOT_START + i ] )
 		{
-			swprintf( zString2, L"%04d", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].year );
+			swprintf( zString2, JA2_TEXT("%04d"), gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].year );
 			wcscpy( zString3, zString2 );
-			swprintf( zString2, L"/%02d", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].month );
+			swprintf( zString2, JA2_TEXT("/%02d"), gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].month );
 			wcscat( zString3, zString2 );
-			swprintf( zString2, L"/%02d ", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].day );
+			swprintf( zString2, JA2_TEXT("/%02d "), gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].day );
 			wcscat( zString3, zString2 );
 
-			swprintf( zString2, L"%02d", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].hour );
+			swprintf( zString2, JA2_TEXT("%02d"), gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].hour );
 			wcscat( zString3, zString2 );
-			swprintf( zString2, L":%02d ", gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].minute );
+			swprintf( zString2, JA2_TEXT(":%02d "), gstSaveGameCreationTimeArray[ VAL_SLOT_START + i ].minute );
 			wcscat( zString3, zString2 );
 
 			wcscat( zString3, zString );
@@ -992,7 +992,7 @@ void RenderSaveLoadScreen()
 	DisplaySaveGameList();
 
 	//Display the option page numbers
-	swprintf( sPage, L"%d", PAGE_SLOT + 1 );
+	swprintf( sPage, JA2_TEXT("%d"), PAGE_SLOT + 1 );
 	DrawTextToScreen( sPage, SLG_SAVE_LOAD_PAGE_POS_X, SLG_SAVE_LOAD_PAGE_POS_Y, 0, OPT_BUTTON_FONT,
 						OPT_BUTTON_ON_COLOR, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED );
 
@@ -1588,10 +1588,10 @@ BOOLEAN DisplaySaveGameEntry( INT32 bEntryID )
 			CHAR16		zDifString[256];
 
 			//Create a string for difficulty level
-			swprintf( zDifString, L"%s %s", gzGIOScreenText[ GIO_EASY_TEXT + SaveGameHeader.sInitialGameOptions.ubDifficultyLevel - 1 ], zSaveLoadText[ SLG_DIFF ] );
+			swprintf( zDifString, JA2_TEXT("%s %s"), gzGIOScreenText[ GIO_EASY_TEXT + SaveGameHeader.sInitialGameOptions.ubDifficultyLevel - 1 ], zSaveLoadText[ SLG_DIFF ] );
 
 			//make a string containing the extended options
-			swprintf( zMouseHelpTextString, L"%s   %d   %d   %22ls %22ls %22ld", zDifString,
+			swprintf( zMouseHelpTextString, JA2_TEXT("%s   %d   %d   %22ls %22ls %22ld"), zDifString,
 				SaveGameHeader.sInitialGameOptions.ubBobbyRayQuality, 
 				SaveGameHeader.sInitialGameOptions.ubBobbyRayQuantity, 
 				SaveGameHeader.sInitialGameOptions.fGunNut ? zSaveLoadText[ SLG_ADDITIONAL_GUNS ] : zSaveLoadText[ SLG_NORMAL_GUNS ],
@@ -1604,9 +1604,9 @@ BOOLEAN DisplaySaveGameEntry( INT32 bEntryID )
 		{
 			//Create the string for the Data
 			if(is_networked)
-				swprintf( zDateString, L"%s %d / %d", pMessageStrings[ MSG_CLIENT ], SaveGameHeader.uiDay, SaveGameHeader.ubHour );
+				swprintf( zDateString, JA2_TEXT("%s %d / %d"), pMessageStrings[ MSG_CLIENT ], SaveGameHeader.uiDay, SaveGameHeader.ubHour );
 			else
-				swprintf( zDateString, L"%s %d, %02d:%02d", pMessageStrings[ MSG_DAY ], SaveGameHeader.uiDay, SaveGameHeader.ubHour, SaveGameHeader.ubMin );
+				swprintf( zDateString, JA2_TEXT("%s %d, %02d:%02d"), pMessageStrings[ MSG_DAY ], SaveGameHeader.uiDay, SaveGameHeader.ubHour, SaveGameHeader.ubMin );
 
 			//Create the string for the current location
 			if( SaveGameHeader.sSectorX == -1 && SaveGameHeader.sSectorY == -1 || SaveGameHeader.bSectorZ < 0 )
@@ -1634,12 +1634,12 @@ BOOLEAN DisplaySaveGameEntry( INT32 bEntryID )
 				if( SaveGameHeader.ubNumOfMercsOnPlayersTeam == 1 )
 				{
 					//use "merc"
-					swprintf( zNumMercsString, L"%d %s", SaveGameHeader.ubNumOfMercsOnPlayersTeam, MercAccountText[ MERC_ACCOUNT_MERC ] );
+					swprintf( zNumMercsString, JA2_TEXT("%d %s"), SaveGameHeader.ubNumOfMercsOnPlayersTeam, MercAccountText[ MERC_ACCOUNT_MERC ] );
 				}
 				else
 				{
 					//use "mercs"
-					swprintf( zNumMercsString, L"%d %s", SaveGameHeader.ubNumOfMercsOnPlayersTeam, pMessageStrings[ MSG_MERCS ] );
+					swprintf( zNumMercsString, JA2_TEXT("%d %s"), SaveGameHeader.ubNumOfMercsOnPlayersTeam, pMessageStrings[ MSG_MERCS ] );
 				}
 			}
 			else
@@ -1648,12 +1648,12 @@ BOOLEAN DisplaySaveGameEntry( INT32 bEntryID )
 				if( SaveGameHeader.ubMin == 1 )
 				{
 					//use "merc"
-					swprintf( zNumMercsString, L"%d / %d %s", SaveGameHeader.ubNumOfMercsOnPlayersTeam,SaveGameHeader.ubMin, MercAccountText[ MERC_ACCOUNT_MERC ] );
+					swprintf( zNumMercsString, JA2_TEXT("%d / %d %s"), SaveGameHeader.ubNumOfMercsOnPlayersTeam,SaveGameHeader.ubMin, MercAccountText[ MERC_ACCOUNT_MERC ] );
 				}
 				else
 				{
 					//use "mercs"
-					swprintf( zNumMercsString, L"%d / %d %s", SaveGameHeader.ubNumOfMercsOnPlayersTeam,SaveGameHeader.ubMin, pMessageStrings[ MSG_MERCS ] );
+					swprintf( zNumMercsString, JA2_TEXT("%d / %d %s"), SaveGameHeader.ubNumOfMercsOnPlayersTeam,SaveGameHeader.ubMin, pMessageStrings[ MSG_MERCS ] );
 				}
 			}
 
@@ -1695,43 +1695,43 @@ BOOLEAN DisplaySaveGameEntry( INT32 bEntryID )
 		else if( bEntryID == SAVE__TIMED_AUTOSAVE_SLOT1 && PAGE_SLOT == 0 )
 		{
 			//display the empty spot
-			swprintf( zString, L"%s%d", pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT1);
+			swprintf( zString, JA2_TEXT("%s%d"), pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT1);
 			DrawTextToScreen( zString, usPosX, (UINT16)(usPosY+SLG_DATE_OFFSET_Y), 609, uiFont, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED	);
 		}
 		else if( bEntryID == SAVE__TIMED_AUTOSAVE_SLOT2 && PAGE_SLOT == 0 )
 		{
 			//display the empty spot
-			swprintf( zString, L"%s%d", pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT2);
+			swprintf( zString, JA2_TEXT("%s%d"), pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT2);
 			DrawTextToScreen( zString, usPosX, (UINT16)(usPosY+SLG_DATE_OFFSET_Y), 609, uiFont, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED	);
 		}
 		else if( bEntryID == SAVE__TIMED_AUTOSAVE_SLOT3 && PAGE_SLOT == 0 )
 		{
 			//display the empty spot
-			swprintf( zString, L"%s%d", pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT3);
+			swprintf( zString, JA2_TEXT("%s%d"), pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT3);
 			DrawTextToScreen( zString, usPosX, (UINT16)(usPosY+SLG_DATE_OFFSET_Y), 609, uiFont, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED	);
 		}
 		else if( bEntryID == SAVE__TIMED_AUTOSAVE_SLOT4 && PAGE_SLOT == 0 )
 		{
 			//display the empty spot
-			swprintf( zString, L"%s%d", pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT4);
+			swprintf( zString, JA2_TEXT("%s%d"), pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT4);
 			DrawTextToScreen( zString, usPosX, (UINT16)(usPosY+SLG_DATE_OFFSET_Y), 609, uiFont, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED	);
 		}
 		else if( bEntryID == SAVE__TIMED_AUTOSAVE_SLOT5 && PAGE_SLOT == 0 )
 		{
 			//display the empty spot
-			swprintf( zString, L"%s%d", pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT5);
+			swprintf( zString, JA2_TEXT("%s%d"), pMessageStrings[ MSG_SAVE_AUTOSAVE_EMPTY_TEXT ],SAVE__TIMED_AUTOSAVE_SLOT5);
 			DrawTextToScreen( zString, usPosX, (UINT16)(usPosY+SLG_DATE_OFFSET_Y), 609, uiFont, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED	);
 		}
 		else if( bEntryID == SAVE__END_TURN_NUM_1 && PAGE_SLOT == 0 )
 		{
 			//display the empty spot
-			swprintf( zString, L"%s%d", pMessageStrings[ MSG_SAVE_AUTOSAVE_ENDTURN_EMPTY_TEXT ],SAVE__END_TURN_NUM_1 - SAVE__TIMED_AUTOSAVE_SLOT5);
+			swprintf( zString, JA2_TEXT("%s%d"), pMessageStrings[ MSG_SAVE_AUTOSAVE_ENDTURN_EMPTY_TEXT ],SAVE__END_TURN_NUM_1 - SAVE__TIMED_AUTOSAVE_SLOT5);
 			DrawTextToScreen( zString, usPosX, (UINT16)(usPosY+SLG_DATE_OFFSET_Y), 609, uiFont, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED	);
 		}
 		else if( bEntryID == SAVE__END_TURN_NUM_2 && PAGE_SLOT == 0 )
 		{
 			//display the empty spot
-			swprintf( zString, L"%s%d", pMessageStrings[ MSG_SAVE_AUTOSAVE_ENDTURN_EMPTY_TEXT ],SAVE__END_TURN_NUM_2 - SAVE__TIMED_AUTOSAVE_SLOT5);
+			swprintf( zString, JA2_TEXT("%s%d"), pMessageStrings[ MSG_SAVE_AUTOSAVE_ENDTURN_EMPTY_TEXT ],SAVE__END_TURN_NUM_2 - SAVE__TIMED_AUTOSAVE_SLOT5);
 			DrawTextToScreen( zString, usPosX, (UINT16)(usPosY+SLG_DATE_OFFSET_Y), 609, uiFont, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED	);
 		}
 		else
@@ -1817,7 +1817,7 @@ BOOLEAN LoadSavedGameHeader( INT32 bEntry, SAVED_GAME_HEADER *pSaveGameHeader )
 	{
 		memset( pSaveGameHeader, 0, sizeof( SAVED_GAME_HEADER ) );
 #ifdef JA2BETAVERSION
-		wcscpy( pSaveGameHeader->sSavedGameDesc, L"ERROR loading saved game header, file doesn't exist!!" );
+		wcscpy( pSaveGameHeader->sSavedGameDesc, JA2_TEXT("ERROR loading saved game header, file doesn't exist!!") );
 #endif
 	}
 
@@ -1988,7 +1988,7 @@ void SelectedSaveRegionCallBack(MOUSE_REGION * pRegion, INT32 iReason )
 		//If we are saving and this is the auto save slot
 		if( gfSaveGame && bSelected == SAVE__TIMED_AUTOSAVE_SLOT1 && PAGE_SLOT == 0 )
 		{
-			swprintf( zString, L"%s", pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ]);
+			swprintf( zString, JA2_TEXT("%s"), pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ]);
 			//Display a pop up telling user what the quick save slot is
 			DoSaveLoadMessageBox( MSG_BOX_BASIC_STYLE, zString, SAVE_LOAD_SCREEN, MSG_BOX_FLAG_OK, RedrawSaveLoadScreenAfterMessageBox );
 			return;
@@ -1997,7 +1997,7 @@ void SelectedSaveRegionCallBack(MOUSE_REGION * pRegion, INT32 iReason )
 		//If we are saving and this is the auto save slot
 		if( gfSaveGame && bSelected == SAVE__TIMED_AUTOSAVE_SLOT2 && PAGE_SLOT == 0 )
 		{
-			swprintf( zString, L"%s", pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ]);
+			swprintf( zString, JA2_TEXT("%s"), pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ]);
 			//Display a pop up telling user what the quick save slot is
 			DoSaveLoadMessageBox( MSG_BOX_BASIC_STYLE, zString, SAVE_LOAD_SCREEN, MSG_BOX_FLAG_OK, RedrawSaveLoadScreenAfterMessageBox );			
 			return;
@@ -2006,7 +2006,7 @@ void SelectedSaveRegionCallBack(MOUSE_REGION * pRegion, INT32 iReason )
 		//If we are saving and this is the auto save slot
 		if( gfSaveGame && bSelected == SAVE__TIMED_AUTOSAVE_SLOT3 && PAGE_SLOT == 0 )
 		{
-			swprintf( zString, L"%s", pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ]);
+			swprintf( zString, JA2_TEXT("%s"), pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ]);
 			//Display a pop up telling user what the quick save slot is
 			DoSaveLoadMessageBox( MSG_BOX_BASIC_STYLE, zString, SAVE_LOAD_SCREEN, MSG_BOX_FLAG_OK, RedrawSaveLoadScreenAfterMessageBox );			
 			return;
@@ -2015,7 +2015,7 @@ void SelectedSaveRegionCallBack(MOUSE_REGION * pRegion, INT32 iReason )
 		//If we are saving and this is the auto save slot
 		if( gfSaveGame && bSelected == SAVE__TIMED_AUTOSAVE_SLOT4 && PAGE_SLOT == 0 )
 		{
-			swprintf( zString, L"%s", pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ]);
+			swprintf( zString, JA2_TEXT("%s"), pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ]);
 			//Display a pop up telling user what the quick save slot is
 			DoSaveLoadMessageBox( MSG_BOX_BASIC_STYLE, zString, SAVE_LOAD_SCREEN, MSG_BOX_FLAG_OK, RedrawSaveLoadScreenAfterMessageBox );			
 			return;
@@ -2024,7 +2024,7 @@ void SelectedSaveRegionCallBack(MOUSE_REGION * pRegion, INT32 iReason )
 		//If we are saving and this is the auto save slot
 		if( gfSaveGame && bSelected == SAVE__TIMED_AUTOSAVE_SLOT5 && PAGE_SLOT == 0 )
 		{
-			swprintf( zString, L"%s %d", pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ],SAVE__TIMED_AUTOSAVE_SLOT5);
+			swprintf( zString, JA2_TEXT("%s %d"), pMessageStrings[ MSG_SAVE_AUTOSAVE_TEXT_INFO ],SAVE__TIMED_AUTOSAVE_SLOT5);
 			//Display a pop up telling user what the quick save slot is
 			DoSaveLoadMessageBox( MSG_BOX_BASIC_STYLE, zString, SAVE_LOAD_SCREEN, MSG_BOX_FLAG_OK, RedrawSaveLoadScreenAfterMessageBox );			
 			return;
@@ -2033,7 +2033,7 @@ void SelectedSaveRegionCallBack(MOUSE_REGION * pRegion, INT32 iReason )
 		//If we are saving and this is the auto save slot
 		if( gfSaveGame && bSelected == SAVE__END_TURN_NUM_1 && PAGE_SLOT == 0 )
 		{
-			swprintf( zString, L"%s", pMessageStrings[ MSG_SAVE_AUTOSAVE_ENDTURN_TEXT_INFO ]);
+			swprintf( zString, JA2_TEXT("%s"), pMessageStrings[ MSG_SAVE_AUTOSAVE_ENDTURN_TEXT_INFO ]);
 			//Display a pop up telling user what the quick save slot is
 			DoSaveLoadMessageBox( MSG_BOX_BASIC_STYLE, zString, SAVE_LOAD_SCREEN, MSG_BOX_FLAG_OK, RedrawSaveLoadScreenAfterMessageBox );			
 			return;
@@ -2041,7 +2041,7 @@ void SelectedSaveRegionCallBack(MOUSE_REGION * pRegion, INT32 iReason )
 		
 		if( gfSaveGame && bSelected == SAVE__END_TURN_NUM_2 && PAGE_SLOT == 0 )
 		{
-			swprintf( zString, L"%s", pMessageStrings[ MSG_SAVE_AUTOSAVE_ENDTURN_TEXT_INFO ]);
+			swprintf( zString, JA2_TEXT("%s"), pMessageStrings[ MSG_SAVE_AUTOSAVE_ENDTURN_TEXT_INFO ]);
 			//Display a pop up telling user what the quick save slot is
 			DoSaveLoadMessageBox( MSG_BOX_BASIC_STYLE, zString, SAVE_LOAD_SCREEN, MSG_BOX_FLAG_OK, RedrawSaveLoadScreenAfterMessageBox );			
 			return;
@@ -2290,7 +2290,7 @@ void SetSelection( UINT8 ubNewSelection )
 		gbSaveGameSelectedLocation[ gbSelectedSaveLocation ] = SLG_UNSELECTED_SLOT_GRAPHICS_NUMBER;
 
 		//reset the slots help text
-		SetRegionFastHelpText( &gSelectedSaveRegion[ gbSelectedSaveLocation ], L"\0" );
+		SetRegionFastHelpText( &gSelectedSaveRegion[ gbSelectedSaveLocation ], JA2_TEXT("\0") );
 	}
 
 	gfRedrawSaveLoadScreen = TRUE;
@@ -2449,12 +2449,12 @@ void DisplayOnScreenNumber( BOOLEAN fErase )
 		if( bLoopNum != 10 )
 		{
 			bNum = bLoopNum;
-			swprintf( zTempString, L"%2d", bNum );
+			swprintf( zTempString, JA2_TEXT("%2d"), bNum );
 		}
 		else
 		{
 			bNum = 0;
-			swprintf( zTempString, L"%2d", bNum );
+			swprintf( zTempString, JA2_TEXT("%2d"), bNum );
 		}
 
 		if( !fErase )

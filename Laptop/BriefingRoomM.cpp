@@ -622,10 +622,7 @@ void HandleBriefingRoomEnterTextEvent( UINT32 uiKey )
 void ProcessPlayerInputActivationBriefingRoomEnterString( void )
 {
 	// prcess string to see if it matches activation string
-	char charPlayerActivationString[32];
-	wcstombs(charPlayerActivationString,pPlayerBriefingRoomEnterActivationString,32);
-
-	if( ( ( wcscmp(pPlayerBriefingRoomEnterActivationString, L"SN5631") == 0 ) || ( wcscmp(pPlayerBriefingRoomEnterActivationString, L"sn5631") == 0 ) ) ) //&&( LaptopSaveInfo.gfNewGameLaptop < 2 ) )
+	if( ( ( wcscmp(pPlayerBriefingRoomEnterActivationString, JA2_TEXT("SN5631")) == 0 ) || ( wcscmp(pPlayerBriefingRoomEnterActivationString, JA2_TEXT("sn5631")) == 0 ) ) ) //&&( LaptopSaveInfo.gfNewGameLaptop < 2 ) )
 	{
 	
 	/*

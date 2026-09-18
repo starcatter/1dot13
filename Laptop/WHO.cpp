@@ -198,7 +198,7 @@ void HandleWHOMain( )
 void RenderWHOMain( )
 {
 	CHAR16		sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 
 	DisplayDefaults_WHO( );
@@ -280,7 +280,7 @@ void HandleWHOContract( )
 void RenderWHOContract( )
 {
 	CHAR16		sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 
 	DisplayDefaults_WHO( );
@@ -360,7 +360,7 @@ void HandleWHOTips( )
 void RenderWHOTips( )
 {
 	CHAR16		sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 	HVOBJECT	hPixHandle;
 

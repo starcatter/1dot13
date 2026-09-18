@@ -18,6 +18,7 @@
 	#include "Text Input.h"
 	#include "_Ja25EnglishText.h"
 	#include "Soldier Profile.h"
+	#include "UtfConversion.h"
 
 #include "gameloop.h"
 #include "connect.h"
@@ -1494,7 +1495,7 @@ UINT32		guiMPHMainBackGroundImage;
 
 // ------------
 // String fields
-// Wide-char strings that will hold the variables until they are transferred to the CHAR ascii fields
+// Wide-char strings that will hold the variables until they are transferred to the CHAR8 ascii fields
 CHAR16		gzServerNameField[ 30 ] = {0} ;
 CHAR16		gzFileTransferDirectory[ 100 ] = {0} ;
 CHAR16		gzKitBag[ 100 ] = {0};
@@ -1633,7 +1634,7 @@ void		SaveMPSettings()
 
 bool	ValidateMPSettings()
 {	
-	vfs::Path sUserDir(gzFileTransferDirectory);
+	vfs::Path sUserDir(ja2::text::utf16ToUtf8(gzFileTransferDirectory));
 	if(!vfs::OS::checkRealDirectory(sUserDir))
 	{
 		DoMPHMessageBox( MSG_BOX_BASIC_STYLE, gzMPHScreenText[MPH_FILE_TRANSFER_DIR_NOT_EXIST], MP_HOST_SCREEN, MSG_BOX_FLAG_OK, NULL );
@@ -1660,7 +1661,9 @@ UINT32	MPHostScreenInit( void )
 	// Get the data from ja2_mp.ini
 	// ------------
 
-	props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_NAME, gzServerNameField, 30, L"My JA2 Server");
+	ja2::text::copyUtf8ToUtf16(
+		props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_NAME, L"My JA2 Server").utf8(),
+		gzServerNameField, 30);
 	
 	guiMPHMaxPlayers =		(UINT8)props.getIntProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_MAX_CLIENTS, 4);
 	
@@ -1672,9 +1675,13 @@ UINT32	MPHostScreenInit( void )
 	
 	guiMPHTimeTurns =		(UINT8)props.getIntProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_TIMED_TURN_SECS_PER_TICK, 2);
 	
-	props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_FILE_TRANSFER_DIRECTORY, gzFileTransferDirectory, 100, L"MULTIPLAYER/Servers/My Server");
+	ja2::text::copyUtf8ToUtf16(
+		props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_FILE_TRANSFER_DIRECTORY, L"MULTIPLAYER/Servers/My Server").utf8(),
+		gzFileTransferDirectory, 100);
 			
-	props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_KIT_BAG, gzKitBag, 100, L"");
+	ja2::text::copyUtf8ToUtf16(
+		props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_KIT_BAG, L"").utf8(),
+		gzKitBag, 100);
 		
 	guiMPHStartingTime =	(UINT8)props.getIntProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_TIME, 1);
 	
@@ -2755,7 +2762,7 @@ void			GetMPHScreenUserInput()
 					if (ValidateMPSettings())
 					{
 						SaveMPSettings(); // Update Profiles/UserProfile/ja2_mp.ini
-						SGP_TRYCATCH_RETHROW( ja2::mp::InitializeMultiplayerProfile(vfs::Path(gzFileTransferDirectory)), L"" );
+						SGP_TRYCATCH_RETHROW( ja2::mp::InitializeMultiplayerProfile(vfs::Path(ja2::text::utf16ToUtf8(gzFileTransferDirectory))), L"" );
 						gubMPHScreenHandler = MPH_START;
 					}
 					break;
@@ -2782,7 +2789,7 @@ void BtnMPHStartCallback(GUI_BUTTON *btn,INT32 reason)
 		{
 			gubMPHScreenHandler = MPH_START;
 			SaveMPSettings(); // Update the Profiles/UserProfile/ja2_mp.ini
-			SGP_TRYCATCH_RETHROW( ja2::mp::InitializeMultiplayerProfile(vfs::Path(gzFileTransferDirectory)), L"" );
+			SGP_TRYCATCH_RETHROW( ja2::mp::InitializeMultiplayerProfile(vfs::Path(ja2::text::utf16ToUtf8(gzFileTransferDirectory))), L"" );
 
 			// The difficult level has to be set there. This is the only value so far, because it is used for initialization!
 			//gGameOptions.ubDifficultyLevel =   GetMPHCurrentDifficultyButtonSetting();

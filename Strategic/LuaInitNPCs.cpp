@@ -3305,7 +3305,7 @@ static int l_ExecuteTacticalTextBox(lua_State* L)
 		else
 		{
 			//Create the string
-			swprintf( zString, L"Empty Text" );
+			swprintf( zString, JA2_TEXT("Empty Text") );
 		}
 		*/
 

@@ -10,6 +10,7 @@
 #include "DEBUG.H"
 #include "Game Event Hook.h"
 #include "Game Events.h"
+#include "UtfConversion.h"
 #include <list>
 #include <string>
 #include <iostream>
@@ -37,7 +38,7 @@ typedef struct
 	UINT8	ubMapX;
 	UINT8	ubMapZ;	
 	UINT32	sGridNo;
-	wstring wstrName;
+	ja2::text::Utf16String wstrName;
 } DestinationStruct;
 
 typedef DestinationStruct& RefToDestinationStruct;
@@ -84,7 +85,7 @@ typedef DestinationDeliveryInfoTable::iterator DestinationDeliveryInfoTableItera
 
 typedef struct
 {
-	wstring wstrDescription;
+	ja2::text::Utf16String wstrDescription;
 	PDestinationDeliveryInfoTable pDestinationDeliveryInfos;
 } DeliveryMethodStruct;
 typedef DeliveryMethodStruct& RefToDeliveryMethodStruct;

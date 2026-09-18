@@ -887,7 +887,7 @@ void IMPSkillTraitDisplaySkills()
 			if ( gfSkillTraitQuestions[ uiCnt ] && gfSkillTraitQuestions2[ uiCnt ] && uiCnt != IMP_SKILL_TRAITS__NONE )
 			{
 				CHAR16 sSkillTraitString[50];
-				swprintf(sSkillTraitString, L"%s %s", gzIMPSkillTraitsText[ uiCnt ], gzIMPSkillTraitsText[ IMP_SKILL_TRAITS__NUMBER_SKILLS+1 ]);
+				swprintf(sSkillTraitString, JA2_TEXT("%s %s"), gzIMPSkillTraitsText[ uiCnt ], gzIMPSkillTraitsText[ IMP_SKILL_TRAITS__NUMBER_SKILLS+1 ]);
 				DrawTextToScreen( sSkillTraitString, usPosX, usPosY, 0, IMP_SKILL_TRAIT__FONT, IMP_SKILL_TRAIT__COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 			}
 			else
@@ -896,7 +896,7 @@ void IMPSkillTraitDisplaySkills()
 
 		// assign help texts
 		CHAR16	apStr[5000];
-		swprintf( apStr, L"" );
+		swprintf( apStr, JA2_TEXT("") );
 		AssignPersonnelSkillTraitHelpText(gGameOptions.fNewTraitSystem ? gusNewMajorTraitRemap[uiCnt] : gusOldMajorTraitRemap[uiCnt], ((gfSkillTraitQuestions[uiCnt] && gfSkillTraitQuestions2[uiCnt]) ? TRUE : FALSE), fCharacterIsMale && !bBigBodySelected( ), apStr );
 
 		// Set region help text

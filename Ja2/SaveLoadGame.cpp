@@ -1,4 +1,5 @@
 #include "types.h"
+#include "UtfConversion.h"
 #include "Soldier Profile.h"
 #include "FileMan.h"
 #include "fileio/FileServices.h"
@@ -151,7 +152,7 @@ extern void initMapViewAndBorderCoordinates(void);
 #ifdef JA2BETAVERSION
 UINT32		guiNumberOfMapTempFiles;		//Test purposes
 UINT32		guiSizeOfTempFiles;
-CHAR			gzNameOfMapTempFile[128];
+CHAR8			gzNameOfMapTempFile[128];
 #endif
 
 #define LOADSAVEGAME_LOGTIME 1
@@ -547,7 +548,7 @@ void	HandleOldBobbyRMailOrders();
 	void			LoadGameFilePosition( INT32 iPos, STR pMsg );
 
 
-	void WriteTempFileNameToFile( STR pFileName, UINT32 uiSizeOfFile, HFILE hSaveFile );
+	void WriteTempFileNameToFile( STR pFileName, UINT32 uiSizeOfFile, HWFILE hSaveFile );
 	void InitShutDownMapTempFileTest( BOOLEAN fInit, STR pNameOfFile, UINT8 ubSaveGameID	);
 #endif
 
@@ -3371,11 +3372,11 @@ BOOLEAN InitSaveDir()
 {
 	if(is_networked)
 	{
-		sprintf(	gSaveDir, "%s", vfs::String::as_utf8(pMessageStrings[ MSG_MPSAVEDIRECTORY ] + 3).c_str() );
+		sprintf(	gSaveDir, "%s", ja2::text::utf16ToUtf8(pMessageStrings[ MSG_MPSAVEDIRECTORY ] + 3).c_str() );
 	}
 	else
 	{
-		sprintf(	gSaveDir, "%s", vfs::String::as_utf8(pMessageStrings[ MSG_SAVEDIRECTORY ] + 3).c_str() );
+		sprintf(	gSaveDir, "%s", ja2::text::utf16ToUtf8(pMessageStrings[ MSG_SAVEDIRECTORY ] + 3).c_str() );
 	}
 	return RecoverSaveTransactions();
 }
@@ -3480,12 +3481,12 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//Place a message on the screen telling the user that we are saving the game
 	if ( ubSaveGameID >= SAVE__TIMED_AUTOSAVE_SLOT1 && ubSaveGameID < SAVE__TIMED_AUTOSAVE_SLOT5 + 1 )
 	{
-		swprintf( zString, L"%s%d",pMessageStrings[ MSG_SAVE_AUTOSAVE_SAVING_TEXT ],ubSaveGameID );
+		swprintf( zString, JA2_TEXT("%s%d"),pMessageStrings[ MSG_SAVE_AUTOSAVE_SAVING_TEXT ],ubSaveGameID );
 		iSaveLoadGameMessageBoxID = PrepareMercPopupBox( iSaveLoadGameMessageBoxID, BASIC_MERC_POPUP_BACKGROUND, BASIC_MERC_POPUP_BORDER, zString, 300, 0, 0, 0, &usActualWidth, &usActualHeight);
 	}
 	else if ( ubSaveGameID == SAVE__END_TURN_NUM ) //SAVE__END_TURN_NUM_1 || ubSaveGameID == SAVE__END_TURN_NUM_2 )
 	{
-		swprintf( zString, L"%s",pMessageStrings[ MSG_SAVE_END_TURN_SAVE_SAVING_TEXT ] );
+		swprintf( zString, JA2_TEXT("%s"),pMessageStrings[ MSG_SAVE_END_TURN_SAVE_SAVING_TEXT ] );
 		iSaveLoadGameMessageBoxID = PrepareMercPopupBox( iSaveLoadGameMessageBoxID, BASIC_MERC_POPUP_BACKGROUND, BASIC_MERC_POPUP_BORDER, zString, 300, 0, 0, 0, &usActualWidth, &usActualHeight);
 	}
 	else	
@@ -3607,7 +3608,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//Save the current sectors open temp files to the disk
 	if( !SaveCurrentSectorsInformationToTempItemFile() )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR in SaveCurrentSectorsInformationToTempItemFile()");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR in SaveCurrentSectorsInformationToTempItemFile()"));
 		return cleanupFailedSave();
 	}
 	
@@ -3619,7 +3620,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 		guiCurrentQuickSaveNumber++;
 
 		if( gfUseConsecutiveQuickSaveSlots )
-			swprintf( pGameDesc, L"%s%03d", pMessageStrings[ MSG_QUICKSAVE_NAME ], guiCurrentQuickSaveNumber );
+			swprintf( pGameDesc, JA2_TEXT("%s%03d"), pMessageStrings[ MSG_QUICKSAVE_NAME ], guiCurrentQuickSaveNumber );
 		else
 #endif
 			swprintf( pGameDesc, pMessageStrings[ MSG_QUICKSAVE_NAME ] );
@@ -3729,7 +3730,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	FileWrite( hFile, &SaveGameHeader, sizeof( SAVED_GAME_HEADER ), &uiNumBytesWritten );
 	if( uiNumBytesWritten != sizeof( SAVED_GAME_HEADER ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing save game header");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing save game header"));
 		goto FAILED_TO_SAVE;
 	}
 
@@ -3750,7 +3751,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveTacticalStatusToSavedGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing tactical status");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing tactical status"));
 		goto FAILED_TO_SAVE;
 	}
 
@@ -3768,7 +3769,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	// save the game clock info
 	if( !SaveGameClock( hFile, fPausedStateBeforeSaving, fLockPauseStateBeforeSaving ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing game clock");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing game clock"));
 		goto FAILED_TO_SAVE;
 	}
 
@@ -3782,7 +3783,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	// save the strategic events
 	if( !SaveStrategicEventsToSavedGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing strategic events");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing strategic events"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3793,7 +3794,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveLaptopInfoToSavedGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing laptop info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing laptop info"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3808,7 +3809,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//
 	if( !SaveMercProfiles( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing merc profiles");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing merc profiles"));
 		goto FAILED_TO_SAVE;
 	}
 
@@ -3824,7 +3825,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//
 	if( !SaveSoldierStructure( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing soldier structure");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing soldier structure"));
 		goto FAILED_TO_SAVE;
 	}
 
@@ -3839,7 +3840,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//Save the Finaces Data file 
 	if( !SaveFilesToSavedGame( FINANCES_DATA_FILE, hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing finances");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing finances"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3851,7 +3852,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//Save the history file
 	if( !SaveFilesToSavedGame( HISTORY_DATA_FILE, hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing history");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing history"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3863,7 +3864,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//Save the Laptop File file
 	if( !SaveFilesToSavedGame( FILES_DAT_FILE, hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing laptop files");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing laptop files"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3876,7 +3877,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//Save email stuff to save file
 	if( !SaveEmailToSavedGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing email");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing email"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3888,7 +3889,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//Save the strategic information
 	if( !SaveStrategicInfoToSavedFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing strategic info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing strategic info"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3901,7 +3902,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	/*// Flugente: Save the strategic supply
 	if( !SaveStrategicSupplyToSavedFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing strategic supply");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing strategic supply"));
 		goto FAILED_TO_SAVE;
 	}
 #ifdef JA2BETAVERSION
@@ -3913,7 +3914,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//save the underground information
 	if( !SaveUnderGroundSectorInfoToSaveGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing underground info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing underground info"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3926,7 +3927,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//save the squad info
 	if( !SaveSquadInfoToSavedGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing squad info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing squad info"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3938,7 +3939,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveStrategicMovementGroupsToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing strategic movements");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing strategic movements"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3955,7 +3956,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//Save all the map temp files from the maps\temp directory into the saved game file
 	if( !SaveMapTempFilesToSavedGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing map temp files");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing map temp files"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -3967,7 +3968,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveQuestInfoToSavedGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing quest info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing quest info"));
 		goto FAILED_TO_SAVE;
 	}
 #ifdef JA2BETAVERSION
@@ -3976,7 +3977,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if ( !SaveLUAModderDataToSavedGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing lUA modder data" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing lUA modder data") );
 		goto FAILED_TO_SAVE;
 	}
 #ifdef JA2BETAVERSION
@@ -3985,7 +3986,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveOppListInfoToSavedGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing opplist");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing opplist"));
 		goto FAILED_TO_SAVE;
 	}
 #ifdef JA2BETAVERSION
@@ -3994,7 +3995,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 		
 	if( !SaveMapScreenMessagesToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing map screen messages");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing map screen messages"));
 		goto FAILED_TO_SAVE;
 	}
 #ifdef JA2BETAVERSION
@@ -4003,7 +4004,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	
 	if( !SaveNPCInfoToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing NPC info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing NPC info"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4016,7 +4017,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveKeyTableToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing key table");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing key table"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4028,7 +4029,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveTempNpcQuoteArrayToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing NPC quotes");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing NPC quotes"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4041,7 +4042,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SavePreRandomNumbersToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing pre random numbers");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing pre random numbers"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4054,7 +4055,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveSmokeEffectsToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing smoke effects");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing smoke effects"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4064,7 +4065,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveArmsDealerInventoryToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing arms dealer inventory");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing arms dealer inventory"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4075,7 +4076,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveGeneralInfo( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR general info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR general info"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4086,7 +4087,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveMineStatusToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing mine status");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing mine status"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4098,7 +4099,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveStrategicTownLoyaltyToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing town loyalty");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing town loyalty"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4109,7 +4110,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveVehicleInformationToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing vehicle info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing vehicle info"));
 		goto FAILED_TO_SAVE;
 	}
 
@@ -4120,7 +4121,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	// Flugente: militia movement
 	if ( !SaveMilitiaMovementInformationToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing militia movement" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing militia movement") );
 		goto FAILED_TO_SAVE;
 	}
 
@@ -4133,7 +4134,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveBulletStructureToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing bullet structure");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing bullet structure"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4144,7 +4145,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SavePhysicsTableToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing physics table");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing physics table"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4154,7 +4155,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveAirRaidInfoToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing air raid info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing air raid info"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4164,7 +4165,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveTeamTurnsToTheSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing team turns");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing team turns"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4175,7 +4176,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveExplosionTableToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing explosions");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing explosions"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4186,7 +4187,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveCreatureDirectives( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing creature directives");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing creature directives"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4196,7 +4197,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveStrategicStatusToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing strategic status");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing strategic status"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4207,7 +4208,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveStrategicAI( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing strategic AI");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing strategic AI"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4217,7 +4218,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveLightEffectsToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing light effects");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing light effects"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4227,7 +4228,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveWatchedLocsToSavedGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing watched locs");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing watched locs"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4236,7 +4237,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveItemCursorToSavedGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing item cursor");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing item cursor"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4245,7 +4246,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveCivQuotesToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing civ quotes");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing civ quotes"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4254,7 +4255,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveBackupNPCInfoToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing backup NPC info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing backup NPC info"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4263,7 +4264,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if ( !SaveMeanwhileDefsFromSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing meanwhiles");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing meanwhiles"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4274,7 +4275,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if ( !SaveSchedules( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing schedules");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing schedules"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4284,7 +4285,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 		// Save extra vehicle info
 	if ( !NewSaveVehicleMovementInfoToSavedGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing vehicle movement info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing vehicle movement info"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4296,7 +4297,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	// Save contract renewal sequence stuff
 	if ( !SaveContractRenewalDataToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing contract renewal");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing contract renewal"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4307,7 +4308,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	// Save leave list stuff
 	if ( !SaveLeaveItemList( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing leave items list");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing leave items list"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4318,7 +4319,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//do the new way of saving bobbyr mail order items
 	if( !NewWayOfSavingBobbyRMailOrdersToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing mail orders");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing mail orders"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4328,7 +4329,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	// Dealtar: New shipment system data
 	if(!gPostalService.SaveShipmentListToSaveGameFile(hFile))
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing mail orders");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing mail orders"));
 		goto FAILED_TO_SAVE;
 	}
 	
@@ -4336,21 +4337,21 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//save Ja25 info
 	if( !SaveJa25SaveInfoToSaveGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"Ja25 Save info Struct");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("Ja25 Save info Struct"));
 		goto FAILED_TO_SAVE;
 	}
 
 	//Save the tactical info
 	if( !SaveJa25TacticalInfoToSaveGame( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"Ja25 Tactical info");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("Ja25 Tactical info"));
 		goto FAILED_TO_SAVE;
 	}
 #endif
 	//New profiles by Jazz
 	if( !SaveNewMercsToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing mercs profiles");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing mercs profiles"));
 		goto FAILED_TO_SAVE;
 	}
 	#ifdef JA2BETAVERSION
@@ -4360,7 +4361,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	//save lua global
 	if( !SaveLuaGlobalToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing lua global");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing lua global"));
 		goto FAILED_TO_SAVE;
 	}
 	
@@ -4373,7 +4374,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveDataSaveToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing save data");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing save data"));
 		goto FAILED_TO_SAVE;
 
 	#ifdef JA2BETAVERSION
@@ -4384,7 +4385,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	
 	if( !SaveNewEmailDataToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing save data");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing save data"));
 		goto FAILED_TO_SAVE;
 
 	#ifdef JA2BETAVERSION
@@ -4395,7 +4396,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if( !SaveHiddenTownToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing hidden town");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing hidden town"));
 		goto FAILED_TO_SAVE;
 
 	#ifdef JA2BETAVERSION
@@ -4406,7 +4407,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	
 	if( !SaveBriefingRoomToSaveGameFile( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing Briefing Room");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing Briefing Room"));
 		goto FAILED_TO_SAVE;
 
 	#ifdef JA2BETAVERSION
@@ -4417,7 +4418,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 
 	if ( !SaveEncyclopediaItemVisibility( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing Encyclopedia item visibility" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing Encyclopedia item visibility") );
 		goto FAILED_TO_SAVE;
 	#ifdef JA2BETAVERSION
 		SaveGameFilePosition( FileGetPos( hFile), "Encyclopedia item visibility" );
@@ -4427,7 +4428,7 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	// Flugente: campaign stats
 	if( !gCampaignStats.Save( hFile ) || !gCurrentIncident.Save( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing Campaign Stats");
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing Campaign Stats"));
 		goto FAILED_TO_SAVE;
 #ifdef JA2BETAVERSION
 		SaveGameFilePosition( FileGetPos( hFile ), "Campaign Stats" );
@@ -4437,34 +4438,34 @@ BOOLEAN SaveGame( int ubSaveGameID, STR16 pGameDesc )
 	// Flugente: dynamic dialogue
 	if ( !SaveDynamicDialogue( hFile  ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing Dynamic Dialogue" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing Dynamic Dialogue") );
 		goto FAILED_TO_SAVE;
 	}
 
 	// Flugente: PMC
 	if ( !SavePMC( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing PMC data" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing PMC data") );
 		goto FAILED_TO_SAVE;
 	}
 
 	// Flugente: enemy helicopters
 	if ( !SaveASDData( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing Arulco special division data" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing Arulco special division data") );
 		goto FAILED_TO_SAVE;
 	}
 
 	// Flugente: individual militia
 	if ( !SaveIndividualMilitiaData( hFile ) )
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing individual militia data" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing individual militia data") );
 		goto FAILED_TO_SAVE;
 	}
 
 	if (!RebelCommand::Save(hFile))
 	{
-		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"ERROR writing rebel command data" );
+		ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("ERROR writing rebel command data") );
 		goto FAILED_TO_SAVE;
 	}
 #if LOADSAVEGAME_LOGTIME
@@ -4944,7 +4945,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	uiRelStartPerc = 0;
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Strategic Events..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Strategic Events...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -4964,7 +4965,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	HandleNewSectorAmbience( gTilesets[ giCurrentTilesetID ].ubAmbientID );
 
 	uiRelEndPerc += 0;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Laptop Info" );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Laptop Info") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -4985,7 +4986,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 #endif
 
 	uiRelEndPerc += 0;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Merc Profiles..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Merc Profiles...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5006,7 +5007,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 30;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Soldier Structure..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Soldier Structure...") );
 	uiRelStartPerc = uiRelEndPerc;
 
 
@@ -5028,7 +5029,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 #endif
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Finances Data File..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Finances Data File...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5050,7 +5051,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"History File..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("History File...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5072,7 +5073,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"The Laptop FILES file..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("The Laptop FILES file...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5093,7 +5094,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Email..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Email...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5112,7 +5113,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Strategic Information..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Strategic Information...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5157,7 +5158,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 #endif
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"UnderGround Information..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("UnderGround Information...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5177,7 +5178,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	UpdateFortificationPossibleAmount();
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Squad Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Squad Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5195,7 +5196,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Strategic Movement Groups..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Strategic Movement Groups...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5218,7 +5219,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 #endif
 
 	uiRelEndPerc += 30;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"All the Map Temp files..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("All the Map Temp files...") );
 	uiRelStartPerc = uiRelEndPerc;
 
 
@@ -5238,7 +5239,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 #endif
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Quest Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Quest Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5268,7 +5269,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	}
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"LUA Modder Data..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("LUA Modder Data...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5291,7 +5292,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	}
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"OppList Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("OppList Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5310,7 +5311,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"MapScreen Messages..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("MapScreen Messages...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5329,7 +5330,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"NPC Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("NPC Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5348,7 +5349,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"KeyTable..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("KeyTable...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5367,7 +5368,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Npc Temp Quote File..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Npc Temp Quote File...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5386,7 +5387,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 0;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"PreGenerated Random Files..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("PreGenerated Random Files...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5405,7 +5406,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 0;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Smoke Effect Structures..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Smoke Effect Structures...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5424,7 +5425,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Arms Dealers Inventory..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Arms Dealers Inventory...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5442,7 +5443,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 0;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Misc info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Misc info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5457,7 +5458,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#endif
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Mine Status..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Mine Status...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5476,7 +5477,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 0;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Town Loyalty..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Town Loyalty...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5498,7 +5499,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Vehicle Information..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Vehicle Information...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5517,7 +5518,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	}
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Militia Movement..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Militia Movement...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5537,7 +5538,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 #endif
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Bullet Information..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Bullet Information...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5558,7 +5559,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Physics table..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Physics table...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5582,7 +5583,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Air Raid Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Air Raid Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5604,7 +5605,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 0;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Team Turn Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Team Turn Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5627,7 +5628,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Explosion Table..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Explosion Table...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5650,7 +5651,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Creature Spreading..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Creature Spreading...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5674,7 +5675,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Strategic Status..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Strategic Status...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5697,7 +5698,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Strategic AI..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Strategic AI...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5719,7 +5720,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Lighting Effects..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Lighting Effects...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5741,7 +5742,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Watched Locs Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Watched Locs Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5764,7 +5765,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Item cursor Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Item cursor Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5785,7 +5786,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Civ Quote System..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Civ Quote System...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5808,7 +5809,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Backed up NPC Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Backed up NPC Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5830,7 +5831,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Meanwhile definitions..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Meanwhile definitions...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5857,7 +5858,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Schedules..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Schedules...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5881,7 +5882,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Extra Vehicle Info..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Extra Vehicle Info...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5916,7 +5917,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	}
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Contract renewal sequence stuff..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Contract renewal sequence stuff...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -5997,7 +5998,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 #ifdef JA2UB	
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Ja25 Tactical info" );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Ja25 Tactical info") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;	
 
@@ -6012,7 +6013,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 		#endif
 		
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Ja25 Save info Struct" );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Ja25 Save info Struct") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 	
@@ -6030,7 +6031,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 #endif
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load New Mercs Prfiles..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load New Mercs Prfiles...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -6049,7 +6050,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#endif
 	
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load New Sytem Mercs Prfiles..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load New Sytem Mercs Prfiles...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 	
@@ -6068,7 +6069,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	#endif
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Final Checks..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Final Checks...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -6076,7 +6077,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	{
 	
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Lua Global System..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Lua Global System...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;	
 	
@@ -6099,7 +6100,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if( guiCurrentSaveGameVersion >= VEHICLES_DATATYPE_CHANGE && guiCurrentSaveGameVersion < NO_VEHICLE_SAVE)
 	{
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load New Vehicles..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load New Vehicles...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;
 
@@ -6119,7 +6120,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if( guiCurrentSaveGameVersion >= NEW_SAVE_GAME_GENERAL_SAVE_INFO_DATA)
 	{
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load Save Data..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load Save Data...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;
 
@@ -6139,7 +6140,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if( guiCurrentSaveGameVersion >= NEW_EMAIL_SAVE_GAME)
 	{
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load New Email Data..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load New Email Data...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;
 
@@ -6159,7 +6160,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if( guiCurrentSaveGameVersion >= HIDDENTOWN_DATATYPE_CHANGE)
 	{
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load Hidden Towns..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load Hidden Towns...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;
 
@@ -6179,7 +6180,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if( guiCurrentSaveGameVersion > ENCYCLOPEDIA_SAVEGAME_CHANGE)
 	{
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load Briefing Room..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load Briefing Room...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;
 
@@ -6217,7 +6218,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if( guiCurrentSaveGameVersion >= CAMPAIGNSTATS )
 	{
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load Campaign Stats..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load Campaign Stats...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;
 
@@ -6240,7 +6241,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if ( guiCurrentSaveGameVersion >= DYNAMIC_DIALOGUE )
 	{
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load Dynamic Dialogue..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load Dynamic Dialogue...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;
 
@@ -6253,7 +6254,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	}
 		
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load PMC data ..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load PMC data ...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -6267,7 +6268,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if ( guiCurrentSaveGameVersion >= ENEMY_HELICOPTERS )
 	{
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load Arulco special division data..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load Arulco special division data...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;
 
@@ -6296,7 +6297,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	if ( guiCurrentSaveGameVersion >= INDIVIDUAL_MILITIA )
 	{
 		uiRelEndPerc += 1;
-		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load individual militia data..." );
+		SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load individual militia data...") );
 		RenderProgressBar( 0, 100 );
 		uiRelStartPerc = uiRelEndPerc;
 
@@ -6313,7 +6314,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	}
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Load rebel command data..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Load rebel command data...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -6458,7 +6459,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	}
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Final Checks..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Final Checks...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -6472,7 +6473,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Final Checks..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Final Checks...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -6495,7 +6496,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Final Checks..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Final Checks...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -6526,7 +6527,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	SaveFeatureFlags();
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Final Checks..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Final Checks...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -6535,7 +6536,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	giRTAILastUpdateTime = 0;
 
 	uiRelEndPerc += 1;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Final Checks..." );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Final Checks...") );
 	RenderProgressBar( 0, 100 );
 	uiRelStartPerc = uiRelEndPerc;
 
@@ -6657,7 +6658,7 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	gfLoadedGame = TRUE;
 
 	uiRelEndPerc = 100;
-	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, L"Done!" );
+	SetRelativeStartAndEndPercentage( 0, uiRelStartPerc, uiRelEndPerc, JA2_TEXT("Done!") );
 	RenderProgressBar( 0, 100 );
 
 	RemoveLoadingScreenProgressBar();
@@ -7793,7 +7794,7 @@ BOOLEAN LoadTacticalStatusFromSavedGame( HWFILE hFile )
 									  static_cast<int>(gGameExternalOptions.ubGameMaximumNumberOfEnemies), static_cast<int>(gGameExternalOptions.ubGameMaximumNumberOfCreatures),
 									  static_cast<int>(gGameExternalOptions.ubGameMaximumNumberOfRebels), static_cast<int>(gGameExternalOptions.ubGameMaximumNumberOfCivilians)};
 		
-		CHAR16 *errMsgTxt[] = {L"Mercenary / Vehicle", L"Enemy", L"Creature", L"Militia", L"Civilian"};
+		CHAR16 *errMsgTxt[] = {JA2_TEXT("Mercenary / Vehicle"), JA2_TEXT("Enemy"), JA2_TEXT("Creature"), JA2_TEXT("Militia"), JA2_TEXT("Civilian")};
 		errMsgTxt[0] = Additional113Text[ERROR_MAX_MERCSVEHICLES];
 		errMsgTxt[1] = Additional113Text[ERROR_MAX_ENEMIES];
 		errMsgTxt[2] = Additional113Text[ERROR_MAX_CREATURES];
@@ -9445,7 +9446,7 @@ void InitShutDownMapTempFileTest( BOOLEAN fInit, STR pNameOfFile, UINT8 ubSaveGa
 	}
 }
 
-void WriteTempFileNameToFile( STR pFileName, UINT32 uiSizeOfFile, HFILE hSaveFile )
+void WriteTempFileNameToFile( STR pFileName, UINT32 uiSizeOfFile, HWFILE hSaveFile )
 {
 	HWFILE	hFile;
 	CHAR8		zTempString[512];
@@ -9610,29 +9611,29 @@ void ValidateStrategicGroups()
 	while( pGroup ) {
 		next = pGroup->next;
 		if (pGroup->ubSectorX < MINIMUM_VALID_X_COORDINATE) {
-			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"...");
+			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("..."));
 		}
 		else if (pGroup->ubSectorX > MAXIMUM_VALID_X_COORDINATE) {
-			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"...");
+			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("..."));
 //			RemoveGroupFromList( pGroup );
 		}
 		else if (pGroup->ubSectorY < MINIMUM_VALID_Y_COORDINATE) {
-			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"...");
+			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("..."));
 		}
 		else if (pGroup->ubSectorY > MAXIMUM_VALID_Y_COORDINATE) {
-			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"...");
+			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("..."));
 //			RemoveGroupFromList( pGroup );
 		}
 		else if (pGroup->ubSectorZ < MINIMUM_VALID_Z_COORDINATE) {
-			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"...");
+			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("..."));
 //			RemoveGroupFromList( pGroup );
 		}
 		else if (pGroup->ubSectorZ > MAXIMUM_VALID_Z_COORDINATE) {
-			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"...");
+			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("..."));
 //			RemoveGroupFromList( pGroup );
 		}
 		else if (pGroup->ubGroupSize == 0) {
-			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, L"...");
+			//ScreenMsg( FONT_MCOLOR_WHITE, MSG_ERROR, JA2_TEXT("..."));
 		}
 		pGroup = next;
 	}

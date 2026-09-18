@@ -65,7 +65,7 @@ INT8 ArmedVehicleDecideActionBlack(SOLDIERTYPE *pSoldier);
 
 STR8 gStr8AlertStatus[] = { "Green", "Yellow", "Red", "Black" };
 STR8 gStr8Attitude[] = { "DEFENSIVE", "BRAVESOLO", "BRAVEAID", "CUNNINGSOLO", "CUNNINGAID", "AGGRESSIVE", "MAXATTITUDES", "ATTACKSLAYONLY" };
-STR8 gStr8Orders[] = { "STATIONARY", "ONGUARD", "CLOSEPATROL", "FARPATROL", "POINTPATROL", "ONCALL", "SEEKENEMY", "RNDPTPATROL", "SNIPER" };
+STR8 gStr8Orders[] = { "STATIONARY", "ONGUARD", "CLOSEPATROJA2_TEXT(", ")FARPATROJA2_TEXT(", ")POINTPATROJA2_TEXT(", ")ONCALJA2_TEXT(", ")SEEKENEMY", "RNDPTPATROJA2_TEXT(", ")SNIPER" };
 STR8 gStr8Team[] = { "OUR_TEAM", "ENEMY_TEAM", "CREATURE_TEAM", "MILITIA_TEAM", "CIV_TEAM", "LAST_TEAM", "PLAYER_PLAN", "LAN_TEAM_ONE", "LAN_TEAM_TWO", "LAN_TEAM_THREE", "LAN_TEAM_FOUR" };
 STR8 gStr8Class[] = { "SOLDIER_CLASS_NONE", "SOLDIER_CLASS_ADMINISTRATOR", "SOLDIER_CLASS_ELITE", "SOLDIER_CLASS_ARMY", "SOLDIER_CLASS_GREEN_MILITIA", "SOLDIER_CLASS_REG_MILITIA", "SOLDIER_CLASS_ELITE_MILITIA", "SOLDIER_CLASS_CREATURE", "SOLDIER_CLASS_MINER", "SOLDIER_CLASS_ZOMBIE", "SOLDIER_CLASS_TANK", "SOLDIER_CLASS_JEEP", "SOLDIER_CLASS_BANDIT", "SOLDIER_CLASS_ROBOT" };
 STR8 gStr8Knowledge[] = { "HEARD_3_TURNS_AGO", "HEARD_2_TURNS_AGO", "HEARD_LAST_TURN", "HEARD_THIS_TURN", "NOT_HEARD_OR_SEEN", "SEEN_CURRENTLY", "SEEN_THIS_TURN", "SEEN_LAST_TURN", "SEEN_2_TURNS_AGO", "SEEN_3_TURNS_AGO" };
@@ -199,7 +199,7 @@ INT8 DecideActionSchedule( SOLDIERTYPE * pSoldier )
 					}
 					else
 					{
-						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Schedule involved locked door at %d but there's no lock there!", usGridNo1 );
+						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Schedule involved locked door at %d but there's no lock there!"), usGridNo1 );
 						fDoUseDoor = FALSE;
 					}
 				}
@@ -319,7 +319,7 @@ INT8 DecideActionSchedule( SOLDIERTYPE * pSoldier )
 						else
 						{
 							// WTF?  Warning time!
-							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Schedule involved locked door at %d but there's no lock there!", usGridNo1 );
+							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Schedule involved locked door at %d but there's no lock there!"), usGridNo1 );
 							fDoUseDoor = FALSE;
 						}
 					}
@@ -415,7 +415,7 @@ INT8 DecideActionSchedule( SOLDIERTYPE * pSoldier )
 			if (TileIsOutOfBounds(pSoldier->aiData.usActionData))
 			{
 #ifdef JA2BETAVERSION
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Civilian could not find path to map edge!" );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Civilian could not find path to map edge!") );
 #endif
 				DoneScheduleAction( pSoldier );
 				return( AI_ACTION_NONE );
@@ -5597,7 +5597,7 @@ INT16 ubMinAPCost;
 				}
 				else
 				{
-					//sprintf((CHAR *)tempstr,"%s - ubMinAPCost = %d",pSoldier->name,ubMinAPCost);
+					//sprintf((CHAR8 *)tempstr,"%s - ubMinAPCost = %d",pSoldier->name,ubMinAPCost);
 					//PopMessage(tempstr);
 					// then look around for a worthy target (which sets BestStab.ubPossible)
 					CalcBestStab(pSoldier,&BestStab, TRUE);
@@ -6020,7 +6020,7 @@ INT16 ubMinAPCost;
 					DebugAI(AI_MSG_INFO, pSoldier, String("cover advance spot ok"));
 					pSoldier->aiData.usActionData = sAdvanceSpot;
 
-					//ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"[%d] found cover advance spot %d", pSoldier->ubID, sAdvanceSpot);
+					//ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("[%d] found cover advance spot %d"), pSoldier->ubID, sAdvanceSpot);
 					//BeginMultiPurposeLocator(sAdvanceSpot, pSoldier->pathing.bLevel, FALSE);
 
 					return AI_ACTION_GET_CLOSER;
@@ -6539,7 +6539,7 @@ L_NEWAIM:
 				if (!TileIsOutOfBounds(sClosestOpponent))
 				{
 					// temporarily make merc get closer reserving enough for expected cost of shot
-					USHORT tgrd = pSoldier->aiData.sPatrolGrid[0];
+					UINT16 tgrd = pSoldier->aiData.sPatrolGrid[0];
 					INT8 oldOrders = pSoldier->aiData.bOrders;
 					pSoldier->aiData.sPatrolGrid[0] = pSoldier->sGridNo;
 					pSoldier->aiData.bOrders = CLOSEPATROL;
@@ -6987,7 +6987,7 @@ L_NEWAIM:
 			pSoldier->name,sBestCover,iCoverPercentBetter);
 		DebugAI( tempstr ) ;
 #endif
-		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"AI %d taking cover, morale %d, from %d to %d", pSoldier->ubID, pSoldier->aiData.bAIMorale, pSoldier->sGridNo, sBestCover );
+		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("AI %d taking cover, morale %d, from %d to %d"), pSoldier->ubID, pSoldier->aiData.bAIMorale, pSoldier->sGridNo, sBestCover );
 		pSoldier->aiData.usActionData = sBestCover;
 		if(!TileIsOutOfBounds(sClosestOpponent))//dnl ch58 150913 After taking cover change facing toward recent target or closest enemy, currently such turn not charge APs and seems because AI is still in moving animation from take cover action
 		{
@@ -9907,7 +9907,7 @@ INT8 ArmedVehicleDecideActionBlack( SOLDIERTYPE *pSoldier )
 			if ( ((pSoldier->bTeam == MILITIA_TEAM) && ((INT16)(PreRandom( 20 )) > BestAttack.ubChanceToReallyHit))
 				 || ((pSoldier->bTeam != MILITIA_TEAM) && ((INT16)(PreRandom( 40 )) > BestAttack.ubChanceToReallyHit)) )
 			{
-				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"AI %d allowing cover check, chance to hit is only %d, at range %d", BestAttack.ubChanceToReallyHit, PythSpacesAway( pSoldier->sGridNo, BestAttack.sTarget ) );
+				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("AI %d allowing cover check, chance to hit is only %d, at range %d"), BestAttack.ubChanceToReallyHit, PythSpacesAway( pSoldier->sGridNo, BestAttack.sTarget ) );
 				// maybe taking cover would be better!
 				fAllowCoverCheck = TRUE;
 				if ( (INT16)(PreRandom( 10 )) > BestAttack.ubChanceToReallyHit )
@@ -10160,7 +10160,7 @@ INT8 ArmedVehicleDecideActionBlack( SOLDIERTYPE *pSoldier )
 				if ( !TileIsOutOfBounds( sClosestOpponent ) )
 				{
 					// temporarily make merc get closer reserving enough for expected cost of shot
-					USHORT tgrd = pSoldier->aiData.sPatrolGrid[0];
+					UINT16 tgrd = pSoldier->aiData.sPatrolGrid[0];
 					INT8 oldOrders = pSoldier->aiData.bOrders;
 					pSoldier->aiData.sPatrolGrid[0] = pSoldier->sGridNo;
 					pSoldier->aiData.bOrders = CLOSEPATROL;
@@ -10396,7 +10396,7 @@ void LogKnowledgeInfo(SOLDIERTYPE *pSoldier)
 			//wcstombs(str8, MercPtrs[oppID]->GetName(), wcslen(MercPtrs[oppID]->GetName())+1);
 			//wcstombs(str8, MercPtrs[oppID]->GetName(), 1024 - 1);
 			DebugAI(AI_MSG_INFO, pSoldier, String("public opponent [%d] knowledge %s gridno %d level %d", oppID, gStr8Knowledge[gbPublicOpplist[pSoldier->bTeam][oppID] - OLDEST_HEARD_VALUE], gsPublicLastKnownOppLoc[pSoldier->bTeam][oppID], gbPublicLastKnownOppLevel[pSoldier->bTeam][oppID]));
-			//swprintf( pStrInfo, L"%s[%d] %s %s\n", pStrInfo, oppID, MercPtrs[oppID]->GetName(), SeenStr(gbPublicOpplist[pSoldier->bTeam][oppID]) );
+			//swprintf( pStrInfo, JA2_TEXT("%s[%d] %s %s\n"), pStrInfo, oppID, MercPtrs[oppID]->GetName(), SeenStr(gbPublicOpplist[pSoldier->bTeam][oppID]) );
 		}
 	}
 	// show personal opponents
@@ -10408,7 +10408,7 @@ void LogKnowledgeInfo(SOLDIERTYPE *pSoldier)
 			//wcstombs(str8, MercPtrs[oppID]->GetName(), wcslen(MercPtrs[oppID]->GetName())+1);
 			//wcstombs(str8, MercPtrs[oppID]->GetName(), 1024 - 1);
 			DebugAI(AI_MSG_INFO, pSoldier, String("personal opponent [%d] knowledge %s gridno %d level %d", oppID, gStr8Knowledge[pSoldier->aiData.bOppList[oppID] - OLDEST_HEARD_VALUE], gsLastKnownOppLoc[pSoldier->ubID][oppID], gbLastKnownOppLevel[pSoldier->ubID][oppID]));
-			//swprintf( pStrInfo, L"%s[%d] %s %s\n", pStrInfo, oppID, MercPtrs[oppID]->GetName(), SeenStr(pSoldier->aiData.bOppList[oppID]) );
+			//swprintf( pStrInfo, JA2_TEXT("%s[%d] %s %s\n"), pStrInfo, oppID, MercPtrs[oppID]->GetName(), SeenStr(pSoldier->aiData.bOppList[oppID]) );
 		}
 	}
 }

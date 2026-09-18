@@ -22,7 +22,7 @@
 
 BaseTable::BaseTable( )
 : WidgetBase( ),
-	mName(L""),
+	mName(JA2_TEXT("")),
 	fInit(FALSE),
 	musHeight(0),
 	musWidth(0),
@@ -111,7 +111,7 @@ BaseTable::DestroyMouseRegions( )
 
 STR16 cdp_string_func_dummy( UINT32 aNum )
 { 
-	return L"nothing found";
+	return JA2_TEXT("nothing found");
 }
 
 UINT8 cdp_textcolour_func_dummy( UINT32 aNum )
@@ -338,7 +338,7 @@ TabBox::Display( )
 	DestroyMouseRegions();
 
 	CHAR16	sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16 usPosX = GetX( );
 
 	UINT16 panelcnt = 0;
@@ -548,7 +548,7 @@ TestTable::Display( )
 		return;
 
 	CHAR16	sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16	usPosX, usPosY;
 
 	usPosX = GetX( );

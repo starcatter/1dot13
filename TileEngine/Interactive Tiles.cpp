@@ -207,7 +207,7 @@ void HandleStructChangeFromGridNo( SOLDIERTYPE *pSoldier, INT32 sGridNo )
 	if ( pStructure == NULL )
 	{
 #ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"ERROR: Told to handle struct that does not exist at %d.", sGridNo );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("ERROR: Told to handle struct that does not exist at %d."), sGridNo );
 #endif
 		return;
 	}
@@ -945,6 +945,7 @@ BOOLEAN CheckVideoObjectScreenCoordinateInData( HVOBJECT hSrcVObject, UINT16 usI
 
 	SrcPtr= (UINT8 *)hSrcVObject->pPixData + uiOffset;
 
+#if defined(_MSC_VER) && defined(_M_IX86)
 	__asm {
 
 		mov		esi, SrcPtr
@@ -1055,6 +1056,29 @@ BlitFound:
 
 BlitDone:
 	}
+#else
+	const UINT8* source = SrcPtr;
+	const UINT8* const sourceEnd = source + pTrav->uiDataLength;
+	INT32 position = 0;
+	for (UINT32 y = 0; y < usHeight; ++y)
+	{
+		for (;;)
+		{
+			if (source >= sourceEnd) return FALSE;
+			const UINT8 code = *source++;
+			if (code == 0) break;
+			const INT32 count = code & 0x7f;
+			if (!(code & 0x80))
+			{
+				if (iTestPos >= position && iTestPos < position + count) return TRUE;
+				if (static_cast<UINT32>(sourceEnd - source) < static_cast<UINT32>(count)) return FALSE;
+				source += count;
+			}
+			position += count;
+		}
+		if (position >= iTestPos) return FALSE;
+	}
+#endif
 
 	return(fDataFound);
 

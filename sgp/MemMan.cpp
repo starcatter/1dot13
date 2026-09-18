@@ -19,7 +19,14 @@
 //**************************************************************************
 
 	#include "types.h"
+	#ifdef _WIN32
 	#include <windows.h>
+	#else
+	#include <sys/mman.h>
+	#include <sys/sysinfo.h>
+	#endif
+	#include <algorithm>
+	#include <limits>
 	#include <malloc.h>
 	#include <stdlib.h>
 	#include <string.h>
@@ -45,34 +52,34 @@
 #include "MessageBoxScreen.h"
 STR16 gzJA2ScreenNames[] =
 {
-	L"EDIT_SCREEN",
-	L"SAVING_SCREEN",
-	L"LOADING_SCREEN",
-	L"ERROR_SCREEN",
-	L"INIT_SCREEN",
-	L"GAME_SCREEN",
-	L"ANIEDIT_SCREEN",
-	L"PALEDIT_SCREEN",
-	L"DEBUG_SCREEN",
-	L"MAP_SCREEN",
-	L"LAPTOP_SCREEN",
-	L"LOADSAVE_SCREEN",
-	L"MAPUTILITY_SCREEN",
-	L"FADE_SCREEN",
-	L"MSG_BOX_SCREEN",
-	L"MAINMENU_SCREEN",
-	L"AUTORESOLVE_SCREEN",
-	L"SAVE_LOAD_SCREEN",
-	L"OPTIONS_SCREEN",
-	L"SHOPKEEPER_SCREEN",
-	L"SEX_SCREEN",
-	L"GAME_INIT_OPTIONS_SCREEN",
-	L"DEMO_EXIT_SCREEN",
-	L"INTRO_SCREEN",
-	L"CREDIT_SCREEN",
+	JA2_TEXT("EDIT_SCREEN"),
+	JA2_TEXT("SAVING_SCREEN"),
+	JA2_TEXT("LOADING_SCREEN"),
+	JA2_TEXT("ERROR_SCREEN"),
+	JA2_TEXT("INIT_SCREEN"),
+	JA2_TEXT("GAME_SCREEN"),
+	JA2_TEXT("ANIEDIT_SCREEN"),
+	JA2_TEXT("PALEDIT_SCREEN"),
+	JA2_TEXT("DEBUG_SCREEN"),
+	JA2_TEXT("MAP_SCREEN"),
+	JA2_TEXT("LAPTOP_SCREEN"),
+	JA2_TEXT("LOADSAVE_SCREEN"),
+	JA2_TEXT("MAPUTILITY_SCREEN"),
+	JA2_TEXT("FADE_SCREEN"),
+	JA2_TEXT("MSG_BOX_SCREEN"),
+	JA2_TEXT("MAINMENU_SCREEN"),
+	JA2_TEXT("AUTORESOLVE_SCREEN"),
+	JA2_TEXT("SAVE_LOAD_SCREEN"),
+	JA2_TEXT("OPTIONS_SCREEN"),
+	JA2_TEXT("SHOPKEEPER_SCREEN"),
+	JA2_TEXT("SEX_SCREEN"),
+	JA2_TEXT("GAME_INIT_OPTIONS_SCREEN"),
+	JA2_TEXT("DEMO_EXIT_SCREEN"),
+	JA2_TEXT("INTRO_SCREEN"),
+	JA2_TEXT("CREDIT_SCREEN"),
 #ifdef JA2BETAVERSION
-	L"AIVIEWER_SCREEN",
-	L"QUEST_DEBUG_SCREEN",
+	JA2_TEXT("AIVIEWER_SCREEN"),
+	JA2_TEXT("QUEST_DEBUG_SCREEN"),
 #endif
 };
 
@@ -347,11 +354,19 @@ PTR MemAllocLocked( UINT32 uiSize )
 	DbgMessage( TOPIC_MEMORY_MANAGER, DBG_LEVEL_0, String("MemAllocLocked: Warning -- Memory manager not initialized!!! ") );
 
 
+#ifdef _WIN32
 	ptr = VirtualAlloc( NULL, uiSize, MEM_COMMIT, PAGE_READWRITE );
+#else
+	ptr = std::calloc(1, uiSize);
+#endif
 
 	if ( ptr )
 	{
+#ifdef _WIN32
 	VirtualLock( ptr, uiSize );
+#else
+	mlock(ptr, uiSize);
+#endif
 
 		guiMemTotal	+= uiSize;
 		guiMemAlloced += uiSize;
@@ -378,8 +393,13 @@ void MemFreeLocked( PTR ptr, UINT32 uiSize )
 
 	if (ptr != NULL)
 	{
+#ifdef _WIN32
 	VirtualUnlock( ptr, uiSize );
 	VirtualFree( ptr, 0, MEM_RELEASE );
+#else
+	munlock(ptr, uiSize);
+	std::free(ptr);
+#endif
 
 		guiMemTotal -= uiSize;
 		guiMemFreed += uiSize;
@@ -416,12 +436,19 @@ void MemFreeLocked( PTR ptr, UINT32 uiSize )
 
 UINT32 MemGetFree( void )
 {
+#ifdef _WIN32
 	MEMORYSTATUS ms;
 
 	ms.dwLength = sizeof(MEMORYSTATUS);
 	GlobalMemoryStatus( &ms );
 
 	return( ms.dwAvailPhys );
+#else
+	struct sysinfo info {};
+	if (sysinfo(&info) != 0) return 0;
+	const std::uint64_t available = static_cast<std::uint64_t>(info.freeram) * info.mem_unit;
+	return static_cast<UINT32>(std::min<std::uint64_t>(available, std::numeric_limits<UINT32>::max()));
+#endif
 }
 
 
@@ -441,12 +468,19 @@ UINT32 MemGetFree( void )
 
 UINT32 MemGetTotalSystem( void )
 {
+#ifdef _WIN32
 	MEMORYSTATUS ms;
 
 	ms.dwLength = sizeof(MEMORYSTATUS);
 	GlobalMemoryStatus( &ms );
 
 	return( ms.dwTotalPhys );
+#else
+	struct sysinfo info {};
+	if (sysinfo(&info) != 0) return 0;
+	const std::uint64_t total = static_cast<std::uint64_t>(info.totalram) * info.mem_unit;
+	return static_cast<UINT32>(std::min<std::uint64_t>(total, std::numeric_limits<UINT32>::max()));
+#endif
 }
 
 

@@ -18,6 +18,9 @@
 	#include "Font Control.h"
 	#include "Sound Control.h"
 	#include "UtfConversion.h"
+#if !defined(_WIN32)
+	#include <SDL3/SDL.h>
+#endif
 
 
 STR16 szClipboard;
@@ -284,7 +287,7 @@ void AddTextInputField( INT16 sLeft, INT16 sTop, INT16 sWidth, INT16 sHeight, IN
 	else
 	{
 		pNode->ubStrLen = 0;
-		swprintf( pNode->szString, L"" );
+		swprintf( pNode->szString, JA2_TEXT("") );
 	}
 	pNode->ubMaxChars = ubMaxChars; //max string length
 
@@ -408,7 +411,7 @@ void SetInputFieldStringWith16BitString( UINT8 ubField, const STR16 szNewText )
 			else if( !curr->fUserField )
 			{
 				curr->ubStrLen = 0;
-				swprintf( curr->szString, L"");
+				swprintf( curr->szString, JA2_TEXT(""));
 			}
 			else
 			{
@@ -432,12 +435,12 @@ void SetInputFieldStringWith8BitString( UINT8 ubField, const STR8 szNewText )
 			{
 				curr->ubStrLen = (UINT8)strlen( szNewText );
 				Assert( curr->ubStrLen <= curr->ubMaxChars );
-				swprintf( curr->szString, L"%S", szNewText );
+				swprintf( curr->szString, JA2_TEXT("%S"), szNewText );
 			}
 			else if( !curr->fUserField )
 			{
 				curr->ubStrLen = 0;
-				swprintf( curr->szString, L"" );
+				swprintf( curr->szString, JA2_TEXT("") );
 			}
 			else
 			{
@@ -529,14 +532,14 @@ void SetInputFieldStringWithNumericStrictValue( UINT8 ubField, INT32 iNumber )
 			if( curr->fUserField )
 				AssertMsg( 0, String( "Attempting to illegally set text into user field %d", curr->ubID ) );
 			if( iNumber < 0 ) //negative number converts to blank string
-				swprintf( curr->szString, L"" );
+				swprintf( curr->szString, JA2_TEXT("") );
 			else
 			{
 				INT32 iMax = (INT32)pow( 10.0, curr->ubMaxChars );
 				if( iNumber > iMax ) //set string to max value based on number of chars.
-					swprintf( curr->szString, L"%d", iMax - 1 );
+					swprintf( curr->szString, JA2_TEXT("%d"), iMax - 1 );
 				else	//set string to the number given
-					swprintf( curr->szString, L"%d", iNumber );
+					swprintf( curr->szString, JA2_TEXT("%d"), iNumber );
 			}
 			curr->ubStrLen = (UINT8)wcslen( curr->szString );
 			return;
@@ -1383,11 +1386,11 @@ void RenderActiveTextField()
 			}
 			if( scrollStr[i] != '%' )
 			{
-				mprintf( uiCursorXPos + gpActive->region.RegionTopLeftX, gpActive->region.RegionTopLeftY + usOffset, L"%c", scrollStr[i] );
+				mprintf( uiCursorXPos + gpActive->region.RegionTopLeftX, gpActive->region.RegionTopLeftY + usOffset, JA2_TEXT("%c"), scrollStr[i] );
 			}
 			else
 			{
-				mprintf( uiCursorXPos + gpActive->region.RegionTopLeftX, gpActive->region.RegionTopLeftY + usOffset, L"%%" );
+				mprintf( uiCursorXPos + gpActive->region.RegionTopLeftX, gpActive->region.RegionTopLeftY + usOffset, JA2_TEXT("%%") );
 			}
 		}
 	}
@@ -1826,7 +1829,7 @@ void SetExclusive24HourTimeValue( UINT8 ubField, UINT16 usTime )
 	//First make sure the time is a valid time.	If not, then use 23:59
 	if( usTime == 0xffff )
 	{
-		SetInputFieldStringWith16BitString( ubField, L"" );
+		SetInputFieldStringWith16BitString( ubField, JA2_TEXT("") );
 		return;
 	}
 	usTime = min( 1439, usTime );
@@ -1869,90 +1872,71 @@ void DoublePercentileCharacterFromStringIntoString( STR16 pSrcString, STR16 pDst
 // OJW - 20090427 - Paste clipboard text
 UINT32 PasteClipboardText()
 {
-	// get the window handle of the window which currently holds the clipboard
-	//HWND wndH = GetOpenClipboardWindow();
-	UINT32 iStrLen = 0;
-
-	// open the clipboard
-	if(OpenClipboard(NULL))
+#if defined(_WIN32)
+	UINT32 length = 0;
+	if (OpenClipboard(NULL))
 	{
 		if (IsClipboardFormatAvailable(CF_UNICODETEXT))
 		{
-			STR16 cbText = (STR16)GetClipboardData(CF_UNICODETEXT);
-			if (cbText != NULL)
+			STR16 text = static_cast<STR16>(GetClipboardData(CF_UNICODETEXT));
+			if (text)
 			{
-				iStrLen = wcslen(cbText);
-				if (iStrLen > 0)
+				length = static_cast<UINT32>(wcslen(text));
+				if (length > 0)
 				{
-					szClipboard = (STR16)MemAlloc((iStrLen+1)*sizeof(CHAR16));
-					wcscpy(szClipboard,cbText);
-					szClipboard[iStrLen] = L'\0';
-
-					// empty clipboard of data as we have copied it into the "local" clipboard
-					// and we will use that from now on
-					EmptyClipboard();
+					if (szClipboard) MemFree(szClipboard);
+					szClipboard = static_cast<STR16>(MemAlloc((length + 1) * sizeof(CHAR16)));
+					if (szClipboard) wcscpy(szClipboard, text);
+					else length = 0;
 				}
 			}
 		}
-
-		if (iStrLen == 0)
-		{
-			// no unicode text availble, try and get regular text
-			char* cbTextA = (char*)GetClipboardData(CF_TEXT);
-			if (cbTextA != NULL)
-			{
-				const ja2::text::Utf16String converted =
-					ja2::text::utf8ToUtf16ReplacingInvalid( cbTextA );
-				iStrLen = static_cast<UINT32>( converted.size() );
-				if ( iStrLen > 0 )
-				{
-					szClipboard = (STR16)MemAlloc((iStrLen+1)*sizeof(CHAR16));
-					std::copy( converted.begin(), converted.end(), szClipboard );
-					szClipboard[iStrLen] = 0;
-
-					// empty clipboard of data as we have copied it into the "local" clipboard
-					// and we will use that from now on
-					EmptyClipboard();
-				}
-			}
-		}
-
 		CloseClipboard();
 	}
+	return length;
+#else
+	char* clipboardText = SDL_GetClipboardText();
+	if (!clipboardText) return 0;
+	const ja2::text::Utf16String converted =
+		ja2::text::utf8ToUtf16ReplacingInvalid(clipboardText);
+	SDL_free(clipboardText);
+	if (converted.empty()) return 0;
 
-	// did we copy anything from the windows clipboard?
-	return iStrLen;
+	if (szClipboard) MemFree(szClipboard);
+	szClipboard = static_cast<STR16>(MemAlloc((converted.size() + 1) * sizeof(CHAR16)));
+	if (!szClipboard) return 0;
+	std::copy(converted.begin(), converted.end(), szClipboard);
+	szClipboard[converted.size()] = 0;
+	return static_cast<UINT32>(converted.size());
+#endif
 }
 
-// OJW - 20090427 - Copy text to the Win32 Clipboard
+// OJW - 20090427 - Copy text to the system clipboard
 void CopyToClipboard( void )
 {
 	if (!szClipboard || wcslen(szClipboard) <=0)
 		return;
-
-	if(OpenClipboard(ghWindow))
+#if defined(_WIN32)
+	if (OpenClipboard(ghWindow))
 	{
-		HGLOBAL clipbuffer;
-		STR16 writeBuffer;
-
-		if (IsClipboardFormatAvailable(CF_UNICODETEXT))
+		EmptyClipboard();
+		HGLOBAL clipbuffer = GlobalAlloc(GMEM_DDESHARE,
+			(wcslen(szClipboard) + 1) * sizeof(CHAR16));
+		if (clipbuffer)
 		{
-			// duh
-			EmptyClipboard();
-
-			// create new DDE buffer and get exclusive lock to it
-			clipbuffer = GlobalAlloc(GMEM_DDESHARE, (wcslen(szClipboard)+1)*sizeof(CHAR16));
-			writeBuffer = (STR16)GlobalLock(clipbuffer);
-
-			// copy the clipboard string
-			wcscpy(writeBuffer, szClipboard);
-
-			// unlock and write data to clipboard
-			GlobalUnlock(clipbuffer);
-			SetClipboardData(CF_UNICODETEXT,clipbuffer);
+			STR16 writeBuffer = static_cast<STR16>(GlobalLock(clipbuffer));
+			if (writeBuffer)
+			{
+				wcscpy(writeBuffer, szClipboard);
+				GlobalUnlock(clipbuffer);
+				if (!SetClipboardData(CF_UNICODETEXT, clipbuffer)) GlobalFree(clipbuffer);
+			}
+			else GlobalFree(clipbuffer);
 		}
-
-		// finish up
-		CloseClipboard();	
+		CloseClipboard();
 	}
+#else
+	const std::string utf8 = ja2::text::utf16ToUtf8ReplacingInvalid(szClipboard);
+	SDL_SetClipboardText(utf8.c_str());
+#endif
 }

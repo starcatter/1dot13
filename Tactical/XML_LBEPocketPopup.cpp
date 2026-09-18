@@ -303,7 +303,7 @@ pocketPopupEndElementHandle(void *userData, const XML_Char *name)
 			// done with the subpopup definition
 
 			// rename the current option, we should've collected a name for it by now
-			pData->curPocketSubPopupOption[ pData->curSubPopupLevel-1 ]->rename( new std::wstring( pData->curPocketSubPopupOptionName[ pData->curSubPopupLevel-1 ] ) );
+			pData->curPocketSubPopupOption[ pData->curSubPopupLevel-1 ]->rename( new ja2::text::Utf16String( pData->curPocketSubPopupOptionName[ pData->curSubPopupLevel-1 ] ) );
 
 			if( pData->curSubPopupLevel == 1 ){	// at first submenu level, add the current menu to the base popup
 				pData->curElement = POPUP_PARSE::POPUP;
@@ -322,13 +322,13 @@ pocketPopupEndElementHandle(void *userData, const XML_Char *name)
 		{
 			pData->curElement = POPUP_PARSE::POPUP;
 			// done with the option
-			pData->curPocketPopup->addOption( new std::wstring( pData->curPocketPopupOptionName ), pData->curPocketPopupOptionCallback, pData->curPocketPopupOptionAvail );
+			pData->curPocketPopup->addOption( new ja2::text::Utf16String( pData->curPocketPopupOptionName ), pData->curPocketPopupOptionCallback, pData->curPocketPopupOptionAvail );
 		}
 		else if( pData->curElement == POPUP_PARSE::SUBMENU_OPTION && strcmp(name, "option") == 0)	// option (sub-popup)
 		{
 			pData->curElement = POPUP_PARSE::SUBMENU;
 			// done with the option
-			pData->curPocketSubPopupOption[ pData->curSubPopupLevel-1 ]->getSubDef()->addOption( new std::wstring( pData->curPocketPopupOptionName ), pData->curPocketPopupOptionCallback, pData->curPocketPopupOptionAvail );
+			pData->curPocketSubPopupOption[ pData->curSubPopupLevel-1 ]->getSubDef()->addOption( new ja2::text::Utf16String( pData->curPocketPopupOptionName ), pData->curPocketPopupOptionCallback, pData->curPocketPopupOptionAvail );
 		}
 		else if( pData->curElement == POPUP_PARSE::GENERATOR && strcmp(name, "generator") == 0)	// generator (popup)
 		{
@@ -475,9 +475,9 @@ BOOLEAN ReadInLBEPocketPopups(STR fileName)
 	// dummy popup
 
 	 popupDef* popup = new popupDef();
-	 popup->addOption(new std::wstring(L"Option one"),NULL,NULL);
-	 popup->addOption(new std::wstring(L"Option two"),NULL,NULL);
-	 popup->addOption(new std::wstring(L"Option three"),NULL,NULL);
+	 popup->addOption(new ja2::text::Utf16String(L"Option one"),NULL,NULL);
+	 popup->addOption(new ja2::text::Utf16String(L"Option two"),NULL,NULL);
+	 popup->addOption(new ja2::text::Utf16String(L"Option three"),NULL,NULL);
 
 	LBEPocketPopup[5] = *popup;
 	*/

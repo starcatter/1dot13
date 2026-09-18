@@ -4186,7 +4186,7 @@ UINT16	DetermineSoldierAnimationSurface( SOLDIERTYPE *pSoldier, UINT16 usAnimSta
 	if ( usAnimSurface == INVALID_ANIMATION	)
 	{
 		// WE SHOULD NOT BE USING THIS ANIMATION
-		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, L"Invalid Animation File for Body %d, animation %S.", pSoldier->ubBodyType, gAnimControl[ usAnimState ].zAnimStr );
+		ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, JA2_TEXT("Invalid Animation File for Body %d, animation %S."), pSoldier->ubBodyType, gAnimControl[ usAnimState ].zAnimStr );
 		// Set index to FOUND_INVALID_ANIMATION
 		gubAnimSurfaceIndex[pSoldier->ubBodyType][usAnimState] = FOUND_INVALID_ANIMATION;
 		return( INVALID_ANIMATION_SURFACE );
@@ -4359,7 +4359,7 @@ UINT16	DetermineSoldierAnimationSurface( SOLDIERTYPE *pSoldier, UINT16 usAnimSta
 						{
 						
 						usAnimSurface = BGMFLEX;
-						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"usanimcashe");
+						ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("usanimcashe"));
 
 						}
 						else //}ddd*/
@@ -4448,7 +4448,7 @@ UINT16 GetSoldierAnimationSurface( SOLDIERTYPE *pSoldier, UINT16 usAnimState )
 		// Ensure that it's loaded!
 		if ( gAnimSurfaceDatabase[ usAnimSurface ].hVideoObject == NULL )
 		{
-			if(!is_networked)ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, L"IAnimation Surface for Body %d, animation %S, surface %d not loaded.", pSoldier->ubBodyType, gAnimControl[ usAnimState ].zAnimStr, usAnimSurface );
+			if(!is_networked)ScreenMsg( FONT_MCOLOR_RED, MSG_BETAVERSION, JA2_TEXT("IAnimation Surface for Body %d, animation %S, surface %d not loaded."), pSoldier->ubBodyType, gAnimControl[ usAnimState ].zAnimStr, usAnimSurface );
 			AnimDebugMsg( String( "Surface Database: PROBLEMS!!!!!!" ) );
 			usAnimSurface = INVALID_ANIMATION_SURFACE;
 		}

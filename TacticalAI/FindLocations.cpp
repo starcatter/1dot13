@@ -3114,7 +3114,7 @@ INT32 FindAdvanceSpot(SOLDIERTYPE *pSoldier, INT32 sTargetSpot, INT8 bAction, UI
 	// check target location
 	if (!NewOKDestination(pSoldier, sTargetSpot, FALSE, pSoldier->pathing.bLevel))
 	{
-		//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, L"bad destination %d", sTargetSpot);
+		//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("bad destination %d"), sTargetSpot);
 		return NOWHERE;
 	}
 
@@ -3350,7 +3350,7 @@ INT32 FindAdvanceSpot(SOLDIERTYPE *pSoldier, INT32 sTargetSpot, INT8 bAction, UI
 			// skip location if no path to target spot
 			if (iPathCost == 0)
 			{
-				//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, L"cannot find path to destination %d at %d", sTargetSpot, sGridNo);
+				//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("cannot find path to destination %d at %d"), sTargetSpot, sGridNo);
 				continue;
 			}
 

@@ -265,7 +265,7 @@ BOOLEAN BeginAirRaid( )
 			gfQuoteSaid				= FALSE;
 		}
 
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Incoming Air Strike!" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Incoming Air Strike!") );
 		LockPauseState ( 22 );
 		DebugMsg(TOPIC_JA2,DBG_LEVEL_3,String("BeginAirRaid: setting flags, quote said = %d",gfQuoteSaid));
 		// Set flag for handling raid....
@@ -293,7 +293,7 @@ BOOLEAN BeginAirRaid( )
 		// Determine how many dives this one will be....
 		gbMaxDives				= (INT8)( gAirRaidDef.bIntensity + Random( gAirRaidDef.bIntensity - 1 ) );
 
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Begin Air Raid." );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Begin Air Raid.") );
 
 
 	DebugMsg(TOPIC_JA2,DBG_LEVEL_3,"BeginAirRaid: done");
@@ -1490,8 +1490,8 @@ void EndAirRaid( )
 		//AddStrategicEvent( EVENT_GROUP_ARRIVAL, GetWorldTotalMin(), pGroup->ubGroupID );
 	}
 
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Ending Air Raid." );
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"The skies have cleared..." );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Ending Air Raid.") );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("The skies have cleared...") );
 	UnLockPauseState();
 }
 

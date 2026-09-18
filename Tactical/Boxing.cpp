@@ -302,7 +302,7 @@ static void CountPeopleInBoxingRingAndDoActions( void )
 				DebugQuestInfo(String("Start Match: gfLastBoxingMatchWonByPlayer %d", gfLastBoxingMatchWonByPlayer));
 
 #ifdef JA2TESTVERSION
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Boxer APs %d %d", pInRing[0]->bActionPoints, pInRing[1]->bActionPoints );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Boxer APs %d %d"), pInRing[0]->bActionPoints, pInRing[1]->bActionPoints );
 #endif
 				// give the first turn to a randomly chosen boxer
 				EnterCombatMode(pInRing[Random(2)]->bTeam);
@@ -556,7 +556,7 @@ void SetBoxingState( INT8 bNewState )
 	}
 	gTacticalStatus.bBoxingState = bNewState;
 	#ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"Boxing state now %d", bNewState );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("Boxing state now %d"), bNewState );
 	#endif
 }
 

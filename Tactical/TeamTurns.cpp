@@ -313,7 +313,7 @@ void EndTurn( UINT8 ubNextTeam )
 			if(is_networked)
 			{
 				end_interrupt( FALSE );//this tells other client to go on from where he was
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Player ended interrupt." );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Player ended interrupt.") );
 			}
 			EndInterrupt( FALSE );
 	}
@@ -381,7 +381,7 @@ void EndAITurn( void )
 			if(is_networked)
 			{
 				end_interrupt( FALSE );//this tells other client to go on from where he was
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"AI ended interrupt." );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("AI ended interrupt.") );
 			}
 		EndInterrupt( FALSE );
 	}
@@ -873,7 +873,7 @@ void StartInterrupt( void )
 		// Theoretically ubInterrupter is enemy causing interrupt
 
 
-		BOOL handleInterrupt = TRUE;
+		BOOLEAN handleInterrupt = TRUE;
 		if (ubInterrupter != NOBODY)
 		{
 			handleInterrupt = FALSE;
@@ -921,15 +921,15 @@ void StartInterrupt( void )
 						{
 							// flush... display string, then clear it (we could have 20 names!)
 							// add comma to end, we know we have another person after this...
-							wcscat( sTemp, L", " );
+							wcscat( sTemp, JA2_TEXT(", ") );
 							ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE,	sTemp );
-							wcscpy( sTemp, L"" );
+							wcscpy( sTemp, JA2_TEXT("") );
 							ubInterrupters = 1;
 						}
 
 						if ( ubInterrupters > 1 )
 						{
-							wcscat( sTemp, L", " );
+							wcscat( sTemp, JA2_TEXT(", ") );
 						}
 						wcscat( sTemp, pTempSoldier->name );
 					}
@@ -1061,7 +1061,7 @@ void StartInterrupt( void )
 #ifdef JA2BETAVERSION
 				if (is_networked)
 				{
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Interrupt ( could be hidden )" );
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Interrupt ( could be hidden )") );
 				}
 #endif
 
@@ -1170,14 +1170,14 @@ void EndInterrupt( BOOLEAN fMarkInterruptOccurred )
 			//hayden
 
 #ifdef BETAVERSION
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"unchecked interrupt call area:(resume interrupted interrupt)..." );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("unchecked interrupt call area:(resume interrupted interrupt)...") );
 #endif
 
 			if ( (nbTeam > 0) && (nbTeam < 6) && is_server ) // AI interrupt resume and im server
 			{
 				send_interrupt( npSoldier );
 				StartInterrupt();
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Continuing interrupt with %s and AI", TeamNameStrings[npSoldier->bTeam] );//tried to use pSoldier, but its not available. find another way to get correct team
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Continuing interrupt with %s and AI"), TeamNameStrings[npSoldier->bTeam] );//tried to use pSoldier, but its not available. find another way to get correct team
 
 			}
 			else if ( is_server && gTacticalStatus.ubCurrentTeam == 1 )// resume AI interrupted and im server
@@ -1190,7 +1190,7 @@ void EndInterrupt( BOOLEAN fMarkInterruptOccurred )
 				else
 					StartInterrupt();
 
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Continuing interrupt of AI by %s", TeamNameStrings[npSoldier->bTeam] );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Continuing interrupt of AI by %s"), TeamNameStrings[npSoldier->bTeam] );
 
 			}
 
@@ -1202,7 +1202,7 @@ void EndInterrupt( BOOLEAN fMarkInterruptOccurred )
 			else
 #endif
 			{
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Continuing interrupt with %s", TeamNameStrings[npSoldier->bTeam] );//this can be simplified if above comment is implemented
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Continuing interrupt with %s"), TeamNameStrings[npSoldier->bTeam] );//this can be simplified if above comment is implemented
 				//ClearIntList();
 				//hayden//may need more work.
 				StartInterrupt();
@@ -2026,7 +2026,7 @@ if(is_networked)
 {
 	SOLDIERTYPE	*pOpp = ubOpponentID;
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_MPSYSTEM, L"Interrupt: '%s' vs '%s' = %d points.",pSoldier->name,pOpp->name, iPoints );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_MPSYSTEM, JA2_TEXT("Interrupt: '%s' vs '%s' = %d points."),pSoldier->name,pOpp->name, iPoints );
 		#endif
 }
 	DebugMsg (TOPIC_JA2INTERRUPT,DBG_LEVEL_3,"CalcInterruptDuelPts done");
@@ -2060,7 +2060,7 @@ BOOLEAN InterruptDuel( SOLDIERTYPE * pSoldier, SOLDIERTYPE * pOpponent)
 			fResult = TRUE;
 		}
 	}
-//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Interrupt duel %d (%d pts) vs %d (%d pts)", pSoldier->ubID, pSoldier->aiData.bInterruptDuelPts, pOpponent->ubID, pOpponent->aiData.bInterruptDuelPts );
+//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Interrupt duel %d (%d pts) vs %d (%d pts)"), pSoldier->ubID, pSoldier->aiData.bInterruptDuelPts, pOpponent->ubID, pOpponent->aiData.bInterruptDuelPts );
 	DebugMsg (TOPIC_JA2INTERRUPT,DBG_LEVEL_3,"InterruptDuel done");
 	return( fResult );
 }
@@ -2083,7 +2083,7 @@ void DeleteFromIntList( UINT16 ubIndex, BOOLEAN fCommunicate)
 	#ifdef DEBUG_INTERRUPTS
 		DebugMsg( TOPIC_JA2INTERRUPT, DBG_LEVEL_3, String("INTERRUPT: removing ID %d", ubID ) );
 	#endif
-//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%d removed from int list", ubID );
+//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%d removed from int list"), ubID );
 	// if we're NOT deleting the LAST entry in the int list
 	if (ubIndex < gubOutOfTurnPersons)
 	{
@@ -2113,7 +2113,7 @@ void AddToIntList( UINT16 ubID, BOOLEAN fGainControl, BOOLEAN fCommunicate )
 	DebugMsg (TOPIC_JA2INTERRUPT,DBG_LEVEL_3,"AddToIntList");
 	UINT16 ubLoop;
 
-//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%d added to int list", ubID );
+//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%d added to int list"), ubID );
 	DebugMsg( TOPIC_JA2INTERRUPT, DBG_LEVEL_3, String("INTERRUPT: adding ID %d who %s", ubID, fGainControl ? "gains control" : "loses control" ) );
 
 	// check whether 'who' is already anywhere on the queue after the first index
@@ -2311,7 +2311,7 @@ void DoneAddingToIntList( SOLDIERTYPE * pSoldier, BOOLEAN fChange, UINT8 ubInter
 				// INTERRUPT is calculated on the server
 				if ((nbTeam > 0) && (nbTeam <6 ) && is_server) //is for AI and are server
 				{
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s is interrupt by AI", TeamNameStrings[pSoldier->bTeam]);
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s is interrupt by AI"), TeamNameStrings[pSoldier->bTeam]);
 					
 					// Only display the top message if we (the server) got interrupted
 					if (pSoldier->bTeam == 0)
@@ -2331,7 +2331,7 @@ void DoneAddingToIntList( SOLDIERTYPE * pSoldier, BOOLEAN fChange, UINT8 ubInter
 					else 
 						StartInterrupt();//
 					
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"AI is interrupted by %s", TeamNameStrings[npSoldier->bTeam]);
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("AI is interrupted by %s"), TeamNameStrings[npSoldier->bTeam]);
 				}
 				// INTERRUPT is calculated on the pure client
 				else if(gTacticalStatus.ubCurrentTeam == 0)//its our turn (we are moving)
@@ -2356,7 +2356,7 @@ void DoneAddingToIntList( SOLDIERTYPE * pSoldier, BOOLEAN fChange, UINT8 ubInter
 					AddTopMessage( COMPUTER_INTERRUPT_MESSAGE, TeamTurnString[ nbTeam ] );
 					gTacticalStatus.fInterruptOccurred = TRUE;
 
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"You have interrupted %s", TeamNameStrings[npSoldier->bTeam]);
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("You have interrupted %s"), TeamNameStrings[npSoldier->bTeam]);
 				}
 				else
 				{
@@ -2466,7 +2466,7 @@ void ResolveInterruptsVs( SOLDIERTYPE * pSoldier, UINT8 ubInterruptType)
 						/*
 							if (pOpponent->aiData.bInterruptDuelPts != NO_INTERRUPT)
 							{
-								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%d fails to interrupt %d (%d vs %d pts)", pOpponent->ubID, pSoldier->ubID, pOpponent->aiData.bInterruptDuelPts, pSoldier->aiData.bInterruptDuelPts);
+								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%d fails to interrupt %d (%d vs %d pts)"), pOpponent->ubID, pSoldier->ubID, pOpponent->aiData.bInterruptDuelPts, pSoldier->aiData.bInterruptDuelPts);
 							}
 							*/
 						}

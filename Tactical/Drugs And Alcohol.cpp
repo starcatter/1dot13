@@ -36,7 +36,7 @@ BOOLEAN ApplyDrugs_New( SOLDIERTYPE *pSoldier, UINT16 usItem, UINT16 uStatusUsed
 	UINT32 drugused = Item[usItem].drugtype;
 
 	// to stop Larry from getting stoned via unsanitary bandages etc., note whether this is a 'real' drug
-	BOOL complainworthyeffects = FALSE;
+	BOOLEAN complainworthyeffects = FALSE;
 
 	// we might not use up the entire item, so reduce effects accordingly
 	FLOAT effectivepercentage = uStatusUsed / 100.0;

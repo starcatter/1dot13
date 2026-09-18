@@ -8,6 +8,7 @@
 #include "Font Control.h"
 // WDS - make number of mercenaries, etc. be configurable
 #include "Squads.h"
+#include "UtfConversion.h"
 
 
 typedef struct FASTHELPREGION {
@@ -22,7 +23,7 @@ typedef struct FASTHELPREGION {
 } FASTHELPREGION;
 
 // Flugente: externalised squad names
-extern std::vector<std::wstring> gSquadNameVector;
+extern std::vector<ja2::text::Utf16String> gSquadNameVector;
 
 extern UINT16 FIRSTmercTOdisplay ;
 extern UINT16 maxNumberOfMercVisibleInStrategyList;

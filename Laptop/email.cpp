@@ -739,7 +739,7 @@ void AddEmailWithSpecialDataXML(INT32 iMessageOffset, INT32 iDate, INT32 iCurren
 	}
 	else
 	{
-		ScreenMsg(FONT_LTRED, MSG_INTERFACE, L"%s%d %s", L"Tried to add email #", iMessageOffset, L"but could not find it in Emails.xml! If playing unmodded 1.13, please report this at https://github.com/1dot13/source/issues");
+		ScreenMsg(FONT_LTRED, MSG_INTERFACE, JA2_TEXT("%s%d %s"), JA2_TEXT("Tried to add email #"), iMessageOffset, JA2_TEXT("but could not find it in Emails.xml! If playing unmodded 1.13, please report this at https://github.com/1dot13/source/issues"));
 	}
 
 	return;
@@ -748,7 +748,7 @@ void AddEmailWithSpecialDataXML(INT32 iMessageOffset, INT32 iDate, INT32 iCurren
 void AddPreReadEmailTypeXML( INT32 iMessageOffset, INT32 iMessageLength, UINT8 ubSender, INT32 iDate, UINT8 EmailType )
 {
 	CHAR16 pSubject[320];
-	wcscpy( pSubject, L"None" );
+	wcscpy( pSubject, JA2_TEXT("None") );
 	
 	UINT8 subjectLine = 0;
 	if ( EmailType == TYPE_EMAIL_AIM_AVAILABLE )
@@ -777,7 +777,7 @@ void AddPreReadEmailTypeXML( INT32 iMessageOffset, INT32 iMessageLength, UINT8 u
 void AddEmailTypeXML( INT32 iMessageOffset, INT32 iMessageLength, UINT8 ubSender, INT32 iDate, INT32 iCurrentIMPPosition, UINT8 EmailType )
 {
 	CHAR16 pSubject[320];
-	wcscpy( pSubject, L"None" );
+	wcscpy( pSubject, JA2_TEXT("None") );
 
 	if ( EmailType == TYPE_EMAIL_AIM_AVAILABLE )
 	{
@@ -816,7 +816,7 @@ void AddEmailFromXML(INT32 iMessageOffset, INT32 iDate, INT32 iCurrentIMPPositio
 	}
 	else
 	{
-		ScreenMsg(FONT_LTRED, MSG_INTERFACE, L"%s%d %s", L"Tried to add email #", iMessageOffset, L"but could not find it in Emails.xml! If playing unmodded 1.13, please report this at https://github.com/1dot13/source/issues");
+		ScreenMsg(FONT_LTRED, MSG_INTERFACE, JA2_TEXT("%s%d %s"), JA2_TEXT("Tried to add email #"), iMessageOffset, JA2_TEXT("but could not find it in Emails.xml! If playing unmodded 1.13, please report this at https://github.com/1dot13/source/issues"));
 	}
 }
 
@@ -902,7 +902,7 @@ void AddEmail(INT32 iMessageOffset, INT32 iMessageLength, UINT8 ubSender, INT32 
             /*	if (EmailBobbyRText[0] !='\0')
                     wcscpy( pSubject, EmailBobbyRText[0] );
                 else
-                    wcscpy( pSubject, L"None" );
+                    wcscpy( pSubject, JA2_TEXT("None") );
             */
         }
         // add message to list
@@ -1662,7 +1662,7 @@ static void DrawSender(INT32 iCounter, UINT8 ubSender, BOOLEAN fRead, UINT8 Emai
 		if (gMercProfiles[ ubSender ].zNickname !='\0')
 		mprintf(SENDER_X,(( UINT16 )( 4 + MIDDLE_Y + iCounter * MIDDLE_WIDTH ) ) ,gMercProfiles[ ubSender ].zNickname);
 		else
-		mprintf(SENDER_X,(( UINT16 )( 4 + MIDDLE_Y + iCounter * MIDDLE_WIDTH ) ) ,L"None");
+		mprintf(SENDER_X,(( UINT16 )( 4 + MIDDLE_Y + iCounter * MIDDLE_WIDTH ) ) ,JA2_TEXT("None"));
 	}
 	else if ( EmailType == TYPE_EMAIL_EMAIL_EDT || EmailType == TYPE_EMAIL_BOBBY_R || EmailType == TYPE_EMAIL_BOBBY_R_EMAIL_JA2_EDT ||  EmailType == TYPE_EMAIL_INSURANCE_COMPANY_EMAIL_JA2_EDT || EmailType == TYPE_EMAIL_DEAD_MERC_AIM_SITE_EMAIL_JA2_EDT || EmailType == TYPE_EMAIL_XML )
 	{
@@ -1673,7 +1673,7 @@ static void DrawSender(INT32 iCounter, UINT8 ubSender, BOOLEAN fRead, UINT8 Emai
 		if (gMercProfiles[ ubSender ].zNickname !='\0')
 		mprintf(SENDER_X,(( UINT16 )( 4 + MIDDLE_Y + iCounter * MIDDLE_WIDTH ) ) ,gMercProfiles[ ubSender ].zNickname);
 		else
-		mprintf(SENDER_X,(( UINT16 )( 4 + MIDDLE_Y + iCounter * MIDDLE_WIDTH ) ) ,L"None");
+		mprintf(SENDER_X,(( UINT16 )( 4 + MIDDLE_Y + iCounter * MIDDLE_WIDTH ) ) ,JA2_TEXT("None"));
 	}
 
 	SetFont( MESSAGE_FONT );
@@ -1697,7 +1697,7 @@ static void DrawDate(INT32 iCounter, INT32 iDate, BOOLEAN fRead)
 		SetFont( FONT10ARIALBOLD );
 	}
 	// draw date of message being displayed in mail viewer
-	swprintf(sString, L"%s %d", pDayStrings[ 0 ], iDate/ ( 24 * 60 ) );
+	swprintf(sString, JA2_TEXT("%s %d"), pDayStrings[ 0 ], iDate/ ( 24 * 60 ) );
 	mprintf(DATE_X,(( UINT16 )( 4 + MIDDLE_Y + iCounter * MIDDLE_WIDTH ) ),sString);
 
 	SetFont( MESSAGE_FONT );
@@ -1984,7 +1984,7 @@ INT32 DisplayEmailMessage(EmailPtr pMail)
 	giCurrentIMPSlot = pMail->iCurrentIMPPosition;
 
 	// draw text for title bar
-	//swprintf(pString, L"%s / %s", pSenderNameList[pMail->ubSender],pMail->pSubject);
+	//swprintf(pString, JA2_TEXT("%s / %s"), pSenderNameList[pMail->ubSender],pMail->pSubject);
 	//DisplayWrappedString(VIEWER_X+VIEWER_HEAD_X+4, VIEWER_Y+VIEWER_HEAD_Y+4, VIEWER_HEAD_WIDTH, MESSAGE_GAP, MESSAGE_FONT, MESSAGE_COLOR, pString, 0,FALSE,0);
 
 	// increment height for size of one line
@@ -3174,7 +3174,7 @@ void DisplayEmailMessageSubjectDateFromLines( EmailPtr pMail , INT32 iViewerY)
 		if (gMercProfiles[ pMail->ubSender ].zNickname !='\0')
 		mprintf( MESSAGE_HEADER_X+MESSAGE_HEADER_WIDTH-13, MESSAGE_FROM_Y + iViewerY, gMercProfiles[ pMail->ubSender ].zNickname);
 		else
-		mprintf( MESSAGE_HEADER_X+MESSAGE_HEADER_WIDTH-13, MESSAGE_FROM_Y + iViewerY, L"None");
+		mprintf( MESSAGE_HEADER_X+MESSAGE_HEADER_WIDTH-13, MESSAGE_FROM_Y + iViewerY, JA2_TEXT("None"));
 	}		
 	else if ( pMail->EmailVersion == TYPE_EMAIL_EMAIL_EDT || pMail->EmailVersion == TYPE_EMAIL_BOBBY_R || pMail->EmailVersion == TYPE_EMAIL_BOBBY_R_EMAIL_JA2_EDT || pMail->EmailVersion == TYPE_EMAIL_INSURANCE_COMPANY_EMAIL_JA2_EDT || pMail->EmailVersion == TYPE_EMAIL_DEAD_MERC_AIM_SITE_EMAIL_JA2_EDT || pMail->EmailVersion == TYPE_EMAIL_XML)
 	{
@@ -3185,7 +3185,7 @@ void DisplayEmailMessageSubjectDateFromLines( EmailPtr pMail , INT32 iViewerY)
 		if (gMercProfiles[ pMail->ubSender ].zNickname !='\0')
 		mprintf( MESSAGE_HEADER_X+MESSAGE_HEADER_WIDTH-13, MESSAGE_FROM_Y + iViewerY, gMercProfiles[ pMail->ubSender ].zNickname);
 		else
-		mprintf( MESSAGE_HEADER_X+MESSAGE_HEADER_WIDTH-13, MESSAGE_FROM_Y + iViewerY, L"None");
+		mprintf( MESSAGE_HEADER_X+MESSAGE_HEADER_WIDTH-13, MESSAGE_FROM_Y + iViewerY, JA2_TEXT("None"));
 	}
 	
 	// print date
@@ -3193,7 +3193,7 @@ void DisplayEmailMessageSubjectDateFromLines( EmailPtr pMail , INT32 iViewerY)
 	mprintf( usX, MESSAGE_DATE_Y+ (UINT16)iViewerY , pEmailHeaders[2]);
 
 	// the actual date info
-	swprintf(sString, L"%d", ( ( pMail->iDate ) / ( 24 * 60) ) );
+	swprintf(sString, JA2_TEXT("%d"), ( ( pMail->iDate ) / ( 24 * 60) ) );
 	mprintf( MESSAGE_HEADER_X+235, MESSAGE_DATE_Y + (UINT16)iViewerY, sString);
 
 
@@ -3391,8 +3391,8 @@ BOOLEAN HandleNewUBMailSpecialMessages( UINT16 usMessageId, INT32 *iResults, Ema
 {
 	BOOLEAN fSpecialCase = FALSE;
 	
-	wstring wstrMail;
-	wstring::size_type index;
+	ja2::text::Utf16String wstrMail;
+	ja2::text::Utf16String::size_type index;
 	CHAR16 szMail[MAIL_STRING_SIZE];
 
 	if ( (pMail->EmailType == TYPE_E_INSURANCE_L3 && pMail->EmailVersion == TYPE_EMAIL_INSURANCE_COMPANY_EMAIL_JA2_EDT && usMessageId == 170) || (pMail->EmailVersion == TYPE_EMAIL_XML && pMail->iThirdData == 170) )
@@ -3440,12 +3440,12 @@ BOOLEAN HandleNewUBMailSpecialMessages( UINT16 usMessageId, INT32 *iResults, Ema
 
 					wstrMail = szMail;
 
-					index = wstrMail.find(L"$DESTINATIONNAME$");
+					index = wstrMail.find(JA2_TEXT("$DESTINATIONNAME$"));
 
 					// WANNE.MAIL: Fix
 					if (gusCurShipmentDestinationID > 0)
 					{
-						if (index != wstring::npos)
+						if (index != ja2::text::Utf16String::npos)
 						{
 							wstrMail.erase(index, strlen("$DESTINATIONNAME$"));
 							RefToDestinationStruct ds = gPostalService.GetDestination(gusCurShipmentDestinationID);
@@ -3508,8 +3508,8 @@ BOOLEAN HandleMailSpecialMessages( UINT16 usMessageId, INT32 *iResults, EmailPtr
 		case BOBBYR_SHIPMENT_ARRIVED:
 			if (!pMessageRecordList)
 			{
-				wstring wstrMail;
-				wstring::size_type index;
+				ja2::text::Utf16String wstrMail;
+				ja2::text::Utf16String::size_type index;
 				CHAR16 szMail[MAIL_STRING_SIZE];
 
 				// WANNE.MAIL: Fix
@@ -3539,12 +3539,12 @@ BOOLEAN HandleMailSpecialMessages( UINT16 usMessageId, INT32 *iResults, EmailPtr
 			LoadEncryptedDataFromFile(EMAIL_EDT_FILE_JA2, szMail, MAIL_STRING_SIZE *usMessageId, MAIL_STRING_SIZE);
 			}
 */
-					index = wstrMail.find(L"$DESTINATIONNAME$");
+					index = wstrMail.find(JA2_TEXT("$DESTINATIONNAME$"));
 
 					// WANNE.MAIL: Fix
 					if (gusCurShipmentDestinationID > 0)
 					{
-						if (index != wstring::npos)
+						if (index != ja2::text::Utf16String::npos)
 						{
 							wstrMail.erase(index, strlen("$DESTINATIONNAME$"));
 							RefToDestinationStruct ds = gPostalService.GetDestination(gusCurShipmentDestinationID);
@@ -3873,7 +3873,7 @@ void HandleIMPCharProfileResultsMessage( void)
 
 				iCurrentIMPSlot = giCurrentIMPSlot;
 
-				swprintf( zTemp, L" %s", gMercProfiles[ iCurrentIMPSlot ].zName );
+				swprintf( zTemp, JA2_TEXT(" %s"), gMercProfiles[ iCurrentIMPSlot ].zName );
 				wcscat( pString, zTemp );
 			}
 
@@ -4127,7 +4127,7 @@ void HandleIMPCharProfileResultsMessage( void)
 					break;
 			}
 
-			wcscat(pString, L". ±");
+			wcscat(pString, JA2_TEXT(". ±"));
 		}
 		
 		// add to list
@@ -5337,9 +5337,9 @@ void DisplayWhichPageOfEmailProgramIsDisplayed( void )
 
 	// page number
 	if( iLastPage < 0 )
-		swprintf( sString, L"%d / %d", 1, 1);
+		swprintf( sString, JA2_TEXT("%d / %d"), 1, 1);
 	else
-		swprintf( sString, L"%d / %d", iCurrentPage + 1, iLastPage + 1);
+		swprintf( sString, JA2_TEXT("%d / %d"), iCurrentPage + 1, iLastPage + 1);
 
 	// print it
 	mprintf( PAGE_NUMBER_X ,PAGE_NUMBER_Y, sString );
@@ -5400,7 +5400,7 @@ BOOLEAN DisplayNumberOfPagesToThisEmail( INT32 iViewerY )
  // DeleteVideoObjectFromIndex( uiMailIndent );
 
 	// parse current page and max number of pages to email
-	swprintf( sString,L"%d / %d", ( giMessagePage + 1 ), ( giNumberOfPagesToCurrentEmail - 1 ) );
+	swprintf( sString,JA2_TEXT("%d / %d"), ( giMessagePage + 1 ), ( giNumberOfPagesToCurrentEmail - 1 ) );
 
 	SetFont( FONT12ARIAL );
 	SetFontForeground( FONT_BLACK );
@@ -5572,7 +5572,7 @@ void PreProcessEmail( EmailPtr pMail )
 			
 			else if ( pMail->EmailVersion == TYPE_EMAIL_XML )
 			{
-				wcscpy(pString, L"\0");
+				wcscpy(pString, JA2_TEXT("\0"));
 				wcscat(pString, gEmails[pMail->usOffset].Messages[iCounter].c_str());
 			}
 
@@ -5585,7 +5585,7 @@ void PreProcessEmail( EmailPtr pMail )
 				// WANNE: TODO: Replace "Biff" with the name of the 1.13 merc
 				if (iCounter == 1 && pMail->EmailVersion == TYPE_EMAIL_EMAIL_EDT )
 				{
-					wcscpy(pString, L"\0");
+					wcscpy(pString, JA2_TEXT("\0"));
 					if (iNew113MERCMerc == MERC_UP_LEVEL_GASTON)
 					{
 						wcscpy( pString, New113MERCMercMailTexts[0] );						
@@ -5611,7 +5611,7 @@ void PreProcessEmail( EmailPtr pMail )
 			// WANNE: We have a new 1.13 AIM Wildfire merc
 			if (iNew113AIMMerc != 0)
 			{				
-				wcscpy(pString, L"\0");
+				wcscpy(pString, JA2_TEXT("\0"));
 
 				// Only output the mail text, not the subject, cause we already have the subject as text
 				if (iCounter == 1 && pMail->EmailVersion ==  TYPE_EMAIL_EMAIL_EDT )
@@ -5662,7 +5662,7 @@ void PreProcessEmail( EmailPtr pMail )
 			// WANNE: We have a new 1.13 AIM Wildfire merc
 			if (iNew113CustomUserMerc != 0 && pMail->EmailVersion == TYPE_EMAIL_EMAIL_EDT_NAME_MERC)
 			{	
-				wcscpy(pString, L"\0");
+				wcscpy(pString, JA2_TEXT("\0"));
 
 				// Only output the mail text, not the subject, cause we already have the subject as text
 				if (iCounter == 1)
@@ -5675,18 +5675,18 @@ void PreProcessEmail( EmailPtr pMail )
 			{
 				if ( pMail->EmailVersion == TYPE_EMAIL_AIM_AVAILABLE )
 				{
-					wcscpy(pString, L"\0");
+					wcscpy(pString, JA2_TEXT("\0"));
 					wcscpy( pString, EmailMercAvailableText[iEmailAIMMessage].szMessage);
 				}
 				else if ( pMail->EmailVersion == TYPE_EMAIL_MERC_LEVEL_UP)
 				{
-					wcscpy(pString, L"\0");
+					wcscpy(pString, JA2_TEXT("\0"));
 					wcscpy( pString, EmailMercLevelUpText[iEmailMERCMessage].szMessage);				
 				}
 				/*
 				else if ( pMail->EmailVersion == TYPE_EMAIL_BOBBY_R)
 				{
-					wcscpy(pString, L"\0");
+					wcscpy(pString, JA2_TEXT("\0"));
 					wcscpy( pString, EmailBobbyRText[0]);				
 				}
 				*/
@@ -5994,7 +5994,7 @@ BOOLEAN ReplaceBiffNameWithProperMercName( CHAR16 *pFinishedString, EmailPtr pMa
 	CHAR16		*pSubString=NULL;
 	BOOLEAN		fReplacingMercName = TRUE;
 
-	CHAR16	sMercName[ 32 ] = L"Biff";	//Doesnt need to be translated, inside Email.txt and will be replaced by the mercs name
+	CHAR16	sMercName[ 32 ] = JA2_TEXT("Biff");	//Doesnt need to be translated, inside Email.txt and will be replaced by the mercs name
 	CHAR16	sSearchString[32];
 
 	//Copy the original string over to the temp string
@@ -6067,8 +6067,8 @@ BOOLEAN ReplaceMercNameAndAmountWithProperData( CHAR16 *pFinishedString, EmailPt
 	CHAR16		*pSubString=NULL;
 	BOOLEAN		fReplacingMercName = TRUE;
 
-	CHAR16	sMercName[ 32 ] = L"$MERCNAME$";	//Doesnt need to be translated, inside Email.txt and will be replaced by the mercs name
-	CHAR16	sAmount[32] = L"$AMOUN$";		//Doesnt need to be translated, inside Email.txt and will be replaced by a dollar amount
+	CHAR16	sMercName[ 32 ] = JA2_TEXT("$MERCNAME$");	//Doesnt need to be translated, inside Email.txt and will be replaced by the mercs name
+	CHAR16	sAmount[32] = JA2_TEXT("$AMOUN$");		//Doesnt need to be translated, inside Email.txt and will be replaced by a dollar amount
 	CHAR16	sSearchString[32];
 
 	//Copy the original string over to the temp string

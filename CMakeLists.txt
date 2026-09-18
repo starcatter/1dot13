@@ -100,6 +100,7 @@ include_directories(
 
 if(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
   include(cmake/NativeSharedCore.cmake)
+  include(cmake/NativeGame.cmake)
   return()
 endif()
 

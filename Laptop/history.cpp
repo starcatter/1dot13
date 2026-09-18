@@ -907,7 +907,7 @@ void DrawHistoryRecordsText( void )
 		}
 
 		// get and write the date
-		swprintf(sString, L"%d", ( pCurHistory->uiDate / ( 24 * 60 ) ) );
+		swprintf(sString, JA2_TEXT("%d"), ( pCurHistory->uiDate / ( 24 * 60 ) ) );
 		FindFontCenterCoordinates(RECORD_DATE_X + 5, 0, RECORD_DATE_WIDTH,0, sString, HISTORY_TEXT_FONT,&usX, &usY);
 		mprintf(usX, RECORD_Y + ( iCounter * ( BOX_HEIGHT ) ) + 3, sString);
 
@@ -1006,10 +1006,10 @@ void DisplayPageNumberAndDateRange( void )
 
 	if( !pCurrentHistory )
 	{
-	swprintf( sString, L"%s %d / %d",pHistoryHeaders[1], 1, 1 );
+	swprintf( sString, JA2_TEXT("%s %d / %d"),pHistoryHeaders[1], 1, 1 );
 	mprintf( PAGE_NUMBER_X, PAGE_NUMBER_Y, sString );
 
-	swprintf( sString, L"%s %d - %d",pHistoryHeaders[2], 1 , 1 );
+	swprintf( sString, JA2_TEXT("%s %d - %d"),pHistoryHeaders[2], 1 , 1 );
 	mprintf( HISTORY_DATE_X, HISTORY_DATE_Y, sString );
 
 	// reset shadow
@@ -1053,10 +1053,10 @@ void DisplayPageNumberAndDateRange( void )
 
 	// get the last page
 
-	swprintf( sString, L"%s %d / %d",pHistoryHeaders[1], iCurrentHistoryPage , iLastPage + 1 );
+	swprintf( sString, JA2_TEXT("%s %d / %d"),pHistoryHeaders[1], iCurrentHistoryPage , iLastPage + 1 );
 	mprintf( PAGE_NUMBER_X, PAGE_NUMBER_Y, sString );
 
-	swprintf( sString, L"%s %d - %d",pHistoryHeaders[2], pCurrentHistory->uiDate / ( 24 * 60 ) , uiLastDate/( 24 * 60 ) );
+	swprintf( sString, JA2_TEXT("%s %d - %d"),pHistoryHeaders[2], pCurrentHistory->uiDate / ( 24 * 60 ) , uiLastDate/( 24 * 60 ) );
 	mprintf( HISTORY_DATE_X, HISTORY_DATE_Y, sString );
 
 
@@ -1090,8 +1090,8 @@ void ProcessHistoryTransactionString(STR16 pString, HistoryUnitPtr pHistory)
 #ifdef JA2BETAVERSION
 			else
 			{
-				//swprintf(pString, pHistoryStrings[ HISTORY_MERC_KILLED ], L"ERROR!!!	NO_PROFILE" );
-				swprintf(pString, HistoryName[ HISTORY_MERC_KILLED ].sHistory, L"ERROR!!!	NO_PROFILE" );
+				//swprintf(pString, pHistoryStrings[ HISTORY_MERC_KILLED ], JA2_TEXT("ERROR!!!	NO_PROFILE") );
+				swprintf(pString, HistoryName[ HISTORY_MERC_KILLED ].sHistory, JA2_TEXT("ERROR!!!	NO_PROFILE") );
 			}
 #endif
 			break;
@@ -1263,7 +1263,7 @@ void ProcessHistoryTransactionString(STR16 pString, HistoryUnitPtr pHistory)
 			swprintf( pString, HistoryName[ pHistory->ubCode ].sHistory, pHistory->ubSecondCode );
 			break;
 		default:
-			swprintf( pString, L"missing text, kinda" );
+			swprintf( pString, JA2_TEXT("missing text, kinda") );
 			break;
 
 	}
@@ -1809,7 +1809,7 @@ void GetQuestEndedString( UINT8 ubQuestValue, STR16 sQuestString )
 #ifdef JA2TESTVERSION
 void PerformCheckOnHistoryRecord( UINT32 uiErrorCode, INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ )
 {
-	CHAR	zString[512];
+	CHAR8	zString[512];
 
 	if( sSectorX > 16 || sSectorY > 16 || bSectorZ > 3 || sSectorX < -1 || sSectorY < -1 || bSectorZ < 0 )
 	{

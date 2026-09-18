@@ -130,7 +130,7 @@ void DeleteSchedule( UINT8 ubScheduleID )
 
 	if (!gpScheduleList)
 	{
-		//ScreenMsg( 0, MSG_BETAVERSION, L"Attempting to delete schedule that doesn't exist -- KM : 2" );
+		//ScreenMsg( 0, MSG_BETAVERSION, JA2_TEXT("Attempting to delete schedule that doesn't exist -- KM : 2") );
 		return;
 	}
 
@@ -170,7 +170,7 @@ void ProcessTacticalSchedule( UINT8 ubScheduleID )
 	if( !pSchedule )
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Schedule callback:	Schedule ID of %d not found.", ubScheduleID );
+			ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Schedule callback:	Schedule ID of %d not found."), ubScheduleID );
 		#endif
 		return;
 	}
@@ -178,13 +178,13 @@ void ProcessTacticalSchedule( UINT8 ubScheduleID )
 	if( pSchedule->ubSoldierID >= TOTAL_SOLDIERS )
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Schedule callback:	Illegal soldier ID of %d.", pSchedule->ubSoldierID );
+			ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Schedule callback:	Illegal soldier ID of %d."), pSchedule->ubSoldierID );
 		#endif
 		return;
 	}
 	if (pSchedule->ubSoldierID == 0)
 	{
-		ScreenMsg( FONT_RED, MSG_INTERFACE, L"Schedule callback:  Illegal soldier ID of %d.", pSchedule->ubSoldierID );
+		ScreenMsg( FONT_RED, MSG_INTERFACE, JA2_TEXT("Schedule callback:  Illegal soldier ID of %d."), pSchedule->ubSoldierID );
 		return;
 	}
 
@@ -199,7 +199,7 @@ void ProcessTacticalSchedule( UINT8 ubScheduleID )
 	if ( !pSoldier->bActive )
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Schedule callback:	Soldier isn't active.	Name is %s.", pSoldier->name );
+			ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Schedule callback:	Soldier isn't active.	Name is %s."), pSoldier->name );
 		#endif
 	}
 
@@ -209,7 +209,7 @@ void ProcessTacticalSchedule( UINT8 ubScheduleID )
 	if( guiCurrentScreen != GAME_SCREEN )
 	{
 		#ifdef JA2TESTVERSION
-			//ScreenMsg( FONT_RED, MSG_TESTVERSION, L"Schedule callback occurred outside of tactical -- Auto processing!" );
+			//ScreenMsg( FONT_RED, MSG_TESTVERSION, JA2_TEXT("Schedule callback occurred outside of tactical -- Auto processing!") );
 		#endif
 		fAutoProcess = TRUE;
 	}
@@ -220,7 +220,7 @@ void ProcessTacticalSchedule( UINT8 ubScheduleID )
 			if( pSchedule->usTime[ iScheduleIndex ] == GetWorldMinutesInDay() )
 			{
 				#ifdef JA2TESTVERSION
-					//ScreenMsg( FONT_RED, MSG_TESTVERSION, L"Processing schedule on time -- AI processing!" );
+					//ScreenMsg( FONT_RED, MSG_TESTVERSION, JA2_TEXT("Processing schedule on time -- AI processing!") );
 				#endif
 				break;
 			}
@@ -229,7 +229,7 @@ void ProcessTacticalSchedule( UINT8 ubScheduleID )
 		{
 			fAutoProcess = TRUE;
 			#ifdef JA2TESTVERSION
-				//ScreenMsg( FONT_RED, MSG_TESTVERSION, L"Possible timewarp causing schedule callback to occur late -- Auto processing!" );
+				//ScreenMsg( FONT_RED, MSG_TESTVERSION, JA2_TEXT("Possible timewarp causing schedule callback to occur late -- Auto processing!") );
 			#endif
 		}
 	}
@@ -732,7 +732,7 @@ void AutoProcessSchedule( SCHEDULENODE *pSchedule, INT32 index )
 
 	if (pSoldier->ubID == 0)
 	{
-		ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"Soldier %s moved to away slot by schedule ID %d!", pSoldier->name, pSchedule->ubScheduleID );
+		ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("Soldier %s moved to away slot by schedule ID %d!"), pSoldier->name, pSchedule->ubScheduleID );
 	}
 
 	#ifdef JA2EDITOR

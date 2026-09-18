@@ -2,6 +2,7 @@
 #define __EMAIL_H
 
 #include "types.h"
+#include "UtfConversion.h"
 #include "soldier profile type.h"
 
 // defines
@@ -593,7 +594,7 @@ typedef struct
 {
 	UINT8 Sender;
 	CHAR16 Subject[EMAIL_SUBJECT_LENGTH];
-	std::vector<std::wstring> Messages;
+	std::vector<ja2::text::Utf16String> Messages;
 } EMAIL_XML;
 extern std::vector<EMAIL_XML> gEmails;
 

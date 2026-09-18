@@ -1358,7 +1358,7 @@ BOOLEAN ExecuteOverhead( )
                                         if ( pStructure == NULL )
                                         {
 #ifdef JA2BETAVERSION
-                                            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Told to open struct at %d and none was found", sGridNo );
+                                            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Told to open struct at %d and none was found"), sGridNo );
 #endif
 											// Flugente: if there is no structure for us to interact with, stop
 											pSoldier->EVENT_StopMerc( pSoldier->sGridNo, pSoldier->ubDirection );
@@ -1676,7 +1676,7 @@ BOOLEAN ExecuteOverhead( )
                                     if ( pSoldier->pathing.usPathDataSize != MAX_PATH_LIST_SIZE )
                                     {
 #ifdef JA2BETAVERSION
-                                        ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Path for %s ( %d ) did not make merc get to dest (%d spaces away).",
+                                        ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Path for %s ( %d ) did not make merc get to dest (%d spaces away)."),
                                                 pSoldier->GetName(), pSoldier->ubID, PythSpacesAway( pSoldier->pathing.sFinalDestination, pSoldier->sGridNo) );
 #endif
                                     }
@@ -1900,7 +1900,7 @@ BOOLEAN ExecuteOverhead( )
         {
             // OK, set num waiting to 0
 #ifdef JA2BETAVERSION
-            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_DEBUG, L"Waiting too long for Mercs to exit...forcing entry." );
+            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_DEBUG, JA2_TEXT("Waiting too long for Mercs to exit...forcing entry.") );
 #endif
 			gusNumMercsUntilWaitingOver = 0;
 
@@ -2155,7 +2155,7 @@ BOOLEAN HandleGotoNewGridNo( SOLDIERTYPE *pSoldier, BOOLEAN *pfKeepMoving, BOOLE
         else
         {
 #ifdef JA2TESTVERSION
-            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"ERROR: Invalid Direction to approach door. (Soldier loc: %d, dir: %d).", pSoldier->sGridNo, bDirection );
+            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("ERROR: Invalid Direction to approach door. (Soldier loc: %d, dir: %d)."), pSoldier->sGridNo, bDirection );
 #endif
             DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("HandleGotoNewGridNo() Failed: Open door - invalid approach direction") );
 
@@ -2171,7 +2171,7 @@ BOOLEAN HandleGotoNewGridNo( SOLDIERTYPE *pSoldier, BOOLEAN *pfKeepMoving, BOOLE
         if ( pStructure == NULL )
         {
 #ifdef JA2TESTVERSION
-            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"ERROR: Told to open door that does not exist at %d.", sDoorGridNo );
+            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("ERROR: Told to open door that does not exist at %d."), sDoorGridNo );
 #endif
             DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("HandleGotoNewGridNo() Failed: Door does not exist") );
             HaltGuyFromNewGridNoBecauseOfNoAPs( pSoldier );
@@ -2365,7 +2365,7 @@ BOOLEAN HandleGotoNewGridNo( SOLDIERTYPE *pSoldier, BOOLEAN *pfKeepMoving, BOOLE
                         }
                     }
 
-                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Overhead pExplosive: %d", pExplosive->ubType );
+                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Overhead pExplosive: %d"), pExplosive->ubType );
                     if ( gpWorldLevelData[ pSoldier->sGridNo ].ubExtFlags[pSoldier->pathing.bLevel] & MAPELEMENT_EXT_TEARGAS )
                     {
 						if ( !fWearsGasMask ) //&& !(pSoldier->flags.fHitByGasFlags & HIT_BY_TEARGAS) )
@@ -2374,7 +2374,7 @@ BOOLEAN HandleGotoNewGridNo( SOLDIERTYPE *pSoldier, BOOLEAN *pfKeepMoving, BOOLE
                         }
                     }
 
-                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Overhead pExplosive: %d", pExplosive->ubType );
+                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Overhead pExplosive: %d"), pExplosive->ubType );
                     if ( gpWorldLevelData[ pSoldier->sGridNo ].ubExtFlags[pSoldier->pathing.bLevel] & MAPELEMENT_EXT_MUSTARDGAS )
                     {
 						if ( !fWearsGasMask ) //&& !(pSoldier->flags.fHitByGasFlags & HIT_BY_MUSTARDGAS) )
@@ -2383,7 +2383,7 @@ BOOLEAN HandleGotoNewGridNo( SOLDIERTYPE *pSoldier, BOOLEAN *pfKeepMoving, BOOLE
                         }
                     }
 
-                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Overhead pExplosive: %d", pExplosive->ubType );
+                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Overhead pExplosive: %d"), pExplosive->ubType );
                     if ( gpWorldLevelData[ pSoldier->sGridNo ].ubExtFlags[pSoldier->pathing.bLevel] & MAPELEMENT_EXT_CREATUREGAS )
                     {
                         //if ( !(pSoldier->flags.fHitByGasFlags & HIT_BY_CREATUREGAS) ) // gas mask doesn't help vs creaturegas
@@ -2392,7 +2392,7 @@ BOOLEAN HandleGotoNewGridNo( SOLDIERTYPE *pSoldier, BOOLEAN *pfKeepMoving, BOOLE
                         }
                     }
 
-                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Overhead pExplosive: %d", pExplosive->ubType );
+                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Overhead pExplosive: %d"), pExplosive->ubType );
                     if ( gpWorldLevelData[ pSoldier->sGridNo ].ubExtFlags[pSoldier->pathing.bLevel] & MAPELEMENT_EXT_BURNABLEGAS )
                     {
                         //if ( !(pSoldier->flags.fHitByGasFlags & HIT_BY_BURNABLEGAS) )	// gas mask doesn't help vs fire damage
@@ -2416,8 +2416,8 @@ BOOLEAN HandleGotoNewGridNo( SOLDIERTYPE *pSoldier, BOOLEAN *pfKeepMoving, BOOLE
 						}
 					}
 
-                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Overhead pSoldier->flags.fHitByGasFlags: %d", pSoldier->flags.fHitByGasFlags );
-                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Overhead pExplosive: %d", pExplosive->ubType );
+                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Overhead pSoldier->flags.fHitByGasFlags: %d"), pSoldier->flags.fHitByGasFlags );
+                    //ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Overhead pExplosive: %d"), pExplosive->ubType );
 
 					// silversurfer: Why this? Smoke on a tile makes us immune to other damage types? I don't think so...
                     //if ( !(gpWorldLevelData[ pSoldier->sGridNo ].ubExtFlags[pSoldier->pathing.bLevel] & MAPELEMENT_EXT_SMOKE ))
@@ -6443,7 +6443,7 @@ void EnterCombatMode( UINT8 ubStartingTeam )
     if ( NumCapableEnemyInSector( ) == 0 )
     {
         DebugMsg( TOPIC_JA2, DBG_LEVEL_3, "Can't enter combat when no capable enemies" );
-        //ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Trying to init combat when no enemies around!." );
+        //ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Trying to init combat when no enemies around!.") );
         return;
     }
 
@@ -6492,7 +6492,7 @@ void EnterCombatMode( UINT8 ubStartingTeam )
         }
         else
         {
-            //ScreenMsg( FONT_YELLOW, MSG_CHAT, L"client skipped EnterCombatMode"); 
+            //ScreenMsg( FONT_YELLOW, MSG_CHAT, JA2_TEXT("client skipped EnterCombatMode")); 
             if(is_client)startCombat(ubStartingTeam);//clients other than server meet and send request for combat for server
         }
     }
@@ -8910,7 +8910,7 @@ static void HandleSuppressionFire( SoldierID ubTargetedMerc, SoldierID ubCausedA
 
 						extern void SpecialDialogue( SOLDIERTYPE* pSoldier, STR8 azSoundString, STR16 azTextString );
 
-						SpecialDialogue( pSoldier, "Speech\\Special\\buns_ptsd_activation.MP3", L"Mustn't... get... angry... HOW COULD YOU LET THAT HAPPEN TO ME???" );
+						SpecialDialogue( pSoldier, "Speech\\Special\\buns_ptsd_activation.MP3", JA2_TEXT("Mustn't... get... angry... HOW COULD YOU LET THAT HAPPEN TO ME???") );
 					}
                 }
             }
@@ -9362,7 +9362,7 @@ BOOLEAN ProcessImplicationsOfPCAttack( SOLDIERTYPE * pSoldier, SOLDIERTYPE ** pp
 #ifdef JA2TESTVERSION
             if (pTarget->flags.uiStatusFlags & SOLDIER_PC)
             {
-                ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"%s is changing teams", pTarget->GetName() );
+                ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("%s is changing teams"), pTarget->GetName() );
             }
 #endif
             // member of a civ group, either recruited or neutral, so should
@@ -9497,7 +9497,7 @@ static SOLDIERTYPE *InternalReduceAttackBusyCount( )
         {
             DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String("!!!!!!! &&&&&&& Problem with attacker busy count decrementing past 0.... preventing wrap-around." ) );
 #ifdef JA2BETAVERSION
-            if(!is_networked)ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Attack busy problem. Save, exit and send debug.txt + save file to Sir-Tech." );
+            if(!is_networked)ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Attack busy problem. Save, exit and send debug.txt + save file to Sir-Tech.") );
             DebugAttackBusy( "Attack Busy Problem\n");
             //cheap hack to suppress message in MP - hayden.
 #endif
@@ -10063,7 +10063,7 @@ void RemoveManFromTeam( INT8 bTeam )
         else if (gTacticalStatus.Team[ bTeam ].bMenInSector < 0)
         {
 #ifdef JA2BETAVERSION
-            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Number of people on team %d dropped to %d", bTeam, gTacticalStatus.Team[ bTeam ].bMenInSector );
+            ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Number of people on team %d dropped to %d"), bTeam, gTacticalStatus.Team[ bTeam ].bMenInSector );
 #endif
             // reset!
             gTacticalStatus.Team[ bTeam ].bMenInSector = 0;
@@ -11368,7 +11368,7 @@ void TeamDropAll(UINT8 bTeam, BOOLEAN fForce)
         return;
 	
 #ifdef JA2BETAVERSION
-    ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Team %d drops all items for inspection!", bTeam );
+    ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Team %d drops all items for inspection!"), bTeam );
 #endif
 
 	SOLDIERTYPE *pSoldier;
@@ -11399,7 +11399,7 @@ void TeamRestock(UINT8 bTeam)
         return;
 	    
 #ifdef JA2BETAVERSION
-    ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Team %d restocks gear from sector inventory!", bTeam );
+    ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Team %d restocks gear from sector inventory!"), bTeam );
 #endif
 
 	SOLDIERTYPE *pSoldier;
@@ -11858,7 +11858,7 @@ void DeleteVIP( INT16 sMapX, INT16 sMapY )
 {
 	if ( StrategicMap[SECTOR( sMapX, sMapY )].usFlags & ENEMY_VIP_PRESENT_KNOWN )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"An important enemy VIP has been removed!" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("An important enemy VIP has been removed!") );
 	}
 
 	// if no other VIPs are here, delete flags
@@ -11877,7 +11877,7 @@ void VIPFleesToMeduna()
 	{
 		if ( StrategicMap[SECTOR( gWorldSectorX, gWorldSectorY )].usFlags & ENEMY_VIP_PRESENT_KNOWN )
 		{
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"An enemy VIP has evaded your forces. You have no clue about his whereabouts" );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("An enemy VIP has evaded your forces. You have no clue about his whereabouts") );
 		}
 
 		// if no other VIPs are here, delete flags

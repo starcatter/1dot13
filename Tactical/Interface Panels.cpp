@@ -2212,7 +2212,7 @@ BOOLEAN CreateSMPanelButtons( )
 	SetButtonFastHelpText( iSMPanelButtons[ SM_MAP_SCREEN_BUTTON ], TacticalStr[ MAPSCREEN_POPUPTEXT ]);
 	SetBtnHelpEndCallback( iSMPanelButtons[ SM_MAP_SCREEN_BUTTON ], HelpTextDoneCallback );
 
-	iSMPanelButtons[ SM_DONE_BUTTON ] = CreateIconAndTextButton( iSMPanelImages[ DONE_IMAGES ], L"", FONT12ARIAL,
+	iSMPanelButtons[ SM_DONE_BUTTON ] = CreateIconAndTextButton( iSMPanelImages[ DONE_IMAGES ], JA2_TEXT(""), FONT12ARIAL,
 													FONT_MCOLOR_WHITE, DEFAULT_SHADOW ,
 													FONT_MCOLOR_WHITE, DEFAULT_SHADOW ,
 													TEXT_CJUSTIFIED,
@@ -2248,7 +2248,7 @@ BOOLEAN CreateSMPanelButtons( )
 	SetButtonFastHelpText( iSMPanelButtons[ STANCEUP_BUTTON ], TacticalStr[ CHANGE_STANCE_UP_POPUPTEXT ] );
 	SetBtnHelpEndCallback( iSMPanelButtons[ STANCEUP_BUTTON ], HelpTextDoneCallback );
 
-	//SetButtonFastHelpText( iSMPanelButtons[ STANCEUP_BUTTON ],L"Change Stance Up");
+	//SetButtonFastHelpText( iSMPanelButtons[ STANCEUP_BUTTON ],JA2_TEXT("Change Stance Up"));
 
 
 	iSMPanelButtons[ UPDOWN_BUTTON ] = QuickCreateButton( iSMPanelImages[ UPDOWN_IMAGES ], SM_UPDOWNB_X, SM_UPDOWNB_Y,
@@ -2259,7 +2259,7 @@ BOOLEAN CreateSMPanelButtons( )
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, "Cannot create Interface button" );
 		return( FALSE );
 	}
-	//SetButtonFastHelpText( iSMPanelButtons[ UPDOWN_BUTTON ],L"Whatever");
+	//SetButtonFastHelpText( iSMPanelButtons[ UPDOWN_BUTTON ],JA2_TEXT("Whatever"));
 	SetButtonFastHelpText( iSMPanelButtons[ UPDOWN_BUTTON ], TacticalStr[ CURSOR_LEVEL_POPUPTEXT ] );
 	SetBtnHelpEndCallback( iSMPanelButtons[ UPDOWN_BUTTON ], HelpTextDoneCallback );
 
@@ -2272,7 +2272,7 @@ BOOLEAN CreateSMPanelButtons( )
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, "Cannot create Interface button" );
 		return( FALSE );
 	}
-	//SetButtonFastHelpText( iSMPanelButtons[ CLIMB_BUTTON ],L"Climb");
+	//SetButtonFastHelpText( iSMPanelButtons[ CLIMB_BUTTON ],JA2_TEXT("Climb"));
 	SetButtonFastHelpText( iSMPanelButtons[ CLIMB_BUTTON ], TacticalStr[ JUMPCLIMB_POPUPTEXT ] );
 	SetBtnHelpEndCallback( iSMPanelButtons[ CLIMB_BUTTON ], HelpTextDoneCallback );
 
@@ -2285,7 +2285,7 @@ BOOLEAN CreateSMPanelButtons( )
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, "Cannot create Interface button" );
 		return( FALSE );
 	}
-	//SetButtonFastHelpText( iSMPanelButtons[ STANCEDOWN_BUTTON ],L"Change Stance Down");
+	//SetButtonFastHelpText( iSMPanelButtons[ STANCEDOWN_BUTTON ],JA2_TEXT("Change Stance Down"));
 	SetButtonFastHelpText( iSMPanelButtons[ STANCEDOWN_BUTTON ], TacticalStr[ CHANGE_STANCE_DOWN_POPUPTEXT ] );
 	SetBtnHelpEndCallback( iSMPanelButtons[ STANCEDOWN_BUTTON ], HelpTextDoneCallback );
 
@@ -2298,7 +2298,7 @@ BOOLEAN CreateSMPanelButtons( )
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, "Cannot create Interface button" );
 		return( FALSE );
 	}
-	//SetButtonFastHelpText( iSMPanelButtons[ HANDCURSOR_BUTTON ],L"Change Stance Down");
+	//SetButtonFastHelpText( iSMPanelButtons[ HANDCURSOR_BUTTON ],JA2_TEXT("Change Stance Down"));
 	SetButtonFastHelpText( iSMPanelButtons[ HANDCURSOR_BUTTON ], TacticalStr[ EXAMINE_CURSOR_POPUPTEXT ] );
 	SetBtnHelpEndCallback( iSMPanelButtons[ HANDCURSOR_BUTTON ], HelpTextDoneCallback );
 
@@ -2311,7 +2311,7 @@ BOOLEAN CreateSMPanelButtons( )
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, "Cannot create Interface button" );
 		return( FALSE );
 	}
-	//SetButtonFastHelpText( iSMPanelButtons[ PREVMERC_BUTTON ],L"Change Stance Down");
+	//SetButtonFastHelpText( iSMPanelButtons[ PREVMERC_BUTTON ],JA2_TEXT("Change Stance Down"));
 	SetButtonFastHelpText( iSMPanelButtons[ PREVMERC_BUTTON ], TacticalStr[ PREV_MERC_POPUPTEXT ] );
 	SetBtnHelpEndCallback( iSMPanelButtons[ PREVMERC_BUTTON ], HelpTextDoneCallback );
 
@@ -2325,7 +2325,7 @@ BOOLEAN CreateSMPanelButtons( )
 		return( FALSE );
 	}
 	SetButtonFastHelpText( iSMPanelButtons[ NEXTMERC_BUTTON ], TacticalStr[ NEXT_MERC_POPUPTEXT ] );
-	//SetButtonFastHelpText( iSMPanelButtons[ NEXTMERC_BUTTON ],L"Change Stance Down");
+	//SetButtonFastHelpText( iSMPanelButtons[ NEXTMERC_BUTTON ],JA2_TEXT("Change Stance Down"));
 	SetBtnHelpEndCallback( iSMPanelButtons[ NEXTMERC_BUTTON ], HelpTextDoneCallback );
 
 
@@ -2337,7 +2337,7 @@ BOOLEAN CreateSMPanelButtons( )
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, "Cannot create Interface button" );
 		return( FALSE );
 	}
-	//SetButtonFastHelpText( iSMPanelButtons[ OPTIONS_BUTTON ],L"Change Stance Down");
+	//SetButtonFastHelpText( iSMPanelButtons[ OPTIONS_BUTTON ],JA2_TEXT("Change Stance Down"));
 	SetButtonFastHelpText( iSMPanelButtons[ OPTIONS_BUTTON ], TacticalStr[ CHANGE_OPTIONS_POPUPTEXT ] );
 	SetBtnHelpEndCallback( iSMPanelButtons[ OPTIONS_BUTTON ], HelpTextDoneCallback );
 
@@ -2353,7 +2353,7 @@ BOOLEAN CreateSMPanelButtons( )
 		return( FALSE );
 	}
 	SetButtonFastHelpText( iSMPanelButtons[ BURSTMODE_BUTTON ], TacticalStr[ TOGGLE_BURSTMODE_POPUPTEXT ] );
-	//SetButtonFastHelpText( iSMPanelButtons[ BURSTMODE_BUTTON ],L"Change Stance Down");
+	//SetButtonFastHelpText( iSMPanelButtons[ BURSTMODE_BUTTON ],JA2_TEXT("Change Stance Down"));
 	SetBtnHelpEndCallback( iSMPanelButtons[ BURSTMODE_BUTTON ], HelpTextDoneCallback );
 
 	iSMPanelButtons[ LOOK_BUTTON ] = QuickCreateButton( iSMPanelImages[ LOOK_IMAGES ], SM_LOOKB_X, SM_LOOKB_Y,
@@ -2364,7 +2364,7 @@ BOOLEAN CreateSMPanelButtons( )
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, "Cannot create Interface button" );
 		return( FALSE );
 	}
-	//SetButtonFastHelpText( iSMPanelButtons[ LOOK_BUTTON ],L"Change Stance Down");
+	//SetButtonFastHelpText( iSMPanelButtons[ LOOK_BUTTON ],JA2_TEXT("Change Stance Down"));
 	SetButtonFastHelpText( iSMPanelButtons[ LOOK_BUTTON ], TacticalStr[ LOOK_CURSOR_POPUPTEXT ] );
 	SetBtnHelpEndCallback( iSMPanelButtons[ LOOK_BUTTON ], HelpTextDoneCallback );
 
@@ -2743,7 +2743,7 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 			if( g_lang == i18n::Lang::zh ) {
 				mprintf( SM_ARMOR_PERCENT_X, SM_ARMOR_PERCENT_Y, ChineseSpecString1 );
 			} else {
-				mprintf( SM_ARMOR_PERCENT_X, SM_ARMOR_PERCENT_Y, L"%%" );
+				mprintf( SM_ARMOR_PERCENT_X, SM_ARMOR_PERCENT_Y, JA2_TEXT("%%") );
 			}
 
 			mprintf( SM_WEIGHT_LABEL_X - StringPixLength( pInvPanelTitleStrings[1], BLOCKFONT2 ), SM_WEIGHT_LABEL_Y, pInvPanelTitleStrings[ 1 ] );
@@ -2751,7 +2751,7 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 			if( g_lang == i18n::Lang::zh ) {
 				mprintf( SM_WEIGHT_PERCENT_X, SM_WEIGHT_PERCENT_Y, ChineseSpecString1 );
 			} else {
-				mprintf( SM_WEIGHT_PERCENT_X, SM_WEIGHT_PERCENT_Y, L"%%" );
+				mprintf( SM_WEIGHT_PERCENT_X, SM_WEIGHT_PERCENT_Y, JA2_TEXT("%%") );
 			}
 			
 			mprintf( SM_CAMMO_LABEL_X - StringPixLength( pInvPanelTitleStrings[2], BLOCKFONT2 ), SM_CAMMO_LABEL_Y, pInvPanelTitleStrings[ 2 ] );
@@ -2759,66 +2759,66 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 			if( g_lang == i18n::Lang::zh ) {
 				mprintf( SM_CAMMO_PERCENT_X, SM_CAMMO_PERCENT_Y, ChineseSpecString1 );
 			} else {
-				mprintf( SM_CAMMO_PERCENT_X, SM_CAMMO_PERCENT_Y, L"%%" );
+				mprintf( SM_CAMMO_PERCENT_X, SM_CAMMO_PERCENT_Y, JA2_TEXT("%%") );
 			}
 
 				UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeAgilityTime, (BOOLEAN)(gpSMCurrentMerc->usValueGoneUp & AGIL_INCREASE ? TRUE : FALSE), (BOOLEAN)((gGameOptions.fNewTraitSystem && (gpSMCurrentMerc->ubCriticalStatDamage[DAMAGED_STAT_AGILITY] > 0)) ? TRUE : FALSE), gpSMCurrentMerc->bExtraAgility != 0 ); // SANDRO
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bAgility + gpSMCurrentMerc->bExtraAgility );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bAgility + gpSMCurrentMerc->bExtraAgility );
 			FindFontRightCoordinates(SM_AGI_X, SM_AGI_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeDexterityTime, (BOOLEAN)(gpSMCurrentMerc->usValueGoneUp & DEX_INCREASE ? TRUE : FALSE), (BOOLEAN)((gGameOptions.fNewTraitSystem && (gpSMCurrentMerc->ubCriticalStatDamage[DAMAGED_STAT_DEXTERITY] > 0)) ? TRUE : FALSE), gpSMCurrentMerc->bExtraDexterity != 0 ); // SANDRO
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bDexterity + gpSMCurrentMerc->bExtraDexterity );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bDexterity + gpSMCurrentMerc->bExtraDexterity );
 			FindFontRightCoordinates(SM_DEX_X, SM_DEX_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeStrengthTime, (BOOLEAN)(gpSMCurrentMerc->usValueGoneUp & STRENGTH_INCREASE ? TRUE : FALSE), (BOOLEAN)(((gGameOptions.fNewTraitSystem && (gpSMCurrentMerc->ubCriticalStatDamage[DAMAGED_STAT_STRENGTH] > 0)) || ( UsingFoodSystem() && gpSMCurrentMerc->usStarveDamageStrength > 0)) ? TRUE : FALSE), gpSMCurrentMerc->bExtraStrength != 0 ); // SANDRO
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bStrength + gpSMCurrentMerc->bExtraStrength );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bStrength + gpSMCurrentMerc->bExtraStrength );
 			FindFontRightCoordinates(SM_STR_X, SM_STR_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeLeadershipTime, ( BOOLEAN )( gpSMCurrentMerc->usValueGoneUp & LDR_INCREASE? TRUE: FALSE ), ( BOOLEAN ) ( ( gGameOptions.fNewTraitSystem && ( gpSMCurrentMerc->ubCriticalStatDamage[DAMAGED_STAT_LEADERSHIP] > 0 )) ? TRUE : FALSE), FALSE); // SANDRO
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bLeadership );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bLeadership );
 			FindFontRightCoordinates(SM_CHAR_X, SM_CHAR_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeWisdomTime, (BOOLEAN)(gpSMCurrentMerc->usValueGoneUp & WIS_INCREASE ? TRUE : FALSE), (BOOLEAN)((gGameOptions.fNewTraitSystem && (gpSMCurrentMerc->ubCriticalStatDamage[DAMAGED_STAT_WISDOM] > 0)) ? TRUE : FALSE), gpSMCurrentMerc->bExtraWisdom != 0 ); // SANDRO
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bWisdom + gpSMCurrentMerc->bExtraWisdom );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bWisdom + gpSMCurrentMerc->bExtraWisdom );
 			FindFontRightCoordinates(SM_WIS_X, SM_WIS_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeLevelTime, ( BOOLEAN ) ( gpSMCurrentMerc->usValueGoneUp & LVL_INCREASE? TRUE: FALSE ),  FALSE , FALSE);
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bExpLevel + gpSMCurrentMerc->bExtraExpLevel );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bExpLevel + gpSMCurrentMerc->bExtraExpLevel );
 			FindFontRightCoordinates(SM_EXPLVL_X, SM_EXPLVL_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeMarksmanshipTime, ( BOOLEAN ) ( gpSMCurrentMerc->usValueGoneUp & MRK_INCREASE? TRUE: FALSE ), ( BOOLEAN ) ( ( gGameOptions.fNewTraitSystem && ( gpSMCurrentMerc->ubCriticalStatDamage[DAMAGED_STAT_MARKSMANSHIP] > 0 )) ? TRUE : FALSE), FALSE); // SANDRO
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bMarksmanship );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bMarksmanship );
 			FindFontRightCoordinates(SM_MRKM_X, SM_MRKM_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeMechanicalTime, ( BOOLEAN ) ( gpSMCurrentMerc->usValueGoneUp & MECH_INCREASE ? TRUE: FALSE ), ( BOOLEAN ) ( ( gGameOptions.fNewTraitSystem && ( gpSMCurrentMerc->ubCriticalStatDamage[DAMAGED_STAT_MECHANICAL] > 0 )) ? TRUE : FALSE), FALSE); // SANDRO
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bMechanical );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bMechanical );
 			FindFontRightCoordinates(SM_MECH_X, SM_MECH_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeExplosivesTime, ( BOOLEAN ) ( gpSMCurrentMerc->usValueGoneUp & EXP_INCREASE? TRUE: FALSE ), ( BOOLEAN ) ( ( gGameOptions.fNewTraitSystem && ( gpSMCurrentMerc->ubCriticalStatDamage[DAMAGED_STAT_EXPLOSIVES] > 0 )) ? TRUE : FALSE), FALSE); // SANDRO
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bExplosive );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bExplosive );
 			FindFontRightCoordinates(SM_EXPL_X, SM_EXPL_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			UpdateStatColor( gpSMCurrentMerc->timeChanges.uiChangeMedicalTime, ( BOOLEAN ) ( gpSMCurrentMerc->usValueGoneUp & MED_INCREASE? TRUE: FALSE ), ( BOOLEAN ) ( ( gGameOptions.fNewTraitSystem && ( gpSMCurrentMerc->ubCriticalStatDamage[DAMAGED_STAT_MEDICAL] > 0 )) ? TRUE : FALSE), FALSE); // SANDRO
 
-			swprintf( sString, L"%2d", gpSMCurrentMerc->stats.bMedical );
+			swprintf( sString, JA2_TEXT("%2d"), gpSMCurrentMerc->stats.bMedical );
 			FindFontRightCoordinates(SM_MED_X, SM_MED_Y ,SM_STATS_WIDTH ,SM_STATS_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
@@ -2834,19 +2834,19 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 			}
 
 			// Display armour value!
-			swprintf( sString, L"%3d", ArmourPercent( gpSMCurrentMerc ) );
+			swprintf( sString, JA2_TEXT("%3d"), ArmourPercent( gpSMCurrentMerc ) );
 			FindFontRightCoordinates(SM_ARMOR_X, SM_ARMOR_Y ,SM_PERCENT_WIDTH ,SM_PERCENT_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			// Display wieght value!
-			swprintf( sString, L"%3d", CalculateCarriedWeight( gpSMCurrentMerc ) );
+			swprintf( sString, JA2_TEXT("%3d"), CalculateCarriedWeight( gpSMCurrentMerc ) );
 			FindFontRightCoordinates(SM_WEIGHT_X, SM_WEIGHT_Y ,SM_PERCENT_WIDTH ,SM_PERCENT_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 
 			ApplyEquipmentBonuses(gpSMCurrentMerc);
 
 			// Display cammo value!
-			swprintf( sString, L"%3d", max(0, min(max((gpSMCurrentMerc->bCamo + gpSMCurrentMerc->wornCamo), max((gpSMCurrentMerc->urbanCamo+gpSMCurrentMerc->wornUrbanCamo), max((gpSMCurrentMerc->desertCamo+gpSMCurrentMerc->wornDesertCamo), (gpSMCurrentMerc->snowCamo+gpSMCurrentMerc->wornSnowCamo)))),100)) );
+			swprintf( sString, JA2_TEXT("%3d"), max(0, min(max((gpSMCurrentMerc->bCamo + gpSMCurrentMerc->wornCamo), max((gpSMCurrentMerc->urbanCamo+gpSMCurrentMerc->wornUrbanCamo), max((gpSMCurrentMerc->desertCamo+gpSMCurrentMerc->wornDesertCamo), (gpSMCurrentMerc->snowCamo+gpSMCurrentMerc->wornSnowCamo)))),100)) );
 			FindFontRightCoordinates(SM_CAMMO_X, SM_CAMMO_Y ,SM_PERCENT_WIDTH ,SM_PERCENT_HEIGHT ,sString, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY , sString );
 			
@@ -2873,8 +2873,8 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 		}
 
 		RestoreExternBackgroundRect( SM_SELMERCNAME_X, SM_SELMERCNAME_Y, SM_SELMERCNAME_WIDTH, SM_SELMERCNAME_HEIGHT );
-		VarFindFontCenterCoordinates( SM_SELMERCNAME_X, SM_SELMERCNAME_Y, SM_SELMERCNAME_WIDTH, SM_SELMERCNAME_HEIGHT, SMALLFONT1, &sFontX, &sFontY, L"%s", gpSMCurrentMerc->name );
-		mprintf( sFontX + 5, sFontY, L"%s", gpSMCurrentMerc->name );
+		VarFindFontCenterCoordinates( SM_SELMERCNAME_X, SM_SELMERCNAME_Y, SM_SELMERCNAME_WIDTH, SM_SELMERCNAME_HEIGHT, SMALLFONT1, &sFontX, &sFontY, JA2_TEXT("%s"), gpSMCurrentMerc->name );
+		mprintf( sFontX + 5, sFontY, JA2_TEXT("%s"), gpSMCurrentMerc->name );
 
 	}
 
@@ -2884,31 +2884,31 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 		// SANDRO - added a tooltip window showing exact camo percentage for every type
 		// *******************************************************************
 		CHAR16 pStrCamo[400];
-		swprintf( pStrCamo, L"" );
-		swprintf( pStr, L"");
+		swprintf( pStrCamo, JA2_TEXT("") );
+		swprintf( pStr, JA2_TEXT(""));
 		if ((gpSMCurrentMerc->bCamo + gpSMCurrentMerc->wornCamo) > 0 )
 		{
-			swprintf( pStrCamo, L"\n%d/%d%s %s", gpSMCurrentMerc->bCamo, gpSMCurrentMerc->wornCamo, L"%", gzMiscItemStatsFasthelp[ 21 ]);
+			swprintf( pStrCamo, JA2_TEXT("\n%d/%d%s %s"), gpSMCurrentMerc->bCamo, gpSMCurrentMerc->wornCamo, JA2_TEXT("%"), gzMiscItemStatsFasthelp[ 21 ]);
 			wcscat( pStr, pStrCamo);
-			swprintf( pStrCamo, L"" );
+			swprintf( pStrCamo, JA2_TEXT("") );
 		}
 		if ((gpSMCurrentMerc->urbanCamo + gpSMCurrentMerc->wornUrbanCamo) > 0 )
 		{
-			swprintf( pStrCamo, L"\n%d/%d%s %s", gpSMCurrentMerc->urbanCamo, gpSMCurrentMerc->wornUrbanCamo, L"%", gzMiscItemStatsFasthelp[ 22 ]);
+			swprintf( pStrCamo, JA2_TEXT("\n%d/%d%s %s"), gpSMCurrentMerc->urbanCamo, gpSMCurrentMerc->wornUrbanCamo, JA2_TEXT("%"), gzMiscItemStatsFasthelp[ 22 ]);
 			wcscat( pStr, pStrCamo);
-			swprintf( pStrCamo, L"" );
+			swprintf( pStrCamo, JA2_TEXT("") );
 		}
 		if ((gpSMCurrentMerc->desertCamo + gpSMCurrentMerc->wornDesertCamo) > 0 )
 		{
-			swprintf( pStrCamo, L"\n%d/%d%s %s", gpSMCurrentMerc->desertCamo, gpSMCurrentMerc->wornDesertCamo, L"%", gzMiscItemStatsFasthelp[ 23 ]);
+			swprintf( pStrCamo, JA2_TEXT("\n%d/%d%s %s"), gpSMCurrentMerc->desertCamo, gpSMCurrentMerc->wornDesertCamo, JA2_TEXT("%"), gzMiscItemStatsFasthelp[ 23 ]);
 			wcscat( pStr, pStrCamo);
-			swprintf( pStrCamo, L"" );
+			swprintf( pStrCamo, JA2_TEXT("") );
 		}
 		if ((gpSMCurrentMerc->snowCamo + gpSMCurrentMerc->wornSnowCamo) > 0 )
 		{
-			swprintf( pStrCamo, L"\n%d/%d%s %s", gpSMCurrentMerc->snowCamo, gpSMCurrentMerc->wornSnowCamo, L"%", gzMiscItemStatsFasthelp[ 24 ] );
+			swprintf( pStrCamo, JA2_TEXT("\n%d/%d%s %s"), gpSMCurrentMerc->snowCamo, gpSMCurrentMerc->wornSnowCamo, JA2_TEXT("%"), gzMiscItemStatsFasthelp[ 24 ] );
 			wcscat( pStr, pStrCamo);
-			swprintf( pStrCamo, L"" );
+			swprintf( pStrCamo, JA2_TEXT("") );
 		}
 		
 		// anv: display stealth together with camo
@@ -2933,16 +2933,16 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 			CHAR16 pStrBonusStealth[400];
 			CHAR16 pStrWornStealth[400];
 			if( bonusstealth < 0 )
-				swprintf( pStrBonusStealth, L"%d", bonusstealth );
+				swprintf( pStrBonusStealth, JA2_TEXT("%d"), bonusstealth );
 			else
-				swprintf( pStrBonusStealth, L"+%d", bonusstealth );
+				swprintf( pStrBonusStealth, JA2_TEXT("+%d"), bonusstealth );
 			if( wornstealth < 0 )
-				swprintf( pStrWornStealth, L"%d", wornstealth );
+				swprintf( pStrWornStealth, JA2_TEXT("%d"), wornstealth );
 			else
-				swprintf( pStrWornStealth, L"+%d", wornstealth );
-			swprintf( pStrCamo, L"\n%s/%s %s", pStrBonusStealth, pStrWornStealth, gzMiscItemStatsFasthelp[ 25 ] );
+				swprintf( pStrWornStealth, JA2_TEXT("+%d"), wornstealth );
+			swprintf( pStrCamo, JA2_TEXT("\n%s/%s %s"), pStrBonusStealth, pStrWornStealth, gzMiscItemStatsFasthelp[ 25 ] );
 			wcscat( pStr, pStrCamo);
-			swprintf( pStrCamo, L"" );
+			swprintf( pStrCamo, JA2_TEXT("") );
 		}
 
 		SetRegionFastHelpText( &(gSM_SELMERCCamoRegion), pStr );
@@ -2975,7 +2975,7 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 			// Flugente: food info if food system is active
 			if ( UsingFoodSystem() && gpSMCurrentMerc->ubProfile != ROBOT && !IsVehicle(gpSMCurrentMerc) )
 			{
-				swprintf( pStr, TacticalStr[ MERC_VITAL_STATS_WITH_FOOD_POPUPTEXT ], gpSMCurrentMerc->stats.bLife, gpSMCurrentMerc->stats.bLifeMax, gpSMCurrentMerc->bBreath, gpSMCurrentMerc->bBreathMax, pMoraleStr, (INT32)(100*(gpSMCurrentMerc->bDrinkLevel - FOOD_MIN) / FOOD_HALF_RANGE), L"%", (INT32)(100*(gpSMCurrentMerc->bFoodLevel - FOOD_MIN) / FOOD_HALF_RANGE), L"%" );
+				swprintf( pStr, TacticalStr[ MERC_VITAL_STATS_WITH_FOOD_POPUPTEXT ], gpSMCurrentMerc->stats.bLife, gpSMCurrentMerc->stats.bLifeMax, gpSMCurrentMerc->bBreath, gpSMCurrentMerc->bBreathMax, pMoraleStr, (INT32)(100*(gpSMCurrentMerc->bDrinkLevel - FOOD_MIN) / FOOD_HALF_RANGE), JA2_TEXT("%"), (INT32)(100*(gpSMCurrentMerc->bFoodLevel - FOOD_MIN) / FOOD_HALF_RANGE), JA2_TEXT("%") );
 			}
 			else
 			{
@@ -2984,7 +2984,7 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 
 			{
 				CHAR16	atStr[500];
-				swprintf( atStr, L"" );
+				swprintf( atStr, JA2_TEXT("") );
 
 				gpSMCurrentMerc->PrintDiseaseDesc( atStr );
 
@@ -2995,7 +2995,7 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 
 			// Buggler: skills/traits tooltip on merc portrait
 			// clear pStr value
-			swprintf( pStr, L"");
+			swprintf( pStr, JA2_TEXT(""));
 
 			if (gGameOptions.fNewTraitSystem) // SANDRO - old/new traits check
 			{
@@ -3020,13 +3020,13 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 
 				if ( bNumSkillTraits == 0 )
 				{
-					swprintf( pStr, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+					swprintf( pStr, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 				}
 				else
 				{
 					for ( UINT8 ubCnt = 0; ubCnt < bNumSkillTraits; ++ubCnt )
 					{
-						swprintf( sTemp, L"%s\n", gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
+						swprintf( sTemp, JA2_TEXT("%s\n"), gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
 						wcscat( pStr, sTemp );
 					}
 				}
@@ -3039,25 +3039,25 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 
 				if ( bSkill1 == 0 && bSkill2 == 0 )
 				{
-					swprintf( pStr, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+					swprintf( pStr, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 				}
 				else
 				{
 					//if the 2 skills are the same, add the '(expert)' at the end
 					if( bSkill1 == bSkill2 )
 					{
-						swprintf( pStr, L"%s %s", gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
+						swprintf( pStr, JA2_TEXT("%s %s"), gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
 					}
 					else
 					{
 						//Display the first skill
 						if( bSkill1 != 0 )
 						{
-							swprintf( pStr, L"%s\n", gzMercSkillText[bSkill1] );
+							swprintf( pStr, JA2_TEXT("%s\n"), gzMercSkillText[bSkill1] );
 						}
 						if( bSkill2 != 0 )
 						{
-							swprintf( sTemp, L"%s", gzMercSkillText[bSkill2] );
+							swprintf( sTemp, JA2_TEXT("%s"), gzMercSkillText[bSkill2] );
 							wcscat( pStr, sTemp );
 						}
 					}
@@ -3068,8 +3068,8 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 		}
 		else
 		{
-			SetRegionFastHelpText( &(gSM_SELMERCBarsRegion), L"" );
-			SetRegionFastHelpText( &gSM_SELMERCPanelRegion, L"" );
+			SetRegionFastHelpText( &(gSM_SELMERCBarsRegion), JA2_TEXT("") );
+			SetRegionFastHelpText( &gSM_SELMERCPanelRegion, JA2_TEXT("") );
 		}
 
 		//if we are in the shop keeper interface
@@ -3110,9 +3110,9 @@ void RenderSMPanel( BOOLEAN *pfDirty )
 					}
 				}
 				
-				gprintfRestore( SM_SELMERC_AP_X, SM_SELMERC_AP_Y, L"%3d", GetUIApsToDisplay( gpSMCurrentMerc ) );
-				VarFindFontCenterCoordinates( SM_SELMERC_AP_X, SM_SELMERC_AP_Y, SM_SELMERC_AP_WIDTH, SM_SELMERC_AP_HEIGHT, TINYFONT1, &sFontX, &sFontY, L"%d", GetUIApsToDisplay( gpSMCurrentMerc ) );
-				mprintf( sFontX, SM_SELMERC_AP_Y, L"%d", GetUIApsToDisplay( gpSMCurrentMerc ) );
+				gprintfRestore( SM_SELMERC_AP_X, SM_SELMERC_AP_Y, JA2_TEXT("%3d"), GetUIApsToDisplay( gpSMCurrentMerc ) );
+				VarFindFontCenterCoordinates( SM_SELMERC_AP_X, SM_SELMERC_AP_Y, SM_SELMERC_AP_WIDTH, SM_SELMERC_AP_HEIGHT, TINYFONT1, &sFontX, &sFontY, JA2_TEXT("%d"), GetUIApsToDisplay( gpSMCurrentMerc ) );
+				mprintf( sFontX, SM_SELMERC_AP_Y, JA2_TEXT("%d"), GetUIApsToDisplay( gpSMCurrentMerc ) );
 			}
 
 			// Display bars
@@ -3462,18 +3462,18 @@ INT32 iLastHandPos = -1;
 
 STR16 uiSlotTypeName[] = 
 {
-	L"",				//0
-	L"Hands",			//1
-	L"Equipment",		//2
-	L"Vest",			//3
-	L"Leg Rig",			//4
-	L"Combat Pack",		//5
-	L"Backpack",		//6
-	L"Sling",			//7
-	L"Knife",			//8
-	L"Face",			//9
-	L"Large Pocket",	//10
-	L"Small Pocket"		//11
+	JA2_TEXT(""),				//0
+	JA2_TEXT("Hands"),			//1
+	JA2_TEXT("Equipment"),		//2
+	JA2_TEXT("Vest"),			//3
+	JA2_TEXT("Leg Rig"),			//4
+	JA2_TEXT("Combat Pack"),		//5
+	JA2_TEXT("Backpack"),		//6
+	JA2_TEXT("Sling"),			//7
+	JA2_TEXT("Knife"),			//8
+	JA2_TEXT("Face"),			//9
+	JA2_TEXT("Large Pocket"),	//10
+	JA2_TEXT("Small Pocket")		//11
 };
 
 INT16 uiNIVSlotType[NUM_INV_SLOTS] = { 
@@ -3588,7 +3588,7 @@ UINT16 GetInvMovementCost(OBJECTTYPE* pObj, INT16 old_pos, INT16 new_pos)
 
 #ifdef _DEBUG
 	CHAR16 szTemp[255];
-	swprintf(szTemp, L"Moving item from %s to %s (costs: %d/%d/%d/%d)", uiSlotTypeName[src_type], uiSlotTypeName[dst_type], uiAPCostFromSlot[src_type], uiAPCostToSlot[dst_type], weight_modifier, cost);
+	swprintf(szTemp, JA2_TEXT("Moving item from %s to %s (costs: %d/%d/%d/%d)"), uiSlotTypeName[src_type], uiSlotTypeName[dst_type], uiAPCostFromSlot[src_type], uiAPCostToSlot[dst_type], weight_modifier, cost);
 	ScreenMsg(FONT_MCOLOR_LTGREEN, MSG_CHAT, szTemp);
 #endif
 	return cost;
@@ -5497,9 +5497,9 @@ void RenderTEAMPanel( BOOLEAN fDirty )
 
 				// RENDER ON SAVE BUFFER!
 				SetFontDestBuffer( guiSAVEBUFFER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
-				VarFindFontCenterCoordinates( (INT16)(sTEAMNamesXY[ posIndex ] + 2 ), (INT16)(sTEAMNamesXY[ posIndex + 1 ] ), TM_NAME_WIDTH, TM_NAME_HEIGHT, BLOCKFONT2, &sFontX, &sFontY, L"%s", pSoldier->name );
-				mprintf( sFontX, sFontY, L"%s", pSoldier->name );
-				gprintfRestore( sFontX, sFontY, L"%s", pSoldier->name );
+				VarFindFontCenterCoordinates( (INT16)(sTEAMNamesXY[ posIndex ] + 2 ), (INT16)(sTEAMNamesXY[ posIndex + 1 ] ), TM_NAME_WIDTH, TM_NAME_HEIGHT, BLOCKFONT2, &sFontX, &sFontY, JA2_TEXT("%s"), pSoldier->name );
+				mprintf( sFontX, sFontY, JA2_TEXT("%s"), pSoldier->name );
+				gprintfRestore( sFontX, sFontY, JA2_TEXT("%s"), pSoldier->name );
 				// reset to frame buffer!
 				SetFontDestBuffer( FRAME_BUFFER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
 
@@ -5547,7 +5547,7 @@ void RenderTEAMPanel( BOOLEAN fDirty )
 			
 							if ( UsingFoodSystem() && pSoldier->ubProfile != ROBOT && !IsVehicle(pSoldier) )
 							{
-								swprintf( pStr, TacticalStr[ MERC_VITAL_STATS_WITH_FOOD_POPUPTEXT ], pSoldier->stats.bLife, pSoldier->stats.bLifeMax, pSoldier->bBreath, pSoldier->bBreathMax, pMoraleStr, (INT32)(100*(pSoldier->bDrinkLevel - FOOD_MIN) / FOOD_HALF_RANGE), L"%", (INT32)(100*(pSoldier->bFoodLevel - FOOD_MIN) / FOOD_HALF_RANGE), L"%" );
+								swprintf( pStr, TacticalStr[ MERC_VITAL_STATS_WITH_FOOD_POPUPTEXT ], pSoldier->stats.bLife, pSoldier->stats.bLifeMax, pSoldier->bBreath, pSoldier->bBreathMax, pMoraleStr, (INT32)(100*(pSoldier->bDrinkLevel - FOOD_MIN) / FOOD_HALF_RANGE), JA2_TEXT("%"), (INT32)(100*(pSoldier->bFoodLevel - FOOD_MIN) / FOOD_HALF_RANGE), JA2_TEXT("%") );
 							}
 							else
 							{
@@ -5556,7 +5556,7 @@ void RenderTEAMPanel( BOOLEAN fDirty )
 
 							{
 								CHAR16	atStr[500];
-								swprintf( atStr, L"" );
+								swprintf( atStr, JA2_TEXT("") );
 
 								pSoldier->PrintDiseaseDesc( atStr );
 
@@ -5567,12 +5567,12 @@ void RenderTEAMPanel( BOOLEAN fDirty )
 			
 							// Buggler: skills/traits tooltip on merc portrait
 							// clear pStr value
-							swprintf( pStr, L"");
+							swprintf( pStr, JA2_TEXT(""));
 			
 							INT8 bSeatIndex = GetSeatIndexFromSoldier( pSoldier );
 							if( bSeatIndex != (-1) )
 							{					
-								swprintf( sTemp, L"%s\n", gNewVehicle[ pVehicleList[ pSoldier->iVehicleId ].ubVehicleType ].VehicleSeats[ bSeatIndex ].zSeatName );
+								swprintf( sTemp, JA2_TEXT("%s\n"), gNewVehicle[ pVehicleList[ pSoldier->iVehicleId ].ubVehicleType ].VehicleSeats[ bSeatIndex ].zSeatName );
 								wcscat( pStr, sTemp );
 							}
 
@@ -5599,14 +5599,14 @@ void RenderTEAMPanel( BOOLEAN fDirty )
 			
 								if ( bNumSkillTraits == 0 )
 								{
-									swprintf( sTemp, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+									swprintf( sTemp, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 									wcscat( pStr, sTemp );
 								}
 								else
 								{
 									for ( int ubCnt = 0; ubCnt < bNumSkillTraits; ++ubCnt )
 									{
-										swprintf( sTemp, L"%s\n", gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
+										swprintf( sTemp, JA2_TEXT("%s\n"), gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
 										wcscat( pStr, sTemp );
 									}
 								}
@@ -5619,25 +5619,25 @@ void RenderTEAMPanel( BOOLEAN fDirty )
 			
 								if ( bSkill1 == 0 && bSkill2 == 0 )
 								{
-									swprintf( pStr, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+									swprintf( pStr, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 								}
 								else
 								{
 									//if the 2 skills are the same, add the '(expert)' at the end
 									if( bSkill1 == bSkill2 )
 									{
-										swprintf( pStr, L"%s %s", gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
+										swprintf( pStr, JA2_TEXT("%s %s"), gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
 									}
 									else
 									{
 										//Display the first skill
 										if( bSkill1 != 0 )
 										{
-											swprintf( pStr, L"%s\n", gzMercSkillText[bSkill1] );
+											swprintf( pStr, JA2_TEXT("%s\n"), gzMercSkillText[bSkill1] );
 										}
 										if( bSkill2 != 0 )
 										{
-											swprintf( sTemp, L"%s", gzMercSkillText[bSkill2] );
+											swprintf( sTemp, JA2_TEXT("%s"), gzMercSkillText[bSkill2] );
 											wcscat( pStr, sTemp );
 										}
 									}
@@ -5648,8 +5648,8 @@ void RenderTEAMPanel( BOOLEAN fDirty )
 					}
 					else
 					{
-						SetRegionFastHelpText( &(gTEAM_BarsRegions[ cnt ]), L"" );
-						SetRegionFastHelpText( &(gTEAM_FaceRegions[ cnt ]), L"" );
+						SetRegionFastHelpText( &(gTEAM_BarsRegions[ cnt ]), JA2_TEXT("") );
+						SetRegionFastHelpText( &(gTEAM_FaceRegions[ cnt ]), JA2_TEXT("") );
 					}
 				}
 
@@ -5699,8 +5699,8 @@ void RenderTEAMPanel( BOOLEAN fDirty )
 
 						if (gTacticalStatus.uiFlags & INCOMBAT )
 						{
-							VarFindFontCenterCoordinates( sTEAMApXY[ posIndex ], sTEAMApXY[ posIndex + 1], TM_AP_WIDTH, TM_AP_HEIGHT, TINYFONT1, &sFontX, &sFontY, L"%d", GetUIApsToDisplay( pSoldier ) );
-							mprintf( sFontX, sTEAMApXY[ posIndex + 1], L"%d", GetUIApsToDisplay( pSoldier ) );
+							VarFindFontCenterCoordinates( sTEAMApXY[ posIndex ], sTEAMApXY[ posIndex + 1], TM_AP_WIDTH, TM_AP_HEIGHT, TINYFONT1, &sFontX, &sFontY, JA2_TEXT("%d"), GetUIApsToDisplay( pSoldier ) );
+							mprintf( sFontX, sTEAMApXY[ posIndex + 1], JA2_TEXT("%d"), GetUIApsToDisplay( pSoldier ) );
 						}
 					}
 				}
@@ -5729,8 +5729,8 @@ void RenderTEAMPanel( BOOLEAN fDirty )
 		else
 		{
 			// anv: for unoccupied slots clear tooltips
-			SetRegionFastHelpText( &(gTEAM_FaceRegions[ cnt ]), L"" );
-			SetRegionFastHelpText( &(gTEAM_BarsRegions[ cnt ]), L"" );
+			SetRegionFastHelpText( &(gTEAM_FaceRegions[ cnt ]), JA2_TEXT("") );
+			SetRegionFastHelpText( &(gTEAM_BarsRegions[ cnt ]), JA2_TEXT("") );
 		}
 	}
 
@@ -5866,7 +5866,7 @@ void BtnSquadCallback(GUI_BUTTON *btn,INT32 reason)
 	{
 		btn->uiFlags &= (~BUTTON_CLICKED_ON );
 
-		// ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Not Implemented Yet" );
+		// ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Not Implemented Yet") );
 		ToggleRadarScreenRender( );
 
 	}
@@ -6193,7 +6193,7 @@ void MercFacePanelCallback( MOUSE_REGION * pRegion, INT32 iReason )
 							{
 								if ( OK_CONTROLLABLE_MERC( ubSoldierID ) && !( ubSoldierID->flags.uiStatusFlags & ( SOLDIER_VEHICLE | SOLDIER_PASSENGER | SOLDIER_DRIVER ) ) )
 								{
-									//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s added", ubSoldierID->name );
+									//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s added"), ubSoldierID->name );
 									gusSelectedSoldier->flags.uiStatusFlags |= SOLDIER_MULTI_SELECTED;
 									ubSoldierID->flags.uiStatusFlags |= SOLDIER_MULTI_SELECTED;
 									EndMultiSoldierSelection( TRUE );
@@ -6202,7 +6202,7 @@ void MercFacePanelCallback( MOUSE_REGION * pRegion, INT32 iReason )
 							// A shift-click on a selected character will remove that character from the current selection.
 							else
 							{
-								//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s removed", ubSoldierID->name );
+								//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s removed"), ubSoldierID->name );
 								ubSoldierID->flags.uiStatusFlags &= (~SOLDIER_MULTI_SELECTED );
 								if (ubSoldierID != gusSelectedSoldier)
 								{
@@ -6213,7 +6213,7 @@ void MercFacePanelCallback( MOUSE_REGION * pRegion, INT32 iReason )
 						}
 						else
 						{
-							//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s selected", ubSoldierID->name );
+							//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s selected"), ubSoldierID->name );
 							HandleLocateSelectMerc( ubSoldierID, 0 );
 						}
 					}
@@ -7036,7 +7036,7 @@ void RenderTownIDString( INT16 sX, INT16 sY )
 	GetSectorIDString( gWorldSectorX, gWorldSectorY, gbWorldSectorZ, zTownIDString, TRUE );
 	ReduceStringLength( zTownIDString, 80, COMPFONT );
 	VarFindFontCenterCoordinates( sX , sY, 80, 16, COMPFONT, &sFontX, &sFontY, zTownIDString );
-	mprintf( sFontX, sFontY, L"%s", zTownIDString );
+	mprintf( sFontX, sFontY, JA2_TEXT("%s"), zTownIDString );
 }
 
 
@@ -7773,7 +7773,7 @@ void SMInvMoneyButtonCallback( MOUSE_REGION * pRegion, INT32 iReason )
 				guiPendingOverrideEvent = A_CHANGE_TO_MOVE;
 				HandleTacticalUI( );
 
-				swprintf( zMoney, L"%s", FormatMoney((*gpItemPointer)[0]->data.money.uiMoneyAmount ).data());
+				swprintf( zMoney, JA2_TEXT("%s"), FormatMoney((*gpItemPointer)[0]->data.money.uiMoneyAmount ).data());
 
 				//ask the user if they are sure they want to deposit the money
 				swprintf( zText, gzMoneyWithdrawMessageText[ CONFIRMATION_TO_DEPOSIT_MONEY_TO_ACCOUNT ], zMoney );

@@ -1,3 +1,4 @@
+#include "fileio/LogStore.h"
 #include "connect.h"
 #include <stdio.h>
 #include <math.h>
@@ -44,7 +45,6 @@
 #include "ai.h"					// sevenfm
 #include "GameInitOptionsScreen.h"
 #include "renderworld.h"		// added by Flugente for SetRenderFlags( RENDER_FLAG_FULL );
-#include "fileio/LogStore.h"
 
 //forward declarations of common classes to eliminate includes
 class OBJECTTYPE;
@@ -80,32 +80,9 @@ OBJECTTYPE GLOCK_17_ForUseWithLOS;
 
 UINT32 FPMult32(UINT32 uiA, UINT32 uiB)
 {
-	UINT32 uiResult;
-
-	__asm {
-		// Load the 32-bit registers with the two values
-		mov		eax, uiA
-			mov		ebx, uiB
-
-			// Multiply them
-			// Top 32 bits (whole portion) goes into edx
-			// Bottom 32 bits (fractional portion) goes into eax
-			imul	ebx
-
-			// Shift the fractional portion back to (lower) 16 bits
-			shr		eax, 16
-			// Shift the whole portion to 16 bits, in the upper word
-			shl		edx, 16
-
-			// At this point, we have edx xxxx0000 and eax 0000xxxx
-			// Combine the two words into a dword
-			or		eax, edx
-
-			// Put the result into a returnable variable
-			mov		uiResult, eax
-	}
-
-	return(uiResult);
+	const INT64 product = static_cast<INT64>(static_cast<INT32>(uiA)) *
+		static_cast<INT64>(static_cast<INT32>(uiB));
+	return static_cast<UINT32>(static_cast<UINT64>(product) >> 16);
 }
 
 
@@ -2199,7 +2176,7 @@ BOOLEAN CalculateSoldierZPos( SOLDIERTYPE * pSoldier, UINT8 ubPosType, FLOAT * p
 		*pdZPos += CONVERT_PIXELS_TO_HEIGHTUNITS(gpWorldLevelData[grid].sHeight);
 	}
 	else {
-		// ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"CalculateSoldierZPos: Caught bad LOS height check!");
+		// ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("CalculateSoldierZPos: Caught bad LOS height check!"));
 	}
 
 	return( TRUE );
@@ -2513,7 +2490,7 @@ INT32 LocationToLocationLineOfSightTest( INT32 sStartGridNo, INT8 bStartLevel, I
 
 	// Bob: prevent access violation 
 	if (sStartGridNo < 0) { 
-		// ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, L"LocationToLocationLineOfSightTest: Caught bad LOS check!");
+		// ScreenMsg(FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("LocationToLocationLineOfSightTest: Caught bad LOS check!"));
 		return 0; 
 	}
 
@@ -2942,20 +2919,20 @@ BOOLEAN BulletHitMerc( BULLET * pBullet, STRUCTURE * pStructure, BOOLEAN fIntend
 								{
 									ubHitLocation = AIM_SHOT_TORSO;
 
-									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Torso hit" );
+									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Torso hit") );
 								}
 								else
 								{
 									ubHitLocation = AIM_SHOT_LEGS;
 
-									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Leg hit" );
+									ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Leg hit") );
 								}
 							}
 							else
 							{
 								ubHitLocation = AIM_SHOT_HEAD;
 
-								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Headshot" );
+								ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Headshot") );
 							}
 						}
 						else
@@ -7395,7 +7372,7 @@ void MoveBullet( INT32 iBullet )
 					{
 						// WANNE - BMP: BUGFIX: Had to change abs to _abs64 because FIXEDPT is now INT64
 						//iStepsToTravel = __min( iStepsToTravel, abs( (pBullet->qCurrZ - qLandHeight) / pBullet->qIncrZ ) );
-						iStepsToTravel = __min( iStepsToTravel, _abs64( (pBullet->qCurrZ - qLandHeight) / pBullet->qIncrZ ) );
+						iStepsToTravel = __min( iStepsToTravel, std::abs( (pBullet->qCurrZ - qLandHeight) / pBullet->qIncrZ ) );
 
 						pBullet->qCurrX += pBullet->qIncrX * iStepsToTravel;
 						pBullet->qCurrY += pBullet->qIncrY * iStepsToTravel;
@@ -8854,34 +8831,34 @@ void AdjustTargetCenterPoint( SOLDIERTYPE *pShooter, INT32 iTargetGridNo, FLOAT 
 
 		if (dShotOffsetX > 0)
 		{
-			swprintf(szLeftRight, L"right");
+			swprintf(szLeftRight, JA2_TEXT("right"));
 		}
 		else
 		{
-			swprintf(szLeftRight, L"left");
+			swprintf(szLeftRight, JA2_TEXT("left"));
 		}
 		if (dShotOffsetY > 0)
 		{
-			swprintf(szUpDown, L"up");
+			swprintf(szUpDown, JA2_TEXT("up"));
 		}
 		else
 		{
-			swprintf(szUpDown, L"down");
+			swprintf(szUpDown, JA2_TEXT("down"));
 		}	
 
 		if (pShooter->bDoBurst == 0 || pShooter->bDoBurst == 1)
 		{
-			ScreenMsg( FONT_MCOLOR_LTRED, MSG_INTERFACE, L"%d. Shot aperture %2.1f, Accuracy %2.1f, goes %2.1f %s and %2.1f %s", pShooter->bDoBurst, iAperture, iBulletDev, dShotOffsetX, szLeftRight, dShotOffsetY, szUpDown );
+			ScreenMsg( FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("%d. Shot aperture %2.1f, Accuracy %2.1f, goes %2.1f %s and %2.1f %s"), pShooter->bDoBurst, iAperture, iBulletDev, dShotOffsetX, szLeftRight, dShotOffsetY, szUpDown );
 		}
 		else
 		{
 			if ((pShooter->bDoBurst-1)%3 == 0)
 			{
-				ScreenMsg( FONT_MCOLOR_LTRED, MSG_INTERFACE, L"%d. MO: %2.1f, %2.1f - SO: %2.1f, %2.1f - CF: %2.1f, %2.1f", pShooter->bDoBurst, dMuzzleOffsetX, dMuzzleOffsetY, dShotOffsetX, dShotOffsetY, pShooter->dPrevCounterForceX, pShooter->dPrevCounterForceY );
+				ScreenMsg( FONT_MCOLOR_LTRED, MSG_INTERFACE, JA2_TEXT("%d. MO: %2.1f, %2.1f - SO: %2.1f, %2.1f - CF: %2.1f, %2.1f"), pShooter->bDoBurst, dMuzzleOffsetX, dMuzzleOffsetY, dShotOffsetX, dShotOffsetY, pShooter->dPrevCounterForceX, pShooter->dPrevCounterForceY );
 			}
 			else
 			{
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%d. MO: %2.1f, %2.1f - SO: %2.1f, %2.1f - CF: %2.1f, %2.1f", pShooter->bDoBurst, dMuzzleOffsetX, dMuzzleOffsetY, dShotOffsetX, dShotOffsetY, pShooter->dPrevCounterForceX, pShooter->dPrevCounterForceY  );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%d. MO: %2.1f, %2.1f - SO: %2.1f, %2.1f - CF: %2.1f, %2.1f"), pShooter->bDoBurst, dMuzzleOffsetX, dMuzzleOffsetY, dShotOffsetX, dShotOffsetY, pShooter->dPrevCounterForceX, pShooter->dPrevCounterForceY  );
 			}
 		}
 	}
@@ -10452,7 +10429,7 @@ FLOAT CalcCounterForceChange( SOLDIERTYPE * pShooter, UINT32 uiCounterForceAccur
 			dIdealDelta = 0;
 			if (gGameSettings.fOptions[TOPTION_REPORT_MISS_MARGIN])
 			{
-				ScreenMsg( FONT_ORANGE, MSG_INTERFACE, L"CF CHANGE: Muzzle stable :: No change required.");
+				ScreenMsg( FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("CF CHANGE: Muzzle stable :: No change required."));
 			}
 		}
 		else
@@ -10468,7 +10445,7 @@ FLOAT CalcCounterForceChange( SOLDIERTYPE * pShooter, UINT32 uiCounterForceAccur
 			// the delta limit, that's fine - it'll be reduced appropriately later in this function anyway.
 			if (gGameSettings.fOptions[TOPTION_REPORT_MISS_MARGIN])
 			{
-				ScreenMsg( FONT_ORANGE, MSG_INTERFACE, L"CF CHANGE: Muzzle stationary :: Increasing CF towards target.");
+				ScreenMsg( FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("CF CHANGE: Muzzle stationary :: Increasing CF towards target."));
 			}
 		}
 	}
@@ -10487,7 +10464,7 @@ FLOAT CalcCounterForceChange( SOLDIERTYPE * pShooter, UINT32 uiCounterForceAccur
 			dIdealDelta *= -1; 
 			if (gGameSettings.fOptions[TOPTION_REPORT_MISS_MARGIN])
 			{
-				ScreenMsg( FONT_ORANGE, MSG_INTERFACE, L"CF CHANGE: Muzzle at target but in motion :: Reversing CF.");
+				ScreenMsg( FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("CF CHANGE: Muzzle at target but in motion :: Reversing CF."));
 			}
 		}
 		else
@@ -10512,7 +10489,7 @@ FLOAT CalcCounterForceChange( SOLDIERTYPE * pShooter, UINT32 uiCounterForceAccur
 				dIdealDelta = dVelocity * (-1);
 				if (gGameSettings.fOptions[TOPTION_REPORT_MISS_MARGIN])
 				{
-					ScreenMsg( FONT_ORANGE, MSG_INTERFACE, L"CF CHANGE: Muzzle moving away from target :: Reversing CF.");
+					ScreenMsg( FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("CF CHANGE: Muzzle moving away from target :: Reversing CF."));
 				}
 			}
 			else
@@ -10612,7 +10589,7 @@ FLOAT CalcCounterForceChange( SOLDIERTYPE * pShooter, UINT32 uiCounterForceAccur
 					dIdealDelta = (-1) * bDirectionTarget * __min(dMaxIncrement, abs(dIdealDelta));
 					if (gGameSettings.fOptions[TOPTION_REPORT_MISS_MARGIN])
 					{
-						ScreenMsg( FONT_ORANGE, MSG_INTERFACE, L"CF CHANGE: Going to overshoot target :: Decreasing CF.");
+						ScreenMsg( FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("CF CHANGE: Going to overshoot target :: Decreasing CF."));
 					}
 				}
 				else
@@ -10675,7 +10652,7 @@ FLOAT CalcCounterForceChange( SOLDIERTYPE * pShooter, UINT32 uiCounterForceAccur
 						dIdealDelta = bDirectionTarget * dMaxIncrement;
 						if (gGameSettings.fOptions[TOPTION_REPORT_MISS_MARGIN])
 						{
-							ScreenMsg( FONT_ORANGE, MSG_INTERFACE, L"CF CHANGE: Advancing to target :: Increasing CF.");
+							ScreenMsg( FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("CF CHANGE: Advancing to target :: Increasing CF."));
 						}
 					}
 					else
@@ -10689,7 +10666,7 @@ FLOAT CalcCounterForceChange( SOLDIERTYPE * pShooter, UINT32 uiCounterForceAccur
 						dIdealDelta = 0;
 						if (gGameSettings.fOptions[TOPTION_REPORT_MISS_MARGIN])
 						{
-							ScreenMsg( FONT_ORANGE, MSG_INTERFACE, L"CF CHANGE: Muzzle advancing at acceptable speed :: No change to CF.");
+							ScreenMsg( FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("CF CHANGE: Muzzle advancing at acceptable speed :: No change to CF."));
 						}
 					}
 				}

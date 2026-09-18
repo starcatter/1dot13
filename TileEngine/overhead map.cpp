@@ -113,7 +113,7 @@ void RenderOverheadOverlays();
 //#include <math.h>
 #define PointToPointDist(X1, Y1, X2, Y2) (sqrtf((FLOAT)((X2-X1)*(X2-X1) + (Y2-Y1)*(Y2-Y1))))// Calculate distance between two points
 #define PointToLineDist(Xt, Yt, k, l) (sqrtf((FLOAT)((k*Xt-Yt+l) * (k*Xt-Yt+l)) / (k*k + 1)))// Calculate distance between point and line
-VOID PointFromDist(INT32 Xt, INT32 Yt, INT32 k, INT32 l, FLOAT d, INT32 *Xtnew, INT32 *Ytnew)// Calculate closest point to point (Xt,Yt) which lies at distance from line Y=kx+l and normal define by point (Xt,Yt)
+void PointFromDist(INT32 Xt, INT32 Yt, INT32 k, INT32 l, FLOAT d, INT32 *Xtnew, INT32 *Ytnew)// Calculate closest point to point (Xt,Yt) which lies at distance from line Y=kx+l and normal define by point (Xt,Yt)
 {
 	FLOAT ret1 = sqrtf(d*d * (k*k + 1));
 	FLOAT ret2 = (FLOAT)(Yt + k*Xt);
@@ -1647,8 +1647,8 @@ void RenderOverheadOverlays()
 		{
 			SetFont( SMALLCOMPFONT );
 			SetFontForeground( FONT_WHITE );
-			gprintfdirty( (INT16)(sX - 3), sY, L"%d", ubPassengers );
-			mprintf_buffer( pDestBuf, uiDestPitchBYTES, SMALLCOMPFONT, sX - 3,	sY , L"%d", ubPassengers );
+			gprintfdirty( (INT16)(sX - 3), sY, JA2_TEXT("%d"), ubPassengers );
+			mprintf_buffer( pDestBuf, uiDestPitchBYTES, SMALLCOMPFONT, sX - 3,	sY , JA2_TEXT("%d"), ubPassengers );
 		}
 	}
 

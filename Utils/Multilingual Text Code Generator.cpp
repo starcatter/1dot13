@@ -11,11 +11,11 @@ the format specifiers used in the english version.
 ASSUMPTIONS
 - No functions exist in any of the master files
 - Users don't use single strings using:
-		STR16 str[] = L"Single String";
+		STR16 str[] = JA2_TEXT("Single String");
 	Instead use:
 		STR16 str[] =
 		{
-			L"Single String";
+			JA2_TEXT("Single String");
 		}
 - Users don't use comments containing the { character later followed by the L" token.	The code generator
 	will mistaken that for a string.

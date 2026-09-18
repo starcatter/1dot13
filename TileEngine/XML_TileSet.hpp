@@ -2,6 +2,7 @@
 #define _XML_TILESET_HPP_
 
 #include "XML_auto_parse.h"
+#include "UtfConversion.h"
 #include "WorldDat.h"
 #include <vfs/Tools/vfs_tools.h>
 
@@ -70,7 +71,7 @@ public:
 	TRANSITION_LEAVE{
 		SGP_THROW_IFFALSE( P_DATA->_current_tileset != NULL, L"No tileset selected" );
 		std::string tmpString = vfs::trimString(char_data, 0, char_data.length());
-		wcsncpy( P_DATA->_current_tileset->zName, vfs::String( tmpString ).c_str(), 32 );
+		ja2::text::copyUtf8ToUtf16(tmpString, P_DATA->_current_tileset->zName);
 	}
 	FINISH_TRANSITION;
 

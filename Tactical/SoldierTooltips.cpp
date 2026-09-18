@@ -38,28 +38,28 @@ struct MOUSETT
 };
 
 // sevenfm: display various AI debug information in tooltip
-STR16 gStrAlertStatus[] = { L"Green", L"Yellow", L"Red", L"Black" };
-STR16 gStrAttitude[] = { L"DEFENSIVE", L"BRAVESOLO", L"BRAVEAID", L"CUNNINGSOLO", L"CUNNINGAID", L"AGGRESSIVE", L"MAXATTITUDES", L"ATTACKSLAYONLY" };
-STR16 gStrOrders[] = { L"STATIONARY", L"ONGUARD", L"CLOSEPATROL", L"FARPATROL", L"POINTPATROL", L"ONCALL", L"SEEKENEMY", L"RNDPTPATROL", L"SNIPER" };
-STR16 gStrTeam[] = { L"OUR_TEAM", L"ENEMY_TEAM", L"CREATURE_TEAM", L"MILITIA_TEAM", L"CIV_TEAM", L"LAST_TEAM", L"PLAYER_PLAN", L"LAN_TEAM_ONE", L"LAN_TEAM_TWO", L"LAN_TEAM_THREE", L"LAN_TEAM_FOUR" };
-STR16 gStrClass[] = { L"SOLDIER_CLASS_NONE", L"SOLDIER_CLASS_ADMINISTRATOR", L"SOLDIER_CLASS_ELITE", L"SOLDIER_CLASS_ARMY", L"SOLDIER_CLASS_GREEN_MILITIA", L"SOLDIER_CLASS_REG_MILITIA", L"SOLDIER_CLASS_ELITE_MILITIA", L"SOLDIER_CLASS_CREATURE", L"SOLDIER_CLASS_MINER", L"SOLDIER_CLASS_ZOMBIE", L"SOLDIER_CLASS_TANK", L"SOLDIER_CLASS_JEEP", L"SOLDIER_CLASS_BANDIT", L"SOLDIER_CLASS_ROBOT" };
+STR16 gStrAlertStatus[] = { JA2_TEXT("Green"), JA2_TEXT("Yellow"), JA2_TEXT("Red"), JA2_TEXT("Black") };
+STR16 gStrAttitude[] = { JA2_TEXT("DEFENSIVE"), JA2_TEXT("BRAVESOLO"), JA2_TEXT("BRAVEAID"), JA2_TEXT("CUNNINGSOLO"), JA2_TEXT("CUNNINGAID"), JA2_TEXT("AGGRESSIVE"), JA2_TEXT("MAXATTITUDES"), JA2_TEXT("ATTACKSLAYONLY") };
+STR16 gStrOrders[] = { JA2_TEXT("STATIONARY"), JA2_TEXT("ONGUARD"), JA2_TEXT("CLOSEPATROL"), JA2_TEXT("FARPATROL"), JA2_TEXT("POINTPATROL"), JA2_TEXT("ONCALL"), JA2_TEXT("SEEKENEMY"), JA2_TEXT("RNDPTPATROL"), JA2_TEXT("SNIPER") };
+STR16 gStrTeam[] = { JA2_TEXT("OUR_TEAM"), JA2_TEXT("ENEMY_TEAM"), JA2_TEXT("CREATURE_TEAM"), JA2_TEXT("MILITIA_TEAM"), JA2_TEXT("CIV_TEAM"), JA2_TEXT("LAST_TEAM"), JA2_TEXT("PLAYER_PLAN"), JA2_TEXT("LAN_TEAM_ONE"), JA2_TEXT("LAN_TEAM_TWO"), JA2_TEXT("LAN_TEAM_THREE"), JA2_TEXT("LAN_TEAM_FOUR") };
+STR16 gStrClass[] = { JA2_TEXT("SOLDIER_CLASS_NONE"), JA2_TEXT("SOLDIER_CLASS_ADMINISTRATOR"), JA2_TEXT("SOLDIER_CLASS_ELITE"), JA2_TEXT("SOLDIER_CLASS_ARMY"), JA2_TEXT("SOLDIER_CLASS_GREEN_MILITIA"), JA2_TEXT("SOLDIER_CLASS_REG_MILITIA"), JA2_TEXT("SOLDIER_CLASS_ELITE_MILITIA"), JA2_TEXT("SOLDIER_CLASS_CREATURE"), JA2_TEXT("SOLDIER_CLASS_MINER"), JA2_TEXT("SOLDIER_CLASS_ZOMBIE"), JA2_TEXT("SOLDIER_CLASS_TANK"), JA2_TEXT("SOLDIER_CLASS_JEEP"), JA2_TEXT("SOLDIER_CLASS_BANDIT"), JA2_TEXT("SOLDIER_CLASS_ROBOT") };
 
 STR16 SeenStr(INT32 value)
 {
 	switch (value)
 	{
-	case -4: return L"HEARD 3";
-	case -3: return L"HEARD 2";
-	case -2: return L"HEARD LAST";
-	case -1: return L"HEARD THIS";
-	case 0: return L"NOT HEARD OR SEEN";
-	case 1: return L"SEEN CURR";
-	case 2: return L"SEEN THIS";
-	case 3: return L"SEEN LAST";
-	case 4: return L"SEEN 2";
-	case 5: return L"SEEN 3";
+	case -4: return JA2_TEXT("HEARD 3");
+	case -3: return JA2_TEXT("HEARD 2");
+	case -2: return JA2_TEXT("HEARD LAST");
+	case -1: return JA2_TEXT("HEARD THIS");
+	case 0: return JA2_TEXT("NOT HEARD OR SEEN");
+	case 1: return JA2_TEXT("SEEN CURR");
+	case 2: return JA2_TEXT("SEEN THIS");
+	case 3: return JA2_TEXT("SEEN LAST");
+	case 4: return JA2_TEXT("SEEN 2");
+	case 5: return JA2_TEXT("SEEN 3");
 	}
-	return L"unknown";
+	return JA2_TEXT("unknown");
 }
 
 extern struct MOUSETT mouseTT;
@@ -224,89 +224,89 @@ void SoldierTooltip( SOLDIERTYPE* pSoldier )
 				}
 		}
 		
-		swprintf(pStrInfo, L"");
+		swprintf(pStrInfo, JA2_TEXT(""));
 
 		// sevenfm: AI tooltip
 		if (gGameExternalOptions.fEnableSoldierTooltipDebugAI)
 		{
-			swprintf(pStrInfo, L"%s|[ |A|I |Info |]\n", pStrInfo);
-			swprintf(pStrInfo, L"%s|Alert |Status: %s\n", pStrInfo, gStrAlertStatus[pSoldier->aiData.bAlertStatus]);
-			swprintf(pStrInfo, L"%s|Orders: %s\n", pStrInfo, gStrOrders[pSoldier->aiData.bOrders]);
-			swprintf(pStrInfo, L"%s|Attitude: %s\n", pStrInfo, gStrAttitude[pSoldier->aiData.bAttitude]);
-			swprintf(pStrInfo, L"%s|Class: %s\n", pStrInfo, gStrClass[pSoldier->ubSoldierClass]);
-			swprintf(pStrInfo, L"%s|Team: %s |Side: %d\n", pStrInfo, gStrTeam[pSoldier->bTeam], pSoldier->bSide);
+			swprintf(pStrInfo, JA2_TEXT("%s|[ |A|I |Info |]\n"), pStrInfo);
+			swprintf(pStrInfo, JA2_TEXT("%s|Alert |Status: %s\n"), pStrInfo, gStrAlertStatus[pSoldier->aiData.bAlertStatus]);
+			swprintf(pStrInfo, JA2_TEXT("%s|Orders: %s\n"), pStrInfo, gStrOrders[pSoldier->aiData.bOrders]);
+			swprintf(pStrInfo, JA2_TEXT("%s|Attitude: %s\n"), pStrInfo, gStrAttitude[pSoldier->aiData.bAttitude]);
+			swprintf(pStrInfo, JA2_TEXT("%s|Class: %s\n"), pStrInfo, gStrClass[pSoldier->ubSoldierClass]);
+			swprintf(pStrInfo, JA2_TEXT("%s|Team: %s |Side: %d\n"), pStrInfo, gStrTeam[pSoldier->bTeam], pSoldier->bSide);
 			if (pSoldier->bTeam == CIV_TEAM && pSoldier->ubCivilianGroup > 0)
 			{
-				swprintf(pStrInfo, L"%s|Civ |Group: %s\n", pStrInfo, zCivGroupName[pSoldier->ubCivilianGroup].szCurGroup);
+				swprintf(pStrInfo, JA2_TEXT("%s|Civ |Group: %s\n"), pStrInfo, zCivGroupName[pSoldier->ubCivilianGroup].szCurGroup);
 			}
 			if (pSoldier->aiData.bNeutral)
 			{
-				swprintf(pStrInfo, L"%s|Neutral\n", pStrInfo);
+				swprintf(pStrInfo, JA2_TEXT("%s|Neutral\n"), pStrInfo);
 			}
-			swprintf(pStrInfo, L"%s|A|I |Morale/|R|C|D: %d/%d\n", pStrInfo, pSoldier->aiData.bAIMorale, RangeChangeDesire(pSoldier));
-			swprintf(pStrInfo, L"%s|Last |Action: %d\n", pStrInfo, pSoldier->aiData.bLastAction);
-			swprintf(pStrInfo, L"%s|OpponentsSeen: %d\n", pStrInfo, pSoldier->aiData.bOppCnt);
-			swprintf(pStrInfo, L"%s|SeenLastTurn: %d, |Public %d\n", pStrInfo, CountSeenEnemiesLastTurn(pSoldier), CountSeenEnemiesLastTurn(pSoldier));
-			swprintf(pStrInfo, L"%s|Friends|Black: %d\n", pStrInfo, CountFriendsBlack(pSoldier));
-			swprintf(pStrInfo, L"%s|Soldier Level: %d |Diff: %d\n", pStrInfo, pSoldier->stats.bExpLevel, SoldierDifficultyLevel(pSoldier));
+			swprintf(pStrInfo, JA2_TEXT("%s|A|I |Morale/|R|C|D: %d/%d\n"), pStrInfo, pSoldier->aiData.bAIMorale, RangeChangeDesire(pSoldier));
+			swprintf(pStrInfo, JA2_TEXT("%s|Last |Action: %d\n"), pStrInfo, pSoldier->aiData.bLastAction);
+			swprintf(pStrInfo, JA2_TEXT("%s|OpponentsSeen: %d\n"), pStrInfo, pSoldier->aiData.bOppCnt);
+			swprintf(pStrInfo, JA2_TEXT("%s|SeenLastTurn: %d, |Public %d\n"), pStrInfo, CountSeenEnemiesLastTurn(pSoldier), CountSeenEnemiesLastTurn(pSoldier));
+			swprintf(pStrInfo, JA2_TEXT("%s|Friends|Black: %d\n"), pStrInfo, CountFriendsBlack(pSoldier));
+			swprintf(pStrInfo, JA2_TEXT("%s|Soldier Level: %d |Diff: %d\n"), pStrInfo, pSoldier->stats.bExpLevel, SoldierDifficultyLevel(pSoldier));
 			INT32 usOrigin;
-			swprintf(pStrInfo, L"%s|Roaming |Range: %d\n", pStrInfo, RoamingRange(pSoldier, &usOrigin));
-			swprintf(pStrInfo, L"%s|Team |Aware: %d\n", pStrInfo, gTacticalStatus.Team[pSoldier->bTeam].bAwareOfOpposition);
-			swprintf(pStrInfo, L"%s|Collapsed %d |BreathCollapsed %d\n", pStrInfo, pSoldier->bCollapsed, pSoldier->bBreathCollapsed);
+			swprintf(pStrInfo, JA2_TEXT("%s|Roaming |Range: %d\n"), pStrInfo, RoamingRange(pSoldier, &usOrigin));
+			swprintf(pStrInfo, JA2_TEXT("%s|Team |Aware: %d\n"), pStrInfo, gTacticalStatus.Team[pSoldier->bTeam].bAwareOfOpposition);
+			swprintf(pStrInfo, JA2_TEXT("%s|Collapsed %d |BreathCollapsed %d\n"), pStrInfo, pSoldier->bCollapsed, pSoldier->bBreathCollapsed);
 			if (pSoldier->ubPreviousAttackerID < NOBODY)
 			{
-				swprintf(pStrInfo, L"%s|Under |Fire %d AttackerID %d AttackerTarget %d\n", pStrInfo, pSoldier->aiData.bUnderFire, pSoldier->ubPreviousAttackerID.i, pSoldier->ubPreviousAttackerID->sLastTarget);
+				swprintf(pStrInfo, JA2_TEXT("%s|Under |Fire %d AttackerID %d AttackerTarget %d\n"), pStrInfo, pSoldier->aiData.bUnderFire, pSoldier->ubPreviousAttackerID.i, pSoldier->ubPreviousAttackerID->sLastTarget);
 			}
 			else
 			{
-				swprintf(pStrInfo, L"%s|Under |Fire %d AttackerID %d\n", pStrInfo, pSoldier->aiData.bUnderFire, pSoldier->ubPreviousAttackerID.i);
+				swprintf(pStrInfo, JA2_TEXT("%s|Under |Fire %d AttackerID %d\n"), pStrInfo, pSoldier->aiData.bUnderFire, pSoldier->ubPreviousAttackerID.i);
 			}
 
-			swprintf(pStrInfo, L"%s|Visible %d |Moved %d\n", pStrInfo, pSoldier->bVisible, pSoldier->aiData.bMoved);
-			swprintf(pStrInfo, L"%s|Noise %d %d %d\n", pStrInfo, pSoldier->aiData.sNoiseGridno, pSoldier->bNoiseLevel, pSoldier->aiData.ubNoiseVolume);
-			swprintf(pStrInfo, L"%s|Public |Noise %d %d %d\n", pStrInfo, gsPublicNoiseGridNo[pSoldier->bTeam], gbPublicNoiseLevel[pSoldier->bTeam], gubPublicNoiseVolume[pSoldier->bTeam]);
+			swprintf(pStrInfo, JA2_TEXT("%s|Visible %d |Moved %d\n"), pStrInfo, pSoldier->bVisible, pSoldier->aiData.bMoved);
+			swprintf(pStrInfo, JA2_TEXT("%s|Noise %d %d %d\n"), pStrInfo, pSoldier->aiData.sNoiseGridno, pSoldier->bNoiseLevel, pSoldier->aiData.ubNoiseVolume);
+			swprintf(pStrInfo, JA2_TEXT("%s|Public |Noise %d %d %d\n"), pStrInfo, gsPublicNoiseGridNo[pSoldier->bTeam], gbPublicNoiseLevel[pSoldier->bTeam], gubPublicNoiseVolume[pSoldier->bTeam]);
 
 			// show watched locations:
 			INT8	bLoop;
-			swprintf(pStrInfo, L"%s---Watched Locations---\n", pStrInfo);
+			swprintf(pStrInfo, JA2_TEXT("%s---Watched Locations---\n"), pStrInfo);
 			for (bLoop = 0; bLoop < NUM_WATCHED_LOCS; bLoop++)
 			{
 				if (!TileIsOutOfBounds(gsWatchedLoc[pSoldier->ubID][bLoop]))
 				{
-					swprintf(pStrInfo, L"%sGridNo %d Points %d\n", pStrInfo, gsWatchedLoc[pSoldier->ubID][bLoop], gubWatchedLocPoints[pSoldier->ubID][bLoop]);
+					swprintf(pStrInfo, JA2_TEXT("%sGridNo %d Points %d\n"), pStrInfo, gsWatchedLoc[pSoldier->ubID][bLoop], gubWatchedLocPoints[pSoldier->ubID][bLoop]);
 				}
 			}
 
 			// sevenfm: show flank info
 			if (pSoldier->IsFlanking())
 			{
-				swprintf(pStrInfo, L"%s|Flank %s\n", pStrInfo, pSoldier->flags.lastFlankLeft ? L"left" : L"right");
-				swprintf(pStrInfo, L"%s|Flank Num %d\n", pStrInfo, pSoldier->numFlanks);
-				swprintf(pStrInfo, L"%s|Last Flank spot %d\n", pStrInfo, pSoldier->lastFlankSpot);
+				swprintf(pStrInfo, JA2_TEXT("%s|Flank %s\n"), pStrInfo, pSoldier->flags.lastFlankLeft ? JA2_TEXT("left") : JA2_TEXT("right"));
+				swprintf(pStrInfo, JA2_TEXT("%s|Flank Num %d\n"), pStrInfo, pSoldier->numFlanks);
+				swprintf(pStrInfo, JA2_TEXT("%s|Last Flank spot %d\n"), pStrInfo, pSoldier->lastFlankSpot);
 			}
 
 			//sevenfm: show opponents info
-			swprintf(pStrInfo, L"%s---Public list (not neutral)---\n", pStrInfo);
+			swprintf(pStrInfo, JA2_TEXT("%s---Public list (not neutral)---\n"), pStrInfo);
 			for (UINT16 oppID = 0; oppID < MAX_NUM_SOLDIERS; oppID++)
 			{
 				if (gbPublicOpplist[pSoldier->bTeam][oppID] != NOT_HEARD_OR_SEEN &&
 					!MercPtrs[oppID]->aiData.bNeutral)
 				{
-					swprintf(pStrInfo, L"%s[%d] %s %s\n", pStrInfo, oppID, MercPtrs[oppID]->GetName(), SeenStr(gbPublicOpplist[pSoldier->bTeam][oppID]));
+					swprintf(pStrInfo, JA2_TEXT("%s[%d] %s %s\n"), pStrInfo, oppID, MercPtrs[oppID]->GetName(), SeenStr(gbPublicOpplist[pSoldier->bTeam][oppID]));
 				}
 			}
-			swprintf(pStrInfo, L"%s---Soldier list (not neutral)---\n", pStrInfo);
+			swprintf(pStrInfo, JA2_TEXT("%s---Soldier list (not neutral)---\n"), pStrInfo);
 			for (UINT16 oppID = 0; oppID < MAX_NUM_SOLDIERS; oppID++)
 			{
 				if (pSoldier->aiData.bOppList[oppID] != NOT_HEARD_OR_SEEN &&
 					!MercPtrs[oppID]->aiData.bNeutral)
 				{
-					swprintf(pStrInfo, L"%s[%d] %s %s\n", pStrInfo, oppID, MercPtrs[oppID]->GetName(), SeenStr(pSoldier->aiData.bOppList[oppID]));
+					swprintf(pStrInfo, JA2_TEXT("%s[%d] %s %s\n"), pStrInfo, oppID, MercPtrs[oppID]->GetName(), SeenStr(pSoldier->aiData.bOppList[oppID]));
 				}
 			}
-			swprintf(pStrInfo, L"%s|What I know %d\n", pStrInfo, WhatIKnowThatPublicDont(pSoldier, FALSE));
+			swprintf(pStrInfo, JA2_TEXT("%s|What I know %d\n"), pStrInfo, WhatIKnowThatPublicDont(pSoldier, FALSE));
 
-			swprintf(pStrInfo, L"%s \n", pStrInfo);
+			swprintf(pStrInfo, JA2_TEXT("%s \n"), pStrInfo);
 		}
 
 		// WANNE: Check if enemy soldier is in line of sight but only if player has not chosen debug details
@@ -369,16 +369,16 @@ void SoldierTooltip( SOLDIERTYPE* pSoldier )
 					if (( pSoldier->stats.ubSkillTraits[0] == pSoldier->stats.ubSkillTraits[1] ) && pSoldier->stats.ubSkillTraits[0] != 0 )
 					{
 						CHAR16 pStrAux[50]; 
-						swprintf( pStrAux, L"(%s)", gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[0] ]);
+						swprintf( pStrAux, JA2_TEXT("(%s)"), gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[0] ]);
 						swprintf( pStrInfo, gzTooltipStrings[STR_TT_SKILL_TRAIT_1], pStrInfo, pStrAux );
 						swprintf( pStrInfo, gzTooltipStrings[STR_TT_SKILL_TRAIT_2], pStrInfo, gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[1] + NEWTRAIT_MERCSKILL_EXPERTOFFSET ] );
 						swprintf( pStrInfo, gzTooltipStrings[STR_TT_SKILL_TRAIT_3], pStrInfo, gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[2] ] );
-						//swprintf( pStrInfo, L"%s\n", pStrInfo );
+						//swprintf( pStrInfo, JA2_TEXT("%s\n"), pStrInfo );
 					}
 					else if (( pSoldier->stats.ubSkillTraits[1] == pSoldier->stats.ubSkillTraits[2] ) && pSoldier->stats.ubSkillTraits[1] != 0 )
 					{
 						CHAR16 pStrAux[50]; 
-						swprintf( pStrAux, L"(%s)", gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[1] ]);
+						swprintf( pStrAux, JA2_TEXT("(%s)"), gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[1] ]);
 						swprintf( pStrInfo, gzTooltipStrings[STR_TT_SKILL_TRAIT_1], pStrInfo, pStrAux );
 						swprintf( pStrInfo, gzTooltipStrings[STR_TT_SKILL_TRAIT_2], pStrInfo, gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[2] + NEWTRAIT_MERCSKILL_EXPERTOFFSET ] );
 						swprintf( pStrInfo, gzTooltipStrings[STR_TT_SKILL_TRAIT_3], pStrInfo, gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[0] ] );
@@ -386,7 +386,7 @@ void SoldierTooltip( SOLDIERTYPE* pSoldier )
 					else if (( pSoldier->stats.ubSkillTraits[0] == pSoldier->stats.ubSkillTraits[2] ) && pSoldier->stats.ubSkillTraits[0] != 0 )
 					{
 						CHAR16 pStrAux[50]; 
-						swprintf( pStrAux, L"(%s)", gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[0] ]);
+						swprintf( pStrAux, JA2_TEXT("(%s)"), gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[0] ]);
 						swprintf( pStrInfo, gzTooltipStrings[STR_TT_SKILL_TRAIT_1], pStrInfo, pStrAux );
 						swprintf( pStrInfo, gzTooltipStrings[STR_TT_SKILL_TRAIT_2], pStrInfo, gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[2] + NEWTRAIT_MERCSKILL_EXPERTOFFSET ] );
 						swprintf( pStrInfo, gzTooltipStrings[STR_TT_SKILL_TRAIT_3], pStrInfo, gzMercSkillTextNew[ pSoldier->stats.ubSkillTraits[1] ] );
@@ -454,12 +454,12 @@ void SoldierTooltip( SOLDIERTYPE* pSoldier )
 					if ( ubTooltipDetailLevel == DL_Basic )
 					{
 						if ( gGameExternalOptions.fEnableSoldierTooltipHelmet && pSoldier->inv[HELMETPOS].usItem  )
-							swprintf( pStrInfo, L"%s%s ", pStrInfo, gzTooltipStrings[STR_TT_HELMET] );
+							swprintf( pStrInfo, JA2_TEXT("%s%s "), pStrInfo, gzTooltipStrings[STR_TT_HELMET] );
 						if ( gGameExternalOptions.fEnableSoldierTooltipVest && pSoldier->inv[VESTPOS].usItem )
-							swprintf( pStrInfo, L"%s%s ", pStrInfo, gzTooltipStrings[STR_TT_VEST] );
+							swprintf( pStrInfo, JA2_TEXT("%s%s "), pStrInfo, gzTooltipStrings[STR_TT_VEST] );
 						if ( gGameExternalOptions.fEnableSoldierTooltipLeggings && pSoldier->inv[LEGPOS].usItem )
-							swprintf( pStrInfo, L"%s%s", pStrInfo, gzTooltipStrings[STR_TT_LEGGINGS] );
-						wcscat( pStrInfo, L"\n" );
+							swprintf( pStrInfo, JA2_TEXT("%s%s"), pStrInfo, gzTooltipStrings[STR_TT_LEGGINGS] );
+						wcscat( pStrInfo, JA2_TEXT("\n") );
 					}
 					else // ubTooltipDetailLevel == DL_Limited
 					{
@@ -544,7 +544,7 @@ void SoldierTooltip( SOLDIERTYPE* pSoldier )
 			if ( pSoldier->inv[SECONDHANDPOS].usItem )
 			{
 				// if there's something in the slot display it
-				wcscat( pStrInfo, L"\n" );
+				wcscat( pStrInfo, JA2_TEXT("\n") );
 				DisplayWeaponInfo( pSoldier, pStrInfo, SECONDHANDPOS, ubTooltipDetailLevel );
 			}
 		}
@@ -626,7 +626,7 @@ void SoldierTooltip( SOLDIERTYPE* pSoldier )
 		pRegion->iY = gusMouseYPos;
 
 //		if ( gGameExternalOptions.ubSoldierTooltipDetailLevel == DL_Debug )
-//			swprintf( pRegion->FastHelpText, L"%s\n|String |Length|: %d", pStrInfo, wcslen(pStrInfo) );
+//			swprintf( pRegion->FastHelpText, JA2_TEXT("%s\n|String |Length|: %d"), pStrInfo, wcslen(pStrInfo) );
 //		else
 			wcscpy( pRegion->FastHelpText, pStrInfo );
 	}
@@ -714,9 +714,9 @@ void DisplayWeaponInfo( SOLDIERTYPE* pSoldier, CHAR16* pStrInfo, UINT8 ubSlot, U
 				{
 					iNumAttachments++;
 					if ( iNumAttachments == 1 )
-						wcscat( pStrInfo, L"\n[" );
+						wcscat( pStrInfo, JA2_TEXT("\n[") );
 					else
-						wcscat( pStrInfo, L", " );
+						wcscat( pStrInfo, JA2_TEXT(", ") );
 					wcscat( pStrInfo, ItemNames[ iter->usItem ] );
 				}
 			}

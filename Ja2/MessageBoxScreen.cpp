@@ -434,7 +434,7 @@ INT32 DoMessageBox( UINT8 ubStyle, const STR16 zString, UINT32 uiExitScreen, UIN
 		sButtonX = sBlankSpace / 2;
 		sButtonY = usTextBoxHeight - MSGBOX_BUTTON_HEIGHT - 10;
 
-		gMsgBox.uiButton[0] = CreateIconAndTextButton( gMsgBox.iButtonImages, L"1", FONT12ARIAL,
+		gMsgBox.uiButton[0] = CreateIconAndTextButton( gMsgBox.iButtonImages, JA2_TEXT("1"), FONT12ARIAL,
 														ubFontColor, ubFontShadowColor,
 														ubFontColor, ubFontShadowColor,
 														TEXT_CJUSTIFIED,
@@ -444,7 +444,7 @@ INT32 DoMessageBox( UINT8 ubStyle, const STR16 zString, UINT32 uiExitScreen, UIN
 		SetButtonCursor(gMsgBox.uiButton[0], usCursor);
 
 		sButtonX += MSGBOX_SMALL_BUTTON_WIDTH + MSGBOX_SMALL_BUTTON_X_SEP;
-		gMsgBox.uiButton[1] = CreateIconAndTextButton( gMsgBox.iButtonImages, L"2", FONT12ARIAL,
+		gMsgBox.uiButton[1] = CreateIconAndTextButton( gMsgBox.iButtonImages, JA2_TEXT("2"), FONT12ARIAL,
 														ubFontColor, ubFontShadowColor,
 														ubFontColor, ubFontShadowColor,
 														TEXT_CJUSTIFIED,
@@ -454,7 +454,7 @@ INT32 DoMessageBox( UINT8 ubStyle, const STR16 zString, UINT32 uiExitScreen, UIN
 		SetButtonCursor(gMsgBox.uiButton[1], usCursor);
 
 		sButtonX += MSGBOX_SMALL_BUTTON_WIDTH + MSGBOX_SMALL_BUTTON_X_SEP;
-		gMsgBox.uiButton[2] = CreateIconAndTextButton( gMsgBox.iButtonImages, L"3", FONT12ARIAL,
+		gMsgBox.uiButton[2] = CreateIconAndTextButton( gMsgBox.iButtonImages, JA2_TEXT("3"), FONT12ARIAL,
 														ubFontColor, ubFontShadowColor,
 														ubFontColor, ubFontShadowColor,
 														TEXT_CJUSTIFIED,
@@ -464,7 +464,7 @@ INT32 DoMessageBox( UINT8 ubStyle, const STR16 zString, UINT32 uiExitScreen, UIN
 		SetButtonCursor(gMsgBox.uiButton[2], usCursor);
 
 		sButtonX += MSGBOX_SMALL_BUTTON_WIDTH + MSGBOX_SMALL_BUTTON_X_SEP;
-		gMsgBox.uiButton[3] = CreateIconAndTextButton( gMsgBox.iButtonImages, L"4", FONT12ARIAL,
+		gMsgBox.uiButton[3] = CreateIconAndTextButton( gMsgBox.iButtonImages, JA2_TEXT("4"), FONT12ARIAL,
 														ubFontColor, ubFontShadowColor,
 														ubFontColor, ubFontShadowColor,
 														TEXT_CJUSTIFIED,

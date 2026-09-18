@@ -513,9 +513,9 @@ void RevealRoofsAndItems(SOLDIERTYPE *pSoldier, UINT32 itemsToo, BOOLEAN fShowLo
 				SetFont( LARGEFONT1 );
 				SetFontBackground( FONT_MCOLOR_BLACK );
 				SetFontForeground( FONT_MCOLOR_WHITE );
-				mprintf( 10,	10 , L"%d", maincnt	);
-				//mprintf( 10,	20 , L"%d", marker	);
-				//mprintf( 50,	20 , L"%d", pSoldier->sGridNo	);
+				mprintf( 10,	10 , JA2_TEXT("%d"), maincnt	);
+				//mprintf( 10,	20 , JA2_TEXT("%d"), marker	);
+				//mprintf( 50,	20 , JA2_TEXT("%d"), pSoldier->sGridNo	);
 
 				InvalidateScreen( );
 				EndFrameBufferRender();

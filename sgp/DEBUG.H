@@ -20,6 +20,7 @@
 
 #include "types.h"
 #include "LegacyStringConversion.h"
+#include "UtfConversion.h"
 #include "TopicOps.h"
 #include "TopicIDs.h"
 
@@ -231,6 +232,12 @@ namespace sgp
 		}
 		WString(const wchar_t* s) : str(s) {
 		}
+#ifndef _WIN32
+		WString(const CHAR16* s) {
+			const std::string utf8 = ja2::text::utf16ToUtf8ReplacingInvalid(s);
+			convert_string(utf8, str);
+		}
+#endif
 	public:
 		std::wstring str;
 	};

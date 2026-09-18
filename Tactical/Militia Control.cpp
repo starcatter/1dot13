@@ -441,7 +441,7 @@ void DetermineWhichMilitiaControlMenusCanBeShown( void )
 		// update the assignment positions
 		UpdateMapScreenMilitiaControlPositions( );
 	}
-	//ScreenMsg( FONT_WHITE, MSG_INTERFACE, L"start DetermineWhichMilitiaControlMenusCanBeShown" );
+	//ScreenMsg( FONT_WHITE, MSG_INTERFACE, JA2_TEXT("start DetermineWhichMilitiaControlMenusCanBeShown") );
 
 	// determine which assign menu needs to be shown
 	if( ( ( fShowMilitiaControlMenu == FALSE ) )||( fCharacterNoLongerValid == TRUE ) )
@@ -450,7 +450,7 @@ void DetermineWhichMilitiaControlMenusCanBeShown( void )
 		fShowMilitiaControlMenu = FALSE;
 		//fShowTalkToAllMenu = FALSE;
 
-		//ScreenMsg( FONT_WHITE, MSG_INTERFACE, L"ShowMilitiaControlMenu = FALSE" );
+		//ScreenMsg( FONT_WHITE, MSG_INTERFACE, JA2_TEXT("ShowMilitiaControlMenu = FALSE") );
 
 		// destroy mask, if needed
 		CreateDestroyScreenMaskForMilitiaControlMenus( );
@@ -853,15 +853,15 @@ void SetTacticalPopUpMilitiaControlBoxXY( SOLDIERTYPE *pSoldier )
 	
 	//if ( !GetSoldier( &pSoldier, gusSelectedSoldier )  )
 	//{
-	//	//ScreenMsg( FONT_WHITE, MSG_INTERFACE, L"No Soldier" );
+	//	//ScreenMsg( FONT_WHITE, MSG_INTERFACE, JA2_TEXT("No Soldier") );
 	//	return;
 	//}
 
 	// grab soldier's x,y screen position
 	GetSoldierScreenPos( pSoldier, &sX, &sY );
 	
-	//ScreenMsg( FONT_WHITE, MSG_INTERFACE, L"X-Position: %d", sX );
-	//ScreenMsg( FONT_WHITE, MSG_INTERFACE, L"Y-Position: %d", sY );
+	//ScreenMsg( FONT_WHITE, MSG_INTERFACE, JA2_TEXT("X-Position: %d"), sX );
+	//ScreenMsg( FONT_WHITE, MSG_INTERFACE, JA2_TEXT("Y-Position: %d"), sY );
 	
 	if( sX < 0 )
 	{
@@ -1164,7 +1164,7 @@ void MilitiaControlMenuBtnCallBack( MOUSE_REGION * pRegion, INT32 iReason )
 							CancelAIAction(pTMilitiaSoldier, TRUE);
 
 							//Hold Position !!!
-							//ScreenMsg( FONT_WHITE, MSG_INTERFACE, L"Hold Position" );
+							//ScreenMsg( FONT_WHITE, MSG_INTERFACE, JA2_TEXT("Hold Position") );
 							pTMilitiaSoldier->aiData.bOrders = STATIONARY;
 							//pTMilitiaSoldier->bAttitude = DEFENSIVE;
 						}

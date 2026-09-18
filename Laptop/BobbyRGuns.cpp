@@ -363,8 +363,8 @@ void HandleBobbyRayMouseWheel(void);
 // Returns TRUE if everything fits target, FALSE otherwise.
 static BOOLEAN DecorateAppendString(STR16 target, size_t targetCapacity, STR16 source, UINT32 frontDecoratorsCnt = 1)
 {
-	const CHAR16 DECORATOR0[] = L"\n";
-	const CHAR16 DECORATOR1[] = L"\n...";
+	const CHAR16 DECORATOR0[] = JA2_TEXT("\n");
+	const CHAR16 DECORATOR1[] = JA2_TEXT("\n...");
 	BOOLEAN result = FALSE;
 	size_t decoratorLen = wcslen(DECORATOR0) * frontDecoratorsCnt;
 
@@ -1432,11 +1432,11 @@ BOOLEAN DisplayItemInfo(UINT32 uiItemClass, INT32 iFilter, INT32 iSubFilter)
 	usTextPosY = BOBBYR_ITEM_DESC_START_Y;
 
 	//Display the subtotal at the bottom of the screen
-	auto subtotal{ std::wstring(BobbyRText[BOBBYR_GUNS_SUB_TOTAL]) + std::wstring(L" ") + FormatMoney(CalculateTotalPurchasePrice()) };
+	auto subtotal{ ja2::text::Utf16String(BobbyRText[BOBBYR_GUNS_SUB_TOTAL]) + JA2_TEXT(" ") + FormatMoney(CalculateTotalPurchasePrice()) };
 	DrawTextToScreen(subtotal.data(), BOBBYR_ORDER_SUBTOTAL_X, BOBBYR_ORDER_SUBTOTAL_Y, 0, BOBBYR_ORDER_TITLE_FONT, BOBBYR_ORDER_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED | TEXT_SHADOWED);
 
 	//Buggler: Display the current page & total pages at the bottom of the screen
-	swprintf( sPage, L"%d / %d", gubCurPage + 1, gubNumPages );
+	swprintf( sPage, JA2_TEXT("%d / %d"), gubCurPage + 1, gubNumPages );
 	DrawTextToScreen(sPage, BOBBYR_ORDER_PAGE_X, BOBBYR_ORDER_PAGE_Y, 0, BOBBYR_ORDER_TITLE_FONT, BOBBYR_ORDER_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED | TEXT_SHADOWED);
 
 	//Display the Used item disclaimer
@@ -2066,9 +2066,9 @@ UINT16 DisplayCostAndQty(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight, UIN
 
 	ubPurchaseNumber = CheckIfItemIsPurchased(usBobbyIndex);
 	if( ubPurchaseNumber == BOBBY_RAY_NOT_PURCHASED)
-		swprintf(sTemp, L"% 4d", 0);
+		swprintf(sTemp, JA2_TEXT("% 4d"), 0);
 	else
-		swprintf(sTemp, L"% 4d", BobbyRayPurchases[ ubPurchaseNumber ].ubNumberPurchased);
+		swprintf(sTemp, JA2_TEXT("% 4d"), BobbyRayPurchases[ ubPurchaseNumber ].ubNumberPurchased);
 
 	DrawTextToScreen(sTemp, BOBBYR_ITEMS_BOUGHT_X, (UINT16)usPosY, BOBBYR_ITEM_COST_TEXT_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 */
@@ -2078,7 +2078,7 @@ UINT16 DisplayCostAndQty(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight, UIN
 	usPosY += usFontHeight + 2;
 
 
-	swprintf( sTemp, L"%3.2f", GetWeightBasedOnMetricOption( Item[ usIndex ].ubWeight ) / (FLOAT)( 10.0 ) );
+	swprintf( sTemp, JA2_TEXT("%3.2f"), GetWeightBasedOnMetricOption( Item[ usIndex ].ubWeight ) / (FLOAT)( 10.0 ) );
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_STOCK_TEXT_X, (UINT16)(usPosY), BOBBYR_ITEM_COST_TEXT_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
 
@@ -2088,9 +2088,9 @@ UINT16 DisplayCostAndQty(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight, UIN
 	usPosY += usFontHeight + 2;
 
 	if( fUsed )
-		swprintf(sTemp, L"% 4d", LaptopSaveInfo.BobbyRayUsedInventory[ usBobbyIndex ].ubQtyOnHand);
+		swprintf(sTemp, JA2_TEXT("% 4d"), LaptopSaveInfo.BobbyRayUsedInventory[ usBobbyIndex ].ubQtyOnHand);
 	else
-		swprintf(sTemp, L"% 4d", LaptopSaveInfo.BobbyRayInventory[ usBobbyIndex ].ubQtyOnHand);
+		swprintf(sTemp, JA2_TEXT("% 4d"), LaptopSaveInfo.BobbyRayInventory[ usBobbyIndex ].ubQtyOnHand);
 
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_STOCK_TEXT_X, (UINT16)usPosY, BOBBYR_ITEM_COST_TEXT_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
@@ -2106,9 +2106,9 @@ UINT16 DisplayRof(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 	DrawTextToScreen(BobbyRText[BOBBYR_GUNS_ROF], BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, 0, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
 	if( WeaponROF[ usIndex ] == -1 )
-		swprintf(sTemp, L"? %s", pMessageStrings[ MSG_RPM ] );
+		swprintf(sTemp, JA2_TEXT("? %s"), pMessageStrings[ MSG_RPM ] );
 	else
-		swprintf(sTemp, L"%3d/%s", WeaponROF[ usIndex ], pMessageStrings[ MSG_MINUTE_ABBREVIATION ]);
+		swprintf(sTemp, JA2_TEXT("%3d/%s"), WeaponROF[ usIndex ], pMessageStrings[ MSG_MINUTE_ABBREVIATION ]);
 
 
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
@@ -2128,31 +2128,31 @@ UINT16 DisplayGunAP(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 	UINT16		readyAPs = (UINT16)(( Weapon[ usIndex ].ubReadyTime * (100 - Item[ usIndex ].percentreadytimeapreduction)) / 100);
 	INT16		ubAttackAPs = BaseAPsToShootOrStab( APBPConstants[DEFAULT_APS], APBPConstants[DEFAULT_AIMSKILL], &pObject, NULL );
 	
-	swprintf( sTemp, L"(%d)", readyAPs );
+	swprintf( sTemp, JA2_TEXT("(%d)"), readyAPs );
 
 	if ( Weapon[ usIndex ].NoSemiAuto )
-		wcscat( sTemp, L"-" );
+		wcscat( sTemp, JA2_TEXT("-") );
 	else
 	{
-		swprintf( sTemp2, L"%d", ubAttackAPs );
+		swprintf( sTemp2, JA2_TEXT("%d"), ubAttackAPs );
 		wcscat( sTemp, sTemp2 );
 	}
 
 	if (GetShotsPerBurst(&pObject) > 0)
 	{
-		swprintf( sTemp2, L"/%d", ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], &pObject, NULL ) );
+		swprintf( sTemp2, JA2_TEXT("/%d"), ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], &pObject, NULL ) );
 		wcscat( sTemp, sTemp2 );
 	}
 	else
-		wcscat( sTemp, L"/-" );
+		wcscat( sTemp, JA2_TEXT("/-") );
 
 	if (GetAutofireShotsPerFiveAPs(&pObject) > 0)
 	{
-		swprintf( sTemp2, L"/%d", ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], &pObject, 3, NULL ) );
+		swprintf( sTemp2, JA2_TEXT("/%d"), ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], &pObject, 3, NULL ) );
 		wcscat( sTemp, sTemp2 );
 	}
 	else
-		wcscat( sTemp, L"/-" );
+		wcscat( sTemp, JA2_TEXT("/-") );
 
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR_ALT, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
@@ -2169,7 +2169,7 @@ UINT16 DisplayMeleeAP(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 	CreateItem(usIndex, 100, &pObject);
 	INT16		ubAttackAPs = BaseAPsToShootOrStab( APBPConstants[DEFAULT_APS], APBPConstants[DEFAULT_AIMSKILL], &pObject, NULL );
 
-	swprintf( sTemp, L"%d", ubAttackAPs );
+	swprintf( sTemp, JA2_TEXT("%d"), ubAttackAPs );
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR_ALT, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
 	return(usPosY);
@@ -2204,7 +2204,7 @@ UINT16 DisplayDamage(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 	}
 
 	DrawTextToScreen(BobbyRText[BOBBYR_GUNS_DAMAGE], BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, 0, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
-	swprintf(sTemp, L"%4d", gunDamage);
+	swprintf(sTemp, JA2_TEXT("%4d"), gunDamage);
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
 	return(usPosY);
@@ -2220,7 +2220,7 @@ UINT16 DisplayRange(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 
 	gunRange = (UINT16)GetModifiedGunRange( usIndex);
 
-	swprintf(sTemp, L"%3d %s", gunRange, pMessageStrings[ MSG_METER_ABBREVIATION ] );
+	swprintf(sTemp, JA2_TEXT("%3d %s"), gunRange, pMessageStrings[ MSG_METER_ABBREVIATION ] );
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR_ALT, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
 	return(usPosY);
@@ -2232,9 +2232,9 @@ UINT16 DisplayMagazine(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 
 	DrawTextToScreen(BobbyRText[BOBBYR_GUNS_MAGAZINE], BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, 0, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	if(Item[usIndex].usItemClass & IC_BOBBY_GUN){
-		swprintf(sTemp, L"%3d %s", Weapon[Item[usIndex].ubClassIndex].ubMagSize, pMessageStrings[ MSG_ROUNDS_ABBREVIATION ] );
+		swprintf(sTemp, JA2_TEXT("%3d %s"), Weapon[Item[usIndex].ubClassIndex].ubMagSize, pMessageStrings[ MSG_ROUNDS_ABBREVIATION ] );
 	}else{
-		swprintf(sTemp, L"%3d %s", Magazine[Item[usIndex].ubClassIndex].ubMagSize, pMessageStrings[ MSG_ROUNDS_ABBREVIATION ] );
+		swprintf(sTemp, JA2_TEXT("%3d %s"), Magazine[Item[usIndex].ubClassIndex].ubMagSize, pMessageStrings[ MSG_ROUNDS_ABBREVIATION ] );
 	}
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR_ALT, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
@@ -2250,13 +2250,13 @@ UINT16 DisplayCaliber(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 	//	if ammo is begin drawn
 	if( Item[ usIndex].usItemClass == IC_AMMO )
 	{
-		swprintf( zTemp, L"%s", BobbyRayAmmoCaliber[ Magazine[ Item[ usIndex ].ubClassIndex ].ubCalibre] );
+		swprintf( zTemp, JA2_TEXT("%s"), BobbyRayAmmoCaliber[ Magazine[ Item[ usIndex ].ubClassIndex ].ubCalibre] );
 //		DrawTextToScreen( AmmoCaliber[ Magazine[ Item[ usIndex ].ubClassIndex ].ubCalibre], BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	}
 	else
 	{
 		//else a gun is being displayed
-		swprintf( zTemp, L"%s", BobbyRayAmmoCaliber[ Weapon[ Item[ usIndex ].ubClassIndex ].ubCalibre ] );
+		swprintf( zTemp, JA2_TEXT("%s"), BobbyRayAmmoCaliber[ Weapon[ Item[ usIndex ].ubClassIndex ].ubCalibre ] );
 //		DrawTextToScreen( AmmoCaliber[ Weapon[ Item[ usIndex ].ubClassIndex ].ubCalibre ], BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	}
 
@@ -2279,7 +2279,7 @@ UINT16 DisplayExplosiveDamage(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight
 	
 	UINT16 explDamage = (UINT16) GetModifiedExplosiveDamage( Explosive[Item[ usIndex ].ubClassIndex].ubDamage, 0 );
 	
-	swprintf(sTemp, L"%4d", explDamage);
+	swprintf(sTemp, JA2_TEXT("%4d"), explDamage);
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
 	return(usPosY);
@@ -2293,7 +2293,7 @@ UINT16 DisplayExplosiveStunDamage(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHe
 	
 	UINT16 explStunDamage = (UINT16) GetModifiedExplosiveDamage( Explosive[Item[ usIndex ].ubClassIndex].ubStunDamage, 1 );
 	
-	swprintf(sTemp, L"%4d", explStunDamage);
+	swprintf(sTemp, JA2_TEXT("%4d"), explStunDamage);
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR_ALT, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
 	return(usPosY);
@@ -2327,9 +2327,9 @@ UINT16 DisplayProtection(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 		break;
 	}
 	
-	swprintf(sTemp, L"%d", iProtection);
-	wcscat( sTemp, L"%%" );
-	swprintf( sTemp2, L"(%d)", Armour[ Item[ usIndex ].ubClassIndex ].ubProtection );
+	swprintf(sTemp, JA2_TEXT("%d"), iProtection);
+	wcscat( sTemp, JA2_TEXT("%%") );
+	swprintf( sTemp2, JA2_TEXT("(%d)"), Armour[ Item[ usIndex ].ubClassIndex ].ubProtection );
 	wcscat( sTemp, sTemp2 );
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
@@ -2342,8 +2342,8 @@ UINT16 DisplayCamo(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 
 	DrawTextToScreen(BobbyRText[BOBBYR_GUNS_CAMO], BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, 0, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	
-	swprintf(sTemp, L"%d", Item[ usIndex ].camobonus);
-	wcscat( sTemp, L"%%" );
+	swprintf(sTemp, JA2_TEXT("%d"), Item[ usIndex ].camobonus);
+	wcscat( sTemp, JA2_TEXT("%%") );
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR_ALT, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
 	return(usPosY);
@@ -2356,7 +2356,7 @@ UINT16 DisplayAmmoArmourPierceModifier(UINT16 usPosY, UINT16 usIndex, UINT16 usF
 	DrawTextToScreen(BobbyRText[BOBBYR_GUNS_ARMOUR_PIERCING_MODIFIER], BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, 0, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	// armour piercing modifier
 	const FLOAT armourImpactReductionModifier = (FLOAT)AmmoTypes[Magazine[Item[usIndex].ubClassIndex].ubAmmoType].armourImpactReductionMultiplier / (FLOAT)AmmoTypes[Magazine[Item[usIndex].ubClassIndex].ubAmmoType].armourImpactReductionDivisor;
-	swprintf(sTemp, L"%1.2f", armourImpactReductionModifier);
+	swprintf(sTemp, JA2_TEXT("%1.2f"), armourImpactReductionModifier);
 	UINT8 color = BOBBYR_ITEM_DESC_TEXT_COLOR_ALT;
 	if (armourImpactReductionModifier > 1.0f)
 		color = FONT_MCOLOR_DKRED;
@@ -2375,7 +2375,7 @@ UINT16 DisplayAmmoDamageModifier(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHei
 	DrawTextToScreen(BobbyRText[BOBBYR_GUNS_BULLET_TUMBLE_MODIFIER], BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, 0, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 	// body damage modifier (bullet tumble)
 	const FLOAT afterArmourDamageModifier = (FLOAT)AmmoTypes[Magazine[Item[usIndex].ubClassIndex].ubAmmoType].afterArmourDamageMultiplier / (FLOAT)AmmoTypes[Magazine[Item[usIndex].ubClassIndex].ubAmmoType].afterArmourDamageDivisor;
-	swprintf(sTemp, L"%1.2f", afterArmourDamageModifier);
+	swprintf(sTemp, JA2_TEXT("%1.2f"), afterArmourDamageModifier);
 	UINT8 color = BOBBYR_ITEM_DESC_TEXT_COLOR_ALT;
 	if (afterArmourDamageModifier > 1.0f)
 		color = FONT_MCOLOR_LTGREEN;
@@ -2395,7 +2395,7 @@ UINT16 DisplayAmmoProjectileCount(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHe
 
 	CHAR16 sTemp[4];
 	DrawTextToScreen(BobbyRText[BOBBYR_GUNS_NUM_PROJECTILES], BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, 0, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
-	swprintf(sTemp, L"%d", numProjectiles);
+	swprintf(sTemp, JA2_TEXT("%d"), numProjectiles);
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR_ALT, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 
 	usPosY += usFontHeight + 2;
@@ -2433,7 +2433,7 @@ UINT16 DisplayLBEInfo(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 		{
 			if(lnCnt>4)
 			{
-				swprintf(sTemp, L"More..." );
+				swprintf(sTemp, JA2_TEXT("More...") );
 				DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 				usPosY += usFontHeight + 2;
 				break;
@@ -2445,7 +2445,7 @@ UINT16 DisplayLBEInfo(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 					pName[i] = LBEPocketType[count].pName[i];
 				//pName = LBEPocketType[count].pName;
 				pName[14] = '\0';
-				swprintf(sTemp, L"%s(x%d)", pName, pocketNum[count] );
+				swprintf(sTemp, JA2_TEXT("%s(x%d)"), pName, pocketNum[count] );
 				DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 				usPosY += usFontHeight + 2;
 				lnCnt++;
@@ -2463,7 +2463,7 @@ UINT16 DisplayWeight(UINT16 usPosY, UINT16 usIndex, UINT16 usFontHeight)
 	//display the 'weight' string
 	DrawTextToScreen(BobbyRText[BOBBYR_GUNS_WEIGHT], BOBBYR_ITEM_WEIGHT_TEXT_X, (UINT16)usPosY, 0, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
-	swprintf(sTemp, L"%3.2f %s", GetWeightBasedOnMetricOption(Item[ usIndex ].ubWeight)/10, GetWeightUnitString() );
+	swprintf(sTemp, JA2_TEXT("%3.2f %s"), GetWeightBasedOnMetricOption(Item[ usIndex ].ubWeight)/10, GetWeightUnitString() );
 	DrawTextToScreen(sTemp, BOBBYR_ITEM_WEIGHT_NUM_X, (UINT16)usPosY, BOBBYR_ITEM_WEIGHT_NUM_WIDTH, BOBBYR_ITEM_DESC_TEXT_FONT, BOBBYR_ITEM_DESC_TEXT_COLOR_ALT, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 	usPosY += usFontHeight + 2;
 	return(usPosY);
@@ -2493,7 +2493,7 @@ void DisplayItemNameAndInfo(UINT16 usPosY, UINT16 usIndex, UINT16 usBobbyIndex, 
 
 		if( ubPurchaseNumber != BOBBY_RAY_NOT_PURCHASED)
 		{
-			swprintf(sTemp, L"% 4d", BobbyRayPurchases[ ubPurchaseNumber ].ubNumberPurchased);
+			swprintf(sTemp, JA2_TEXT("% 4d"), BobbyRayPurchases[ ubPurchaseNumber ].ubNumberPurchased);
 			auto bobbyRItemsBoughtX{ BOBBYR_ITEMS_BOUGHT_X };
 			if (g_lang == i18n::Lang::zh) {
 				bobbyRItemsBoughtX -= 10;
@@ -2511,7 +2511,7 @@ void DisplayItemNameAndInfo(UINT16 usPosY, UINT16 usIndex, UINT16 usBobbyIndex, 
 		if ( g_lang == i18n::Lang::zh ) {
 			swprintf( sTemp, ChineseSpecString2, LaptopSaveInfo.BobbyRayUsedInventory[ usBobbyIndex ].ubItemQuality );//zww
 		} else {
-			swprintf( sTemp, L"*%3d%%%%", LaptopSaveInfo.BobbyRayUsedInventory[ usBobbyIndex ].ubItemQuality );
+			swprintf( sTemp, JA2_TEXT("*%3d%%%%"), LaptopSaveInfo.BobbyRayUsedInventory[ usBobbyIndex ].ubItemQuality );
 		}
 		
 		DrawTextToScreen(sTemp, (UINT16)(BOBBYR_ITEM_NAME_X-2), (UINT16)(usPosY - BOBBYR_ORDER_NUM_Y_OFFSET), BOBBYR_ORDER_NUM_WIDTH, BOBBYR_ITEM_NAME_TEXT_FONT, BOBBYR_ITEM_NAME_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
@@ -2922,7 +2922,7 @@ void PurchaseBobbyRayItem(UINT16	usItemNumber, BOOLEAN fAllItems )
 				{
 					//display error popup because the player is trying to purchase more thenn 10 items
 					CHAR16 sMaxPurchase[255];
-					swprintf(sMaxPurchase, L"%s%d%s", BobbyRText[ BOBBYR_MORE_THEN_10_PURCHASES_A], gGameExternalOptions.ubBobbyRayMaxPurchaseAmount, BobbyRText[ BOBBYR_MORE_THEN_10_PURCHASES_B]);
+					swprintf(sMaxPurchase, JA2_TEXT("%s%d%s"), BobbyRText[ BOBBYR_MORE_THEN_10_PURCHASES_A], gGameExternalOptions.ubBobbyRayMaxPurchaseAmount, BobbyRText[ BOBBYR_MORE_THEN_10_PURCHASES_B]);
 					DoLapTopMessageBox( MSG_BOX_LAPTOP_DEFAULT, sMaxPurchase, LAPTOP_SCREEN, MSG_BOX_FLAG_OK, NULL);
 
 				}
@@ -2970,7 +2970,7 @@ void PurchaseBobbyRayItem(UINT16	usItemNumber, BOOLEAN fAllItems )
 				{
 					//display error popup because the player is trying to purchase more thenn 10 items
 					CHAR16 sMaxPurchase[255];
-					swprintf(sMaxPurchase, L"%s%d%s", BobbyRText[ BOBBYR_MORE_THEN_10_PURCHASES_A], gGameExternalOptions.ubBobbyRayMaxPurchaseAmount, BobbyRText[ BOBBYR_MORE_THEN_10_PURCHASES_B]);
+					swprintf(sMaxPurchase, JA2_TEXT("%s%d%s"), BobbyRText[ BOBBYR_MORE_THEN_10_PURCHASES_A], gGameExternalOptions.ubBobbyRayMaxPurchaseAmount, BobbyRText[ BOBBYR_MORE_THEN_10_PURCHASES_B]);
 					DoLapTopMessageBox( MSG_BOX_LAPTOP_DEFAULT, sMaxPurchase, LAPTOP_SCREEN, MSG_BOX_FLAG_OK, NULL);
 				}
 			}
@@ -4140,25 +4140,25 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 			INT16		ubAttackAPs = BaseAPsToShootOrStab( APBPConstants[DEFAULT_APS], APBPConstants[DEFAULT_AIMSKILL], &pObject, NULL );
 
 			if ( Weapon[ usItemNumber ].NoSemiAuto )
-				swprintf( apStr, L"-" );
+				swprintf( apStr, JA2_TEXT("-") );
 			else
-				swprintf( apStr, L"%d", ubAttackAPs );
+				swprintf( apStr, JA2_TEXT("%d"), ubAttackAPs );
 
 			if (GetShotsPerBurst(&pObject) > 0)
 			{
-				swprintf( apStr2, L" / %d", ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], &pObject, NULL ) );
+				swprintf( apStr2, JA2_TEXT(" / %d"), ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], &pObject, NULL ) );
 				wcscat( apStr, apStr2 );
 			}
 			else
-				wcscat( apStr, L" / -" );
+				wcscat( apStr, JA2_TEXT(" / -") );
 
 			if (GetAutofireShotsPerFiveAPs(&pObject) > 0)
 			{
-				swprintf( apStr2, L" / %d", ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], &pObject, 3, NULL ) );
+				swprintf( apStr2, JA2_TEXT(" / %d"), ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], &pObject, 3, NULL ) );
 				wcscat( apStr, apStr2 );
 			}
 			else
-				wcscat( apStr, L" / -" );
+				wcscat( apStr, JA2_TEXT(" / -") );
 
 			attachStr[0] = 0;
 			attachStr3[0] = 0;
@@ -4229,7 +4229,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 			// If the feature is deactivated, the attachStr will simply be empty at this point 
 			// (remember? we emptied it earlier!).
 			INT8 accuracy = (UsingNewCTHSystem()==true?Weapon[ usItemNumber ].nAccuracy:Weapon[ usItemNumber ].bAccuracy);
-			swprintf( pzStr, L"%s (%s)\n%s %d\n%s %d\n%s %d\n%s (%d) %s\n%s %1.1f %s%s",
+			swprintf( pzStr, JA2_TEXT("%s (%s)\n%s %d\n%s %d\n%s %d\n%s (%d) %s\n%s %1.1f %s%s"),
 				ItemNames[ usItemNumber ],
 				AmmoCaliber[ Weapon[ usItemNumber ].ubCalibre ],
 				gWeaponStatsDesc[ 9 ],					//Accuracy String
@@ -4267,27 +4267,27 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 			INT16		ubAttackAPs = BaseAPsToShootOrStab( APBPConstants[DEFAULT_APS], APBPConstants[DEFAULT_AIMSKILL], &pObject, NULL );
 
 			if ( Weapon[ usItemNumber ].NoSemiAuto )
-				swprintf( apStr, L"-" );
+				swprintf( apStr, JA2_TEXT("-") );
 			else
-				swprintf( apStr, L"%d", ubAttackAPs );
+				swprintf( apStr, JA2_TEXT("%d"), ubAttackAPs );
 
 			if (GetShotsPerBurst(&pObject) > 0)
 			{
-				swprintf( apStr2, L" / %d", ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], &pObject, NULL ) );
+				swprintf( apStr2, JA2_TEXT(" / %d"), ubAttackAPs + CalcAPsToBurst( APBPConstants[DEFAULT_APS], &pObject, NULL ) );
 				wcscat( apStr, apStr2 );
 			}
 			else
-				wcscat( apStr, L" / -" );
+				wcscat( apStr, JA2_TEXT(" / -") );
 
 			if (GetAutofireShotsPerFiveAPs(&pObject) > 0)
 			{
-				swprintf( apStr2, L" / %d", ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], &pObject, 3, NULL ) );
+				swprintf( apStr2, JA2_TEXT(" / %d"), ubAttackAPs + CalcAPsToAutofire( APBPConstants[DEFAULT_APS], &pObject, 3, NULL ) );
 				wcscat( apStr, apStr2 );
 			}
 			else
-				wcscat( apStr, L" / -" );
+				wcscat( apStr, JA2_TEXT(" / -") );
 			
-			swprintf( pzStr, L"%s\n%s %d\n%s %d\n%s %d\n%s (%d) %s\n%s %1.1f %s",
+			swprintf( pzStr, JA2_TEXT("%s\n%s %d\n%s %d\n%s %d\n%s (%d) %s\n%s %1.1f %s"),
 				ItemNames[ usItemNumber ],
 				gWeaponStatsDesc[ 9 ],					//Accuracy String
 				accuracy,								//Accuracy
@@ -4315,7 +4315,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 			OBJECTTYPE pObject;
 
 			CreateItem(usItemNumber, 100, &pObject);
-			swprintf( pzStr, L"%s\n%s %d\n%s %d\n%s %1.1f %s",
+			swprintf( pzStr, JA2_TEXT("%s\n%s %d\n%s %d\n%s %1.1f %s"),
 				ItemNames[ usItemNumber ],
 				gWeaponStatsDesc[ 11 ],					//Damage String
 				GetDamage(&pObject),					//Melee damage
@@ -4330,7 +4330,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 
 	case IC_AMMO:
 		{
-			swprintf( pzStr, L"%s\n%s %1.1f %s",
+			swprintf( pzStr, JA2_TEXT("%s\n%s %1.1f %s"),
 				ItemNames[ usItemNumber ],	//Item long name
 				gWeaponStatsDesc[ 12 ],			//Weight String
 				fWeight,						//Weight
@@ -4338,7 +4338,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 				);
 
 			//Lal: do not delete, commented out for next version
-			//swprintf( pzStr, L"%s %s %s %d [%d rnds]\n%s %1.1f %s", 				
+			//swprintf( pzStr, JA2_TEXT("%s %s %s %d [%d rnds]\n%s %1.1f %s"), 				
 			//	AmmoCaliber[ Magazine[ Item[usItem].ubClassIndex ].ubCalibre ],			//Ammo calibre
 			//	AmmoTypes[Magazine[ Item[usItem].ubClassIndex ].ubAmmoType].ammoName,	//Ammo type
 			//	MagNames[Magazine[ Item[usItem].ubClassIndex ].ubMagType],				//Magazine type
@@ -4354,7 +4354,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 			ubItemCount = CheckPlayersInventoryForGunMatchingGivenAmmoID( usItemNumber );
 			if( ubItemCount != 0 )
 			{
-				swprintf( zItemName, L"\n%s %d %s",BobbyRText[BOBBYR_GUNS_NUM_GUNS_THAT_USE_AMMO_1], ubItemCount, BobbyRText[BOBBYR_GUNS_NUM_GUNS_THAT_USE_AMMO_2] );
+				swprintf( zItemName, JA2_TEXT("\n%s %d %s"),BobbyRText[BOBBYR_GUNS_NUM_GUNS_THAT_USE_AMMO_1], ubItemCount, BobbyRText[BOBBYR_GUNS_NUM_GUNS_THAT_USE_AMMO_2] );
 				wcscat(	pzStr, zItemName );
 			}
 		}
@@ -4372,7 +4372,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 			UINT16 explStunDamage = (UINT16) GetModifiedExplosiveDamage( Explosive[Item[ usItemNumber ].ubClassIndex].ubStunDamage, 1 );
 
 
-			swprintf( pzStr, L"%s\n%s %d\n%s %d\n%s %1.1f %s",
+			swprintf( pzStr, JA2_TEXT("%s\n%s %d\n%s %d\n%s %1.1f %s"),
 				ItemNames[ usItemNumber ],
 				gWeaponStatsDesc[ 11 ],		//Damage String
 				explDamage,					//Expl damage
@@ -4410,7 +4410,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 				break;
 			}
 
-			swprintf( pzStr, L"%s\n%s %d%% (%d)\n%s %d%%\n%s %1.1f %s",
+			swprintf( pzStr, JA2_TEXT("%s\n%s %d%% (%d)\n%s %d%%\n%s %1.1f %s"),
 				ItemNames[ usItemNumber ],									//Item long name
 				pInvPanelTitleStrings[ 4 ],										//Protection string
 				iProtection,													//Protection rating in % based on best armor
@@ -4431,8 +4431,8 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 			CHAR16 lbeStr[1000];
 			CHAR16 temp[1000];
 
-			swprintf(lbeStr, L"");
-			swprintf(temp, L"");
+			swprintf(lbeStr, JA2_TEXT(""));
+			swprintf(temp, JA2_TEXT(""));
 
 			if (UsingNewInventorySystem())
 			{
@@ -4441,7 +4441,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 
 				if (lbe.lbeAvailableVolume > 0) // if this item is a MOLLE carrier (thigh rig, vest, combat pack, backpack)
 				{
-					swprintf(temp, L"\n \n%s\n%s %d", gLbeStatsDesc[6 + lbe.lbeClass], gLbeStatsDesc[0], lbe.lbeAvailableVolume);
+					swprintf(temp, JA2_TEXT("\n \n%s\n%s %d"), gLbeStatsDesc[6 + lbe.lbeClass], gLbeStatsDesc[0], lbe.lbeAvailableVolume);
 					wcscat(lbeStr, temp);
 
 					UINT8 molleSmallCount = 0;
@@ -4473,30 +4473,30 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 
 					if (molleSmallCount > 0)
 					{
-						swprintf(temp, L"\n%s %d", gLbeStatsDesc[2], molleSmallCount);
+						swprintf(temp, JA2_TEXT("\n%s %d"), gLbeStatsDesc[2], molleSmallCount);
 						wcscat(lbeStr, temp);
 					}
 
 					if (molleMediumCount > 0)
 					{
-						swprintf(temp, L"\n%s %d", gLbeStatsDesc[3], molleMediumCount);
+						swprintf(temp, JA2_TEXT("\n%s %d"), gLbeStatsDesc[3], molleMediumCount);
 						wcscat(lbeStr, temp);
 					}
 				}
 				else if (item.nasAttachmentClass == MOLLE_SMALL)
 				{
-					swprintf(temp, L"\n \n%s\n%s\n%s %d", gLbeStatsDesc[11], gLbeStatsDesc[4], gLbeStatsDesc[1], LBEPocketType[GetFirstPocketOnItem(usItemNumber)].pVolume);
+					swprintf(temp, JA2_TEXT("\n \n%s\n%s\n%s %d"), gLbeStatsDesc[11], gLbeStatsDesc[4], gLbeStatsDesc[1], LBEPocketType[GetFirstPocketOnItem(usItemNumber)].pVolume);
 					wcscat(lbeStr, temp);
 				}
 				else if (item.nasAttachmentClass == MOLLE_MEDIUM)
 				{
 					// special case for hydration pack (see AttachmentPoint.xml)
-					swprintf(temp, L"\n \n%s\n%s\n%s %d", gLbeStatsDesc[11], item.ulAttachmentPoint == 4 ? gLbeStatsDesc[6] : gLbeStatsDesc[5], gLbeStatsDesc[1], LBEPocketType[GetFirstPocketOnItem(usItemNumber)].pVolume);
+					swprintf(temp, JA2_TEXT("\n \n%s\n%s\n%s %d"), gLbeStatsDesc[11], item.ulAttachmentPoint == 4 ? gLbeStatsDesc[6] : gLbeStatsDesc[5], gLbeStatsDesc[1], LBEPocketType[GetFirstPocketOnItem(usItemNumber)].pVolume);
 					wcscat(lbeStr, temp);
 				}
 				else // non-MOLLE LBE
 				{
-					swprintf(temp, L"\n \n%s", gLbeStatsDesc[6 + lbe.lbeClass]);
+					swprintf(temp, JA2_TEXT("\n \n%s"), gLbeStatsDesc[6 + lbe.lbeClass]);
 					wcscat(lbeStr, temp);
 				}
 
@@ -4505,7 +4505,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 				{
 					bool foundCombo = false;
 					CHAR16 lbeComboStr[1000];
-					swprintf(lbeComboStr, L"");
+					swprintf(lbeComboStr, JA2_TEXT(""));
 					for (UINT32 itemIndex = 0; itemIndex < gMAXITEMS_READ; ++itemIndex)
 					{
 						INVTYPE otherItem = Item[itemIndex];
@@ -4526,12 +4526,12 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 							foundCombo = true;
 							if (wcslen(lbeComboStr) + wcslen(otherItem.szBRName) < 800)
 							{
-								swprintf(temp, L"\n%s", otherItem.szBRName);
+								swprintf(temp, JA2_TEXT("\n%s"), otherItem.szBRName);
 								wcscat(lbeComboStr, temp);
 							}
 							else
 							{
-								wcscat(lbeComboStr, L"\n...");
+								wcscat(lbeComboStr, JA2_TEXT("\n..."));
 								break;
 							}
 						}
@@ -4540,13 +4540,13 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 					if (foundCombo)
 					{
 						// only combat packs and backpacks will have lbeCombo
-						swprintf(temp, L"\n \n%s\n%s", gLbeStatsDesc[lbe.lbeClass == COMBAT_PACK ? 12 : 13], lbeComboStr);
+						swprintf(temp, JA2_TEXT("\n \n%s\n%s"), gLbeStatsDesc[lbe.lbeClass == COMBAT_PACK ? 12 : 13], lbeComboStr);
 						wcscat(lbeStr, temp);
 					}
 				}
 			}
 
-			swprintf(pzStr, L"%s\n%s %1.1f %s%s",
+			swprintf(pzStr, JA2_TEXT("%s\n%s %1.1f %s%s"),
 				ItemNames[usItemNumber],	//Item long name
 				gWeaponStatsDesc[12],		//Weight String
 				fWeight,					//Weight
@@ -4563,7 +4563,7 @@ void GetHelpTextForItemInLaptop( STR16 pzStr, UINT16 usItemNumber )
 	default:
 		// The final, and typical case, is that of an item with a percent status
 		{
-			swprintf( pzStr, L"%s\n%s %1.1f %s",
+			swprintf( pzStr, JA2_TEXT("%s\n%s %1.1f %s"),
 				ItemNames[ usItemNumber ],	//Item long name
 				gWeaponStatsDesc[ 12 ],			//Weight String
 				fWeight,						//Weight

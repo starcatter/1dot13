@@ -1163,7 +1163,7 @@ BOOLEAN LoadDoorTableFromDoorTableTempFile( )
 
 static auto ComplainAboutMissingDoorStructure(const INT32 GridNo) {
 #if JA2TESTVERSION
-	ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Door structure data at %d was not found", GridNo);
+	ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Door structure data at %d was not found"), GridNo);
 #endif
 }
 
@@ -1333,7 +1333,7 @@ BOOLEAN	IsDoorOpen( INT32 sGridNo )
 	}
 
 	#ifdef JA2TESTVERSION
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"WARNING! Failed to find the Door Open Status on Gridno %s", sGridNo );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("WARNING! Failed to find the Door Open Status on Gridno %s"), sGridNo );
 	#endif
 
 	return( FALSE );
@@ -1532,7 +1532,7 @@ void SyncronizeDoorStatusToStructureData( DOOR_STATUS *pDoorStatus )
 	if (!pNode)
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Could not find levelnode from door structure at %d", pDoorStatus->sGridNo );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Could not find levelnode from door structure at %d"), pDoorStatus->sGridNo );
 #endif
 		return;
 	}
@@ -1614,7 +1614,7 @@ void InternalUpdateDoorGraphicFromStatus( DOOR_STATUS *pDoorStatus, BOOLEAN fUse
 	if (!pNode)
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Could not find levelnode from door structure at %d", pDoorStatus->sGridNo );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Could not find levelnode from door structure at %d"), pDoorStatus->sGridNo );
 #endif
 		return;
 	}
@@ -1821,7 +1821,7 @@ BOOLEAN	IsDoorPerceivedOpen( INT32 sGridNo )
 		#ifdef JA2TESTVERSION
 			if (!pDoorStatus)
 			{
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"WARNING! Failed to find the Perceived Open Door Status on Gridno %s", sGridNo );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("WARNING! Failed to find the Perceived Open Door Status on Gridno %s"), sGridNo );
 			}
 		#endif
 

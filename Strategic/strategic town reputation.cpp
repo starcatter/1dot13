@@ -127,7 +127,7 @@ void UpdateTownOpinionOfThisMercForSoldier( SOLDIERTYPE *pSoldier, UINT8 ubTownI
 void HandleSpreadOfAllTownsOpinion( void )
 {
 	// debug message
-	ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"%s - Spreading town opinions about mercs", WORLDTIMESTR );
+	ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("%s - Spreading town opinions about mercs"), WORLDTIMESTR );
 
 	// run though all player-recruitable profiles and update towns opinion of mercs
 	//for( ubProfileId = 0; ubProfileId < FIRST_NPC; ubProfileId++ )

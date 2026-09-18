@@ -578,7 +578,7 @@ BOOLEAN DisplayAimSlogan()
 	}
 	else
 	{
-		Loc::GetString(Loc::AIM_HISTORY, L"Line", 0, sSlogan, 400);
+		Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), 0, sSlogan, 400);
 	}
 	//Display Aim Text under the logo
 	DisplayWrappedString(AIM_LOGO_TEXT_X, AIM_LOGO_TEXT_Y, AIM_LOGO_TEXT_WIDTH, 2, AIM_LOGO_FONT, AIM_FONT_MCOLOR_WHITE, sSlogan, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED);
@@ -609,13 +609,13 @@ BOOLEAN DisplayAimCopyright()
 	}
 	else
 	{
-		Loc::GetString(Loc::AIM_HISTORY, L"Line", AIM_COPYRIGHT_1, sSlogan, 400);
+		Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), AIM_COPYRIGHT_1, sSlogan, 400);
 		DrawTextToScreen(sSlogan, AIM_COPYRIGHT_X, AIM_COPYRIGHT_Y, AIM_COPYRIGHT_WIDTH, AIM_COPYRIGHT_FONT, FONT_MCOLOR_DKWHITE, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED);
 
-		Loc::GetString(Loc::AIM_HISTORY, L"Line", AIM_COPYRIGHT_2, sSlogan, 400);
+		Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), AIM_COPYRIGHT_2, sSlogan, 400);
 		DrawTextToScreen(sSlogan, AIM_COPYRIGHT_X, AIM_COPYRIGHT_Y + AIM_COPYRIGHT_GAP, AIM_COPYRIGHT_WIDTH, AIM_COPYRIGHT_FONT, FONT_MCOLOR_DKWHITE, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED);
 
-		Loc::GetString(Loc::AIM_HISTORY, L"Line", AIM_COPYRIGHT_3, sSlogan, 400);
+		Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), AIM_COPYRIGHT_3, sSlogan, 400);
 		DrawTextToScreen(sSlogan, AIM_COPYRIGHT_X, AIM_COPYRIGHT_Y + AIM_COPYRIGHT_GAP*2, AIM_COPYRIGHT_WIDTH, AIM_COPYRIGHT_FONT, FONT_MCOLOR_DKWHITE, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED);
 	}
 	return(TRUE);
@@ -916,7 +916,7 @@ BOOLEAN	DrawWarningBox( BOOLEAN fInit, BOOLEAN fRedraw )
 		}
 		else
 		{
-			Loc::GetString(Loc::AIM_HISTORY, L"Line", AIM_WARNING_1, sText, 400);
+			Loc::GetString(Loc::AIM_HISTORY, JA2_TEXT("Line"), AIM_WARNING_1, sText, 400);
 		}
 
 		//Display Aim Warning Text

@@ -351,7 +351,7 @@ void DropSmell( SOLDIERTYPE * pSoldier )
 
 void InternalDropBlood( INT32 sGridNo, INT8 bLevel, UINT8 ubType, UINT8 ubStrength, INT8 bVisible )
 {
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString,"InternalDropBlood ( %i , %i , %i , %i , %i )\n",sGridNo, bLevel , ubType , ubStrength , bVisible );
 	MPDebugMsg(tmpMPDbgString);
 
@@ -376,7 +376,7 @@ void InternalDropBlood( INT32 sGridNo, INT8 bLevel, UINT8 ubType, UINT8 ubStreng
 	if (TileIsOutOfBounds(sGridNo))
 	{
 #ifdef JA2BETAVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Attempting to drop blood NOWHERE" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Attempting to drop blood NOWHERE") );
 #endif
 		return;
 	}

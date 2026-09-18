@@ -39,7 +39,7 @@ struct rgbcolorImpGear
 	UINT8 ubGreen;
 	UINT8 ubBlue;
 };
-rgbcolorImpGear GlowColorsA[] = {
+static rgbcolorImpGear GlowColorsA[] = {
 	{0,0,0},
 	{25,0,0},
 	{50,0,0},
@@ -540,7 +540,7 @@ void DisplayGear( UINT16 usItem, UINT16 usPosX, UINT16 usPosY, BOOLEAN fWithBack
 		else
 		{
 			SGP_THROW( _BS( L"Number of images in VObject [" ) << hVObject->usNumberOfObjects
-					   << L"] is smaller than the requested index [" << (int)pItem->ubGraphicNum << L"]" << _BS::wget );
+					   << JA2_TEXT("] is smaller than the requested index [") << (int)pItem->ubGraphicNum << JA2_TEXT("]") << _BS::wget );
 		}
 
 		INT16 PosX = usPosX + (IMP_GEAR_ITEMDISPLAY_WIDTH - pTrav->usWidth) / 2 - pTrav->sOffsetX;
@@ -557,7 +557,7 @@ void DisplayGear( UINT16 usItem, UINT16 usPosX, UINT16 usPosY, BOOLEAN fWithBack
 		if ( fDisplayNumber && aNumber > 1 )
 		{
 			CHAR16 sString[128];
-			swprintf( sString, L"%d", aNumber );
+			swprintf( sString, JA2_TEXT("%d"), aNumber );
 			INT16 sX, sY;
 			FindFontRightCoordinates( (INT16)(usPosX), (INT16)(usPosY + 6), 10, (INT16)(GetFontHeight( FONT10ARIAL )), sString, FONT10ARIAL, &sX, &sY );
 			mprintf( sX, sY, sString );
@@ -1145,7 +1145,7 @@ void DisplayPagesForImpInventoryPool(void)
 	SetFontDestBuffer(FRAME_BUFFER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE);
 
 	// grab current and last pages
-	swprintf(sString, L"%d / %d", gIMPCurrentInventoryPoolPage + 1, gIMPLastInventoryPoolPage + 1);
+	swprintf(sString, JA2_TEXT("%d / %d"), gIMPCurrentInventoryPoolPage + 1, gIMPLastInventoryPoolPage + 1);
 
 	// grab centered coords
 	FindFontCenterCoordinates(
@@ -1168,7 +1168,7 @@ void DrawItemTextToInvPool(STR16 itemName, UINT32 x, UINT32 y)
 
 	if (StringPixLength(sString, SMALLCOMPFONT) >= (65))
 	{
-		ReduceStringLength(sString, (INT16)(65 - StringPixLength(L" ...", SMALLCOMPFONT)), SMALLCOMPFONT);
+		ReduceStringLength(sString, (INT16)(65 - StringPixLength(JA2_TEXT(" ..."), SMALLCOMPFONT)), SMALLCOMPFONT);
 	}
 
 	INT16 sX, sY;
@@ -1228,7 +1228,7 @@ void RenderImpGearSelectionChoices(UINT32 pocket)
 			extern void GetHelpTextForItemInLaptop(STR16 pzStr, UINT16 usItemNumber);
 			GetHelpTextForItemInLaptop(tooltipText, itemIndex);
 
-			wcscat(tooltipText, L"\n");
+			wcscat(tooltipText, JA2_TEXT("\n"));
 			wcscat(tooltipText, szIMPGearPocketText[55]);
 			SetRegionFastHelpText(&gIMPGearInvPoolRegion[i - pageShift], tooltipText);
 		}

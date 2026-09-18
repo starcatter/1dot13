@@ -2,6 +2,7 @@
 #define ITEM_TYPES_H
 
 #include "Overhead Types.h"
+#include <cstring>
 #include <vector>
 #include <list>
 // THE_BOB : added for pocket popup definitions

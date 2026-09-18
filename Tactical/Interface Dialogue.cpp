@@ -327,7 +327,7 @@ BOOLEAN InternalInitiateConversation( SOLDIERTYPE *pDestSoldier, SOLDIERTYPE *pS
 		}
 
 #ifdef JA2TESTVERSION
-		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Cannot initiate conversation menu.. check for face file for ID: %d.", pDestSoldier->ubProfile );
+		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Cannot initiate conversation menu.. check for face file for ID: %d."), pDestSoldier->ubProfile );
 #endif
 		return( FALSE );
 	}
@@ -760,8 +760,8 @@ void RenderTalkingMenu( )
 			SetFontBackground( FONT_MCOLOR_BLACK );
 			SetFontForeground( 33 );
 		}
-		VarFindFontCenterCoordinates( (INT16)(gTalkPanel.sX + TALK_PANEL_NAME_X), (INT16)(gTalkPanel.sY + TALK_PANEL_NAME_Y), TALK_PANEL_NAME_WIDTH, TALK_PANEL_NAME_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, L"%s", gMercProfiles[ gTalkPanel.ubCharNum ].zNickname );
-		mprintf( sFontX, sFontY, L"%s", gMercProfiles[ ubCharacterNum ].zNickname );
+		VarFindFontCenterCoordinates( (INT16)(gTalkPanel.sX + TALK_PANEL_NAME_X), (INT16)(gTalkPanel.sY + TALK_PANEL_NAME_Y), TALK_PANEL_NAME_WIDTH, TALK_PANEL_NAME_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, JA2_TEXT("%s"), gMercProfiles[ gTalkPanel.ubCharNum ].zNickname );
+		mprintf( sFontX, sFontY, JA2_TEXT("%s"), gMercProfiles[ ubCharacterNum ].zNickname );
 
 		// Set font settings back
 		SetFontShadow( DEFAULT_SHADOW );
@@ -886,8 +886,8 @@ void RenderTalkingMenu( )
 					switch( cnt )
 					{
 						case 0:
-							VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, L"%s", zTalkMenuStrings[ cnt ] );
-							mprintf( sFontX, sFontY, L"%s", zTalkMenuStrings[ cnt ] );
+							VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, JA2_TEXT("%s"), zTalkMenuStrings[ cnt ] );
+							mprintf( sFontX, sFontY, JA2_TEXT("%s"), zTalkMenuStrings[ cnt ] );
 							break;
 						case 4:
 							//if its an arms dealer
@@ -903,12 +903,12 @@ void RenderTalkingMenu( )
 							else
 								wcscpy( zTempString, zTalkMenuStrings[ cnt ] );
 
-							VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, L"%s", zTempString );
-							mprintf( sFontX, sFontY, L"%s", zTempString );
+							VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, JA2_TEXT("%s"), zTempString );
+							mprintf( sFontX, sFontY, JA2_TEXT("%s"), zTempString );
 							break;
 						default:
-							VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, L"%s (%d)", zTalkMenuStrings[ cnt ], ubTalkMenuApproachIDs[ cnt ] );
-							mprintf( sFontX, sFontY, L"%s (%d)", zTalkMenuStrings[ cnt ], CalcDesireToTalk( ubCharacterNum, gubSrcSoldierProfile, ubTalkMenuApproachIDs[ cnt ] )	);
+							VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, JA2_TEXT("%s (%d)"), zTalkMenuStrings[ cnt ], ubTalkMenuApproachIDs[ cnt ] );
+							mprintf( sFontX, sFontY, JA2_TEXT("%s (%d)"), zTalkMenuStrings[ cnt ], CalcDesireToTalk( ubCharacterNum, gubSrcSoldierProfile, ubTalkMenuApproachIDs[ cnt ] )	);
 							break;
 					}
 				}
@@ -929,13 +929,13 @@ void RenderTalkingMenu( )
 						else
 							wcscpy( zTempString, zTalkMenuStrings[ cnt ] );
 
-						VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, L"%s", zTempString );
-						mprintf( sFontX, sFontY, L"%s", zTempString );
+						VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, JA2_TEXT("%s"), zTempString );
+						mprintf( sFontX, sFontY, JA2_TEXT("%s"), zTempString );
 					}
 					else
 					{
-						VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, L"%s", zTalkMenuStrings[ cnt ] );
-						mprintf( sFontX, sFontY, L"%s", zTalkMenuStrings[ cnt ] );
+						VarFindFontCenterCoordinates( sX, sY, TALK_PANEL_MENUTEXT_WIDTH, TALK_PANEL_MENUTEXT_HEIGHT, MILITARYFONT1, &sFontX, &sFontY, JA2_TEXT("%s"), zTalkMenuStrings[ cnt ] );
+						mprintf( sFontX, sFontY, JA2_TEXT("%s"), zTalkMenuStrings[ cnt ] );
 					}
 				}
 			}
@@ -1816,7 +1816,7 @@ void HandleNPCDoAction( UINT8 ubTargetNPC, UINT16 usActionCode, UINT8 ubQuoteNum
 	INT16		sX, sY, sX2, sY2;
 
 	pSoldier2 = NULL;
-	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Handling %s, action %d at %ld", gMercProfiles[ ubTargetNPC ].zNickname, usActionCode, GetJA2Clock() );
+	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Handling %s, action %d at %ld"), gMercProfiles[ ubTargetNPC ].zNickname, usActionCode, GetJA2Clock() );
 
 	// Switch on action code!
 	if (usActionCode > NPC_ACTION_TURN_TO_FACE_NEAREST_MERC && usActionCode < NPC_ACTION_LAST_TURN_TO_FACE_PROFILE)
@@ -2101,7 +2101,7 @@ void HandleNPCDoAction( UINT8 ubTargetNPC, UINT16 usActionCode, UINT8 ubQuoteNum
 				else
 				{
 					if (!RecruitRPC( ubTargetNPC )) {
-						ScreenMsg( FONT_MCOLOR_RED, MSG_ERROR, L"Internal error in recruiting RPC, trying to recover as best it can but this might not be pretty..." );
+						ScreenMsg( FONT_MCOLOR_RED, MSG_ERROR, JA2_TEXT("Internal error in recruiting RPC, trying to recover as best it can but this might not be pretty...") );
 						return;
 					}
 					// OK, update UI with message that we have been recruited
@@ -2405,7 +2405,7 @@ void HandleNPCDoAction( UINT8 ubTargetNPC, UINT16 usActionCode, UINT8 ubQuoteNum
 				if (ubTargetNPC != gpDestSoldier->ubProfile)
 				{
 					#ifdef JA2BETAVERSION
-						ScreenMsg( FONT_MCOLOR_RED, MSG_ERROR, L"Inconsistency between HandleNPCDoAction and target profile IDs" );
+						ScreenMsg( FONT_MCOLOR_RED, MSG_ERROR, JA2_TEXT("Inconsistency between HandleNPCDoAction and target profile IDs") );
 					#endif
 				}
 				else
@@ -4485,7 +4485,7 @@ void HandleNPCDoAction( UINT8 ubTargetNPC, UINT16 usActionCode, UINT8 ubQuoteNum
 				break;
 
 			default:
-				ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, L"No code support for NPC action %d", usActionCode );
+				ScreenMsg( FONT_MCOLOR_RED, MSG_TESTVERSION, JA2_TEXT("No code support for NPC action %d"), usActionCode );
 				break;
 		}
 		
@@ -4620,7 +4620,7 @@ void StartDialogueMessageBox( UINT8 ubProfileID, UINT16 usMessageBoxType )
 		case NPC_ACTION_ASK_ABOUT_PAYING_RPC:
 		case NPC_ACTION_ASK_ABOUT_PAYING_RPC_WITH_DAILY_SALARY:
 		case NPC_ACTION_REDUCE_CONRAD_SALARY_CONDITIONS:
-			swprintf( zTemp2, L"%s", FormatMoney(gMercProfiles[ubProfileID].sSalary).data());
+			swprintf( zTemp2, JA2_TEXT("%s"), FormatMoney(gMercProfiles[ubProfileID].sSalary).data());
 			swprintf( zTemp, TacticalStr[ HIRE_PROMPT ], gMercProfiles[ubProfileID].zNickname, zTemp2 );
 			DoMessageBox( MSG_BOX_BASIC_STYLE, zTemp, GAME_SCREEN, ( UINT8 )MSG_BOX_FLAG_YESNO, DialogueMessageBoxCallBack, NULL );
 			break;
@@ -4629,7 +4629,7 @@ void StartDialogueMessageBox( UINT8 ubProfileID, UINT16 usMessageBoxType )
 			DoMessageBox( MSG_BOX_BASIC_STYLE, TacticalStr[ BOXING_PROMPT ], GAME_SCREEN, ( UINT8 )MSG_BOX_FLAG_YESNO, DialogueMessageBoxCallBack, NULL );
 			break;
 		case NPC_ACTION_BUY_LEATHER_KEVLAR_VEST:
-			swprintf( zTemp2, L"%s", FormatMoney(Item[LEATHER_JACKET_W_KEVLAR].usPrice).data());
+			swprintf( zTemp2, JA2_TEXT("%s"), FormatMoney(Item[LEATHER_JACKET_W_KEVLAR].usPrice).data());
 			swprintf( zTemp, TacticalStr[ BUY_VEST_PROMPT ], ItemNames[LEATHER_JACKET_W_KEVLAR], zTemp2 );
 			DoMessageBox( MSG_BOX_BASIC_STYLE, zTemp, GAME_SCREEN, ( UINT8 )MSG_BOX_FLAG_YESNO, DialogueMessageBoxCallBack, NULL );
 			break;
@@ -4650,13 +4650,13 @@ void StartDialogueMessageBox( UINT8 ubProfileID, UINT16 usMessageBoxType )
 			{
 				iTemp -= giHospitalRefund;
 			}
-			swprintf( zTemp2, L"%s", FormatMoney(iTemp).data());
+			swprintf( zTemp2, JA2_TEXT("%s"), FormatMoney(iTemp).data());
 			swprintf( zTemp, TacticalStr[ PAY_MONEY_PROMPT ], zTemp2 );
 
 			DoMessageBox( MSG_BOX_BASIC_STYLE, zTemp, GAME_SCREEN, ( UINT8 )MSG_BOX_FLAG_YESNO, DialogueMessageBoxCallBack, NULL );
 			break;
 		case NPC_ACTION_BUY_VEHICLE_REQUESTOR:
-			swprintf( zTemp2, L"%s", FormatMoney(10000).data());
+			swprintf( zTemp2, JA2_TEXT("%s"), FormatMoney(10000).data());
 			swprintf( zTemp, TacticalStr[ PAY_MONEY_PROMPT ], zTemp2 );
 
 			DoMessageBox( MSG_BOX_BASIC_STYLE, zTemp, GAME_SCREEN, ( UINT8 )MSG_BOX_FLAG_YESNO, DialogueMessageBoxCallBack, NULL );

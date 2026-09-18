@@ -5,6 +5,7 @@
 #include <vfs/Core/vfs_string.h>
 #include <vfs/Tools/vfs_log.h>
 #include <vfs/Tools/vfs_hp_timer.h>
+#include "UtfConversion.h"
 
 namespace sgp
 {
@@ -41,6 +42,20 @@ namespace sgp
 			friend class Logger;
 			LogInstance(LogData* ld) : _log(*ld) {};
 		public:
+#ifndef _WIN32
+			LogInstance& operator<<(const CHAR16* text)
+			{
+				if (!text) return *this;
+				const std::string utf8 = ja2::text::utf16ToUtf8ReplacingInvalid(text);
+				const std::wstring wide = vfs::String(utf8).c_wcs();
+				if(_log.stream) (*_log.stream) << wide;
+				if(_log.screen) (*_log.screen) << wide;
+				if(_log.file) (*_log.file) << utf8.c_str();
+				return *this;
+			}
+			template<std::size_t Size>
+			LogInstance& operator<<(const CHAR16 (&text)[Size]) { return (*this) << static_cast<const CHAR16*>(text); }
+#endif
 			template <typename T>
 			LogInstance& operator<<(T const& t){
 				if(_log.stream) (*_log.stream) << t;

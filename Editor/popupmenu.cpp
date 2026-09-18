@@ -282,12 +282,12 @@ void RenderPopupMenu()
 			{
 				//This is the highlighted menu entry.
 				SetFontForeground( FONT_MCOLOR_LTBLUE );
-				mprintf( usX, usY, L" %s ", GetPopupMenuString( ubCounter ) );
+				mprintf( usX, usY, JA2_TEXT(" %s "), GetPopupMenuString( ubCounter ) );
 				SetFontForeground( FONT_MCOLOR_WHITE );
 			}
 			else
 			{
-				mprintf( usX, usY, L" %s ", GetPopupMenuString( ubCounter ) );
+				mprintf( usX, usY, JA2_TEXT(" %s "), GetPopupMenuString( ubCounter ) );
 			}
 			ubCounter++;
 		}

@@ -68,7 +68,7 @@ BOOLEAN		FloristGallerySubPagesVisitedFlag[ 4 ];
 //Floral buttons
 extern INT32	guiGalleryButtonImage; // symbol already defined in florist.cpp (jonathanl)
 void			BtnGalleryFlowerButtonCallback(GUI_BUTTON *btn,INT32 reason);
-UINT32			guiGalleryButton[ FLOR_GALLERY_NUMBER_FLORAL_BUTTONS ];
+static UINT32			guiGalleryButton[ FLOR_GALLERY_NUMBER_FLORAL_BUTTONS ];
 
 //Next Previous buttons
 INT32		guiFloralGalleryButtonImage;
@@ -375,8 +375,8 @@ BOOLEAN DisplayFloralDescriptions()
 		//Display Flower Price
 		uiStartLoc = FLOR_GALLERY_TEXT_TOTAL_SIZE * (i + gubCurFlowerIndex) + FLOR_GALLERY_TEXT_TITLE_SIZE;
 		LoadEncryptedDataFromFile(FLOR_GALLERY_TEXT_FILE, sTemp, uiStartLoc, FLOR_GALLERY_TEXT_PRICE_SIZE);
-		swscanf( sTemp, L"%hu", &usPrice);
-		swprintf( sTemp, L"$%d.00 %s", usPrice, pMessageStrings[ MSG_USDOLLAR_ABBREVIATION ] );
+		swscanf( sTemp, JA2_TEXT("%hu"), &usPrice);
+		swprintf( sTemp, JA2_TEXT("$%d.00 %s"), usPrice, pMessageStrings[ MSG_USDOLLAR_ABBREVIATION ] );
 		DrawTextToScreen(sTemp, FLOR_GALLERY_FLOWER_TITLE_X, (UINT16)(usPosY+FLOR_GALLERY_FLOWER_PRICE_OFFSET_Y), 0, FLOR_GALLERY_FLOWER_PRICE_FONT, FLOR_GALLERY_FLOWER_PRICE_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED	);
 
 		//Display Flower Desc

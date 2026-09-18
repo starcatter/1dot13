@@ -698,7 +698,7 @@ UINT16 CountDirectionRating( INT16 sMapX, INT16 sMapY, UINT8 uiDir )
 		}
 	}
 
-//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"M %ld, E%ld,%ld %ld, Diff %ld", CountAllMilitiaInSector( sMapX, sMapY ), sDMapX, sDMapY, NumNonPlayerTeamMembersInSector( sDMapX, sDMapY, ENEMY_TEAM ), ((INT32)CountAllMilitiaInSector( sMapX, sMapY )) - ((INT32)NumNonPlayerTeamMembersInSector( sDMapX, sDMapY, ENEMY_TEAM )) );
+//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("M %ld, E%ld,%ld %ld, Diff %ld"), CountAllMilitiaInSector( sMapX, sMapY ), sDMapX, sDMapY, NumNonPlayerTeamMembersInSector( sDMapX, sDMapY, ENEMY_TEAM ), ((INT32)CountAllMilitiaInSector( sMapX, sMapY )) - ((INT32)NumNonPlayerTeamMembersInSector( sDMapX, sDMapY, ENEMY_TEAM )) );
 
 	return iRes;
 }
@@ -936,7 +936,7 @@ void GenerateDirectionInfos( INT16 sMapX, INT16 sMapY, UINT8* uiDirNumber, UINT1
 	*uiDirNumber = 0;
 
 #ifdef DEBUG_SHOW_RATINGS
-	if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%ld,%ld-------------------", sMapX, sMapY );
+	if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%ld,%ld-------------------"), sMapX, sMapY );
 #endif
 
 	if(sMapY > MINIMUM_VALID_Y_COORDINATE && CheckStandardConditionsForDirection( sMapX, sMapY, sMapX, sMapY - 1, fForTraining, fForBattle ) )
@@ -951,7 +951,7 @@ void GenerateDirectionInfos( INT16 sMapX, INT16 sMapY, UINT8* uiDirNumber, UINT1
 		pMoveDir[ *uiDirNumber ][2] = INSERTION_CODE_NORTH;
 
 #ifdef DEBUG_SHOW_RATINGS
-		if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Priority of north direction - %ld", pMoveDir[ *uiDirNumber ][1]);
+		if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Priority of north direction - %ld"), pMoveDir[ *uiDirNumber ][1]);
 #endif
 
 		++(*uiDirNumber);
@@ -968,7 +968,7 @@ void GenerateDirectionInfos( INT16 sMapX, INT16 sMapY, UINT8* uiDirNumber, UINT1
 		pMoveDir[ *uiDirNumber ][2] = INSERTION_CODE_WEST;
 
 #ifdef DEBUG_SHOW_RATINGS
-		if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Priority of west direction - %ld", pMoveDir[ *uiDirNumber ][1]);
+		if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Priority of west direction - %ld"), pMoveDir[ *uiDirNumber ][1]);
 #endif
 
 		++(*uiDirNumber);
@@ -985,7 +985,7 @@ void GenerateDirectionInfos( INT16 sMapX, INT16 sMapY, UINT8* uiDirNumber, UINT1
 		pMoveDir[ *uiDirNumber ][2] = INSERTION_CODE_SOUTH;
 
 #ifdef DEBUG_SHOW_RATINGS
-		if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Priority of south direction - %ld", pMoveDir[ *uiDirNumber ][1]);
+		if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Priority of south direction - %ld"), pMoveDir[ *uiDirNumber ][1]);
 #endif
 
 		++(*uiDirNumber);
@@ -1002,7 +1002,7 @@ void GenerateDirectionInfos( INT16 sMapX, INT16 sMapY, UINT8* uiDirNumber, UINT1
 		pMoveDir[ *uiDirNumber ][2] = INSERTION_CODE_EAST;
 
 #ifdef DEBUG_SHOW_RATINGS
-		if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Priority of east direction - %ld", pMoveDir[ *uiDirNumber ][1]);
+		if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Priority of east direction - %ld"), pMoveDir[ *uiDirNumber ][1]);
 #endif
 
 		++(*uiDirNumber);
@@ -1203,7 +1203,7 @@ BOOLEAN CallMilitiaReinforcements( INT16 sTargetMapX, INT16 sTargetMapY, INT16 s
 	// test wether travel from src to target is possible ( we cannot open the src map information, we'll rely on the xml data instead
 	if( SectorInfo[ SECTOR(sSrcMapX,sSrcMapY) ].ubTraversability[ movetype ] == GROUNDBARRIER || SectorInfo[ SECTOR(sSrcMapX,sSrcMapY) ].ubTraversability[ movetype ] == EDGEOFWORLD )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Militia cannot traverse to this sector due to the terrain." );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Militia cannot traverse to this sector due to the terrain.") );
 		return FALSE;
 	}
 
@@ -1312,7 +1312,7 @@ BOOLEAN MilitiaGroupEntersCurrentSector( UINT8 usGroupId, INT16 sMapX, INT16 sMa
 	// test wether travel from src to target is possible ( we cannot open the src map information, we'll rely on the xml data instead
 	if ( SectorInfo[SECTOR( sSrcMapX, sSrcMapY )].ubTraversability[movetype] == GROUNDBARRIER || SectorInfo[SECTOR( sSrcMapX, sSrcMapY )].ubTraversability[movetype] == EDGEOFWORLD )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Militia cannot traverse to this sector due to the terrain." );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Militia cannot traverse to this sector due to the terrain.") );
 		return FALSE;
 	}
 	
@@ -1428,7 +1428,7 @@ void GenerateDirectionInfosForTraining( INT16 sMapX, INT16 sMapY, UINT8* uiDirNu
 	}
 
 #ifdef DEBUG_SHOW_RATINGS
-	if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%ld,%ld-------------------", sMapX, sMapY );
+	if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%ld,%ld-------------------"), sMapX, sMapY );
 #endif
 
 	// Check north
@@ -1451,7 +1451,7 @@ void GenerateDirectionInfosForTraining( INT16 sMapX, INT16 sMapY, UINT8* uiDirNu
 				pMoveDir[ *uiDirNumber ][2] = INSERTION_CODE_NORTH;
 	
 				#ifdef DEBUG_SHOW_RATINGS
-						if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Priority of north direction - %ld", pMoveDir[ *uiDirNumber ][1]);
+						if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Priority of north direction - %ld"), pMoveDir[ *uiDirNumber ][1]);
 				#endif
 	
 				++(*uiDirNumber);
@@ -1479,7 +1479,7 @@ void GenerateDirectionInfosForTraining( INT16 sMapX, INT16 sMapY, UINT8* uiDirNu
 				pMoveDir[ *uiDirNumber ][2] = INSERTION_CODE_WEST;
 
 				#ifdef DEBUG_SHOW_RATINGS
-						if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Priority of north direction - %ld", pMoveDir[ *uiDirNumber ][1]);
+						if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Priority of north direction - %ld"), pMoveDir[ *uiDirNumber ][1]);
 				#endif
 
 				++(*uiDirNumber);
@@ -1507,7 +1507,7 @@ void GenerateDirectionInfosForTraining( INT16 sMapX, INT16 sMapY, UINT8* uiDirNu
 				pMoveDir[ *uiDirNumber ][2] = INSERTION_CODE_SOUTH;
 
 				#ifdef DEBUG_SHOW_RATINGS
-						if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Priority of north direction - %ld", pMoveDir[ *uiDirNumber ][1]);
+						if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Priority of north direction - %ld"), pMoveDir[ *uiDirNumber ][1]);
 				#endif
 
 				++(*uiDirNumber);
@@ -1535,7 +1535,7 @@ void GenerateDirectionInfosForTraining( INT16 sMapX, INT16 sMapY, UINT8* uiDirNu
 				pMoveDir[ *uiDirNumber ][2] = INSERTION_CODE_EAST;
 
 				#ifdef DEBUG_SHOW_RATINGS
-						if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Priority of north direction - %ld", pMoveDir[ *uiDirNumber ][1]);
+						if( DEBUG_RATINGS_CONDITION )ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Priority of north direction - %ld"), pMoveDir[ *uiDirNumber ][1]);
 				#endif
 
 				++(*uiDirNumber);

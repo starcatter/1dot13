@@ -2251,8 +2251,8 @@ static void RenderTiles(UINT32 uiFlags, INT32 iStartPointX_M, INT32 iStartPointY
 
 									SetFont(TINYFONT1);
 									SetFontDestBuffer(guiSAVEBUFFER, 0, gsVIEWPORT_WINDOW_START_Y, SCREEN_WIDTH, gsVIEWPORT_WINDOW_END_Y, FALSE);
-									VarFindFontCenterCoordinates(sXPos, sYPos, 1, 1, TINYFONT1, &sX, &sY, L"%d", pNode->uiAPCost);
-									mprintf_buffer(pDestBuf, uiDestPitchBYTES, TINYFONT1, sX, sY, L"%d", pNode->uiAPCost);
+									VarFindFontCenterCoordinates(sXPos, sYPos, 1, 1, TINYFONT1, &sX, &sY, JA2_TEXT("%d"), pNode->uiAPCost);
+									mprintf_buffer(pDestBuf, uiDestPitchBYTES, TINYFONT1, sX, sY, JA2_TEXT("%d"), pNode->uiAPCost);
 									SetFontDestBuffer(FRAME_BUFFER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE);
 								}
 								else if ((uiLevelNodeFlags  & LEVELNODE_ERASEZ) && !(uiFlags&TILES_DIRTY))
@@ -2965,8 +2965,8 @@ static void RenderTiles(UINT32 uiFlags, INT32 iStartPointX_M, INT32 iStartPointY
 										{
 											SetFont(TINYFONT1);
 											SetFontDestBuffer(guiSAVEBUFFER, 0, gsVIEWPORT_WINDOW_START_Y, SCREEN_WIDTH, gsVIEWPORT_WINDOW_END_Y, FALSE);
-											VarFindFontCenterCoordinates(sXPos, sYPos, 1, 1, TINYFONT1, &sX, &sY, L"%d", pSoldier->ubPlannedUIAPCost);
-											mprintf_buffer(pDestBuf, uiDestPitchBYTES, TINYFONT1, sX, sY, L"%d", pSoldier->ubPlannedUIAPCost);
+											VarFindFontCenterCoordinates(sXPos, sYPos, 1, 1, TINYFONT1, &sX, &sY, JA2_TEXT("%d"), pSoldier->ubPlannedUIAPCost);
+											mprintf_buffer(pDestBuf, uiDestPitchBYTES, TINYFONT1, sX, sY, JA2_TEXT("%d"), pSoldier->ubPlannedUIAPCost);
 											SetFontDestBuffer(FRAME_BUFFER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE);
 										}
 									}
@@ -4807,6 +4807,7 @@ void InvalidateWorldRedundency( )
 
 }
 
+#if defined(_MSC_VER) && defined(_M_IX86)
 #define	Z_STRIP_DELTA_Y  ( Z_SUBLAYERS * 10 )
 
 /**********************************************************************************************
@@ -6971,7 +6972,7 @@ BOOLEAN Blt8BPPDataTo16BPPBufferTransZTransShadowIncObscureClipAlpha(UINT16 *pBu
 	return(TRUE);
 }
 
-
+#endif
 
 void CorrectRenderCenter( INT16 sRenderX, INT16 sRenderY, INT16 *pSNewX, INT16 *pSNewY )
 {
@@ -7008,6 +7009,7 @@ void CorrectRenderCenter( INT16 sRenderX, INT16 sRenderY, INT16 *pSNewX, INT16 *
 }
 
 
+#if defined(_MSC_VER) && defined(_M_IX86)
 
 // Blitter Specs
 // 1 ) 8 to 16 bpp
@@ -7905,8 +7907,7 @@ BOOLEAN Blt8BPPDataTo16BPPBufferTransZTransShadowIncClipAlpha(UINT16 *pBuffer, U
 
 	return(TRUE);
 }
-
-
+#endif
 
 void RenderRoomInfo( INT16 sStartPointX_M, INT16 sStartPointY_M, INT16 sStartPointX_S, INT16 sStartPointY_S, INT16 sEndXS, INT16 sEndYS )
 {
@@ -7970,7 +7971,7 @@ void RenderRoomInfo( INT16 sStartPointX_M, INT16 sStartPointY_M, INT16 sStartPoi
 						case 3:		SetFontForeground( FONT_LTBLUE );	break;
 						case 4:   SetFontForeground( FONT_LTGREEN );break;
 					}
-					mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY , L"%d", gusWorldRoomInfo[ usTileIndex ] );
+					mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY , JA2_TEXT("%d"), gusWorldRoomInfo[ usTileIndex ] );
 					SetFontDestBuffer( FRAME_BUFFER , 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
 				}
 			}
@@ -8068,7 +8069,7 @@ void RenderFOVDebugInfo( INT16 sStartPointX_M, INT16 sStartPointY_M, INT16 sStar
 					SetFont( SMALLCOMPFONT );
 					SetFontDestBuffer( FRAME_BUFFER , 0, 0, SCREEN_WIDTH, gsVIEWPORT_END_Y, FALSE );
 					SetFontForeground( FONT_GRAY3 );
-					mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY , L"%d", gubFOVDebugInfoInfo[ usTileIndex ] );
+					mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY , JA2_TEXT("%d"), gubFOVDebugInfoInfo[ usTileIndex ] );
 					SetFontDestBuffer( FRAME_BUFFER , 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
 
 
@@ -8081,7 +8082,7 @@ void RenderFOVDebugInfo( INT16 sStartPointX_M, INT16 sStartPointY_M, INT16 sStar
 					SetFont( SMALLCOMPFONT );
 					SetFontDestBuffer( FRAME_BUFFER , 0, 0, SCREEN_WIDTH, gsVIEWPORT_END_Y, FALSE );
 					SetFontForeground( FONT_FCOLOR_YELLOW );
-					mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY + 4 , L"x" );
+					mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY + 4 , JA2_TEXT("x") );
 					SetFontDestBuffer( FRAME_BUFFER , 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
 				}
 
@@ -8188,7 +8189,7 @@ void RenderCoverDebugInfo( INT16 sStartPointX_M, INT16 sStartPointY_M, INT16 sSt
 					{
 						SetFontForeground( FONT_GRAY3 );
 					}
-					mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY , L"%d", gsCoverValue[ usTileIndex ] );
+					mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY , JA2_TEXT("%d"), gsCoverValue[ usTileIndex ] );
 					SetFontDestBuffer( FRAME_BUFFER , 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
 				}
 
@@ -8291,7 +8292,7 @@ void RenderGridNoVisibleDebugInfo( INT16 sStartPointX_M, INT16 sStartPointY_M, I
 				{
 					SetFontForeground( FONT_GRAY3 );
 				}
-				mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY , L"%d", usTileIndex );
+				mprintf_buffer( pDestBuf, uiDestPitchBYTES, TINYFONT1, sX,  sY , JA2_TEXT("%d"), usTileIndex );
 				SetFontDestBuffer( FRAME_BUFFER , 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
 
 			}
@@ -8623,9 +8624,7 @@ void ResetRenderParameters(  )
 	gClippingRect =	gOldClipRect;
 }
 
-
-
-
+#if defined(_MSC_VER) && defined(_M_IX86)
 BOOLEAN Zero8BPPDataTo16BPPBufferTransparent( UINT16 *pBuffer, UINT32 uiDestPitchBYTES, HVOBJECT hSrcVObject, INT32 iX, INT32 iY, UINT16 usIndex )
 {
 	UINT32 uiOffset;
@@ -8959,6 +8958,7 @@ BlitDone:
 	return(fHidden);
 
 }
+#endif
 
 void SetMercGlowFast( )
 {

@@ -272,11 +272,11 @@ void ValidateAndCorrectInBattleCounters( GROUP *pLocGroup )
 	if( ubInvalidGroups || pSector->ubAdminsInBattle || pSector->ubTroopsInBattle || pSector->ubElitesInBattle || pSector->ubCreaturesInBattle )
 	{
 		CHAR16 str[ 512 ];
-		swprintf( str, L"Strategic info warning: Sector 'in battle' counters are not clear when they should be.	"
-									L"If you can provide information on how a previous battle was resolved here or nearby patrol "
-									L"(auto resolve, tactical battle, cheat keys, or retreat),"
-									L"please forward that info (no data files necessary) as well as the following code (very important):	"
-									L"G(%02d:%c%d_b%d) A(%02d:%02d) T(%02d:%02d) E(%02d:%02d) C(%02d:%02d) Ta(%02d:%02d) J(%02d:%02d) R(%02d:%02d)",
+		swprintf( str, JA2_TEXT("Strategic info warning: Sector 'in battle' counters are not clear when they should be.	")
+									JA2_TEXT("If you can provide information on how a previous battle was resolved here or nearby patrol ")
+									JA2_TEXT("(auto resolve, tactical battle, cheat keys, or retreat),")
+									JA2_TEXT("please forward that info (no data files necessary) as well as the following code (very important):	")
+									JA2_TEXT("G(%02d:%c%d_b%d) A(%02d:%02d) T(%02d:%02d) E(%02d:%02d) C(%02d:%02d) Ta(%02d:%02d) J(%02d:%02d) R(%02d:%02d)"),
 									ubInvalidGroups, pLocGroup->ubSectorY + 'A' - 1, pLocGroup->ubSectorX, pLocGroup->ubSectorZ,
 									pSector->ubNumAdmins, pSector->ubAdminsInBattle,
 									pSector->ubNumTroops, pSector->ubTroopsInBattle,
@@ -395,9 +395,9 @@ void InitPreBattleInterface( GROUP *pBattleGroup, BOOLEAN fPersistantPBI )
 		}
 
 		// reset the help text for mouse regions
-		SetRegionFastHelpText( &gCharInfoHandRegion, L"" );
-		SetRegionFastHelpText( &gCharInfoFaceRegion, L"" );
-		SetRegionFastHelpText( &gMapStatusBarsRegion, L"" );
+		SetRegionFastHelpText( &gCharInfoHandRegion, JA2_TEXT("") );
+		SetRegionFastHelpText( &gCharInfoFaceRegion, JA2_TEXT("") );
+		SetRegionFastHelpText( &gMapStatusBarsRegion, JA2_TEXT("") );
 
 		gfDisplayPotentialRetreatPaths = FALSE;
 
@@ -478,7 +478,7 @@ void InitPreBattleInterface( GROUP *pBattleGroup, BOOLEAN fPersistantPBI )
 		else
 		{
 			#ifdef JA2BETAVERSION
-				DoScreenIndependantMessageBox( L"Can't determine valid reason for battle indicator.	Please try to provide information as to when and why this indicator first appeared and send whatever files that may help.", MSG_BOX_FLAG_OK, NULL );
+				DoScreenIndependantMessageBox( JA2_TEXT("Can't determine valid reason for battle indicator.	Please try to provide information as to when and why this indicator first appeared and send whatever files that may help."), MSG_BOX_FLAG_OK, NULL );
 			#endif
 			gfBlitBattleSectorLocator = FALSE;
 			return;
@@ -1538,7 +1538,7 @@ void RenderPreBattleInterface()
 		SetFontShadow( FONT_NEARBLACK );
 
 		GetSectorIDString( gubPBSectorX, gubPBSectorY, gubPBSectorZ, pSectorName, TRUE );
-		mprintf( 70 + xOffset, 17 + yOffset, L"%s %s", gpStrategicString[STR_PB_SECTOR], pSectorName );
+		mprintf( 70 + xOffset, 17 + yOffset, JA2_TEXT("%s %s"), gpStrategicString[STR_PB_SECTOR], pSectorName );
 
 		//enemy
 		SetFont( FONT14ARIAL );
@@ -1551,23 +1551,23 @@ void RenderPreBattleInterface()
 			WhatPlayerKnowsAboutEnemiesInSector( gubPBSectorX, gubPBSectorY ) < KNOWS_THEYRE_THERE_AND_HOW_MANY ) // HEADROCK HAM 5: New case above this one...
 		{
 			// don't know how many
-			swprintf( str, L"?" );
+			swprintf( str, JA2_TEXT("?") );
 		}
 		else
 		{
 			// know exactly how many
 			i = NumNonPlayerTeamMembersInSector( gubPBSectorX, gubPBSectorY, ENEMY_TEAM );
-			swprintf( str, L"%d", i );
+			swprintf( str, JA2_TEXT("%d"), i );
 		}
 		x = 57 + (27 - StringPixLength( str, FONT14ARIAL )) / 2;
 		y = 36;
 		mprintf( x + xOffset, y + yOffset, str );
 		//player
-		swprintf( str, L"%d", guiNumInvolved );
+		swprintf( str, JA2_TEXT("%d"), guiNumInvolved );
 		x = 142 + (27 - StringPixLength( str, FONT14ARIAL )) / 2;
 		mprintf( x + xOffset, y + yOffset, str );
 		//militia
-		swprintf( str, L"%d", NumNonPlayerTeamMembersInSector( gubPBSectorX, gubPBSectorY, MILITIA_TEAM ) );
+		swprintf( str, JA2_TEXT("%d"), NumNonPlayerTeamMembersInSector( gubPBSectorX, gubPBSectorY, MILITIA_TEAM ) );
 		x = 227 + (27 - StringPixLength( str, FONT14ARIAL )) / 2;
 		mprintf( x + xOffset, y + yOffset, str );
 		SetFontShadow( FONT_NEARBLACK );
@@ -1602,12 +1602,12 @@ void RenderPreBattleInterface()
 					x = 129 + (58 - StringPixLength(str, BLOCKFONT2)) / 2;
 					mprintf( x + xOffset, y + yOffset, str );
 					//HP
-					swprintf( str, L"%d%%", ubHPPercent );
+					swprintf( str, JA2_TEXT("%d%%"), ubHPPercent );
 					x = 189 + (25 - StringPixLength(str, BLOCKFONT2)) / 2;
 					wcscat( str, sSpecialCharacters[0] );
 					mprintf( x + xOffset, y + yOffset, str );
 					//BP
-					swprintf( str, L"%d%%", ubBPPercent );
+					swprintf( str, JA2_TEXT("%d%%"), ubBPPercent );
 					x = 217 + (25-StringPixLength( str, BLOCKFONT2)) / 2;
 					wcscat( str, sSpecialCharacters[0] );
 					mprintf( x + xOffset, y + yOffset, str );

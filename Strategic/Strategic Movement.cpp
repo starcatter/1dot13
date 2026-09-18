@@ -773,19 +773,19 @@ GROUP* CreateNewEnemyGroupDepartingFromSector( UINT32 uiSector, UINT8 ubNumAdmin
 		CHAR16 str[ 512 ];
 		if ( PlayerMercsInSector( pNew->ubSectorX, pNew->ubSectorY, 0 ) || NumNonPlayerTeamMembersInSector( pNew->ubSectorX, pNew->ubSectorY, MILITIA_TEAM ) )
 		{
-			swprintf( str, L"Attempting to send enemy troops from player occupied location. "
-										L"Please ALT+TAB out of the game before doing anything else and send 'Strategic Decisions.txt' "
-										L"and this message. You'll likely need to revert to a previous save. If you can reproduce this "
-										L"with a save close to this event, that would really help me! -- KM:0" );
+			swprintf( str, JA2_TEXT("Attempting to send enemy troops from player occupied location. ")
+										JA2_TEXT("Please ALT+TAB out of the game before doing anything else and send 'Strategic Decisions.txt' ")
+										JA2_TEXT("and this message. You'll likely need to revert to a previous save. If you can reproduce this ")
+										JA2_TEXT("with a save close to this event, that would really help me! -- KM:0") );
 			DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 		}
 		/*
 		 * Not valid
 		else if( pNew->ubGroupSize > 25 )
 		{
-			swprintf( str, L"Strategic AI warning: Creating an enemy group containing %d soldiers "
-										L"(%d admins, %d troops, %d elites) in sector %c%d. This message is a temporary test message "
-										L"to evaluate a potential problems with very large enemy groups.",
+			swprintf( str, JA2_TEXT("Strategic AI warning: Creating an enemy group containing %d soldiers ")
+										JA2_TEXT("(%d admins, %d troops, %d elites) in sector %c%d. This message is a temporary test message ")
+										JA2_TEXT("to evaluate a potential problems with very large enemy groups."),
 										pNew->ubGroupSize, ubNumAdmins, ubNumTroops, ubNumElites,
 										pNew->ubSectorY + 'A' - 1, pNew->ubSectorX );
 			DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
@@ -850,19 +850,19 @@ GROUP* CreateNewMilitiaGroupDepartingFromSector( UINT32 uiSector, UINT16& arusNu
 		/*CHAR16 str[512];
 		if ( PlayerMercsInSector( pNew->ubSectorX, pNew->ubSectorY, 0 ) || NumNonPlayerTeamMembersInSector( pNew->ubSectorX, pNew->ubSectorY, MILITIA_TEAM ) )
 		{
-			swprintf( str, L"Attempting to send enemy troops from player occupied location. "
-					  L"Please ALT+TAB out of the game before doing anything else and send 'Strategic Decisions.txt' "
-					  L"and this message. You'll likely need to revert to a previous save. If you can reproduce this "
-					  L"with a save close to this event, that would really help me! -- KM:0" );
+			swprintf( str, JA2_TEXT("Attempting to send enemy troops from player occupied location. ")
+					  JA2_TEXT("Please ALT+TAB out of the game before doing anything else and send 'Strategic Decisions.txt' ")
+					  JA2_TEXT("and this message. You'll likely need to revert to a previous save. If you can reproduce this ")
+					  JA2_TEXT("with a save close to this event, that would really help me! -- KM:0") );
 			DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 		}*/
 		/*
 		* Not valid
 		else if( pNew->ubGroupSize > 25 )
 		{
-		swprintf( str, L"Strategic AI warning: Creating an enemy group containing %d soldiers "
-		L"(%d admins, %d troops, %d elites) in sector %c%d. This message is a temporary test message "
-		L"to evaluate a potential problems with very large enemy groups.",
+		swprintf( str, JA2_TEXT("Strategic AI warning: Creating an enemy group containing %d soldiers ")
+		JA2_TEXT("(%d admins, %d troops, %d elites) in sector %c%d. This message is a temporary test message ")
+		JA2_TEXT("to evaluate a potential problems with very large enemy groups."),
 		pNew->ubGroupSize, ubNumAdmins, ubNumTroops, ubNumElites,
 		pNew->ubSectorY + 'A' - 1, pNew->ubSectorX );
 		DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
@@ -1586,7 +1586,7 @@ BOOLEAN AttemptToMergeSeparatedGroups( GROUP *pGroup, BOOLEAN fDecrementTraversa
 									counter++;
 									if( counter > 100 )
 									{
-										AssertMsg( FALSE, L"Aborting infinite loop in merge group code #2. (KM : 1)" );
+										AssertMsg( FALSE, JA2_TEXT("Aborting infinite loop in merge group code #2. (KM : 1)") );
 										return FALSE;
 									}
 								#endif
@@ -1644,7 +1644,7 @@ BOOLEAN AttemptToMergeSeparatedGroups( GROUP *pGroup, BOOLEAN fDecrementTraversa
 									counter++;
 									if( counter > 100 )
 									{
-										AssertMsg( FALSE, L"Aborting infinite loop in merge group code #3. (KM : 1)" );
+										AssertMsg( FALSE, JA2_TEXT("Aborting infinite loop in merge group code #3. (KM : 1)") );
 										return FALSE;
 									}
 								#endif
@@ -2675,7 +2675,7 @@ BOOLEAN PossibleToCoordinateSimultaneousGroupArrivals( GROUP *pFirstGroup )
 		swprintf( str, pStr,
 			pEnemyType, //Enemy type (Enemies or bloodcats)
 			'A' + gpPendingSimultaneousGroup->ubSectorY - 1, gpPendingSimultaneousGroup->ubSectorX ); //Sector location
-		wcscat( str, L"  " );
+		wcscat( str, JA2_TEXT("  ") );
 		wcscat( str, gpStrategicString[ STR_COORDINATE ] );
 		//Setup the dialog
 
@@ -2762,7 +2762,7 @@ void InitiateGroupMovementToNextSector( GROUP *pGroup )
 	// As we have no idea as to where this group was originally intended to go, and wandering around aimlessly would potentially be bad, we just stop moving...
 	if ( wp->x < 1 || wp->x > 16 || wp->y < 1 || wp->y > 16 )
 	{
-		ScreenMsg( FONT_YELLOW, MSG_ERROR, L"Group %d has corrupted waypoints. Cancelling movement!", pGroup->ubGroupID );
+		ScreenMsg( FONT_YELLOW, MSG_ERROR, JA2_TEXT("Group %d has corrupted waypoints. Cancelling movement!"), pGroup->ubGroupID );
 		
 		RemovePGroupWaypoints( pGroup );
 
@@ -3048,7 +3048,7 @@ void RemovePGroup( GROUP *pGroup )
 	{
 		CancelEmptyPersistentGroupMovement( pGroup );
 		return;
-		DoScreenIndependantMessageBox( L"Strategic Info Warning:	Attempting to delete a persistant group.", MSG_BOX_FLAG_OK, NULL );
+		DoScreenIndependantMessageBox( JA2_TEXT("Strategic Info Warning:	Attempting to delete a persistant group."), MSG_BOX_FLAG_OK, NULL );
 	}
 	//if removing head, then advance head first.
 	if( pGroup == gpGroupList )
@@ -5111,7 +5111,7 @@ void AddFuelToVehicle( SOLDIERTYPE *pSoldier, SOLDIERTYPE *pVehicle )
 	{
 		#ifdef JA2BETAVERSION
 			CHAR16 str[ 100 ];
-			swprintf( str, L"%s is supposed to have gas can in hand. ATE:0", pSoldier->name );
+			swprintf( str, JA2_TEXT("%s is supposed to have gas can in hand. ATE:0"), pSoldier->name );
 			DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 		#endif
 		return;
@@ -5905,15 +5905,15 @@ BOOLEAN ValidateGroups( GROUP *pGroup )
 		CHAR16 str[ 512 ];
 		if( pGroup->ubSectorIDOfLastReassignment == 255 )
 		{
-			swprintf( str, L"Enemy group found with 0 troops in it. This is illegal and group will be deleted."
-										L"  Group %d in sector %c%d originated from sector %c%d.",
+			swprintf( str, JA2_TEXT("Enemy group found with 0 troops in it. This is illegal and group will be deleted.")
+										JA2_TEXT("  Group %d in sector %c%d originated from sector %c%d."),
 										pGroup->ubGroupID, pGroup->ubSectorY + 'A' - 1, pGroup->ubSectorX,
 										SECTORY( pGroup->ubCreatedSectorID ) + 'A' - 1, SECTORX( pGroup->ubCreatedSectorID ) );
 		}
 		else
 		{
-			swprintf( str, L"Enemy group found with 0 troops in it. This is illegal and group will be deleted."
-										L"  Group %d in sector %c%d originated from sector %c%d and last reassignment location was %c%d.",
+			swprintf( str, JA2_TEXT("Enemy group found with 0 troops in it. This is illegal and group will be deleted.")
+										JA2_TEXT("  Group %d in sector %c%d originated from sector %c%d and last reassignment location was %c%d."),
 										pGroup->ubGroupID, pGroup->ubSectorY + 'A' - 1, pGroup->ubSectorX,
 										SECTORY( pGroup->ubCreatedSectorID ) + 'A' - 1, SECTORX( pGroup->ubCreatedSectorID ),
 										SECTORY( pGroup->ubSectorIDOfLastReassignment ) + 'A' - 1, SECTORX( pGroup->ubSectorIDOfLastReassignment ) );
@@ -6026,17 +6026,17 @@ GROUP* CreateNewEnemyGroupDepartingFromSectorUsingZLevel( UINT32 uiSector, UINT8
 		UINT16 str[ 512 ];
 		//if( PlayerMercsInSector( pNew->ubSectorX, pNew->ubSectorY, pNew->ubSectorZ ) || CountAllMilitiaInSector( pNew->ubSectorX, pNew->ubSectorY ) )
 		//{
-		//	swprintf( str, L"Attempting to send enemy troops from player occupied location.  "
-		//								 L"Please ALT+TAB out of the game before doing anything else and send 'Strategic Decisions.txt' "
-		//								 L"and this message.  You'll likely need to revert to a previous save.  If you can reproduce this "
-		//								 L"with a save close to this event, that would really help me! -- KM:0" );
+		//	swprintf( str, JA2_TEXT("Attempting to send enemy troops from player occupied location.  ")
+		//								 JA2_TEXT("Please ALT+TAB out of the game before doing anything else and send 'Strategic Decisions.txt' ")
+		//								 JA2_TEXT("and this message.  You'll likely need to revert to a previous save.  If you can reproduce this ")
+		//								 JA2_TEXT("with a save close to this event, that would really help me! -- KM:0") );
 		//	DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );
 		//}
 		if( pNew->ubGroupSize > 25 )
 		{
-			swprintf( str, L"Strategic AI warning:  Creating an enemy group containing %d soldiers "
-										 L"(%d admins, %d troops, %d elites) in sector %c%d.  This message is a temporary test message "
-										 L"to evaluate a potential problems with very large enemy groups.",
+			swprintf( str, JA2_TEXT("Strategic AI warning:  Creating an enemy group containing %d soldiers ")
+										 JA2_TEXT("(%d admins, %d troops, %d elites) in sector %c%d.  This message is a temporary test message ")
+										 JA2_TEXT("to evaluate a potential problems with very large enemy groups."),
 										 pNew->ubGroupSize, ubNumAdmins, ubNumTroops, ubNumElites,
 										 pNew->ubSectorY + 'A' - 1, pNew->ubSectorX );
 			DoScreenIndependantMessageBox( str, MSG_BOX_FLAG_OK, NULL );

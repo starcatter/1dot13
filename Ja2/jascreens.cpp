@@ -32,6 +32,7 @@
 #include "Sound Control.h"
 #include "Text.h"
 #include "INIReader.h"
+#include "UtfConversion.h"
 #include "platform/Sleep.h"
 
 #include "sgp_logger.h"
@@ -107,24 +108,24 @@ void DisplayFrameRate( )
 		VideoOverlayDesc.uiFontID = SMALLFONT1;
 		VideoOverlayDesc.ubFontBack = FONT_MCOLOR_BLACK;
 		VideoOverlayDesc.ubFontFore = uiFPS < 20 ? FONT_MCOLOR_LTRED : FONT_MCOLOR_DKGRAY;
-		swprintf( VideoOverlayDesc.pzText, L"FPS: %ld", __min( uiFPS, 1000 ) );
+		swprintf( VideoOverlayDesc.pzText, JA2_TEXT("FPS: %ld"), __min( uiFPS, 1000 ) );
 		VideoOverlayDesc.uiFlags	= VOVERLAY_DESC_TEXT | VOVERLAY_DESC_FONT | VOVERLAY_DESC_DISABLED;
 		UpdateVideoOverlay( &VideoOverlayDesc, giFPSOverlay, FALSE );
 
 		// TIMER COUNTER
-		swprintf( VideoOverlayDesc.pzText, L"Frame: %04ld ms", __min( giTimerDiag, 10000 ) );
+		swprintf( VideoOverlayDesc.pzText, JA2_TEXT("Frame: %04ld ms"), __min( giTimerDiag, 10000 ) );
 		VideoOverlayDesc.uiFlags	= VOVERLAY_DESC_TEXT | VOVERLAY_DESC_DISABLED;
 		UpdateVideoOverlay( &VideoOverlayDesc, giCounterPeriodOverlay, FALSE );
 
 		//if( GetMouseMapPos( &usMapPos) )
 		//{
-			//gprintfdirty( 0, 315, L"(%d)",sMapPos);
-			//mprintf( 0,315,L"(%d)",sMapPos);
+			//gprintfdirty( 0, 315, JA2_TEXT("(%d)"),sMapPos);
+			//mprintf( 0,315,JA2_TEXT("(%d)"),sMapPos);
 		//}
 		//else
 		//{
-			//gprintfdirty( 0, 315, L"(%d %d)",gusMouseXPos, gusMouseYPos - INTERFACE_START_Y );
-			//mprintf( 0,315,L"(%d %d)",gusMouseXPos, gusMouseYPos - INTERFACE_START_Y );
+			//gprintfdirty( 0, 315, JA2_TEXT("(%d %d)"),gusMouseXPos, gusMouseYPos - INTERFACE_START_Y );
+			//mprintf( 0,315,JA2_TEXT("(%d %d)"),gusMouseXPos, gusMouseYPos - INTERFACE_START_Y );
 		//}
 	}
 
@@ -133,8 +134,8 @@ void DisplayFrameRate( )
 		SetFont( SMALLFONT1 );
 		SetFontBackground( FONT_MCOLOR_BLACK );
 		SetFontForeground( FONT_MCOLOR_DKRED );
-		gprintfdirty( 0, 0, L"GOD MODE" );
-		mprintf( 0, 0, L"GOD MODE" );
+		gprintfdirty( 0, 0, JA2_TEXT("GOD MODE") );
+		mprintf( 0, 0, JA2_TEXT("GOD MODE") );
 	}
 
 	if ( ( gTacticalStatus.uiFlags & DEMOMODE ) )
@@ -142,8 +143,8 @@ void DisplayFrameRate( )
 		SetFont( SMALLFONT1 );
 		SetFontBackground( FONT_MCOLOR_BLACK );
 		SetFontForeground( FONT_MCOLOR_DKGRAY );
-		//gprintfdirty( 0, 0, L"DEMO MODE" );
-		//mprintf( 0, 0, L"DEMO MODE" );
+		//gprintfdirty( 0, 0, JA2_TEXT("DEMO MODE") );
+		//mprintf( 0, 0, JA2_TEXT("DEMO MODE") );
 	}
 
 #ifdef _DEBUG
@@ -157,24 +158,24 @@ void DisplayFrameRate( )
 		// Debug
 		if (gDebugStr[0] != '\0')
 		{
-			//gprintfdirty( 0, 345, L"DEBUG: %S",gDebugStr);
-			//mprintf( 0,345,L"DEBUG: %S",gDebugStr);
+			//gprintfdirty( 0, 345, JA2_TEXT("DEBUG: %S"),gDebugStr);
+			//mprintf( 0,345,JA2_TEXT("DEBUG: %S"),gDebugStr);
 		}
 
 		if (gSystemDebugStr[0] != '\0')
 		{
-			//gprintfdirty( 0, 345, L"%S",gSystemDebugStr);
-			//mprintf( 0,345,L"%S",gSystemDebugStr);
+			//gprintfdirty( 0, 345, JA2_TEXT("%S"),gSystemDebugStr);
+			//mprintf( 0,345,JA2_TEXT("%S"),gSystemDebugStr);
 			gSystemDebugStr[0] = '\0';
 		}
 
 		// Print Num tiles
-		//gprintfdirty( 0, 280, L"%d Tiles", gTileDatabaseSize );
-		//mprintf( 0, 280, L"%d Tiles", gTileDatabaseSize );
+		//gprintfdirty( 0, 280, JA2_TEXT("%d Tiles"), gTileDatabaseSize );
+		//mprintf( 0, 280, JA2_TEXT("%d Tiles"), gTileDatabaseSize );
 
 		// Print tile mem usage
-		//gprintfdirty( 0, 300, L"%d kB", guiMemTotal / 1024 );
-		//mprintf( 0, 300, L"%d kB", guiMemTotal / 1024 );
+		//gprintfdirty( 0, 300, JA2_TEXT("%d kB"), guiMemTotal / 1024 );
+		//mprintf( 0, 300, JA2_TEXT("%d kB"), guiMemTotal / 1024 );
 
 	}
 #endif
@@ -241,14 +242,14 @@ UINT32 ErrorScreenHandle(void)
 	SetFont( LARGEFONT1 );
 	SetFontBackground( FONT_MCOLOR_BLACK );
 	SetFontForeground( FONT_MCOLOR_LTGRAY );
-	mprintf( 50, 200, L"RUNTIME ERROR -- PRESS <ESC> TO EXIT" );
+	mprintf( 50, 200, JA2_TEXT("RUNTIME ERROR -- PRESS <ESC> TO EXIT") );
 
 //	SetFont( FONT12ARIAL );
 //	SetFontForeground( FONT_YELLOW );
 //	SetFontShadow( 60 );		//60 is near black
-	swprintf( str, L"%S", gubErrorText );
+	swprintf( str, JA2_TEXT("%S"), gubErrorText );
 	DisplayWrappedString (50, 225, 560, 2, FONT12ARIAL, FONT_YELLOW, str, FONT_MCOLOR_BLACK, TRUE, LEFT_JUSTIFIED);
-//	mprintf( 50, 255, L"%S", gubErrorText );
+//	mprintf( 50, 255, JA2_TEXT("%S"), gubErrorText );
 	SetFontForeground( FONT_LTRED );
 
 
@@ -256,7 +257,7 @@ UINT32 ErrorScreenHandle(void)
 
 	if( gubAssertString[0] )
 	{
-		swprintf( str, L"%S", gubAssertString );
+		swprintf( str, JA2_TEXT("%S"), gubAssertString );
 		DisplayWrappedString( 50, 270, 560, 2, FONT12ARIAL, FONT_RED, str, FONT_BLACK, TRUE, LEFT_JUSTIFIED );
 	}
 #endif
@@ -344,32 +345,32 @@ UINT32 InitScreenHandle(void)
 		SetFontForeground( FONT_MCOLOR_WHITE );
 
 #ifdef _DEBUG
-		mprintf( 10, 10, L"%s: %s Debug %s", pMessageStrings[ MSG_VERSION ], zProductLabel, zBuildInformation );
+		mprintf( 10, 10, JA2_TEXT("%s: %s Debug %s"), pMessageStrings[ MSG_VERSION ], zProductLabel, zBuildInformation );
 #else
-		mprintf( 10, 10, L"%s: %s %s", pMessageStrings[ MSG_VERSION ], zProductLabel, zBuildInformation );
+		mprintf( 10, 10, JA2_TEXT("%s: %s %s"), pMessageStrings[ MSG_VERSION ], zProductLabel, zBuildInformation );
 #endif
 
 #if defined JA2BETAVERSION
 
-		mprintf( 10, 0, L"(Beta version error reporting enabled)" );
+		mprintf( 10, 0, JA2_TEXT("(Beta version error reporting enabled)") );
 
 #endif
 
 #ifdef _DEBUG
-		mprintf( 10, 20, L"SOLDIERTYPE: %d bytes", sizeof( SOLDIERTYPE ) );
+		mprintf( 10, 20, JA2_TEXT("SOLDIERTYPE: %d bytes"), sizeof( SOLDIERTYPE ) );
 #endif
 
 		if ( gfDontUseDDBlits )
 		{
 			#ifdef _DEBUG
-				mprintf( 10, 10, L"SOLDIERTYPE: %d bytes", sizeof( SOLDIERTYPE ) );
+				mprintf( 10, 10, JA2_TEXT("SOLDIERTYPE: %d bytes"), sizeof( SOLDIERTYPE ) );
 			#else
-				mprintf( 10, 20, L"Using software blitters" );
+				mprintf( 10, 20, JA2_TEXT("Using software blitters") );
 			#endif
 		}
 
         // Remove this for real release
-       // mprintf( 10, 40, L"(Space Viking's Many Mercs beta 007n -- 29 December 2008)" );
+       // mprintf( 10, 40, JA2_TEXT("(Space Viking's Many Mercs beta 007n -- 29 December 2008)") );
 
 		// Handle queued .ini file error messages
  		int y = 40;
@@ -377,20 +378,20 @@ UINT32 InitScreenHandle(void)
 		sgp::Logger::instance().connectFile(ini_id, L"iniErrorReport.log", false, sgp::Logger::FLUSH_ON_DELETE);
 		sgp::Logger::LogInstance logger = sgp::Logger::instance().logger(ini_id);
 		while (! iniErrorMessages.empty()) {
-			static BOOL iniErrorMessage_create_out_file = TRUE;
+			static BOOLEAN iniErrorMessage_create_out_file = TRUE;
 			std::string iniErrorMessage = iniErrorMessages.top();
 			CHAR16 str[256];
 
 			if (iniErrorMessage_create_out_file)
 			{
 				y += 25;
-				swprintf( str, L"%S", "Warning: found the following ini errors. iniErrorReport.log has been created." );
+				swprintf( str, JA2_TEXT("%S"), "Warning: found the following ini errors. iniErrorReport.log has been created." );
 				DisplayWrappedString( 10, y, 560, 2, FONT12ARIAL, FONT_ORANGE, str, FONT_BLACK, TRUE, LEFT_JUSTIFIED );
 				iniErrorMessage_create_out_file = FALSE;
 			}
 
 			y += 25;
-			swprintf( str, L"%S", iniErrorMessage.c_str() );
+			swprintf( str, JA2_TEXT("%S"), iniErrorMessage.c_str() );
 			logger << iniErrorMessage << sgp::endl;
 		    DisplayWrappedString( 10, y, 560, 2, FONT12ARIAL, FONT_ORANGE, str, FONT_BLACK, TRUE, LEFT_JUSTIFIED );
 
@@ -763,25 +764,25 @@ void SetDebugRenderHook( RENDER_HOOK pDebugRenderOverride, INT8 ubPage )
 void DefaultDebugPage1( )
 {
 	SetFont( LARGEFONT1 );
-	gprintf( 0,0,L"DEBUG PAGE ONE" );
+	gprintf( 0,0,JA2_TEXT("DEBUG PAGE ONE") );
 }
 
 void DefaultDebugPage2( )
 {
 	SetFont( LARGEFONT1 );
-	gprintf( 0,0,L"DEBUG PAGE TWO" );
+	gprintf( 0,0,JA2_TEXT("DEBUG PAGE TWO") );
 }
 
 void DefaultDebugPage3( )
 {
 	SetFont( LARGEFONT1 );
-	gprintf( 0,0,L"DEBUG PAGE THREE" );
+	gprintf( 0,0,JA2_TEXT("DEBUG PAGE THREE") );
 }
 
 void DefaultDebugPage4( )
 {
 	SetFont( LARGEFONT1 );
-	gprintf( 0,0,L"DEBUG PAGE FOUR" );
+	gprintf( 0,0,JA2_TEXT("DEBUG PAGE FOUR") );
 }
 
 
@@ -1024,9 +1025,9 @@ void PrintExceptionList()
 	SetFont( LARGEFONT1 );
 	SetFontBackground( FONT_MCOLOR_BLACK );
 	SetFontForeground( FONT_MCOLOR_LTGRAY );
-	mprintf( 50, 200, L"RUNTIME ERROR" );
+	mprintf( 50, 200, JA2_TEXT("RUNTIME ERROR") );
 
-	mprintf( 50, 225, L"PRESS <ESC> TO EXIT" );
+	mprintf( 50, 225, JA2_TEXT("PRESS <ESC> TO EXIT") );
 
 	const int iStartY = 255;
 	const int iDiffY = 70;
@@ -1034,21 +1035,24 @@ void PrintExceptionList()
 	std::list<SExceptionData>::iterator it = g_ExceptionList.begin();
 	for(int i = 0; it != g_ExceptionList.end(); ++it, ++i)
 	{
+		const ja2::text::Utf16String file = ja2::text::utf8ToUtf16(it->file.utf8());
+		const ja2::text::Utf16String function = ja2::text::utf8ToUtf16(it->function.utf8());
+		const ja2::text::Utf16String message = ja2::text::utf8ToUtf16(it->message.utf8());
 		//std::stringstream ss;
 		//ss << (*it).file << "(l. " << it->line;
 		SetFont( FONT12ARIAL );
 		SetFontForeground( FONT_YELLOW );
 		SetFontShadow( 60 );		//60 is near black
-		mprintf( 50, iStartY+(i*iDiffY)   , L"File");
-		mprintf( 100, iStartY+(i*iDiffY)   , L":  %s", it->file.c_str() );
+		mprintf( 50, iStartY+(i*iDiffY)   , JA2_TEXT("File"));
+		mprintf( 100, iStartY+(i*iDiffY)   , JA2_TEXT(":  %s"), file.c_str() );
 
-		mprintf( 50, iStartY+(i*iDiffY)+14, L"Line");
-		mprintf( 100, iStartY+(i*iDiffY)+14, L":  %i", it->line );
+		mprintf( 50, iStartY+(i*iDiffY)+14, JA2_TEXT("Line"));
+		mprintf( 100, iStartY+(i*iDiffY)+14, JA2_TEXT(":  %i"), it->line );
 
-		mprintf( 50, iStartY+(i*iDiffY)+28, L"Function");
-		mprintf( 100, iStartY+(i*iDiffY)+28, L":  %s", it->function.c_str() );
+		mprintf( 50, iStartY+(i*iDiffY)+28, JA2_TEXT("Function"));
+		mprintf( 100, iStartY+(i*iDiffY)+28, JA2_TEXT(":  %s"), function.c_str() );
 
 		SetFontForeground( FONT_LTRED );
-		DisplayWrappedString( 60, iStartY+(i*iDiffY) + 44, SCREEN_WIDTH - 100, 2, FONT12ARIAL, FONT_RED, const_cast<wchar_t*>(it->message.c_str()), FONT_BLACK, TRUE, LEFT_JUSTIFIED );
+		DisplayWrappedString( 60, iStartY+(i*iDiffY) + 44, SCREEN_WIDTH - 100, 2, FONT12ARIAL, FONT_RED, const_cast<CHAR16*>(message.c_str()), FONT_BLACK, TRUE, LEFT_JUSTIFIED );
 	}
 }

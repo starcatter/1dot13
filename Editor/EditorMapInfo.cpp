@@ -70,9 +70,9 @@ void SetupTextInputForOptions(void)//dnl ch52 091009
 	CHAR16 str[10];
 	InitTextInputModeWithScheme(DEFAULT_SCHEME);
 	AddUserInputField(NULL); // Just so we can use short cut keys while not typing.
-	swprintf(str, L"%d", WORLD_ROWS);
+	swprintf(str, JA2_TEXT("%d"), WORLD_ROWS);
 	AddTextInputField( iScreenWidthOffset+5, 2*iScreenHeightOffset+394, 30, 18, MSYS_PRIORITY_NORMAL, str, 4, INPUTTYPE_NUMERICSTRICT);
-	swprintf(str, L"%d", WORLD_COLS);
+	swprintf(str, JA2_TEXT("%d"), WORLD_COLS);
 	AddTextInputField(iScreenWidthOffset+5, 2*iScreenHeightOffset+414, 30, 18, MSYS_PRIORITY_NORMAL, str, 4, INPUTTYPE_NUMERICSTRICT);
 	DisableTextField(2);
 }
@@ -88,9 +88,9 @@ void UpdateOptions()
 	SetFontShadow( FONT_NEARBLACK );
 
 	SetFontForeground( FONT_YELLOW );
-	mprintf( iScreenWidthOffset + 38, 2 * iScreenHeightOffset + 399, L"Rows");
+	mprintf( iScreenWidthOffset + 38, 2 * iScreenHeightOffset + 399, JA2_TEXT("Rows"));
 	SetFontForeground( FONT_YELLOW );
-	mprintf( iScreenWidthOffset + 38, 2 * iScreenHeightOffset + 419, L"Cols");
+	mprintf( iScreenWidthOffset + 38, 2 * iScreenHeightOffset + 419, JA2_TEXT("Cols"));
 
 	SetFontForeground( FONT_RED );
 }
@@ -115,31 +115,31 @@ void SetupTextInputForMapInfo()
 	AddUserInputField( NULL );	//just so we can use short cut keys while not typing.
 
 	//light rgb fields
-	swprintf( str, L"%d", gEditorLightColor.peRed );
+	swprintf( str, JA2_TEXT("%d"), gEditorLightColor.peRed );
 	AddTextInputField( iScreenWidthOffset + 10, 2 * iScreenHeightOffset + 394, 25, 18, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", gEditorLightColor.peGreen );
+	swprintf( str, JA2_TEXT("%d"), gEditorLightColor.peGreen );
 	AddTextInputField( iScreenWidthOffset + 10, 2 * iScreenHeightOffset + 414, 25, 18, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", gEditorLightColor.peBlue );
+	swprintf( str, JA2_TEXT("%d"), gEditorLightColor.peBlue );
 	AddTextInputField( iScreenWidthOffset + 10, 2 * iScreenHeightOffset + 434, 25, 18, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
 
-	swprintf( str, L"%d", gsLightRadius );
+	swprintf( str, JA2_TEXT("%d"), gsLightRadius );
 	AddTextInputField( iScreenWidthOffset + 120, 2 * iScreenHeightOffset + 394, 25, 18, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", gfFakeLights ? gusSavedLightLevel : gusLightLevel );//dnl ch80 011213
+	swprintf( str, JA2_TEXT("%d"), gfFakeLights ? gusSavedLightLevel : gusLightLevel );//dnl ch80 011213
 	AddTextInputField( iScreenWidthOffset + 120, 2 * iScreenHeightOffset + 414, 25, 18, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 
 	//Scroll restriction ID
 	if( !gMapInformation.ubRestrictedScrollID )
-		swprintf( str, L"" );
+		swprintf( str, JA2_TEXT("") );
 	else
-		swprintf( str, L"%d", gMapInformation.ubRestrictedScrollID );
+		swprintf( str, JA2_TEXT("%d"), gMapInformation.ubRestrictedScrollID );
 	AddTextInputField( iScreenWidthOffset + 210, 2 * iScreenHeightOffset + 420, 30, 20, MSYS_PRIORITY_NORMAL, str, 2, INPUTTYPE_NUMERICSTRICT );
 
 	//exit grid input fields
-	swprintf( str, L"%c%d", gExitGrid.ubGotoSectorY + 'A' - 1, gExitGrid.ubGotoSectorX );
+	swprintf( str, JA2_TEXT("%c%d"), gExitGrid.ubGotoSectorY + 'A' - 1, gExitGrid.ubGotoSectorX );
 	AddTextInputField( iScreenWidthOffset + 338, 2 * iScreenHeightOffset + 363, 30, 18, MSYS_PRIORITY_NORMAL, str, 3, INPUTTYPE_EXCLUSIVE_COORDINATE );
-	swprintf( str, L"%d", gExitGrid.ubGotoSectorZ );
+	swprintf( str, JA2_TEXT("%d"), gExitGrid.ubGotoSectorZ );
 	AddTextInputField( iScreenWidthOffset + 338, 2 * iScreenHeightOffset + 383, 30, 18, MSYS_PRIORITY_NORMAL, str, 1, INPUTTYPE_NUMERICSTRICT );
-	swprintf( str, L"%d", gExitGrid.usGridNo );
+	swprintf( str, JA2_TEXT("%d"), gExitGrid.usGridNo );
 	AddTextInputField( iScreenWidthOffset + 338, 2 * iScreenHeightOffset + 403, 50, 18, MSYS_PRIORITY_NORMAL, str, 7, INPUTTYPE_NUMERICSTRICT );
 }
 
@@ -192,22 +192,22 @@ void UpdateMapInfoFields()
 	CHAR16 str[10];
 	//Update the text fields to reflect the validated values.
 	//light rgb fields
-	swprintf( str, L"%d", gEditorLightColor.peRed );
+	swprintf( str, JA2_TEXT("%d"), gEditorLightColor.peRed );
 	SetInputFieldStringWith16BitString( 1, str );
-	swprintf( str, L"%d", gEditorLightColor.peGreen );
+	swprintf( str, JA2_TEXT("%d"), gEditorLightColor.peGreen );
 	SetInputFieldStringWith16BitString( 2, str );
-	swprintf( str, L"%d", gEditorLightColor.peBlue );
+	swprintf( str, JA2_TEXT("%d"), gEditorLightColor.peBlue );
 	SetInputFieldStringWith16BitString( 3, str );
 
-	swprintf( str, L"%d", gsLightRadius );
+	swprintf( str, JA2_TEXT("%d"), gsLightRadius );
 	SetInputFieldStringWith16BitString( 4, str );
-	swprintf( str, L"%d", gusLightLevel );
+	swprintf( str, JA2_TEXT("%d"), gusLightLevel );
 	SetInputFieldStringWith16BitString( 5, str );
 
 	if( !gMapInformation.ubRestrictedScrollID )
-		swprintf( str, L"" );
+		swprintf( str, JA2_TEXT("") );
 	else
-		swprintf( str, L"%d", gMapInformation.ubRestrictedScrollID );
+		swprintf( str, JA2_TEXT("%d"), gMapInformation.ubRestrictedScrollID );
 	SetInputFieldStringWith16BitString( 6, str );
 
 	ApplyNewExitGridValuesToTextFields();
@@ -293,11 +293,11 @@ BOOLEAN ApplyNewExitGridValuesToTextFields()
 	//exit grid input fields
 	if( iCurrentTaskbar != TASK_MAPINFO )
 		return FALSE;
-	swprintf( str, L"%c%d", gExitGrid.ubGotoSectorY + 'A' - 1, gExitGrid.ubGotoSectorX );
+	swprintf( str, JA2_TEXT("%c%d"), gExitGrid.ubGotoSectorY + 'A' - 1, gExitGrid.ubGotoSectorX );
 	SetInputFieldStringWith16BitString( 7, str );
-	swprintf( str, L"%d", gExitGrid.ubGotoSectorZ );
+	swprintf( str, JA2_TEXT("%d"), gExitGrid.ubGotoSectorZ );
 	SetInputFieldStringWith16BitString( 8, str );
-	swprintf( str, L"%d", gExitGrid.usGridNo );
+	swprintf( str, JA2_TEXT("%d"), gExitGrid.usGridNo );
 	SetInputFieldStringWith16BitString( 9, str );
 	SetActiveField( 0 );
 	return TRUE;

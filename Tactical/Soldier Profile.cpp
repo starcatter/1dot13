@@ -84,7 +84,7 @@ void RandomGrowthModifiers();
 void RandomStartSalary();
 
 //Jenilee
-extern void RandomizeMerc(UINT8 profile_id, MERCPROFILESTRUCT* merc, BOOL random_gear_kits);
+extern void RandomizeMerc(UINT8 profile_id, MERCPROFILESTRUCT* merc, BOOLEAN random_gear_kits);
 extern void InitRandomMercs();
 extern void ExitRandomMercs();
 

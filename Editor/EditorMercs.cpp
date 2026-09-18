@@ -78,28 +78,28 @@ CHAR16 gszCivGroupNames[ NUM_CIV_GROUPS ][ 128 ];
 /*
 CHAR16 gszCivGroupNames[ NUM_CIV_GROUPS ][ 20 ] =
 {
-	L"NONE",
-	L"REBEL",
-	L"KINGPIN",
-	L"SANMONA ARMS",
-	L"ANGELS",
+	JA2_TEXT("NONE"),
+	JA2_TEXT("REBEL"),
+	JA2_TEXT("KINGPIN"),
+	JA2_TEXT("SANMONA ARMS"),
+	JA2_TEXT("ANGELS"),
 
-	L"BEGGARS",
-	L"TOURISTS",
-	L"ALMA MIL",
-	L"DOCTORS",
-	L"COUPLE1",
+	JA2_TEXT("BEGGARS"),
+	JA2_TEXT("TOURISTS"),
+	JA2_TEXT("ALMA MIL"),
+	JA2_TEXT("DOCTORS"),
+	JA2_TEXT("COUPLE1"),
 
-	L"HICKS",
-	L"WARDEN",
-	L"JUNKYARD",
-	L"FACTORY KIDS",
-	L"QUEENS",
-	L"UNUSED15",
-	L"UNUSED16",
-	L"UNUSED17",
-	L"UNUSED18",
-	L"UNUSED19",
+	JA2_TEXT("HICKS"),
+	JA2_TEXT("WARDEN"),
+	JA2_TEXT("JUNKYARD"),
+	JA2_TEXT("FACTORY KIDS"),
+	JA2_TEXT("QUEENS"),
+	JA2_TEXT("UNUSED15"),
+	JA2_TEXT("UNUSED16"),
+	JA2_TEXT("UNUSED17"),
+	JA2_TEXT("UNUSED18"),
+	JA2_TEXT("UNUSED19"),
 };
 */
 //--------------------------------------------------
@@ -117,17 +117,17 @@ CHAR16 gszCivGroupNames[ NUM_CIV_GROUPS ][ 20 ] =
 /*
 CHAR16 gszScheduleActions[ NUM_SCHEDULE_ACTIONS ][20] =
 {
-	L"No action",
-	L"Lock door",
-	L"Unlock door",
-	L"Open door",
-	L"Close door",
-	L"Move to gridno",
-	L"Leave sector",
-	L"Enter sector",
-	L"Stay in sector",
-	L"Sleep",
-	L"Ignore this!"
+	JA2_TEXT("No action"),
+	JA2_TEXT("Lock door"),
+	JA2_TEXT("Unlock door"),
+	JA2_TEXT("Open door"),
+	JA2_TEXT("Close door"),
+	JA2_TEXT("Move to gridno"),
+	JA2_TEXT("Leave sector"),
+	JA2_TEXT("Enter sector"),
+	JA2_TEXT("Stay in sector"),
+	JA2_TEXT("Sleep"),
+	JA2_TEXT("Ignore this!")
 };
 */
 
@@ -267,24 +267,24 @@ BOOLEAN gfShowCivilians = TRUE;
 
 INT16 sCurBaseDiff = DEFAULT_DIFF;
 BOOLEAN fAskForBaseDifficulty = TRUE;
-//STR16 zDiffNames[NUM_DIFF_LVLS] = { L"Wimp", L"Easy", L"Average", L"Tough", L"Steroid Users Only" };
+//STR16 zDiffNames[NUM_DIFF_LVLS] = { JA2_TEXT("Wimp"), JA2_TEXT("Easy"), JA2_TEXT("Average"), JA2_TEXT("Tough"), JA2_TEXT("Steroid Users Only") };
 INT16 sBaseStat[NUM_DIFF_LVLS] = { 50, 60, 70, 80, 90 };
 INT16 sBaseExpLvl[NUM_DIFF_LVLS] = { 1, 3, 5, 7, 9 };
 /*
-STR16 EditMercStat[12] = { L"Max Health",L"Cur Health",L"Strength",
-														L"Agility",L"Dexterity",L"Charisma",
-														L"Wisdom",L"Marksmanship",L"Explosives",
-														L"Medical",L"Scientific",L"Exp Level" };
+STR16 EditMercStat[12] = { JA2_TEXT("Max Health"),JA2_TEXT("Cur Health"),JA2_TEXT("Strength"),
+														JA2_TEXT("Agility"),JA2_TEXT("Dexterity"),JA2_TEXT("Charisma"),
+														JA2_TEXT("Wisdom"),JA2_TEXT("Marksmanship"),JA2_TEXT("Explosives"),
+														JA2_TEXT("Medical"),JA2_TEXT("Scientific"),JA2_TEXT("Exp Level") };
 */
 #define NUM_MERC_ORDERS 8
 /*
-STR16 EditMercOrders[8] = { L"Stationary",L"On Guard",L"Close Patrol",
-															L"Far Patrol",L"Point Patrol",L"On Call",
-															L"Seek Enemy", L"Random Point Patrol"};
+STR16 EditMercOrders[8] = { JA2_TEXT("Stationary"),JA2_TEXT("On Guard"),JA2_TEXT("Close Patrol"),
+															JA2_TEXT("Far Patrol"),JA2_TEXT("Point Patrol"),JA2_TEXT("On Call"),
+															JA2_TEXT("Seek Enemy"), JA2_TEXT("Random Point Patrol")};
 
-STR16 EditMercAttitudes[6] = { L"Defensive",L"Brave Loner",L"Brave Buddy",
-																	L"Cunning Loner",L"Cunning Buddy",
-																	L"Aggressive" };
+STR16 EditMercAttitudes[6] = { JA2_TEXT("Defensive"),JA2_TEXT("Brave Loner"),JA2_TEXT("Brave Buddy"),
+																	JA2_TEXT("Cunning Loner"),JA2_TEXT("Cunning Buddy"),
+																	JA2_TEXT("Aggressive") };
 */
 //information for bodytypes.
 #ifdef RANDOM
@@ -855,7 +855,7 @@ void DisplayEditMercWindow( void )
 	ColorFillVideoSurfaceArea(FRAME_BUFFER, iXPos + 129, iYPos + 17, iXPos + 128 + 104, iYPos + 17 + 19, usFillColorLight );
 	ColorFillVideoSurfaceArea(FRAME_BUFFER, iXPos + 129, iYPos + 17, iXPos + 128 + 103, iYPos + 17 + 18, usFillColorTextBk );
 	iXOff = (105 - StringPixLength( pSoldier->name, FONT12POINT1 )) / 2;
-	gprintf( iXPos + 130 + iXOff, iYPos + 20, L"%s", pSoldier->name );
+	gprintf( iXPos + 130 + iXOff, iYPos + 20, JA2_TEXT("%s"), pSoldier->name );
 
 	// Orders window
 	gprintf( iXPos + 128, iYPos + 38, pDisplayEditMercWindowText[1] );
@@ -863,7 +863,7 @@ void DisplayEditMercWindow( void )
 	ColorFillVideoSurfaceArea(FRAME_BUFFER, iXPos + 129, iYPos + 52, iXPos + 128 + 104, iYPos + 52 + 19, usFillColorLight );
 	ColorFillVideoSurfaceArea(FRAME_BUFFER, iXPos + 129, iYPos + 52, iXPos + 128 + 103, iYPos + 52 + 18, usFillColorTextBk );
 	iXOff = (105 - StringPixLength( EditMercOrders[pSoldier->aiData.bOrders], FONT12POINT1 )) / 2;
-	gprintf( iXPos + 130 + iXOff, iYPos + 55, L"%s", EditMercOrders[pSoldier->aiData.bOrders] );
+	gprintf( iXPos + 130 + iXOff, iYPos + 55, JA2_TEXT("%s"), EditMercOrders[pSoldier->aiData.bOrders] );
 
 	// Combat window
 	gprintf( iXPos + 128, iYPos + 73, pDisplayEditMercWindowText[2] );
@@ -871,7 +871,7 @@ void DisplayEditMercWindow( void )
 	ColorFillVideoSurfaceArea(FRAME_BUFFER, iXPos + 129, iYPos + 87, iXPos + 128 + 104, iYPos + 87 + 19, usFillColorLight );
 	ColorFillVideoSurfaceArea(FRAME_BUFFER, iXPos + 129, iYPos + 87, iXPos + 128 + 103, iYPos + 87 + 18, usFillColorTextBk );
 	iXOff = (105 - StringPixLength( EditMercAttitudes[pSoldier->aiData.bAttitude], FONT12POINT1 )) / 2;
-	gprintf( iXPos + 130 + iXOff, iYPos + 90, L"%s", EditMercAttitudes[pSoldier->aiData.bAttitude] );
+	gprintf( iXPos + 130 + iXOff, iYPos + 90, JA2_TEXT("%s"), EditMercAttitudes[pSoldier->aiData.bAttitude] );
 
 	// Get stats
 	iEditStat[0] = pSoldier->stats.bLifeMax;			// 12 13
@@ -890,14 +890,14 @@ void DisplayEditMercWindow( void )
 	// Stat value windows
 	for ( x = 0; x < 12; x++ )
 	{
-		gprintf( iXPos + 6, iYPos + 114 + (20 * x), L"%s", EditMercStat[x] );
+		gprintf( iXPos + 6, iYPos + 114 + (20 * x), JA2_TEXT("%s"), EditMercStat[x] );
 		ColorFillVideoSurfaceArea(FRAME_BUFFER, iXPos + 116, iYPos + 110 + (20 * x), iXPos + 116 + 30, iYPos + 110 + (20 * x) + 19, usFillColorDark );
 		ColorFillVideoSurfaceArea(FRAME_BUFFER, iXPos + 117, iYPos + 111 + (20 * x), iXPos + 116 + 30, iYPos + 111 + (20 * x) + 19, usFillColorLight );
 		ColorFillVideoSurfaceArea(FRAME_BUFFER, iXPos + 117, iYPos + 111 + (20 * x), iXPos + 116 + 29, iYPos + 111 + (20 * x) + 18, usFillColorTextBk );
 
-		swprintf( TempString, L"%d", iEditStat[x] );
+		swprintf( TempString, JA2_TEXT("%d"), iEditStat[x] );
 		iXOff = (30 - StringPixLength( TempString, FONT12POINT1 )) / 2;
-		gprintf( iXPos + 118 + iXOff, iYPos + 114 + (20 * x), L"%s", TempString );
+		gprintf( iXPos + 118 + iXOff, iYPos + 114 + (20 * x), JA2_TEXT("%s"), TempString );
 	}
 
 }
@@ -1387,8 +1387,8 @@ void DisplayWayPoints(void)
 			else
 				SetFontBackground( FONT_LTRED );
 			SetFontForeground( FONT_WHITE );
-			VarFindFontCenterCoordinates( sScreenX, sScreenY, 1, 1, TINYFONT1, &sX, &sY, L"%d", bPoint );
-			mprintf(sX,sY,L"%d",bPoint);
+			VarFindFontCenterCoordinates( sScreenX, sScreenY, 1, 1, TINYFONT1, &sX, &sY, JA2_TEXT("%d"), bPoint );
+			mprintf(sX,sY,JA2_TEXT("%d"),bPoint);
 		}
 	}
 }
@@ -1862,9 +1862,9 @@ void CalcStringForValue( STR16 str, INT32 iValue, UINT32 uiMax )
 	if( iValue < 0 )			//a blank string is determined by a negative value.
 		str[0] = '\0';
 	else if( (UINT32)iValue > uiMax )	//higher than max attribute value, so convert it to the max.
-		swprintf( str, L"%d", uiMax );
+		swprintf( str, JA2_TEXT("%d"), uiMax );
 	else										//this is a valid static value, so convert it to a string.
-		swprintf( str, L"%d", iValue );
+		swprintf( str, JA2_TEXT("%d"), iValue );
 }
 
 void ExtractAndUpdateMercAttributes()
@@ -1950,13 +1950,13 @@ void SetupTextInputForMercSchedule()
 {
 	InitTextInputModeWithScheme( DEFAULT_SCHEME );
 	AddUserInputField( NULL );
-	AddTextInputField( iScreenWidthOffset + 268, 2 * iScreenHeightOffset + 373, 36, 16, MSYS_PRIORITY_NORMAL, L"", 6, INPUTTYPE_EXCLUSIVE_24HOURCLOCK );
+	AddTextInputField( iScreenWidthOffset + 268, 2 * iScreenHeightOffset + 373, 36, 16, MSYS_PRIORITY_NORMAL, JA2_TEXT(""), 6, INPUTTYPE_EXCLUSIVE_24HOURCLOCK );
 	SetExclusive24HourTimeValue( 1, gCurrSchedule.usTime[0] );
-	AddTextInputField( iScreenWidthOffset + 268, 2 * iScreenHeightOffset + 394, 36, 16, MSYS_PRIORITY_NORMAL, L"", 6, INPUTTYPE_EXCLUSIVE_24HOURCLOCK );
+	AddTextInputField( iScreenWidthOffset + 268, 2 * iScreenHeightOffset + 394, 36, 16, MSYS_PRIORITY_NORMAL, JA2_TEXT(""), 6, INPUTTYPE_EXCLUSIVE_24HOURCLOCK );
 	SetExclusive24HourTimeValue( 2, gCurrSchedule.usTime[1] );
-	AddTextInputField( iScreenWidthOffset + 268, 2 * iScreenHeightOffset + 415, 36, 16, MSYS_PRIORITY_NORMAL, L"", 6, INPUTTYPE_EXCLUSIVE_24HOURCLOCK );
+	AddTextInputField( iScreenWidthOffset + 268, 2 * iScreenHeightOffset + 415, 36, 16, MSYS_PRIORITY_NORMAL, JA2_TEXT(""), 6, INPUTTYPE_EXCLUSIVE_24HOURCLOCK );
 	SetExclusive24HourTimeValue( 3, gCurrSchedule.usTime[2] );
-	AddTextInputField( iScreenWidthOffset + 268, 2 * iScreenHeightOffset + 436, 36, 16, MSYS_PRIORITY_NORMAL, L"", 6, INPUTTYPE_EXCLUSIVE_24HOURCLOCK );
+	AddTextInputField( iScreenWidthOffset + 268, 2 * iScreenHeightOffset + 436, 36, 16, MSYS_PRIORITY_NORMAL, JA2_TEXT(""), 6, INPUTTYPE_EXCLUSIVE_24HOURCLOCK );
 	SetExclusive24HourTimeValue( 4, gCurrSchedule.usTime[3] );
 }
 
@@ -2592,10 +2592,10 @@ void UpdateMercsInfo()
 			SetFontForeground( FONT_BLACK );
 			if( gpSelected->pDetailedPlacement->fVisible || gpSelected->pDetailedPlacement->ubProfile != NO_PROFILE )
 			{
-				mprintfEditor( iScreenWidthOffset + 396, 2 * iScreenHeightOffset + 374, L"%S	", gpSelected->pSoldier->HeadPal );
-				mprintfEditor( iScreenWidthOffset + 396, 2 * iScreenHeightOffset + 398, L"%S	", gpSelected->pSoldier->SkinPal );
-				mprintfEditor( iScreenWidthOffset + 396, 2 * iScreenHeightOffset + 422, L"%S	", gpSelected->pSoldier->VestPal );
-				mprintfEditor( iScreenWidthOffset + 396, 2 * iScreenHeightOffset + 446, L"%S	", gpSelected->pSoldier->PantsPal );
+				mprintfEditor( iScreenWidthOffset + 396, 2 * iScreenHeightOffset + 374, JA2_TEXT("%S	"), gpSelected->pSoldier->HeadPal );
+				mprintfEditor( iScreenWidthOffset + 396, 2 * iScreenHeightOffset + 398, JA2_TEXT("%S	"), gpSelected->pSoldier->SkinPal );
+				mprintfEditor( iScreenWidthOffset + 396, 2 * iScreenHeightOffset + 422, JA2_TEXT("%S	"), gpSelected->pSoldier->VestPal );
+				mprintfEditor( iScreenWidthOffset + 396, 2 * iScreenHeightOffset + 446, JA2_TEXT("%S	"), gpSelected->pSoldier->PantsPal );
 				ShowEditMercPalettes( gpSelected->pSoldier );
 			}
 			else
@@ -2614,7 +2614,7 @@ void UpdateMercsInfo()
 			SetFontShadow( FONT_NEARBLACK );
 			{ //scope trick
 				CHAR16 tempStr[500];
-				swprintf( tempStr, L"%s%s%s%s%s%d.",
+				swprintf( tempStr, JA2_TEXT("%s%s%s%s%s%d."),
 					pUpdateMercsInfoText[32],
 					pUpdateMercsInfoText[33],
 					pUpdateMercsInfoText[34],
@@ -2663,7 +2663,7 @@ void UpdateMercsInfo()
 			if( gubScheduleInstructions )
 			{
 				CHAR16 str[255];
-				CHAR16 keyword[10] = L"";
+				CHAR16 keyword[10] = JA2_TEXT("");
 				ColorFillVideoSurfaceArea( FRAME_BUFFER, iScreenWidthOffset + 431, 2 * iScreenHeightOffset + 388, iScreenWidthOffset + 590, 2 * iScreenHeightOffset + 450, Get16BPPColor( FROMRGB( 32, 45, 72 ) ) );
 				switch( gCurrSchedule.ubAction[ gubCurrentScheduleActionIndex ] )
 				{
@@ -3437,7 +3437,7 @@ void RegisterCurrentScheduleAction( INT32 iMapIndex )
 {
 	CHAR16 str[10];
 	MarkWorldDirty();
-	swprintf( str, L"%d", iMapIndex );
+	swprintf( str, JA2_TEXT("%d"), iMapIndex );
 	if( gfUseScheduleData2 )
 	{
 		if( gfSingleAction )
@@ -3604,9 +3604,9 @@ void ClearCurrentSchedule()
 		gCurrSchedule.usTime[i] = 0xffff;
 		SetExclusive24HourTimeValue( (UINT8)(i+1), gCurrSchedule.usTime[ i ] ); //blanks the field
 		gCurrSchedule.usData1[i] = 0xffffffff;
-		SpecifyButtonText( iEditorButton[ MERCS_SCHEDULE_DATA1A + i ], L"" );
+		SpecifyButtonText( iEditorButton[ MERCS_SCHEDULE_DATA1A + i ], JA2_TEXT("") );
 		gCurrSchedule.usData2[i] = 0xffffffff;
-		SpecifyButtonText( iEditorButton[ MERCS_SCHEDULE_DATA1B + i ], L"" );
+		SpecifyButtonText( iEditorButton[ MERCS_SCHEDULE_DATA1B + i ], JA2_TEXT("") );
 	}
 	//Remove the variance stuff
 	gCurrSchedule.usFlags = 0;
@@ -3660,7 +3660,7 @@ void RenderCurrentSchedule()
 			SetFont(TINYFONT1);
 			SetFontBackground( FONT_LTKHAKI );
 			SetFontForeground( FONT_WHITE );
-			swprintf( str, L"%d%c", i/2 + 1, 'A' + (i%2) );
+			swprintf( str, JA2_TEXT("%d%c"), i/2 + 1, 'A' + (i%2) );
 			VarFindFontCenterCoordinates( sScreenX, sScreenY, 1, 1, TINYFONT1, &sX, &sY, str );
 			mprintf( sX, sY, str );
 		}
@@ -3683,13 +3683,13 @@ void UpdateScheduleInfo()
 		{ //Update the text and buttons
 			MSYS_SetBtnUserData( iEditorButton[ MERCS_SCHEDULE_ACTION1 + i ], 0, pSchedule->ubAction[i] );
 			SpecifyButtonText( iEditorButton[ MERCS_SCHEDULE_ACTION1 + i ], gszScheduleActions[ pSchedule->ubAction[i] ] );
-			swprintf( str, L"" );
+			swprintf( str, JA2_TEXT("") );
 			if( pSchedule->usData1[i] != 0xffffffff )
-				swprintf( str, L"%d", pSchedule->usData1[i] );
+				swprintf( str, JA2_TEXT("%d"), pSchedule->usData1[i] );
 			SpecifyButtonText( iEditorButton[ MERCS_SCHEDULE_DATA1A + i ], str );
-			swprintf( str, L"" );
+			swprintf( str, JA2_TEXT("") );
 			if( pSchedule->usData2[i] != 0xffffffff )
-				swprintf( str, L"%d", pSchedule->usData2[i] );
+				swprintf( str, JA2_TEXT("%d"), pSchedule->usData2[i] );
 			SpecifyButtonText( iEditorButton[ MERCS_SCHEDULE_DATA1B + i ], str );
 			if( gubCurrMercMode == MERC_SCHEDULEMODE )
 			{ //Update the text input fields too!

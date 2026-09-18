@@ -70,8 +70,8 @@ enum
 //
 //new codes:
 #define		CRDT_START_CODE						'@'
-#define		CRDT_SEPARATION_CODE				L","
-#define		CRDT_END_CODE						L";"
+#define		CRDT_SEPARATION_CODE				JA2_TEXT(",")
+#define		CRDT_END_CODE						JA2_TEXT(";")
 
 #define		CRDT_DELAY_BN_STRINGS_CODE			'D'
 #define		CRDT_DELAY_BN_SECTIONS_CODE			'B'
@@ -845,7 +845,7 @@ BOOLEAN	GetNextCreditFromTextFile()
 		{
 			// 2.)	1.13 Credits
 			case 0:
-				wcscpy(zOriginalString, L"@T,C208,R134,D16,B40,S10,J1,};");
+				wcscpy(zOriginalString, JA2_TEXT("@T,C208,R134,D16,B40,S10,J1,};"));
 			break;
 
 			case 1:
@@ -853,7 +853,7 @@ BOOLEAN	GetNextCreditFromTextFile()
 			break;
 
 			case 2:
-				wcscpy(zOriginalString, L"@};");
+				wcscpy(zOriginalString, JA2_TEXT("@};"));
 			break;
 
 			case 3:
@@ -861,79 +861,79 @@ BOOLEAN	GetNextCreditFromTextFile()
 			break;
 
 			case 4:
-				wcscpy(zOriginalString, L"anv");
+				wcscpy(zOriginalString, JA2_TEXT("anv"));
 			break;
 
 			case 5:
-				wcscpy(zOriginalString, L"BirdFlu");
+				wcscpy(zOriginalString, JA2_TEXT("BirdFlu"));
 			break;
 
 			case 6:
-				wcscpy(zOriginalString, L"Buggler");
+				wcscpy(zOriginalString, JA2_TEXT("Buggler"));
 			break;
 
 			case 7:
-				wcscpy(zOriginalString, L"Bugmonster");
+				wcscpy(zOriginalString, JA2_TEXT("Bugmonster"));
 			break;
 
 			case 8:
-				wcscpy(zOriginalString, L"ChrisL");
+				wcscpy(zOriginalString, JA2_TEXT("ChrisL"));
 			break;
 
 			case 9:
-				wcscpy(zOriginalString, L"Flugente");
+				wcscpy(zOriginalString, JA2_TEXT("Flugente"));
 			break;
 
 			case 10:
-				wcscpy(zOriginalString, L"haydent");
+				wcscpy(zOriginalString, JA2_TEXT("haydent"));
 			break;
 
 			case 11:
-				wcscpy(zOriginalString, L"Jazz");
+				wcscpy(zOriginalString, JA2_TEXT("Jazz"));
 			break;
 
 			case 12:
-				wcscpy(zOriginalString, L"Kaiden");
+				wcscpy(zOriginalString, JA2_TEXT("Kaiden"));
 			break;
 
 			case 13:
-				wcscpy(zOriginalString, L"Kriplo");
+				wcscpy(zOriginalString, JA2_TEXT("Kriplo"));
 			break;
 
 			case 14:
-				wcscpy(zOriginalString, L"Lesh");
+				wcscpy(zOriginalString, JA2_TEXT("Lesh"));
 			break;
 
 			case 15:
-				wcscpy(zOriginalString, L"Little Alien");
+				wcscpy(zOriginalString, JA2_TEXT("Little Alien"));
 			break;
 
 			case 16:
-				wcscpy(zOriginalString, L"Madd Mugsy");
+				wcscpy(zOriginalString, JA2_TEXT("Madd Mugsy"));
 			break;
 
 			case 17:
-				wcscpy(zOriginalString, L"Overhaul");
+				wcscpy(zOriginalString, JA2_TEXT("Overhaul"));
 			break;
 
 			case 18:
-				wcscpy(zOriginalString, L"RoWa21 aka Wanne");
+				wcscpy(zOriginalString, JA2_TEXT("RoWa21 aka Wanne"));
 			break;
 
 			case 19:
-				wcscpy(zOriginalString, L"Sandro");
+				wcscpy(zOriginalString, JA2_TEXT("Sandro"));
 			break;
 
 			case 20:
-				wcscpy(zOriginalString, L"silversurfer");
+				wcscpy(zOriginalString, JA2_TEXT("silversurfer"));
 			break;
 
 			case 21:
-				wcscpy(zOriginalString, L"Space Viking");
+				wcscpy(zOriginalString, JA2_TEXT("Space Viking"));
 			break;
 
 			case 22:
-				wcscpy(zOriginalString, L"@};Zathras");
+				wcscpy(zOriginalString, JA2_TEXT("@};Zathras"));
 			break;
 
 			case 23:
@@ -941,67 +941,67 @@ BOOLEAN	GetNextCreditFromTextFile()
 			break;
 
 			case 24:
-				wcscpy(zOriginalString, L"BulletSix");
+				wcscpy(zOriginalString, JA2_TEXT("BulletSix"));
 			break;
 
 			case 25:
-				wcscpy(zOriginalString, L"coolberg");
+				wcscpy(zOriginalString, JA2_TEXT("coolberg"));
 			break;
 
 			case 26:
-				wcscpy(zOriginalString, L"Corpse");
+				wcscpy(zOriginalString, JA2_TEXT("Corpse"));
 			break;
 
 			case 27:
-				wcscpy(zOriginalString, L"John Wright");
+				wcscpy(zOriginalString, JA2_TEXT("John Wright"));
 			break;
 
 			case 28:
-				wcscpy(zOriginalString, L"Kaerar");
+				wcscpy(zOriginalString, JA2_TEXT("Kaerar"));
 			break;
 
 			case 29:
-				wcscpy(zOriginalString, L"Kazuya");
+				wcscpy(zOriginalString, JA2_TEXT("Kazuya"));
 			break;
 
 			case 30:
-				wcscpy(zOriginalString, L"Khor");
+				wcscpy(zOriginalString, JA2_TEXT("Khor"));
 			break;
 
 			case 31:
-				wcscpy(zOriginalString, L"Lisac");
+				wcscpy(zOriginalString, JA2_TEXT("Lisac"));
 			break;
 
 			case 32:
-				wcscpy(zOriginalString, L"Madd Mugsy");
+				wcscpy(zOriginalString, JA2_TEXT("Madd Mugsy"));
 			break;
 
 			case 33:
-				wcscpy(zOriginalString, L"Marlboro Man");
+				wcscpy(zOriginalString, JA2_TEXT("Marlboro Man"));
 			break;
 
 			case 34:
-				wcscpy(zOriginalString, L"PasHancock");
+				wcscpy(zOriginalString, JA2_TEXT("PasHancock"));
 			break;
 
 			case 35:
-				wcscpy(zOriginalString, L"Scorpion");
+				wcscpy(zOriginalString, JA2_TEXT("Scorpion"));
 			break;
 
 			case 36:
-				wcscpy(zOriginalString, L"smeagol");
+				wcscpy(zOriginalString, JA2_TEXT("smeagol"));
 			break;
 
 			case 37:
-				wcscpy(zOriginalString, L"Starwalker");
+				wcscpy(zOriginalString, JA2_TEXT("Starwalker"));
 			break;
 
 			case 38:
-				wcscpy(zOriginalString, L"Tbird94lx");
+				wcscpy(zOriginalString, JA2_TEXT("Tbird94lx"));
 			break;
 
 			case 39:
-				wcscpy(zOriginalString, L"Terry Thorne");
+				wcscpy(zOriginalString, JA2_TEXT("Terry Thorne"));
 			break;
 
 			case 40:
@@ -1013,15 +1013,15 @@ BOOLEAN	GetNextCreditFromTextFile()
 			break;
 
 			case 42:
-				wcscpy(zOriginalString, L"Madd Mugsy");
+				wcscpy(zOriginalString, JA2_TEXT("Madd Mugsy"));
 			break;
 
 			case 43:
-				wcscpy(zOriginalString,	L"Starwalker");
+				wcscpy(zOriginalString,	JA2_TEXT("Starwalker"));
 			break;
 
 			case 44:
-				wcscpy(zOriginalString, L"@};Lisac");
+				wcscpy(zOriginalString, JA2_TEXT("@};Lisac"));
 			break;
 
 			case 45:
@@ -1029,107 +1029,107 @@ BOOLEAN	GetNextCreditFromTextFile()
 			break;
 
 			case 46:
-				wcscpy(zOriginalString, L"BearPit");
+				wcscpy(zOriginalString, JA2_TEXT("BearPit"));
 			break;
 
 			case 47:
-				wcscpy(zOriginalString, L"Captain J");
+				wcscpy(zOriginalString, JA2_TEXT("Captain J"));
 			break;
 
 			case 48:
-				wcscpy(zOriginalString, L"DeFrog");
+				wcscpy(zOriginalString, JA2_TEXT("DeFrog"));
 			break;
 
 			case 49:
-				wcscpy(zOriginalString, L"DepressivesBrot");
+				wcscpy(zOriginalString, JA2_TEXT("DepressivesBrot"));
 			break;
 
 			case 50:
-				wcscpy(zOriginalString, L"Dimitri");
+				wcscpy(zOriginalString, JA2_TEXT("Dimitri"));
 			break;
 
 			case 51:
-				wcscpy(zOriginalString, L"Farmer Toby");
+				wcscpy(zOriginalString, JA2_TEXT("Farmer Toby"));
 			break;
 
 			case 52:
-				wcscpy(zOriginalString, L"Headrock");
+				wcscpy(zOriginalString, JA2_TEXT("Headrock"));
 			break;
 
 			case 53:
-				wcscpy(zOriginalString, L"inshy");
+				wcscpy(zOriginalString, JA2_TEXT("inshy"));
 			break;
 
 			case 54:
-				wcscpy(zOriginalString, L"JAPH");
+				wcscpy(zOriginalString, JA2_TEXT("JAPH"));
 			break;
 
 			case 55:
-				wcscpy(zOriginalString, L"JMich");
+				wcscpy(zOriginalString, JA2_TEXT("JMich"));
 			break;
 
 			case 56:
-				wcscpy(zOriginalString, L"Jones");
+				wcscpy(zOriginalString, JA2_TEXT("Jones"));
 			break;
 
 			case 57:
-				wcscpy(zOriginalString, L"Judge");
+				wcscpy(zOriginalString, JA2_TEXT("Judge"));
 			break;
 
 			case 58:
-				wcscpy(zOriginalString, L"Kermi");
+				wcscpy(zOriginalString, JA2_TEXT("Kermi"));
 			break;
 
 			case 59:
-				wcscpy(zOriginalString, L"Miro");
+				wcscpy(zOriginalString, JA2_TEXT("Miro"));
 			break;
 
 			case 60:
-				wcscpy(zOriginalString, L"Pulmu");
+				wcscpy(zOriginalString, JA2_TEXT("Pulmu"));
 			break;
 
 			case 61:
-				wcscpy(zOriginalString, L"Scheinworld");
+				wcscpy(zOriginalString, JA2_TEXT("Scheinworld"));
 			break;
 
 			case 62:
-				wcscpy(zOriginalString, L"Scorpion");
+				wcscpy(zOriginalString, JA2_TEXT("Scorpion"));
 			break;
 
 			case 63:
-				wcscpy(zOriginalString, L"Sergeant Kolja");
+				wcscpy(zOriginalString, JA2_TEXT("Sergeant Kolja"));
 			break;
 
 			case 64:
-				wcscpy(zOriginalString, L"ShadoWarrior");
+				wcscpy(zOriginalString, JA2_TEXT("ShadoWarrior"));
 			break;
 
 			case 65:
-				wcscpy(zOriginalString, L"Shanga");
+				wcscpy(zOriginalString, JA2_TEXT("Shanga"));
 			break;
 
 			case 66:
-				wcscpy(zOriginalString, L"Snap");
+				wcscpy(zOriginalString, JA2_TEXT("Snap"));
 			break;
 
 			case 67:
-				wcscpy(zOriginalString, L"TheDrill");
+				wcscpy(zOriginalString, JA2_TEXT("TheDrill"));
 			break;
 
 			case 68:
-				wcscpy(zOriginalString, L"WarmSteel");
+				wcscpy(zOriginalString, JA2_TEXT("WarmSteel"));
 			break;
 
 			case 69:
-				wcscpy(zOriginalString, L"Wil473");
+				wcscpy(zOriginalString, JA2_TEXT("Wil473"));
 			break;
 
 			case 70:
-				wcscpy( zOriginalString, L"tais" );
+				wcscpy( zOriginalString, JA2_TEXT("tais") );
 			break;
 
 			case 71:
-				wcscpy( zOriginalString, L"sevenfm" );
+				wcscpy( zOriginalString, JA2_TEXT("sevenfm") );
 			break;
 
 			case 72:
@@ -1138,11 +1138,11 @@ BOOLEAN	GetNextCreditFromTextFile()
 
 			// Additional lines for free space
 			case 73:
-				wcscpy(zOriginalString, L"@T,B40,C208,{; ");
+				wcscpy(zOriginalString, JA2_TEXT("@T,B40,C208,{; "));
 			break;
 
 			case 74:
-				wcscpy(zOriginalString, L"@}; ");
+				wcscpy(zOriginalString, JA2_TEXT("@}; "));
 			break;
 
 			// 3.)	Sir-Tech Credits
@@ -1254,7 +1254,7 @@ UINT32	GetAndHandleCreditCodeFromCodeString( STR16 pzCode )
 		UINT32	uiNewDelay=0;
 
 		//Get the delay from the string
-		swscanf( &pzCode[1], L"%d%*s", &uiNewDelay );
+		swscanf( &pzCode[1], JA2_TEXT("%d%*s"), &uiNewDelay );
 		guiGapBetweenCreditNodes	= uiNewDelay;
 
 		return( CRDT_NODE_NONE );
@@ -1265,7 +1265,7 @@ UINT32	GetAndHandleCreditCodeFromCodeString( STR16 pzCode )
 		UINT32	uiNewDelay=0;
 
 		//Get the delay from the string
-		swscanf( &pzCode[1], L"%d%*s", &uiNewDelay );
+		swscanf( &pzCode[1], JA2_TEXT("%d%*s"), &uiNewDelay );
 		guiGapBetweenCreditSections = uiNewDelay;
 
 		return( CRDT_NODE_NONE );
@@ -1275,7 +1275,7 @@ UINT32	GetAndHandleCreditCodeFromCodeString( STR16 pzCode )
 		UINT32	uiScrollSpeed=0;
 
 		//Get the delay from the string
-		swscanf( &pzCode[1], L"%d%*s", &uiScrollSpeed );
+		swscanf( &pzCode[1], JA2_TEXT("%d%*s"), &uiScrollSpeed );
 
 		guiCrdtNodeScrollSpeed = uiScrollSpeed;
 
@@ -1286,7 +1286,7 @@ UINT32	GetAndHandleCreditCodeFromCodeString( STR16 pzCode )
 		UINT32	uiJustification=0;
 
 		//Get the delay from the string
-		swscanf( &pzCode[1], L"%d%*s", &uiJustification );
+		swscanf( &pzCode[1], JA2_TEXT("%d%*s"), &uiJustification );
 
 		//get the justification
 		switch( uiJustification )
@@ -1309,7 +1309,7 @@ UINT32	GetAndHandleCreditCodeFromCodeString( STR16 pzCode )
 	else if( pzCode[0] == CRDT_TITLE_FONT_COLOR )
 	{
 		UINT uiBuffer = 0;
-		swscanf( &pzCode[1], L"%d%*s", &uiBuffer );
+		swscanf( &pzCode[1], JA2_TEXT("%d%*s"), &uiBuffer );
 		gubCreditScreenTitleColor = (UINT8)uiBuffer;
 
 		return( CRDT_NODE_NONE );
@@ -1317,7 +1317,7 @@ UINT32	GetAndHandleCreditCodeFromCodeString( STR16 pzCode )
 	else if( pzCode[0] == CRDT_ACTIVE_FONT_COLOR )
 	{
 		UINT uiBuffer = 0;
-		swscanf( &pzCode[1], L"%d%*s", &uiBuffer );
+		swscanf( &pzCode[1], JA2_TEXT("%d%*s"), &uiBuffer );
 		gubCreditScreenActiveColor = (UINT8)uiBuffer;
 
 		return( CRDT_NODE_NONE );

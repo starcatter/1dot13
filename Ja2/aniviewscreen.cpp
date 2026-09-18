@@ -127,47 +127,47 @@ UINT32  AniEditScreenHandle(void)
 
 
 	SetFont( LARGEFONT1 );
-	mprintf( 0,0,L"SOLDIER ANIMATION VIEWER" );
-	gprintfdirty( (INT16)0,(INT16)0,L"SOLDIER ANIMATION VIEWER" );
+	mprintf( 0,0,JA2_TEXT("SOLDIER ANIMATION VIEWER") );
+	gprintfdirty( (INT16)0,(INT16)0,JA2_TEXT("SOLDIER ANIMATION VIEWER") );
 
 
-	mprintf( 0,20,L"Current Animation: %S %S", gAnimControl[ usStartAnim ].zAnimStr, gAnimSurfaceDatabase[ pSoldier->usAnimSurface ].Filename );
-	gprintfdirty( (INT16)0,(INT16)20,L"Current Animation: %S %S", gAnimControl[ usStartAnim ].zAnimStr, gAnimSurfaceDatabase[ pSoldier->usAnimSurface ].Filename );
+	mprintf( 0,20,JA2_TEXT("Current Animation: %S %S"), gAnimControl[ usStartAnim ].zAnimStr, gAnimSurfaceDatabase[ pSoldier->usAnimSurface ].Filename );
+	gprintfdirty( (INT16)0,(INT16)20,JA2_TEXT("Current Animation: %S %S"), gAnimControl[ usStartAnim ].zAnimStr, gAnimSurfaceDatabase[ pSoldier->usAnimSurface ].Filename );
 
 
 	switch( ubStartHeight )
 	{
 		case ANIM_STAND:
 
-			mprintf( 0,40,L"Current Stance: STAND" );
+			mprintf( 0,40,JA2_TEXT("Current Stance: STAND") );
 			break;
 
 		case ANIM_CROUCH:
 
-			mprintf( 0,40,L"Current Stance: CROUCH" );
+			mprintf( 0,40,JA2_TEXT("Current Stance: CROUCH") );
 			break;
 
 		case ANIM_PRONE:
 
-			mprintf( 0,40,L"Current Stance: PRONE" );
+			mprintf( 0,40,JA2_TEXT("Current Stance: PRONE") );
 			break;
 	}
-	gprintfdirty( (INT16)0,(INT16)40,L"Current Animation: %S", gAnimControl[ usStartAnim ].zAnimStr );
+	gprintfdirty( (INT16)0,(INT16)40,JA2_TEXT("Current Animation: %S"), gAnimControl[ usStartAnim ].zAnimStr );
 
 
 	if ( fToggle )
 	{
-		mprintf( 0,60,L"FORCE ON" );
-		gprintfdirty( (INT16)0,(INT16)60,L"FORCE OFF" );
+		mprintf( 0,60,JA2_TEXT("FORCE ON") );
+		gprintfdirty( (INT16)0,(INT16)60,JA2_TEXT("FORCE OFF") );
 	}
 
 	if ( fToggle2 )
 	{
-		mprintf( 0,70,L"LOADED ORDER ON" );
-		gprintfdirty( (INT16)0,(INT16)70,L"LOADED ORDER ON" );
+		mprintf( 0,70,JA2_TEXT("LOADED ORDER ON") );
+		gprintfdirty( (INT16)0,(INT16)70,JA2_TEXT("LOADED ORDER ON") );
 
-		mprintf( 0,90,L"LOADED ORDER : %S", gAnimControl[ pusStates[ ubCurLoadedState ] ].zAnimStr );
-		gprintfdirty( (INT16)0,(INT16)90,L"LOADED ORDER : %S", gAnimControl[ pusStates[ ubCurLoadedState ] ].zAnimStr );
+		mprintf( 0,90,JA2_TEXT("LOADED ORDER : %S"), gAnimControl[ pusStates[ ubCurLoadedState ] ].zAnimStr );
+		gprintfdirty( (INT16)0,(INT16)90,JA2_TEXT("LOADED ORDER : %S"), gAnimControl[ pusStates[ ubCurLoadedState ] ].zAnimStr );
 
 	}
 
@@ -376,7 +376,7 @@ void BuildListFile( )
 		else
 		{
 			CHAR16 zError[128];
-			swprintf( zError, L"Animation str %S is not known: ", current.c_str() );
+			swprintf( zError, JA2_TEXT("Animation str %S is not known: "), current.c_str() );
 			DoMessageBox( MSG_BOX_BASIC_STYLE, zError, ANIEDIT_SCREEN, ( UINT8 )MSG_BOX_FLAG_YESNO, NULL, NULL );
 			return;
 		}

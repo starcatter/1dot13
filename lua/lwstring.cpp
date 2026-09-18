@@ -3,6 +3,9 @@
 
 #include "lwstring.h"
 
+#include <cstring>
+#include <cwctype>
+
 void luaWS_newlstr (lua_State *L, const CHAR16 *str, size_t l)
 {
 	TWString *ts;

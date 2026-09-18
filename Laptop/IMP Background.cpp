@@ -463,18 +463,18 @@ void AssignBackgroundHelpText( UINT16 ubNumber, MOUSE_REGION* pMouseregion )
 	CHAR16	apStr[ 4500 ];
 	CHAR16	atStr[  260 ];
 
-	swprintf( apStr, L"" );
+	swprintf( apStr, JA2_TEXT("") );
 	
 	if (!ubNumber)
 		return;
 
 	swprintf(atStr, zBackground[ubNumber].szName);
 	wcscat(apStr, atStr);
-	wcscat(apStr, L"\n");
+	wcscat(apStr, JA2_TEXT("\n"));
 
 	swprintf(atStr, zBackground[ubNumber].szDescription);
 	wcscat(apStr, atStr);
-	wcscat(apStr, L"\n");
+	wcscat(apStr, JA2_TEXT("\n"));
 
 	// ability description
 	if (gGameExternalOptions.fBackgroundTooltipDetails)
@@ -512,16 +512,16 @@ void AssignBackgroundHelpText( UINT16 ubNumber, MOUSE_REGION* pMouseregion )
 				else
 					swprintf(atStr, szBackgroundText_Value[strused + 1]);
 
-				wcscat(apStr, L" ");
+				wcscat(apStr, JA2_TEXT(" "));
 				wcscat(apStr, atStr);
-				wcscat(apStr, L"\n");
+				wcscat(apStr, JA2_TEXT("\n"));
 
 				// smoke has 2 texts, so extra increase of counter is needed
 				++strused;
 			}
 			else if (zBackground[ubNumber].value[i])
 			{
-				swprintf(atStr, szBackgroundText_Value[strused], zBackground[ubNumber].value[i] > 0 ? L"+" : L"", zBackground[ubNumber].value[i]);
+				swprintf(atStr, szBackgroundText_Value[strused], zBackground[ubNumber].value[i] > 0 ? JA2_TEXT("+") : JA2_TEXT(""), zBackground[ubNumber].value[i]);
 				wcscat(apStr, atStr);
 			}
 

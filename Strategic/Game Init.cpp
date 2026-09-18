@@ -152,7 +152,7 @@ static void InitNPCs( void )
 	}
 
 	#ifdef JA2TESTVERSION
-		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"Skyrider in %c %d", 'A' + pProfile->sSectorY - 1, pProfile->sSectorX );
+		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("Skyrider in %c %d"), 'A' + pProfile->sSectorY - 1, pProfile->sSectorX );
 	#endif
 
 	// use alternate map, with Skyrider's shack, in this sector
@@ -229,7 +229,7 @@ static void InitNPCs( void )
 	}
 
 	#ifdef JA2TESTVERSION
-		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"%s in %c %d", pProfile->zNickname, 'A' + pProfile->sSectorY - 1, pProfile->sSectorX );
+		ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("%s in %c %d"), pProfile->zNickname, 'A' + pProfile->sSectorY - 1, pProfile->sSectorX );
 	#endif
 
 	// use alternate map in this sector
@@ -263,7 +263,7 @@ static void InitNPCs( void )
 		}
 
 		#ifdef JA2TESTVERSION
-			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"%s in %c %d", pProfile->zNickname, 'A' + pProfile->sSectorY - 1, pProfile->sSectorX );
+			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("%s in %c %d"), pProfile->zNickname, 'A' + pProfile->sSectorY - 1, pProfile->sSectorX );
 		#endif
 
 		// use alternate map in this sector

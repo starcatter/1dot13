@@ -254,7 +254,7 @@ void RenderIMPAttributeSelection( void )
 		if (iMaxPointsToShow > 100 )
 			iMaxPointsToShow = 100;
 
-		swprintf(sMaxPntsString, L"%s %d%s", sgAttributeSelectionText[0], iMaxPointsToShow, L".");
+		swprintf(sMaxPntsString, JA2_TEXT("%s %d%s"), sgAttributeSelectionText[0], iMaxPointsToShow, JA2_TEXT("."));
 
 		// Explanatory text
 		DisplayWrappedString( LAPTOP_SCREEN_UL_X + 59, LAPTOP_SCREEN_WEB_UL_Y + 36,  ( 240 ), 2, FONT10ARIAL, 142, sMaxPntsString,FONT_BLACK,FALSE,0);
@@ -281,7 +281,7 @@ void RenderIMPAttributeSelection( void )
 	DrawTextToScreen( sgAttributeSelectionText[3], LAPTOP_SCREEN_UL_X + STARTING_LEVEL_BOX_POS_X + 9, LAPTOP_SCREEN_WEB_UL_Y + STARTING_LEVEL_BOX_POS_Y + 4, ( 100 ), FONT12ARIAL, FONT_WHITE, FONT_BLACK, FALSE, RIGHT_JUSTIFIED );
 
 	CHAR16 sStartLevelString[64];
-	swprintf(sStartLevelString, L"%d", iStartingLevel );
+	swprintf(sStartLevelString, JA2_TEXT("%d"), iStartingLevel );
 
 	// print string
 	DrawTextToScreen( sStartLevelString, STARTING_LEVEL_BOX_POS_X + LAPTOP_SCREEN_UL_X + 99, STARTING_LEVEL_BOX_POS_Y + LAPTOP_SCREEN_WEB_UL_Y + 6, ( 100 ), FONT14ARIAL, 142, FONT_BLACK, FALSE, CENTER_JUSTIFIED );
@@ -1229,7 +1229,7 @@ void RenderAttributeBoxes( void )
 				MSYS_MoveMouseRegionTo( &pSliderBarRegions[ iCnt ], ( INT16 )(sX + LAPTOP_SCREEN_UL_X ), ( INT16 )( sY + LAPTOP_SCREEN_WEB_UL_Y ) );
 
 				// the text
-				swprintf( sString, L"%d", iCurrentStrength );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentStrength );
 				sX += LAPTOP_SCREEN_UL_X;
 				sY += LAPTOP_SCREEN_WEB_UL_Y;
 				mprintf(sX + 13, sY + 3, sString);
@@ -1243,7 +1243,7 @@ void RenderAttributeBoxes( void )
 				MSYS_MoveMouseRegionTo( &pSliderBarRegions[ iCnt ], ( INT16 )(sX + LAPTOP_SCREEN_UL_X ), ( INT16 )( sY + LAPTOP_SCREEN_WEB_UL_Y ) );
 
 				// the text
-				swprintf( sString, L"%d", iCurrentDexterity );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentDexterity );
 			sX += LAPTOP_SCREEN_UL_X;
 				sY += LAPTOP_SCREEN_WEB_UL_Y;
 				mprintf(sX + 13, sY + 3, sString);
@@ -1258,7 +1258,7 @@ void RenderAttributeBoxes( void )
 			MSYS_MoveMouseRegionTo( &pSliderBarRegions[ iCnt ], ( INT16 )(sX + LAPTOP_SCREEN_UL_X ), ( INT16 )( sY + LAPTOP_SCREEN_WEB_UL_Y ) );
 
 				// the text
-				swprintf( sString, L"%d", iCurrentAgility );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentAgility );
 				sX += LAPTOP_SCREEN_UL_X;
 				sY += LAPTOP_SCREEN_WEB_UL_Y;
 				mprintf(sX + 13, sY + 3, sString);
@@ -1273,7 +1273,7 @@ void RenderAttributeBoxes( void )
 				MSYS_MoveMouseRegionTo( &pSliderBarRegions[ iCnt ], ( INT16 )(sX + LAPTOP_SCREEN_UL_X ), ( INT16 )( sY + LAPTOP_SCREEN_WEB_UL_Y ) );
 
 				// the text
-				swprintf( sString, L"%d", iCurrentWisdom );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentWisdom );
 				sX += LAPTOP_SCREEN_UL_X;
 				sY += LAPTOP_SCREEN_WEB_UL_Y;
 				mprintf(sX + 13, sY + 3, sString);
@@ -1286,7 +1286,7 @@ void RenderAttributeBoxes( void )
 				MSYS_MoveMouseRegionTo( &pSliderBarRegions[ iCnt ], ( INT16 )(sX + LAPTOP_SCREEN_UL_X ), ( INT16 )( sY + LAPTOP_SCREEN_WEB_UL_Y ) );
 
 				// the text
-				swprintf( sString, L"%d", iCurrentLeaderShip );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentLeaderShip );
 				sX += LAPTOP_SCREEN_UL_X;
 				sY += LAPTOP_SCREEN_WEB_UL_Y;
 				mprintf(sX + 13 , sY + 3, sString);
@@ -1300,7 +1300,7 @@ void RenderAttributeBoxes( void )
 				MSYS_MoveMouseRegionTo( &pSliderBarRegions[ iCnt ], ( INT16 )(sX + LAPTOP_SCREEN_UL_X ), ( INT16 )( sY + LAPTOP_SCREEN_WEB_UL_Y ) );
 
 				// the text
-				swprintf( sString, L"%d", iCurrentHealth );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentHealth );
 			sY += LAPTOP_SCREEN_WEB_UL_Y;
 				sX += LAPTOP_SCREEN_UL_X;
 				mprintf(sX + 13, sY + 3, sString);
@@ -1315,7 +1315,7 @@ void RenderAttributeBoxes( void )
 
 
 				// the text
-				swprintf( sString, L"%d", iCurrentMarkmanship );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentMarkmanship );
 			sY += LAPTOP_SCREEN_WEB_UL_Y;
 				sX += LAPTOP_SCREEN_UL_X;
 				mprintf(sX + 13, sY + 3, sString);
@@ -1330,7 +1330,7 @@ void RenderAttributeBoxes( void )
 				MSYS_MoveMouseRegionTo( &pSliderBarRegions[ iCnt ], ( INT16 )(sX + LAPTOP_SCREEN_UL_X ), ( INT16 )( sY + LAPTOP_SCREEN_WEB_UL_Y ) );
 
 				// the text
-				swprintf( sString, L"%d", iCurrentMedical );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentMedical );
 			sY += LAPTOP_SCREEN_WEB_UL_Y;
 				sX += LAPTOP_SCREEN_UL_X;
 				mprintf(sX + 13, sY + 3, sString);
@@ -1346,7 +1346,7 @@ void RenderAttributeBoxes( void )
 
 
 				// the text
-				swprintf( sString, L"%d", iCurrentMechanical );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentMechanical );
 			sY += LAPTOP_SCREEN_WEB_UL_Y;
 				sX += LAPTOP_SCREEN_UL_X;
 				mprintf(sX + 13, sY + 3, sString);
@@ -1361,7 +1361,7 @@ void RenderAttributeBoxes( void )
 				MSYS_MoveMouseRegionTo( &pSliderBarRegions[ iCnt ], ( INT16 )(sX + LAPTOP_SCREEN_UL_X ), ( INT16 )( sY + LAPTOP_SCREEN_WEB_UL_Y ) );
 
 				// the text
-				swprintf( sString, L"%d", iCurrentExplosives );
+				swprintf( sString, JA2_TEXT("%d"), iCurrentExplosives );
 			sY += LAPTOP_SCREEN_WEB_UL_Y;
 				sX += LAPTOP_SCREEN_UL_X;
 				mprintf(sX + 13, sY + 3, sString);
@@ -2035,7 +2035,7 @@ void DrawBonusPointsRemaining( void )
 	}
 
 	// parse amountof bns pts remaining
-	swprintf(sString, L"%d", iCurrentBonusPoints);
+	swprintf(sString, JA2_TEXT("%d"), iCurrentBonusPoints);
 
 	// set font color
 	SetFontForeground( FONT_WHITE );

@@ -84,7 +84,7 @@ void InitAssignmentDataArray( facilitytypeParseData *pData )
 	// Set assignment data from memory
 	pData->curAssignmentData.usPerformance = 100;				
 	pData->curAssignmentData.ubStaffLimit = 0;
-	swprintf(pData->curAssignmentData.szTooltipText, L"");
+	swprintf(pData->curAssignmentData.szTooltipText, JA2_TEXT(""));
 	pData->curAssignmentData.sCostPerHour = 0;
 
 	pData->curAssignmentData.usFatigue = 100;
@@ -135,8 +135,8 @@ void InitAssignmentDataArray( facilitytypeParseData *pData )
 void InitProductionDataArray( facilitytypeParseData *pData )
 {
 	// Set assignment data from memory
-	swprintf( pData->curProductionData.szProductionName, L"" );
-	swprintf( pData->curProductionData.szAdditionalRequirementTips, L"" );
+	swprintf( pData->curProductionData.szProductionName, JA2_TEXT("") );
+	swprintf( pData->curProductionData.szAdditionalRequirementTips, JA2_TEXT("") );
 	pData->curProductionData.usItemToCreate = NOTHING;
 	pData->curProductionData.sMinutesRequired = 60;
 	pData->curProductionData.sGridNo_Creation = -1;
@@ -629,13 +629,13 @@ facilitytypeEndElementHandle(void *userData, const XML_Char *name)
 			if (pData->curAssignmentType == -1)
 			{
 				CHAR16 sErrorString[256];
-				swprintf(sErrorString, L"FacilityTypes.XML Error: Assignment data for facility type %d is missing a <ubAssignmentType> tag", pData->curIndex);
+				swprintf(sErrorString, JA2_TEXT("FacilityTypes.XML Error: Assignment data for facility type %d is missing a <ubAssignmentType> tag"), pData->curIndex);
 				SGP_THROW(sErrorString);
 			}
 			else if (pData->curAssignmentData.ubStaffLimit <= 0 && pData->curAssignmentType != FAC_AMBIENT && !FacilityTypes_TextOnly)
 			{
 				CHAR16 sErrorString[256];
-				swprintf(sErrorString, L"FacilityTypes.XML Error: Assignment data for facility type %d is missing a <ubStaffLimit> tag, or the value of the tag is 0.", pData->curIndex);
+				swprintf(sErrorString, JA2_TEXT("FacilityTypes.XML Error: Assignment data for facility type %d is missing a <ubStaffLimit> tag, or the value of the tag is 0."), pData->curIndex);
 				SGP_THROW(sErrorString);
 			}
 			else
@@ -709,7 +709,7 @@ facilitytypeEndElementHandle(void *userData, const XML_Char *name)
 			if ( pData->curProduction == -1 )
 			{
 				CHAR16 sErrorString[256];
-				swprintf( sErrorString, L"FacilityTypes.XML Error: Production data for facility type %d is missing a <ubAssignmentType> tag", pData->curIndex );
+				swprintf( sErrorString, JA2_TEXT("FacilityTypes.XML Error: Production data for facility type %d is missing a <ubAssignmentType> tag"), pData->curIndex );
 				SGP_THROW( sErrorString );
 			}
 			else
@@ -939,7 +939,7 @@ facilitytypeEndElementHandle(void *userData, const XML_Char *name)
 			else
 			{
 				CHAR16 sErrorString[256];
-				swprintf(sErrorString, L"FacilityTypes.XML Error: Assignment type for facility %d is unrecognized!", pData->curIndex);
+				swprintf(sErrorString, JA2_TEXT("FacilityTypes.XML Error: Assignment type for facility %d is unrecognized!"), pData->curIndex);
 				SGP_THROW(sErrorString);
 			}
 		}

@@ -652,7 +652,7 @@ void BtnChangeTilesetCallback(GUI_BUTTON *btn,INT32 reason)
 		}
 		else
 		{
-			swprintf(gzErrorCatchString, L"Before changing tilesets you have to save the new map!");
+			swprintf(gzErrorCatchString, JA2_TEXT("Before changing tilesets you have to save the new map!"));
 			InitErrorCatchDialog();
 		}
 	}

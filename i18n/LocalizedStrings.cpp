@@ -1,4 +1,5 @@
 #include "LocalizedStrings.h"
+#include "UtfConversion.h"
 
 #include <vfs/Tools/vfs_tools.h>
 #include <vfs/Tools/vfs_property_container.h>
@@ -78,6 +79,21 @@ vfs::String const& Loc::GetString(Topic t, vfs::String const& section, int key)
 {
 	return GetString(t,section,vfs::toString<wchar_t>(key));
 }
+
+#ifndef _WIN32
+bool Loc::GetString(Topic t, const CHAR16* section, int key, CHAR16* value, vfs::UInt32 len)
+{
+	vfs::String hostValue;
+	const bool found = GetString(t, vfs::String(ja2::text::utf16ToUtf8(section)), key, hostValue);
+	ja2::text::copyUtf8ToUtf16(hostValue.utf8(), value, len);
+	return found;
+}
+
+vfs::String const& Loc::GetString(Topic t, const CHAR16* section, int key)
+{
+	return GetString(t, vfs::String(ja2::text::utf16ToUtf8(section)), key);
+}
+#endif
 
 
 

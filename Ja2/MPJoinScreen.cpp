@@ -16,6 +16,7 @@
 	#include "Text.h"
 	#include "Text Input.h"
 	#include "Soldier Profile.h"
+	#include "UtfConversion.h"
 
 #include "gameloop.h"
 #include "connect.h"
@@ -111,7 +112,7 @@ UINT32		gubMPJExitScreen = MP_JOIN_SCREEN;	// The screen that is in control next
 
 UINT32		guiMPJMainBackGroundImage;
 
-// Wide-char strings that will hold the variables until they are transferred to the CHAR ascii fields
+// Wide-char strings that will hold the variables until they are transferred to the CHAR8 ascii fields
 CHAR16		gzPlayerHandleField[ 10+1 ] = {0} ;
 CHAR16		gzServerIPField[ 15+1 ] = {0} ;
 CHAR16		gzServerPortField[ 5+1 ] = {0} ;
@@ -222,9 +223,9 @@ UINT32	MPJoinScreenInit( void )
 	MpIniExists();
 	vfs::PropertyContainer props;
 	props.initFromIniFile( JA2MP_INI_FILENAME);
-	props.getStringProperty( JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_IP, gzServerIPField, 16, "127.0.0.1");
-	props.getStringProperty( JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_PORT, gzServerPortField, 6, "60005");
-	props.getStringProperty( JA2MP_INI_INITIAL_SECTION, JA2MP_CLIENT_NAME, gzPlayerHandleField, 12, L"Player Name");
+	ja2::text::copyUtf8ToUtf16(props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_IP, L"127.0.0.1").utf8(), gzServerIPField, 16);
+	ja2::text::copyUtf8ToUtf16(props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_PORT, L"60005").utf8(), gzServerPortField, 6);
+	ja2::text::copyUtf8ToUtf16(props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_CLIENT_NAME, L"Player Name").utf8(), gzPlayerHandleField, 12);
 	return( 1 );
 }
 
@@ -241,11 +242,11 @@ void		SaveJoinSettings(bool ReSaving)
 	vfs::PropertyContainer props;
 	props.initFromIniFile(JA2MP_INI_FILENAME);
 
-	props.setStringProperty(JA2MP_INI_INITIAL_SECTION,JA2MP_SERVER_IP, gzServerIPField);
-	props.setStringProperty(JA2MP_INI_INITIAL_SECTION,JA2MP_SERVER_PORT, gzServerPortField);
-	props.setStringProperty(JA2MP_INI_INITIAL_SECTION,JA2MP_CLIENT_NAME, gzPlayerHandleField);
+	props.setStringProperty(JA2MP_INI_INITIAL_SECTION,JA2MP_SERVER_IP, vfs::String(ja2::text::utf16ToUtf8(gzServerIPField)));
+	props.setStringProperty(JA2MP_INI_INITIAL_SECTION,JA2MP_SERVER_PORT, vfs::String(ja2::text::utf16ToUtf8(gzServerPortField)));
+	props.setStringProperty(JA2MP_INI_INITIAL_SECTION,JA2MP_CLIENT_NAME, vfs::String(ja2::text::utf16ToUtf8(gzPlayerHandleField)));
 
-	s_ServerId.getServerId(vfs::Path(gzFileTransferDirectory), &props);
+	s_ServerId.getServerId(vfs::Path(ja2::text::utf16ToUtf8(gzFileTransferDirectory)), &props);
 
 	props.writeToIniFile(JA2MP_INI_FILENAME,false);
 }
@@ -254,7 +255,7 @@ bool	ValidateJoinSettings(bool bSkipServerAddress, bool bSkipSyncDir)
 {
 	// Check a Player name is entered
 	Get16BitStringFromField( 0, gzPlayerHandleField, 12 ); // these indexes are based on the order created
-	if (wcscmp(gzPlayerHandleField,L"")<=0)
+	if (wcscmp(gzPlayerHandleField,JA2_TEXT(""))<=0)
 	{
 		DoMPJMessageBox( MSG_BOX_BASIC_STYLE, gzMPJScreenText[MPJ_HANDLE_INVALID], MP_JOIN_SCREEN, MSG_BOX_FLAG_OK, NULL );
 		return false;
@@ -267,8 +268,8 @@ bool	ValidateJoinSettings(bool bSkipServerAddress, bool bSkipSyncDir)
 
 		// loop through octets and check
 		int numOctets = 0;
-		wchar_t* tok;
-		tok = wcstok(gzServerIPField,L".");
+		CHAR16* tok;
+		tok = wcstok(gzServerIPField,JA2_TEXT("."));
 		while (tok != NULL)
 		{
 			numOctets++;
@@ -276,7 +277,7 @@ bool	ValidateJoinSettings(bool bSkipServerAddress, bool bSkipSyncDir)
 			// check for invalid conversion, ie alpha chars
 			// wtoi returns 0 if it cant convert, but we need this value
 			// therefore if tok <> 0 then it was a bad convert.
-			if (oct == 0 && wcscmp(tok,L"0") != 0)
+			if (oct == 0 && wcscmp(tok,JA2_TEXT("0")) != 0)
 			{
 				// force error
 				numOctets=0;
@@ -291,7 +292,7 @@ bool	ValidateJoinSettings(bool bSkipServerAddress, bool bSkipSyncDir)
 			}
 
 			// get next octet
-			tok = wcstok(NULL,L".");
+			tok = wcstok(NULL,JA2_TEXT("."));
 		}
 
 		if (numOctets != 4)
@@ -671,7 +672,7 @@ void GetMPJScreenUserInput()
 
 						// force client to use "MULTIPLAYER/SERVERS" path
 						memset(gzFileTransferDirectory,0,100*sizeof(CHAR16));
-						wcscpy(gzFileTransferDirectory,L"multiplayer/servers");
+						wcscpy(gzFileTransferDirectory,JA2_TEXT("multiplayer/servers"));
 					}
 					break;
 			}
@@ -698,7 +699,7 @@ void BtnMPJoinCallback(GUI_BUTTON *btn,INT32 reason)
 
 			// force client to use "MULTIPLAYER/SERVERS" path
 			memset(gzFileTransferDirectory,0,100*sizeof(CHAR16));
-			wcscpy(gzFileTransferDirectory,L"multiplayer/servers");
+			wcscpy(gzFileTransferDirectory,JA2_TEXT("multiplayer/servers"));
 		}
 
 		InvalidateRegion(btn->Area.RegionTopLeftX, btn->Area.RegionTopLeftY, btn->Area.RegionBottomRightX, btn->Area.RegionBottomRightY);

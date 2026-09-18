@@ -56,6 +56,15 @@ typedef char16_t		CHAR16;
 typedef CHAR8 * 		STR;
 typedef CHAR8 *			STR8;
 typedef CHAR16 *		STR16;
+
+// Engine and serialized text is UTF-16 on every host. Use this for literals
+// passed to CHAR16/STR16 APIs; plain L"..." remains host wchar_t text for OS,
+// standard-library, and bfVFS interfaces.
+#ifdef _WIN32
+#define JA2_TEXT(value) L##value
+#else
+#define JA2_TEXT(value) u##value
+#endif
 // flags (individual bits used)
 typedef std::uint8_t	FLAGS8;
 typedef std::uint16_t	FLAGS16;

@@ -947,7 +947,7 @@ void ReFuelHelicopterForAMinute( void )
 	{
 		gubHelicopterTimeToFullRefuel = 0;
 		iTotalHeliDistanceSinceRefuel = 0;
-		ScreenMsg( FONT_GRAY2, MSG_INTERFACE, L"%s", pHelicopterRepairRefuelStrings[ STR_HELI_RR_REFUEL_FINISHED ]);
+		ScreenMsg( FONT_GRAY2, MSG_INTERFACE, JA2_TEXT("%s"), pHelicopterRepairRefuelStrings[ STR_HELI_RR_REFUEL_FINISHED ]);
 		
 	}
 	else
@@ -1108,7 +1108,7 @@ void FinishHelicopterRepair()
 	gubHelicopterHitsTaken = 0;
 	if( gGameSettings.fOptions[ TOPTION_SILENT_SKYRIDER ] == FALSE )
 		CharacterDialogue( WALDO, WALDO_REPAIR_COMPLETED, uiExternalStaticNPCFaces[ WALDO_EXTERNAL_FACE ], DIALOGUE_EXTERNAL_NPC_UI, FALSE, FALSE );
-	ScreenMsg( FONT_GRAY2, MSG_INTERFACE, L"%s", pHelicopterRepairRefuelStrings[ STR_HELI_RR_REPAIR_FINISHED ]);
+	ScreenMsg( FONT_GRAY2, MSG_INTERFACE, JA2_TEXT("%s"), pHelicopterRepairRefuelStrings[ STR_HELI_RR_REPAIR_FINISHED ]);
 	return;
 }
 

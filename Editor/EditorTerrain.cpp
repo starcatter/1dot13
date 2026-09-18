@@ -122,7 +122,7 @@ void RenderTerrainTileButtons()
 
 			if( fUseTerrainWeights )
 			{
-				mprintf( usX+2, usY+2, L"%d", ubTerrainTileButtonWeight[ x ] );
+				mprintf( usX+2, usY+2, JA2_TEXT("%d"), ubTerrainTileButtonWeight[ x ] );
 			}
 		}
 	}

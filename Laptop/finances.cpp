@@ -797,7 +797,7 @@ void DrawRecordsText( void )
 	for(iCounter; iCounter <NUM_RECORDS_PER_PAGE; iCounter++)
 	{
 		// get and write the date
-		swprintf(sString, L"%d", pCurFinance->uiDate / ( 24*60 ) );
+		swprintf(sString, JA2_TEXT("%d"), pCurFinance->uiDate / ( 24*60 ) );
 
 
 
@@ -808,14 +808,14 @@ void DrawRecordsText( void )
 		if(pCurFinance->iAmount >=0)
 		{
 			// increase in asset - debit
-	 swprintf(sString, L"%s", FormatMoney(pCurFinance->iAmount).data());
+	 swprintf(sString, JA2_TEXT("%s"), FormatMoney(pCurFinance->iAmount).data());
 		FindFontCenterCoordinates(RECORD_DEBIT_X,0,RECORD_DEBIT_WIDTH,0, sString, FINANCE_TEXT_FONT,&usX, &usY);
 		mprintf(usX, 12+RECORD_Y + (iCounter * ( GetFontHeight( FINANCE_TEXT_FONT ) + 6 ) ), sString);
 		}
 		else
 		{
 			// decrease in asset - credit
-	 swprintf(sString, L"%s", FormatMoney(pCurFinance->iAmount * (-1)).data());
+	 swprintf(sString, JA2_TEXT("%s"), FormatMoney(pCurFinance->iAmount * (-1)).data());
 		SetFontForeground(FONT_RED);
 
 		FindFontCenterCoordinates(RECORD_CREDIT_X ,0 , RECORD_CREDIT_WIDTH,0, sString, FINANCE_TEXT_FONT,&usX, &usY);
@@ -844,7 +844,7 @@ void DrawRecordsText( void )
 
 
 		// print the balance string
-	swprintf(sString, L"%s", FormatMoney(iBalance).data());
+	swprintf(sString, JA2_TEXT("%s"), FormatMoney(iBalance).data());
 		FindFontCenterCoordinates(RECORD_BALANCE_X,0,RECORD_BALANCE_WIDTH,0, sString, FINANCE_TEXT_FONT,&usX, &usY);
 		mprintf(usX, 12+RECORD_Y + (iCounter * ( GetFontHeight( FINANCE_TEXT_FONT ) + 6 ) ), sString);
 
@@ -897,7 +897,7 @@ void InvalidateLapTopScreen( void )
 void DrawSummaryText( void )
 {
 	INT16 usX, usY;
-	std::wstring tmp{};
+	ja2::text::Utf16String tmp{};
 	INT32 iBalance = 0;
 
 
@@ -1376,15 +1376,15 @@ void ProcessTransactionString(STR16 pString, FinanceUnitPtr pFinance)
 	switch( pFinance->ubCode)
 	{
 		case ACCRUED_INTEREST:
-			swprintf(pString, L"%s", pTransactionText[ACCRUED_INTEREST]);
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[ACCRUED_INTEREST]);
 			break;
 
 		case ANONYMOUS_DEPOSIT:
-			swprintf(pString, L"%s", pTransactionText[ANONYMOUS_DEPOSIT]);
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[ANONYMOUS_DEPOSIT]);
 			break;
 
 		case TRANSACTION_FEE:
-			swprintf(pString, L"%s", pTransactionText[TRANSACTION_FEE]);
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[TRANSACTION_FEE]);
 			break;
 
 		case HIRED_MERC:
@@ -1392,11 +1392,11 @@ void ProcessTransactionString(STR16 pString, FinanceUnitPtr pFinance)
 			break;
 
 		case BOBBYR_PURCHASE:
-			swprintf(pString, L"%s", pTransactionText[ BOBBYR_PURCHASE ]);
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[ BOBBYR_PURCHASE ]);
 			break;
 
 		case PAY_SPECK_FOR_MERC:
-			swprintf(pString, L"%s", pTransactionText[ PAY_SPECK_FOR_MERC ]);
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[ PAY_SPECK_FOR_MERC ]);
 			break;
 
 		case MEDICAL_DEPOSIT:
@@ -1404,7 +1404,7 @@ void ProcessTransactionString(STR16 pString, FinanceUnitPtr pFinance)
 			break;
 
 		case IMP_PROFILE:
-			swprintf(pString, L"%s", pTransactionText[ IMP_PROFILE ] );
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[ IMP_PROFILE ] );
 			break;
 
 		case PURCHASED_INSURANCE:
@@ -1445,7 +1445,7 @@ void ProcessTransactionString(STR16 pString, FinanceUnitPtr pFinance)
 			break;
 
 		case PURCHASED_FLOWERS:
-			swprintf(pString, L"%s", pTransactionText[ PURCHASED_FLOWERS ] );
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[ PURCHASED_FLOWERS ] );
 			break;
 
 		case FULL_MEDICAL_REFUND:
@@ -1482,7 +1482,7 @@ void ProcessTransactionString(STR16 pString, FinanceUnitPtr pFinance)
 			break;
 
 		case( SOLD_ITEMS ):
-			swprintf(pString, L"%s", pTransactionText[ SOLD_ITEMS ] );
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[ SOLD_ITEMS ] );
 			break;
 
 		case( PURCHASED_ITEM_FROM_DEALER ):
@@ -1501,7 +1501,7 @@ void ProcessTransactionString(STR16 pString, FinanceUnitPtr pFinance)
 		case PMC_CONTRACT:
 		case SAM_REPAIR:
 		case WORKERS_TRAINED:
-			swprintf( pString, L"%s", pTransactionText[pFinance->ubCode] );
+			swprintf( pString, JA2_TEXT("%s"), pTransactionText[pFinance->ubCode] );
 			break;
 
 		case PROMOTE_MILITIA:
@@ -1517,19 +1517,19 @@ void ProcessTransactionString(STR16 pString, FinanceUnitPtr pFinance)
 			break;
 
 		case MINI_EVENT:
-			swprintf(pString, L"%s", pTransactionText[MINI_EVENT]);
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[MINI_EVENT]);
 			break;
 
 		case REBEL_COMMAND:
-			swprintf(pString, L"%s", pTransactionText[REBEL_COMMAND]);
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[REBEL_COMMAND]);
 			break;
 
 		case REBEL_COMMAND_SPENDING:
-			swprintf(pString, L"%s", pTransactionText[REBEL_COMMAND_SPENDING]);
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[REBEL_COMMAND_SPENDING]);
 			break;
 
 		case REBEL_COMMAND_BOUNTY_PAYOUT:
-			swprintf(pString, L"%s", pTransactionText[REBEL_COMMAND_BOUNTY_PAYOUT]);
+			swprintf(pString, JA2_TEXT("%s"), pTransactionText[REBEL_COMMAND_BOUNTY_PAYOUT]);
 			break;
 	}
 }
@@ -1556,7 +1556,7 @@ void DisplayFinancePageNumberAndDateRange( void )
 		pCurrentFinance = pFinanceListHead;
 	if( !pCurrentFinance )
 		{
-	 swprintf( sString, L"%s %d / %d",pFinanceHeaders[5], iCurrentPage + 1 , guiLastPageInRecordsList + 2 );
+	 swprintf( sString, JA2_TEXT("%s %d / %d"),pFinanceHeaders[5], iCurrentPage + 1 , guiLastPageInRecordsList + 2 );
 	mprintf( PAGE_NUMBER_X, PAGE_NUMBER_Y, sString );
 		return;
 		}
@@ -1572,7 +1572,7 @@ void DisplayFinancePageNumberAndDateRange( void )
 
 	// get the last page
 
-	swprintf( sString, L"%s %d / %d",pFinanceHeaders[5], iCurrentPage + 1 , guiLastPageInRecordsList + 2 );
+	swprintf( sString, JA2_TEXT("%s %d / %d"),pFinanceHeaders[5], iCurrentPage + 1 , guiLastPageInRecordsList + 2 );
 	mprintf( PAGE_NUMBER_X, PAGE_NUMBER_Y, sString );
 
 	// reset shadow

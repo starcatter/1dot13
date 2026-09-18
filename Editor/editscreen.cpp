@@ -1389,7 +1389,7 @@ void HandleKeyboardShortcuts( )
 				switch( EditorInputEvent.usParam )
 				{
 					case ESC:
-						SetInputFieldStringWith16BitString( 0, L"" );
+						SetInputFieldStringWith16BitString( 0, JA2_TEXT("") );
 						RemoveGotoGridNoUI();
 						break;
 					case ENTER:
@@ -1398,7 +1398,7 @@ void HandleKeyboardShortcuts( )
 					case 'x':
 						if( EditorInputEvent.usKeyState & ALT_DOWN )
 						{
-							SetInputFieldStringWith16BitString( 0, L"" );
+							SetInputFieldStringWith16BitString( 0, JA2_TEXT("") );
 							RemoveGotoGridNoUI();
 							iCurrentAction = ACTION_QUIT_GAME;
 						}
@@ -1410,7 +1410,7 @@ void HandleKeyboardShortcuts( )
 				switch( EditorInputEvent.usParam )
 				{
 					case ESC:
-						SetInputFieldStringWith16BitString( 0, L"" );
+						SetInputFieldStringWith16BitString( 0, JA2_TEXT("") );
 						RemoveKeyboardItemCreationUI();
 						break;
 					case ENTER:
@@ -1419,7 +1419,7 @@ void HandleKeyboardShortcuts( )
 					case 'x':
 						if( EditorInputEvent.usKeyState & ALT_DOWN )
 						{
-							SetInputFieldStringWith16BitString( 0, L"" );
+							SetInputFieldStringWith16BitString( 0, JA2_TEXT("") );
 							RemoveKeyboardItemCreationUI();
 							iCurrentAction = ACTION_QUIT_GAME;
 						}
@@ -1612,7 +1612,7 @@ void HandleKeyboardShortcuts( )
 
 				case F4:
 					MusicPlay(gMusicMode, giMusicID);
-					ScreenMsg( FONT_YELLOW, MSG_INTERFACE, L"%S", MusicLists[gMusicMode][giMusicID] );
+					ScreenMsg( FONT_YELLOW, MSG_INTERFACE, JA2_TEXT("%S"), MusicLists[gMusicMode][giMusicID] );
 
 					// Select next track 
 					giMusicID++;
@@ -4230,7 +4230,7 @@ void ProcessAreaSelection( BOOLEAN fWithLeftButton )
 				if( iCurrentTaskbar == TASK_BUILDINGS && TextInputMode() )
 				{
 					CHAR16 str[4];
-					swprintf( str, L"%d", gusCurrRoomNumber );
+					swprintf( str, JA2_TEXT("%d"), gusCurrRoomNumber );
 					SetInputFieldStringWith16BitString( 1, str );
 					SetActiveField( 0 );
 				}
@@ -4472,7 +4472,7 @@ void CreateGotoGridNoUI()
 	DisableEditorTaskbar();
 	//Create the background panel.
 	guiGotoGridNoUIButtonID =
-		CreateTextButton( L"Enter Gridno:", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Enter Gridno:"), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 288, iScreenHeightOffset + 155, 64, 50, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MSYS_NO_CALLBACK );
 	SpecifyDisabledButtonStyle( guiGotoGridNoUIButtonID, DISABLED_STYLE_NONE );
 	SpecifyButtonTextOffsets( guiGotoGridNoUIButtonID, 5, 5, FALSE );
@@ -4481,7 +4481,7 @@ void CreateGotoGridNoUI()
 	MSYS_DefineRegion( &GotoGridNoUIRegion, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,	MSYS_PRIORITY_NORMAL+1, 0, MSYS_NO_CALLBACK, MSYS_NO_CALLBACK );
 	//Init a text input field.
 	InitTextInputModeWithScheme( DEFAULT_SCHEME );
-	AddTextInputField( iScreenWidthOffset + 300, iScreenHeightOffset + 180, 40, 18, MSYS_PRIORITY_HIGH, L"", 6, INPUTTYPE_NUMERICSTRICT );
+	AddTextInputField( iScreenWidthOffset + 300, iScreenHeightOffset + 180, 40, 18, MSYS_PRIORITY_HIGH, JA2_TEXT(""), 6, INPUTTYPE_NUMERICSTRICT );
 }
 
 void RemoveGotoGridNoUI()
@@ -4514,7 +4514,7 @@ void UpdateLastActionBeforeLeaving()
 void ReloadMap()
 {
 	CHAR16 szFilename[30];
-	swprintf( szFilename, L"%S", gubFilename );
+	swprintf( szFilename, JA2_TEXT("%S"), gubFilename );
 	ExternalLoadMap( szFilename );
 }
 
@@ -4577,7 +4577,7 @@ void CreateKeyboardItemCreationUI()
 	DisableEditorTaskbar();
 	//Create the background panel.
 	guiKeyboardItemCreationUIButtonID =
-		CreateTextButton( L"Enter ItemID:", FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
+		CreateTextButton( JA2_TEXT("Enter ItemID:"), FONT10ARIAL, FONT_YELLOW, FONT_BLACK, BUTTON_USE_DEFAULT,
 		iScreenWidthOffset + 288, iScreenHeightOffset + 155, 64, 50, BUTTON_NO_TOGGLE, MSYS_PRIORITY_NORMAL, DEFAULT_MOVE_CALLBACK, MSYS_NO_CALLBACK );
 	SpecifyDisabledButtonStyle( guiKeyboardItemCreationUIButtonID, DISABLED_STYLE_NONE );
 	SpecifyButtonTextOffsets( guiKeyboardItemCreationUIButtonID, 5, 5, FALSE );
@@ -4586,7 +4586,7 @@ void CreateKeyboardItemCreationUI()
 	MSYS_DefineRegion( &KeyboardItemCreationUIRegion, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,	MSYS_PRIORITY_NORMAL+1, 0, MSYS_NO_CALLBACK, MSYS_NO_CALLBACK );
 	//Init a text input field.
 	InitTextInputModeWithScheme( DEFAULT_SCHEME );
-	AddTextInputField( iScreenWidthOffset + 300, iScreenHeightOffset + 180, 40, 18, MSYS_PRIORITY_HIGH, L"", 4, INPUTTYPE_NUMERICSTRICT );
+	AddTextInputField( iScreenWidthOffset + 300, iScreenHeightOffset + 180, 40, 18, MSYS_PRIORITY_HIGH, JA2_TEXT(""), 4, INPUTTYPE_NUMERICSTRICT );
 }
 
 void RemoveKeyboardItemCreationUI()

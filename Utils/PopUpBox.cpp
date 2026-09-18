@@ -570,7 +570,7 @@ static void ResizeStrategicMvtBoxForSecondStrings( INT32 hBoxHandle )
 			if ( uiThisWidth > pBox->uiSecondColumnCurrentOffset )
 			{
 				// Maintain width if something is selected and the '*' characters have been added
-				if ( wcsncmp( pBox->Text[0][iCounter]->pString, L"  *", 3 ) == 0 )
+				if ( wcsncmp( pBox->Text[0][iCounter]->pString, JA2_TEXT("  *"), 3 ) == 0 )
 				{
 					uiThisWidth -= 10;
 				}
@@ -1598,7 +1598,7 @@ void ResizeBoxToText( INT32 hBoxHandle )
 		if ( box->Text[0][iCurrString] != NULL )
 		{
 
-			if ( box->Text[3][iCurrString] != NULL && wcscmp( box->Text[3][iCurrString]->pString, L"" ) != 0 )
+			if ( box->Text[3][iCurrString] != NULL && wcscmp( box->Text[3][iCurrString]->pString, JA2_TEXT("") ) != 0 )
 			{
 				iColumnLength = StringPixLength( box->Text[3][iCurrString]->pString, box->Text[3][iCurrString]->uiFont );
 				if ( 3 * columnOffset + iColumnLength + margins > iWidth )
@@ -1606,7 +1606,7 @@ void ResizeBoxToText( INT32 hBoxHandle )
 					iWidth = 3 * columnOffset + iColumnLength + margins;
 				}
 			}
-			else if ( box->Text[2][iCurrString] != NULL && wcscmp( box->Text[2][iCurrString]->pString, L"" ) != 0 )
+			else if ( box->Text[2][iCurrString] != NULL && wcscmp( box->Text[2][iCurrString]->pString, JA2_TEXT("") ) != 0 )
 			{
 				iColumnLength = StringPixLength( box->Text[2][iCurrString]->pString, box->Text[2][iCurrString]->uiFont );
 				if ( 2 * columnOffset + iColumnLength + margins > iWidth )
@@ -1614,7 +1614,7 @@ void ResizeBoxToText( INT32 hBoxHandle )
 					iWidth = 2 * columnOffset + iColumnLength + margins;
 				}
 			}
-			else if ( box->Text[1][iCurrString] != NULL && wcscmp( box->Text[1][iCurrString]->pString, L"" ) != 0 )
+			else if ( box->Text[1][iCurrString] != NULL && wcscmp( box->Text[1][iCurrString]->pString, JA2_TEXT("") ) != 0 )
 			{
 				iColumnLength = StringPixLength( box->Text[1][iCurrString]->pString, box->Text[1][iCurrString]->uiFont );
 				if ( columnOffset + iColumnLength + margins > iWidth )

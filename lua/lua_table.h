@@ -2,6 +2,7 @@
 #define _LUA_TABLE_H_
 
 #include "lua_state.h"
+#include "lua_class_interface.h"
 
 #include <string>
 

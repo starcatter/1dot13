@@ -1189,7 +1189,7 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Map Screen1");
 		//if( ( ( fFoundOrta != FALSE ) || ( bTown != ORTA ) ) && ( ( bTown != TIXA ) || ( fFoundTixa != FALSE) ) )
 		if( gfHiddenTown[ bTown ] == TRUE )
 		{
-			swprintf( sString, L"%s", pTownNames[ bTown ] );
+			swprintf( sString, JA2_TEXT("%s"), pTownNames[ bTown ] );
 
 			fLoyaltyTooLowToTrainMilitia = FALSE;
 
@@ -1197,9 +1197,9 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Map Screen1");
 			if( gTownLoyalty[ bTown ].fStarted && gfTownUsesLoyalty[ bTown ])
 			{
 				if ( g_lang == i18n::Lang::zh ) {
-					swprintf( sStringA, L"%d%\uFF05%% %s", gTownLoyalty[ bTown ].ubRating, gsLoyalString[ 0 ]);
+					swprintf( sStringA, JA2_TEXT("%d%\uFF05%% %s"), gTownLoyalty[ bTown ].ubRating, gsLoyalString[ 0 ]);
 				} else {
-					swprintf( sStringA, L"%d%%%% %s", gTownLoyalty[ bTown ].ubRating, gsLoyalString[ 0 ]);
+					swprintf( sStringA, JA2_TEXT("%d%%%% %s"), gTownLoyalty[ bTown ].ubRating, gsLoyalString[ 0 ]);
 				}
 				
 				// if loyalty is too low to train militia, and militia training is allowed here
@@ -1210,7 +1210,7 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Map Screen1");
 			}
 			else
 			{
-				wcscpy( sStringA, L"");
+				wcscpy( sStringA, JA2_TEXT(""));
 			}
 
 			usX = (UINT16) (UI_MAP.ViewRegion.x + UI_MAP.GridSize.iX +  (pTownPoints[ bTown ].iX * UI_MAP.GridSize.iX) / 10);
@@ -1926,14 +1926,14 @@ void PlotPathForCharacter( SOLDIERTYPE *pCharacter, INT16 sX, INT16 sY, BOOLEAN 
 		if( pCharacter->bAssignment >= ON_DUTY )
 		{
 			// not on the surface, character won't move until they reach surface..info player of this fact
-			MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"%s %s", pCharacter->name, gsUndergroundString[0] );
+			MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("%s %s"), pCharacter->name, gsUndergroundString[0] );
 		}
 		else	// squad
 		{
 			if ( gGameExternalOptions.fUseXMLSquadNames && pCharacter->bAssignment < gSquadNameVector.size() )
-				MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"%s %s", gSquadNameVector[pCharacter->bAssignment].c_str(), gsUndergroundString[0] );
+				MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("%s %s"), gSquadNameVector[pCharacter->bAssignment].c_str(), gsUndergroundString[0] );
 			else
-				MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"%s %s", pLongAssignmentStrings[ pCharacter->bAssignment ], gsUndergroundString[0] );
+				MapScreenMessage( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("%s %s"), pLongAssignmentStrings[ pCharacter->bAssignment ], gsUndergroundString[0] );
 		}
 		return;
 	}
@@ -4328,7 +4328,7 @@ void DisplayDistancesForHelicopter( void )
 	SetFontForeground( FONT_LTGREEN );
 	SetFontBackground( FONT_BLACK );
 
-	swprintf( sString, L"%s", pHelicopterEtaStrings[ STR_HELI_ETA_TOTAL_DISTANCE ] );
+	swprintf( sString, JA2_TEXT("%s"), pHelicopterEtaStrings[ STR_HELI_ETA_TOTAL_DISTANCE ] );
 	mprintf(UI_MAP.HeliETA.PopupBox.x + 5, sYPosition + 5, sString );
 
 /*
@@ -4342,27 +4342,27 @@ void DisplayDistancesForHelicopter( void )
 		SetFontForeground( FONT_LTGREEN );
 	}
 
-	swprintf( sString, L"%d", sTotalOfTrip );
+	swprintf( sString, JA2_TEXT("%d"), sTotalOfTrip );
 	FindFontRightCoordinates(UI_MAP.HeliETA.PopupBox.x + 5, UI_MAP.HeliETA.PopupBox.y + 5, UI_MAP.HeliETA.PopupBox.width, 0,  sString, MAP_FONT,  &sX, &sY );
 	mprintf( sX, sYPosition + 5, sString );
 
 	SetFontForeground( FONT_LTGREEN );
 
-	swprintf( sString, L"%s", pHelicopterEtaStrings[ STR_HELI_ETA_SAFE ] );
+	swprintf( sString, JA2_TEXT("%s"), pHelicopterEtaStrings[ STR_HELI_ETA_SAFE ] );
 	mprintf(UI_MAP.HeliETA.PopupBox.x + 5, sYPosition + 5 + GetFontHeight( MAP_FONT ), sString );
 
-	swprintf( sString, L"%d", sNumSafeSectors );
+	swprintf( sString, JA2_TEXT("%d"), sNumSafeSectors );
 	FindFontRightCoordinates(UI_MAP.HeliETA.PopupBox.x + 5, ( INT16 ) (UI_MAP.HeliETA.PopupBox.y + 5 + 2 * GetFontHeight( MAP_FONT ) ), UI_MAP.HeliETA.PopupBox.width, 0,  sString, MAP_FONT,  &sX, &sY );
 	mprintf( sX, ( INT16 ) ( sYPosition + 5 + GetFontHeight( MAP_FONT ) ), sString );
 
-	swprintf( sString, L"%s", pHelicopterEtaStrings[ STR_HELI_ETA_UNSAFE ] );
+	swprintf( sString, JA2_TEXT("%s"), pHelicopterEtaStrings[ STR_HELI_ETA_UNSAFE ] );
 	mprintf(UI_MAP.HeliETA.PopupBox.x + 5, sYPosition + 5 + 2 * GetFontHeight( MAP_FONT ), sString );
 
-	swprintf( sString, L"%d", sNumUnSafeSectors );
+	swprintf( sString, JA2_TEXT("%d"), sNumUnSafeSectors );
 	FindFontRightCoordinates(UI_MAP.HeliETA.PopupBox.x + 5, ( INT16 ) (UI_MAP.HeliETA.PopupBox.y + 5 + 2 * GetFontHeight( MAP_FONT ) ), UI_MAP.HeliETA.PopupBox.width, 0,  sString, MAP_FONT,  &sX, &sY );
 	mprintf( sX, ( INT16 ) ( sYPosition + 5 + 2 * GetFontHeight( MAP_FONT ) ), sString );
 
-	swprintf( sString, L"%s", pHelicopterEtaStrings[ STR_HELI_ETA_TOTAL_COST ] );
+	swprintf( sString, JA2_TEXT("%s"), pHelicopterEtaStrings[ STR_HELI_ETA_TOTAL_COST ] );
 	mprintf(UI_MAP.HeliETA.PopupBox.x + 5, sYPosition + 5 + 3 * GetFontHeight( MAP_FONT ), sString );
 	
 	// calculate the cost of the trip based on the number of safe and unsafe sectors it will pass through
@@ -4374,13 +4374,13 @@ void DisplayDistancesForHelicopter( void )
 	if( (INT32)uiTripCost > LaptopSaveInfo.iCurrentBalance )
 		SetFontForeground( FONT_LTRED );
 		
-	swprintf( sString, L"%s", FormatMoney(uiTripCost).data());
+	swprintf( sString, JA2_TEXT("%s"), FormatMoney(uiTripCost).data());
 	FindFontRightCoordinates(UI_MAP.HeliETA.PopupBox.x + 5, ( INT16 ) (UI_MAP.HeliETA.PopupBox.y + 5 + 3 * GetFontHeight( MAP_FONT ) ), UI_MAP.HeliETA.PopupBox.width, 0,  sString, MAP_FONT,  &sX, &sY );
 	mprintf( sX, ( INT16 ) ( sYPosition + 5 + 3 * GetFontHeight( MAP_FONT ) ), sString );
 
 	SetFontForeground( FONT_LTGREEN );
 
-	swprintf( sString, L"%s", pHelicopterEtaStrings[ STR_HELI_ETA_ETA ] );
+	swprintf( sString, JA2_TEXT("%s"), pHelicopterEtaStrings[ STR_HELI_ETA_ETA ] );
 	mprintf(UI_MAP.HeliETA.PopupBox.x + 5, sYPosition + 5 + 4 * GetFontHeight( MAP_FONT ), sString );
 
 	// get travel time for the last path segment
@@ -4389,20 +4389,20 @@ void DisplayDistancesForHelicopter( void )
 	// add travel time for any prior path segments (stored in the helicopter's mercpath, but waypoints aren't built)
 	iTime += GetPathTravelTimeDuringPlotting( pVehicleList[ iHelicopterVehicleId ].pMercPath );
 
-	swprintf( sString, L"%d%s %d%s", iTime / 60, gsTimeStrings[0], iTime % 60, gsTimeStrings[1] );
+	swprintf( sString, JA2_TEXT("%d%s %d%s"), iTime / 60, gsTimeStrings[0], iTime % 60, gsTimeStrings[1] );
 	FindFontRightCoordinates(UI_MAP.HeliETA.PopupBox.x + 5, ( INT16 ) ( sYPosition + 5 + 4 * GetFontHeight( MAP_FONT ) ), UI_MAP.HeliETA.PopupBox.width, 0,  sString, MAP_FONT,  &sX, &sY );
 	mprintf( sX, ( INT16 ) ( sYPosition + 5 + 4 * GetFontHeight( MAP_FONT ) ), sString );
 
 
 	// show # of passengers aboard the chopper
 	mprintf(UI_MAP.HeliETA.PopupBox.x + 5, sYPosition + 5 + 5 * GetFontHeight( MAP_FONT ), pHelicopterEtaStrings[ STR_HELI_ETA_PASSENGERS ] );
-	swprintf( sString, L"%d", GetNumberOfPassengersInHelicopter() );
+	swprintf( sString, JA2_TEXT("%d"), GetNumberOfPassengersInHelicopter() );
 	FindFontRightCoordinates(UI_MAP.HeliETA.PopupBox.x + 5, ( INT16 ) (UI_MAP.HeliETA.PopupBox.y + 5 + 5 * GetFontHeight( MAP_FONT ) ), UI_MAP.HeliETA.PopupBox.width, 0,  sString, MAP_FONT,  &sX, &sY );
 	mprintf( sX, ( INT16 ) ( sYPosition + 5 + 5 * GetFontHeight( MAP_FONT ) ), sString );
 
 	// show remaining fuel
 	mprintf(UI_MAP.HeliETA.PopupBox.x + 5, sYPosition + 5 + 6 * GetFontHeight( MAP_FONT ), pHelicopterEtaStrings[ STR_HELI_ETA_REMAINING_FUEL ] );
-	swprintf( sString, L"%d", sRemainingFuel );
+	swprintf( sString, JA2_TEXT("%d"), sRemainingFuel );
 	FindFontRightCoordinates(UI_MAP.HeliETA.PopupBox.x + 5, ( INT16 ) (UI_MAP.HeliETA.PopupBox.y + 5 + 6 * GetFontHeight( MAP_FONT ) ), UI_MAP.HeliETA.PopupBox.width, 0,  sString, MAP_FONT,  &sX, &sY );
 	if( sRemainingFuel < sDistToRefuelSite )
 		SetFontForeground( FONT_LTRED );
@@ -4411,7 +4411,7 @@ void DisplayDistancesForHelicopter( void )
 
 	// show distance to the nearest refuel site
 	mprintf(UI_MAP.HeliETA.PopupBox.x + 5, sYPosition + 5 + 7 * GetFontHeight( MAP_FONT ), pHelicopterEtaStrings[ STR_HELI_ETA_DISTANCE_TO_REFUEL_SITE ] );
-	swprintf( sString, L"%d", sDistToRefuelSite );
+	swprintf( sString, JA2_TEXT("%d"), sDistToRefuelSite );
 	FindFontRightCoordinates(UI_MAP.HeliETA.PopupBox.x + 5, ( INT16 ) (UI_MAP.HeliETA.PopupBox.y + 5 + 7 * GetFontHeight( MAP_FONT ) ), UI_MAP.HeliETA.PopupBox.width, 0,  sString, MAP_FONT,  &sX, &sY );
 	if( sRemainingFuel < sDistToRefuelSite )
 		SetFontForeground( FONT_LTRED );
@@ -4474,7 +4474,7 @@ void DisplayPositionOfHelicopter( void )
 				// Something is really goofed up, there's no group for the helicopter.  Re-create it.
 				static bool heliMsg1Given = false;
 				if (!heliMsg1Given) {
-					DoScreenIndependantMessageBox( L"The helicopter data is corrupted.  Attempting to repair it...", MSG_BOX_FLAG_OK, NULL );
+					DoScreenIndependantMessageBox( JA2_TEXT("The helicopter data is corrupted.  Attempting to repair it..."), MSG_BOX_FLAG_OK, NULL );
 					heliMsg1Given = true;
 				}
 				RemoveVehicleFromList (iHelicopterVehicleId);
@@ -4485,7 +4485,7 @@ void DisplayPositionOfHelicopter( void )
 				if (!pGroup) {
 					static bool heliMsg2Given = false;
 					if (!heliMsg2Given) {
-						DoScreenIndependantMessageBox( L"The helicopter data is corrupted beyond repair.  Please report this and send a save file and your .ini file.  You can continue playing but the helicopter will not work properly.", MSG_BOX_FLAG_OK, NULL );
+						DoScreenIndependantMessageBox( JA2_TEXT("The helicopter data is corrupted beyond repair.  Please report this and send a save file and your .ini file.  You can continue playing but the helicopter will not work properly."), MSG_BOX_FLAG_OK, NULL );
 						heliMsg2Given = true;
 					}
 					return;
@@ -4542,7 +4542,7 @@ void DisplayPositionOfHelicopter( void )
 
 			// now get number of people and blit that too		
 			iNumberOfPeopleInHelicopter =  GetNumberOfPassengersInHelicopter( );
-			swprintf( sString, L"%d", iNumberOfPeopleInHelicopter );
+			swprintf( sString, JA2_TEXT("%d"), iNumberOfPeopleInHelicopter );
 
 			SetFont( MAP_MVT_ICON_FONT );
 			SetFontForeground( FONT_WHITE );
@@ -4817,8 +4817,8 @@ void BlitMineText( INT16 sMapX, INT16 sMapY )
 	ubMineIndex = GetMineIndexForSector( sMapX, sMapY );
 
 	// display associated town name, followed by "mine"
-	//swprintf( wString, L"%s %s", pTownNames[ GetTownAssociatedWithMine( GetMineIndexForSector( sMapX, sMapY ) ) ],  pwMineStrings[ 0 ] );
-	swprintf( wString, L"%s %s", pTownNames[ GetTownAssociatedWithMine( GetMineIndexForSector( sMapX, sMapY ) ) ],  MineralsName[gMineStatus[ubMineIndex].ubMineType].sType );
+	//swprintf( wString, JA2_TEXT("%s %s"), pTownNames[ GetTownAssociatedWithMine( GetMineIndexForSector( sMapX, sMapY ) ) ],  pwMineStrings[ 0 ] );
+	swprintf( wString, JA2_TEXT("%s %s"), pTownNames[ GetTownAssociatedWithMine( GetMineIndexForSector( sMapX, sMapY ) ) ],  MineralsName[gMineStatus[ubMineIndex].ubMineType].sType );
 	AdjustXForLeftMapEdge(wString, &sScreenX, MapMineLabelsFont);
 	mprintf( ( sScreenX - StringPixLength( wString, MapMineLabelsFont ) / 2 ) , sScreenY + ubLineCnt * GetFontHeight( MapMineLabelsFont ) , wString );
 	++ubLineCnt;
@@ -4826,21 +4826,21 @@ void BlitMineText( INT16 sMapX, INT16 sMapY )
 	// check if mine is empty (abandoned) or running out
 	if (gMineStatus[ ubMineIndex ].fEmpty)
 	{
-		swprintf( wString, L"%s", pwMineStrings[ 5 ] );
+		swprintf( wString, JA2_TEXT("%s"), pwMineStrings[ 5 ] );
 		AdjustXForLeftMapEdge(wString, &sScreenX, MapMineLabelsFont);
 		mprintf( ( sScreenX - StringPixLength( wString, MapMineLabelsFont ) / 2 ) , sScreenY + ubLineCnt * GetFontHeight( MapMineLabelsFont ) , wString );
 		++ubLineCnt;
 	}
 	else if (gMineStatus[ ubMineIndex ].fShutDown)
 	{
-		swprintf( wString, L"%s", pwMineStrings[ 6 ] );
+		swprintf( wString, JA2_TEXT("%s"), pwMineStrings[ 6 ] );
 		AdjustXForLeftMapEdge(wString, &sScreenX, MapMineLabelsFont);
 		mprintf( ( sScreenX - StringPixLength( wString, MapMineLabelsFont ) / 2 ) , sScreenY + ubLineCnt * GetFontHeight( MapMineLabelsFont ) , wString );
 		++ubLineCnt;
 	}
 	else if (gMineStatus[ ubMineIndex ].fRunningOut)
 	{
-		swprintf( wString, L"%s", pwMineStrings[ 7 ] );
+		swprintf( wString, JA2_TEXT("%s"), pwMineStrings[ 7 ] );
 		AdjustXForLeftMapEdge(wString, &sScreenX, MapMineLabelsFont);
 		mprintf( ( sScreenX - StringPixLength( wString, MapMineLabelsFont ) / 2 ) , sScreenY + ubLineCnt * GetFontHeight( MapMineLabelsFont ) , wString );
 		++ubLineCnt;
@@ -4851,15 +4851,15 @@ void BlitMineText( INT16 sMapX, INT16 sMapY )
 	if (PlayerControlsMine(ubMineIndex) && !gMineStatus[ ubMineIndex ].fEmpty)
 	{
 		// show current production
-		swprintf( wSubString, L"%s", FormatMoney(PredictDailyIncomeFromAMine(ubMineIndex, TRUE)).data());
+		swprintf( wSubString, JA2_TEXT("%s"), FormatMoney(PredictDailyIncomeFromAMine(ubMineIndex, TRUE)).data());
 		wcscpy( wString, wSubString );
 
 /*
 		// show maximum potential production
-		swprintf( wSubString, L"%d", GetMaxDailyRemovalFromMine(ubMineIndex) );
+		swprintf( wSubString, JA2_TEXT("%d"), GetMaxDailyRemovalFromMine(ubMineIndex) );
 		InsertCommasForDollarFigure( wSubString );
 		InsertDollarSignInToString( wSubString );
-		wcscat( wString, L" / ");
+		wcscat( wString, JA2_TEXT(" / "));
 		wcscat( wString, wSubString );
 */
 
@@ -4867,9 +4867,9 @@ void BlitMineText( INT16 sMapX, INT16 sMapY )
 		if (GetMaxPeriodicRemovalFromMine(ubMineIndex) > 0)
 		{
 			if ( g_lang == i18n::Lang::zh ) {
-				swprintf( wSubString, L" (%d%\uFF05%%)", (PredictDailyIncomeFromAMine(ubMineIndex, TRUE) * 100 ) / GetMaxDailyRemovalFromMine(ubMineIndex) );
+				swprintf( wSubString, JA2_TEXT(" (%d%\uFF05%%)"), (PredictDailyIncomeFromAMine(ubMineIndex, TRUE) * 100 ) / GetMaxDailyRemovalFromMine(ubMineIndex) );
 			} else {
-				swprintf( wSubString, L" (%d%%%%)", (PredictDailyIncomeFromAMine(ubMineIndex, TRUE) * 100 ) / GetMaxDailyRemovalFromMine(ubMineIndex) );
+				swprintf( wSubString, JA2_TEXT(" (%d%%%%)"), (PredictDailyIncomeFromAMine(ubMineIndex, TRUE) * 100 ) / GetMaxDailyRemovalFromMine(ubMineIndex) );
 			}
 			
 			wcscat( wString, wSubString );
@@ -4888,7 +4888,7 @@ void BlitMineText( INT16 sMapX, INT16 sMapY )
 
 			if ( maxworkforce > 0 )
 			{
-				swprintf( wString, L"%d/%d workers", workforce, maxworkforce );
+				swprintf( wString, JA2_TEXT("%d/%d workers"), workforce, maxworkforce );
 				AdjustXForLeftMapEdge(wString, &sScreenX, MapMineLabelsFont);
 				mprintf( ( sScreenX - StringPixLength( wString, MapMineLabelsFont ) / 2 ) , sScreenY + ubLineCnt * GetFontHeight( MapMineLabelsFont ) , wString );
 				++ubLineCnt;
@@ -5075,7 +5075,7 @@ void DisplayLevelString( void )
 	SetFont( MAP_FONT );
 	SetFontForeground( MAP_INDEX_COLOR );
 	SetFontBackground( FONT_BLACK );
-	swprintf( sString, L"%s %d", sMapLevelString[ 0 ], iCurrentMapSectorZ );
+	swprintf( sString, JA2_TEXT("%s %d"), sMapLevelString[ 0 ], iCurrentMapSectorZ );
 
 	mprintf(UI_MAP.LevelString.iX, UI_MAP.LevelString.iY, sString  );
 
@@ -5473,7 +5473,7 @@ void RenderIconsPerSectorForSelectedTown( void )
 
 		// printf number of troops
 		SetFont( FONT10ARIAL );
-		swprintf( sString, L"%d", iTotalNumberOfTroops );
+		swprintf( sString, JA2_TEXT("%d"), iTotalNumberOfTroops );
 		FindFontRightCoordinates( ( INT16 )( MAP_MILITIA_BOX_POS_X + MAP_MILITIA_MAP_X + ( ( iCounter % MILITIA_BOX_ROWS ) * MILITIA_BOX_BOX_WIDTH ) ), ( INT16 ) ( MAP_MILITIA_BOX_POS_Y + MAP_MILITIA_MAP_Y + ( ( iCounter / MILITIA_BOX_ROWS ) * MILITIA_BOX_BOX_HEIGHT ) ),  MILITIA_BOX_BOX_WIDTH, 0, sString, FONT10ARIAL, &sX, &sY );
 
 		if( StrategicMap[ SECTOR_INFO_TO_STRATEGIC_INDEX( sCurrentSectorValue ) ].bNameId != BLANK_SECTOR &&
@@ -5751,15 +5751,15 @@ void SetMilitiaMapButtonsText( void )
 	iNumberOfElites = MilitiaInSectorOfRankStationary( SECTORX( sGlobalMapSector ), SECTORY( sGlobalMapSector ), ELITE_MILITIA );
 
 	// the greens in this sector
-	swprintf( sString, L"%d", iNumberOfGreens );
+	swprintf( sString, JA2_TEXT("%d"), iNumberOfGreens );
 	SpecifyButtonText( giMapMilitiaButton[ 0 ], sString );
 
 	// the regulars in this sector
-	swprintf( sString, L"%d", iNumberOfRegulars );
+	swprintf( sString, JA2_TEXT("%d"), iNumberOfRegulars );
 	SpecifyButtonText( giMapMilitiaButton[ 1 ], sString );
 
 	// the number of elites in this sector
-	swprintf( sString, L"%d", iNumberOfElites );
+	swprintf( sString, JA2_TEXT("%d"), iNumberOfElites );
 	SpecifyButtonText( giMapMilitiaButton[ 2 ], sString );
 }
 
@@ -5944,17 +5944,17 @@ void DrawTownMilitiaName( void )
 	INT16 sX, sY;
 
 	// get the name for the current militia town
-	swprintf( sString, L"%s %s", pTownNames[ sSelectedMilitiaTown ], pMilitiaString[ 0 ] );
+	swprintf( sString, JA2_TEXT("%s %s"), pTownNames[ sSelectedMilitiaTown ], pMilitiaString[ 0 ] );
 	FindFontCenterCoordinates( MAP_MILITIA_BOX_POS_X, MAP_MILITIA_BOX_POS_Y + MILITIA_BOX_TEXT_OFFSET_Y, MILITIA_BOX_WIDTH, MILITIA_BOX_TEXT_TITLE_HEIGHT, sString, FONT10ARIAL, &sX, &sY );
 	mprintf(  sX, sY, sString );
 
 	// might as well show the unassigned string
-	swprintf( sString, L"%s", pMilitiaString[ 1 ] );
+	swprintf( sString, JA2_TEXT("%s"), pMilitiaString[ 1 ] );
 	FindFontCenterCoordinates( MAP_MILITIA_BOX_POS_X, MAP_MILITIA_BOX_POS_Y + MILITIA_BOX_UNASSIGNED_TEXT_OFFSET_Y, MILITIA_BOX_WIDTH, GetFontHeight( FONT10ARIAL ), sString, FONT10ARIAL, &sX, &sY );
 	mprintf(  sX, sY, sString );
 
 	// show the amount of unassigned militia
-	swprintf( sString, L"(%d/%d/%d/%d)", sGreensOnCursor, sRegularsOnCursor, sElitesOnCursor, sGreensOnCursor + sRegularsOnCursor + sElitesOnCursor );
+	swprintf( sString, JA2_TEXT("(%d/%d/%d/%d)"), sGreensOnCursor, sRegularsOnCursor, sElitesOnCursor, sGreensOnCursor + sRegularsOnCursor + sElitesOnCursor );
 	mprintf(  MAP_MILITIA_BOX_POS_X + MAP_MILITIA_MAP_X, MAP_MILITIA_BOX_POS_Y + MILITIA_BOX_UNASSIGNED_TEXT_OFFSET_Y, sString );	
 }
 
@@ -7471,7 +7471,7 @@ void ShowDiseaseOnMap()
 				{
 					SetFontForeground( FONT_MCOLOR_WHITE );
 
-					swprintf( sString, L"%d", pSectorInfo->usNumCorpses );
+					swprintf( sString, JA2_TEXT("%d"), pSectorInfo->usNumCorpses );
 
 					FindFontCenterCoordinates( sXCorner, sYCorner, UI_MAP.GridSize.iX, UI_MAP.GridSize.iY, sString, MapItemsFont, &usXPos, &usYPos );
 
@@ -7483,7 +7483,7 @@ void ShowDiseaseOnMap()
 					SetFontForeground( FONT_MCOLOR_LTGREEN );
 					
 					// as the healing displayed is always divided by 10 (see in face display), we do the same thinh here to not confuse the player
-					swprintf( sString, L"%6.1f", pSectorInfo->fDiseasePoints / 10.0f );
+					swprintf( sString, JA2_TEXT("%6.1f"), pSectorInfo->fDiseasePoints / 10.0f );
 
 					sYCorner += GetFontHeight( MapItemsFont );
 
@@ -7543,7 +7543,7 @@ void ShowItemsOnMap( void )
 					sXCorner = ( INT16 )( UI_MAP.ViewRegion.x + ( sMapX * UI_MAP.GridSize.iX ) );
 					sYCorner = ( INT16 )( UI_MAP.ViewRegion.y + ( sMapY * UI_MAP.GridSize.iY ) );
 
-					swprintf( sString, L"%d", uiItemCnt );
+					swprintf( sString, JA2_TEXT("%d"), uiItemCnt );
 
 					FindFontCenterCoordinates( sXCorner, sYCorner, UI_MAP.GridSize.iX, UI_MAP.GridSize.iY, sString, MapItemsFont, &usXPos, &usYPos );
 	//				sXPos -= StringPixLength( sString, MAP_FONT ) / 2;
@@ -8182,7 +8182,7 @@ void DisplayMilitiaGroupBox()
 			else
 				SetFontForeground( FONT_FCOLOR_RED );
 
-			swprintf( sString, L"%5.2f", val_misc );
+			swprintf( sString, JA2_TEXT("%5.2f"), val_misc );
 			mprintf( x, y, sString );
 
 			x = MapScreenRect.iLeft + 20;
@@ -8200,7 +8200,7 @@ void DisplayMilitiaGroupBox()
 			else
 				SetFontForeground( FONT_FCOLOR_RED );
 						
-			swprintf( sString, L"%5.2f", val_gun );
+			swprintf( sString, JA2_TEXT("%5.2f"), val_gun );
 			mprintf( x, y, sString );
 			x += 5 + StringPixLength( sString, FONT12ARIAL );
 
@@ -8216,7 +8216,7 @@ void DisplayMilitiaGroupBox()
 			else
 				SetFontForeground( FONT_FCOLOR_RED );
 
-			swprintf( sString, L"%5.2f", val_armour );
+			swprintf( sString, JA2_TEXT("%5.2f"), val_armour );
 			mprintf( x, y, sString );
 		}
 
@@ -8231,7 +8231,7 @@ void DisplayMilitiaGroupBox()
 			FLOAT intel = GetIntel();
 
 			SetFontForeground( FONT_FCOLOR_GREEN );
-			swprintf( sString, L"Intel: %5.2f", intel );
+			swprintf( sString, JA2_TEXT("Intel: %5.2f"), intel );
 			mprintf( x, y, sString );
 		}
 	}
@@ -8342,27 +8342,27 @@ void DisplayMilitiaGroupBox()
 	mprintf( dispX, dispY, sString );
 	dispX += MILITIAGROUPBOX_WIDTH_NAME;
 
-	swprintf( sString, L"%d", militiastat[GREEN_MILITIA] );
+	swprintf( sString, JA2_TEXT("%d"), militiastat[GREEN_MILITIA] );
 	mprintf( dispX, dispY, sString );
 	dispX += MILITIAGROUPBOX_WIDTH_TYPEBOX;
 
-	swprintf( sString, L"%d", militiastat[REGULAR_MILITIA] );
+	swprintf( sString, JA2_TEXT("%d"), militiastat[REGULAR_MILITIA] );
 	mprintf( dispX, dispY, sString );
 	dispX += MILITIAGROUPBOX_WIDTH_TYPEBOX;
 
-	swprintf( sString, L"%d", militiastat[ELITE_MILITIA] );
+	swprintf( sString, JA2_TEXT("%d"), militiastat[ELITE_MILITIA] );
 	mprintf( dispX, dispY, sString );
 	dispX += MILITIAGROUPBOX_WIDTH_TYPEBOX;
 
-	swprintf( sString, L"--" );
+	swprintf( sString, JA2_TEXT("--") );
 	mprintf( dispX, dispY, sString );
 	dispX += MILITIAGROUPBOX_WIDTH_SECTOR;
 
-	swprintf( sString, L"--:--" );
+	swprintf( sString, JA2_TEXT("--:--") );
 	mprintf( dispX, dispY, sString );
 	dispX += MILITIAGROUPBOX_WIDTH_ETA;
 
-	swprintf( sString, L"--" );
+	swprintf( sString, JA2_TEXT("--") );
 	mprintf( dispX, dispY, sString );
 	dispX += MILITIAGROUPBOX_WIDTH_SECTOR;
 
@@ -8391,7 +8391,7 @@ void DisplayMilitiaGroupBox()
 			GetShortSectorString( pGroup->ubNextX, pGroup->ubNextY, wSectorName );
 
 			CHAR16 wFinalSectorName[64];
-			swprintf( sString, L"--" );
+			swprintf( sString, JA2_TEXT("--") );
 
 			// determine the final destination of this group
 			{
@@ -8428,7 +8428,7 @@ void DisplayMilitiaGroupBox()
 			mprintf( dispX, dispY, sString );
 			dispX += MILITIAGROUPBOX_WIDTH_NAME;
 
-			swprintf( sString, L"%d", pGroup->pEnemyGroup->ubNumAdmins );
+			swprintf( sString, JA2_TEXT("%d"), pGroup->pEnemyGroup->ubNumAdmins );
 			mprintf( dispX, dispY, sString );
 
 			if ( gMilitiaPath[gMilitiaGroupId].sGroupid == pGroup->ubGroupID )
@@ -8456,7 +8456,7 @@ void DisplayMilitiaGroupBox()
 
 			dispX += MILITIAGROUPBOX_WIDTH_TYPEBOX;
 						
-			swprintf( sString, L"%d", pGroup->pEnemyGroup->ubNumTroops );
+			swprintf( sString, JA2_TEXT("%d"), pGroup->pEnemyGroup->ubNumTroops );
 			mprintf( dispX, dispY, sString );
 
 			if ( gMilitiaPath[gMilitiaGroupId].sGroupid == pGroup->ubGroupID )
@@ -8484,7 +8484,7 @@ void DisplayMilitiaGroupBox()
 
 			dispX += MILITIAGROUPBOX_WIDTH_TYPEBOX;
 
-			swprintf( sString, L"%d", pGroup->pEnemyGroup->ubNumElites );
+			swprintf( sString, JA2_TEXT("%d"), pGroup->pEnemyGroup->ubNumElites );
 			mprintf( dispX, dispY, sString );
 
 			if ( gMilitiaPath[gMilitiaGroupId].sGroupid == pGroup->ubGroupID )
@@ -8512,15 +8512,15 @@ void DisplayMilitiaGroupBox()
 
 			dispX += MILITIAGROUPBOX_WIDTH_TYPEBOX;
 
-			swprintf( sString, L"%s", wSectorName );
+			swprintf( sString, JA2_TEXT("%s"), wSectorName );
 			mprintf( dispX, dispY, sString );
 			dispX += MILITIAGROUPBOX_WIDTH_SECTOR;
 
-			swprintf( sString, L"%s", timestring );
+			swprintf( sString, JA2_TEXT("%s"), timestring );
 			mprintf( dispX, dispY, sString );
 			dispX += MILITIAGROUPBOX_WIDTH_ETA;
 
-			swprintf( sString, L"%s", wFinalSectorName );
+			swprintf( sString, JA2_TEXT("%s"), wFinalSectorName );
 			mprintf( dispX, dispY, sString );
 			dispX += MILITIAGROUPBOX_WIDTH_SECTOR;
 			
@@ -8549,10 +8549,10 @@ void AddIntelAndQuestMapDataForSector( INT16 sSectorX, INT16 sSectorY, UINT8 aus
 			gMapIntelData[sector].symbols.push_back( asSymbol );
 
 		if ( wcsnlen( aText, 1024 ) > 0 )
-			swprintf( gMapIntelData[sector].text, L"%s%s\n", gMapIntelData[sector].text, aText );
+			swprintf( gMapIntelData[sector].text, JA2_TEXT("%s%s\n"), gMapIntelData[sector].text, aText );
 
 		if ( wcsnlen( aText_Short, 128 ) > 0 )
-			swprintf( gMapIntelData[sector].shorttext, L"%s", aText_Short );
+			swprintf( gMapIntelData[sector].shorttext, JA2_TEXT("%s"), aText_Short );
 	}
 }
 
@@ -8577,7 +8577,7 @@ void DetermineMapIntelData( INT32 asSectorZ )
 		{
 			if ( PlayerKnowsAboutVIP( SECTORX( sector ), SECTORY( sector ) ) )
 			{
-				AddIntelAndQuestMapDataForSector( SECTORX( sector ), SECTORY( sector ), MAP_SHADE_LT_RED, 5, szIntelText[3], L"" );
+				AddIntelAndQuestMapDataForSector( SECTORX( sector ), SECTORY( sector ), MAP_SHADE_LT_RED, 5, szIntelText[3], JA2_TEXT("") );
 			}
 		}
 
@@ -8597,7 +8597,7 @@ void DetermineMapIntelData( INT32 asSectorZ )
 				swprintf( str, gpStrategicString[STR_PB_TRANSPORT_GROUP_EN_ROUTE]);
 				break;
 			}
-			AddIntelAndQuestMapDataForSector( SECTORX(iter.first), SECTORY(iter.first), MAP_SHADE_LT_YELLOW, -1, str, L"" );
+			AddIntelAndQuestMapDataForSector( SECTORX(iter.first), SECTORY(iter.first), MAP_SHADE_LT_YELLOW, -1, str, JA2_TEXT("") );
 		}
 
 		// uncovered terrorists we know of
@@ -8618,7 +8618,7 @@ void DetermineMapIntelData( INT32 asSectorZ )
 			{
 				SECTOR( gMercProfiles[profile].sSectorX, gMercProfiles[profile].sSectorY );
 
-				AddIntelAndQuestMapDataForSector( gMercProfiles[profile].sSectorX, gMercProfiles[profile].sSectorY, -1, 3, szIntelText[4], L"" );
+				AddIntelAndQuestMapDataForSector( gMercProfiles[profile].sSectorX, gMercProfiles[profile].sSectorY, -1, 3, szIntelText[4], JA2_TEXT("") );
 			}
 		}
 		
@@ -8640,7 +8640,7 @@ void DetermineMapIntelData( INT32 asSectorZ )
 						CHAR16 str[128];
 						swprintf( str, szIntelText[5], gpStrategicString[STR_PB_BLOODCATRAID_HEADER + raidtype], hours % 24, minutes % 60 );
 
-						AddIntelAndQuestMapDataForSector( SECTORX( ( *it ).second ), SECTORY( ( *it ).second ), MAP_SHADE_LT_PINK, raidtype, str, L"" );
+						AddIntelAndQuestMapDataForSector( SECTORX( ( *it ).second ), SECTORY( ( *it ).second ), MAP_SHADE_LT_PINK, raidtype, str, JA2_TEXT("") );
 					}
 				}
 			}
@@ -8693,7 +8693,7 @@ void DetermineMapIntelData( INT32 asSectorZ )
 
 				if ( productionfound )
 				{
-					AddIntelAndQuestMapDataForSector( SECTORX( sector ), SECTORY( sector ), -1, productionunderenemycontrol ? 22 : activeproductionfound ? inactiveproductionfound ? 19 : 20 : 21, L"", L"" );
+					AddIntelAndQuestMapDataForSector( SECTORX( sector ), SECTORY( sector ), -1, productionunderenemycontrol ? 22 : activeproductionfound ? inactiveproductionfound ? 19 : 20 : 21, JA2_TEXT(""), JA2_TEXT("") );
 				}
 			}
 		}
@@ -8714,7 +8714,7 @@ void DetermineMapIntelData( INT32 asSectorZ )
 					CHAR16 str[128];
 					swprintf( str, szTurncoatText[9], numturncoats );
 
-					AddIntelAndQuestMapDataForSector( SECTORX( sector ), SECTORY( sector ), -1, 23, str, L"" );
+					AddIntelAndQuestMapDataForSector( SECTORX( sector ), SECTORY( sector ), -1, 23, str, JA2_TEXT("") );
 				}
 			}
 		}

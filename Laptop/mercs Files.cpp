@@ -223,12 +223,12 @@ extern BOOLEAN fMercHireOverPlayerLimitMerc;
 
 // The Prev button
 void BtnMercPrevButtonCallback(GUI_BUTTON *btn,INT32 reason);
-UINT32	guiPrevButton;
+static UINT32	guiPrevButton;
 INT32		guiButtonImage;
 
 // The Next button
 void BtnMercNextButtonCallback(GUI_BUTTON *btn,INT32 reason);
-UINT32	guiNextButton;
+static UINT32	guiNextButton;
 
 // The Hire button
 void BtnMercHireButtonCallback(GUI_BUTTON *btn,INT32 reason);
@@ -861,7 +861,7 @@ void DisplayMercMemberClickOnFaceHelpText( UINT8 ubMercID )
 	// Buggler: skills/traits tooltip on merc portrait
 	
 	// clear string value
-	swprintf( sString, L"");
+	swprintf( sString, JA2_TEXT(""));
 
 	if (gGameOptions.fNewTraitSystem) // SANDRO - old/new traits check
 	{
@@ -886,13 +886,13 @@ void DisplayMercMemberClickOnFaceHelpText( UINT8 ubMercID )
 
 		if ( bNumSkillTraits == 0 )
 		{
-			swprintf( sString, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+			swprintf( sString, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 		}
 		else
 		{
 			for ( UINT8 ubCnt = 0; ubCnt < bNumSkillTraits; ubCnt++ )
 			{
-				swprintf( sTemp, L"%s\n", gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
+				swprintf( sTemp, JA2_TEXT("%s\n"), gzMercSkillTextNew[ ubTempSkillArray[ubCnt] ] );
 				wcscat( sString, sTemp );
 			}
 		}
@@ -905,25 +905,25 @@ void DisplayMercMemberClickOnFaceHelpText( UINT8 ubMercID )
 
 		if ( bSkill1 == 0 && bSkill2 == 0 )
 		{
-			swprintf( sString, L"%s", pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
+			swprintf( sString, JA2_TEXT("%s"), pPersonnelScreenStrings[ PRSNL_TXT_NOSKILLS ] );
 		}
 		else
 		{
 			//if the 2 skills are the same, add the '(expert)' at the end
 			if( bSkill1 == bSkill2 )
 			{
-				swprintf( sString, L"%s %s", gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
+				swprintf( sString, JA2_TEXT("%s %s"), gzMercSkillText[bSkill1], gzMercSkillText[EXPERT] );
 			}
 			else
 			{
 				//Display the first skill
 				if( bSkill1 != 0 )
 				{
-					swprintf( sString, L"%s\n", gzMercSkillText[bSkill1] );
+					swprintf( sString, JA2_TEXT("%s\n"), gzMercSkillText[bSkill1] );
 				}
 				if( bSkill2 != 0 )
 				{
-					swprintf( sTemp, L"%s", gzMercSkillText[bSkill2] );
+					swprintf( sTemp, JA2_TEXT("%s"), gzMercSkillText[bSkill2] );
 					wcscat( sString, sTemp );
 				}
 			}
@@ -977,7 +977,7 @@ void DisplayMercsStats( UINT8 ubMercID )
 {
 	UINT16 usPosY, usPosX;
 	CHAR16 sPage[60];
-	std::wstring sString{};
+	ja2::text::Utf16String sString{};
 	CHAR16 NsString[128];
 	CHAR16 N2sString[128];
 	UINT8	ubColor;
@@ -1062,13 +1062,13 @@ void DisplayMercsStats( UINT8 ubMercID )
 	DrawTextToScreen( MercInfo[MERC_FILES_SALARY], MERC_STATS_SECOND_COL_X, usPosY, 0, MERC_STATS_FONT, MERC_STATIC_STATS_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 	usPosX = MERC_STATS_SECOND_COL_X + StringPixLength( MercInfo[MERC_FILES_SALARY], MERC_NAME_FONT );
-	sString = FormatMoney(gMercProfiles[ubMercID].sSalary) + L" " + std::wstring(MercInfo[MERC_FILES_PER_DAY]);
+	sString = FormatMoney(gMercProfiles[ubMercID].sSalary) + JA2_TEXT(" ") + ja2::text::Utf16String(MercInfo[MERC_FILES_PER_DAY]);
 #endif // JA2UB
 
 	DrawTextToScreen( sString.data(), usPosX, usPosY, 95, MERC_NAME_FONT, MERC_DYNAMIC_STATS_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 
 	// Buggler: Display current MERC index & total MERC members at the bottom of the screen
-	swprintf( sPage, L"%d / %d", gubCurMercIndex + 1, LaptopSaveInfo.gubLastMercIndex + 1 );
+	swprintf( sPage, JA2_TEXT("%d / %d"), gubCurMercIndex + 1, LaptopSaveInfo.gubLastMercIndex + 1 );
 	DrawTextToScreen(sPage, MERC_PAGE_X, MERC_PAGE_Y, 0, MERC_STATS_FONT, MERC_DYNAMIC_STATS_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED | TEXT_SHADOWED);
 
 	//Only show when in inventory page
@@ -1095,7 +1095,7 @@ void DisplayMercsStats( UINT8 ubMercID )
 		}
 #endif // JA2UB
 
-		swprintf( NsString, L"+ " );
+		swprintf( NsString, JA2_TEXT("+ ") );
 		sString = FormatMoney(gMercProfiles[ ubMercID ].usOptionalGearCost);
 		wcscat( NsString, sString.data() );
 		DrawTextToScreen( NsString, usPosX, usPosY, 95, MERC_NAME_FONT, MERC_DYNAMIC_STATS_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
@@ -1104,7 +1104,7 @@ void DisplayMercsStats( UINT8 ubMercID )
 		//Total Cost
 		DrawTextToScreen( MercInfo[MERC_FILES_TOTAL], MERC_STATS_SECOND_COL_X, usPosY, 0, MERC_NAME_FONT, MERC_STATIC_STATS_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
-		swprintf(N2sString, L"= ");
+		swprintf(N2sString, JA2_TEXT("= "));
 #ifdef JA2UB
 		sString = FormatMoney(gMercProfiles[ubMercID].usOptionalGearCost + gMercProfiles[ubMercID].uiWeeklySalary);
 #else
@@ -1593,7 +1593,7 @@ BOOLEAN DisplayMERCMercsInventory(UINT8 ubMercID)
 				else
 				{
 					SGP_THROW(_BS(L"Number of images in VObject [") << hVObject->usNumberOfObjects
-						<< L"] is smaller than the requested index [" << (int)pItem->ubGraphicNum << L"]" << _BS::wget);
+						<< JA2_TEXT("] is smaller than the requested index [") << (int)pItem->ubGraphicNum << JA2_TEXT("]") << _BS::wget);
 				}
 
 				usHeight				= (UINT32)pTrav->usHeight;
@@ -1614,7 +1614,7 @@ BOOLEAN DisplayMERCMercsInventory(UINT8 ubMercID)
 				{
 					CHAR16 zTempStr[ 32 ];
 
-					swprintf( zTempStr, L"x%d", gMercProfiles[ ubMercID ].bInvNumber[ i ] );
+					swprintf( zTempStr, JA2_TEXT("x%d"), gMercProfiles[ ubMercID ].bInvNumber[ i ] );
 
 					DrawTextToScreen( zTempStr, (UINT16)(PosX-1), (UINT16)(PosY+20), MERC_MEMBER_WEAPON_NAME_WIDTH, MERC_M_FONT_DYNAMIC_TEXT, MERC_M_WEAPON_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED );
 				}
@@ -1669,7 +1669,7 @@ void EnableMercWeaponKitSelectionButtons()
 {
 	UINT8 i,j;
 	UINT8 buttonCount = 0;
-	BOOL buttonEnabled[NUM_MERCSTARTINGGEAR_KITS];
+	BOOLEAN buttonEnabled[NUM_MERCSTARTINGGEAR_KITS];
 	//tais: weaponbox gear selection buttons
 	if(UsingNewInventorySystem() == true) {
 		if ( !(gMercProfiles[GetAvailableMercIDFromMERCArray( gubCurMercIndex )].ubMiscFlags & PROFILE_MISC_FLAG_ALREADY_USED_ITEMS) || gGameExternalOptions.fGearKitsAlwaysAvailable )

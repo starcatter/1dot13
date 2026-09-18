@@ -394,7 +394,7 @@ void RenderMercsAccount()
 	BltVideoObject(FRAME_BUFFER, hPixHandle, 0,MERC_AC_ACCOUNT_NUMBER_X, MERC_AC_ACCOUNT_NUMBER_Y, VO_BLT_SRCTRANSPARENCY,NULL);
 
 	//Display Players account number
-	swprintf(sText, L"%s %05d", MercAccountText[MERC_ACCOUNT_ACCOUNT], LaptopSaveInfo.guiPlayersMercAccountNumber);
+	swprintf(sText, JA2_TEXT("%s %05d"), MercAccountText[MERC_ACCOUNT_ACCOUNT], LaptopSaveInfo.guiPlayersMercAccountNumber);
 	DrawTextToScreen( sText, MERC_AC_ACCOUNT_NUMBER_TEXT_X, MERC_AC_ACCOUNT_NUMBER_TEXT_Y, 0, MERC_ACCOUNT_TEXT_FONT, MERC_ACCOUNT_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
 	//Display the order grid titles
@@ -542,21 +542,21 @@ void DisplayHiredMercs()
 			}
 			else
 			{
-				swprintf( sTemp, L"%s", gMercProfiles[usMercID].zName );
+				swprintf( sTemp, JA2_TEXT("%s"), gMercProfiles[usMercID].zName );
 			}
 
 			DrawTextToScreen( sTemp, MERC_AC_FIRST_COLUMN_X + 5, usPosY, MERC_AC_FIRST_COLUMN_WIDTH, MERC_ACCOUNT_DYNAMIC_TEXT_FONT, ubFontColor, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 			//Display The # of days the merc has worked since last paid
 
-			swprintf(sTemp, L"%d", gMercProfiles[ usMercID ].iMercMercContractLength );
+			swprintf(sTemp, JA2_TEXT("%d"), gMercProfiles[ usMercID ].iMercMercContractLength );
 			DrawTextToScreen(sTemp, MERC_AC_SECOND_COLUMN_X, usPosY, MERC_AC_SECOND_COLUMN_WIDTH, MERC_ACCOUNT_DYNAMIC_TEXT_FONT, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED);
 
 			//Display the mercs rate
 #ifdef JA2UB
-			swprintf(sTemp, L"$%6d",gMercProfiles[ usMercID ].uiWeeklySalary );
+			swprintf(sTemp, JA2_TEXT("$%6d"),gMercProfiles[ usMercID ].uiWeeklySalary );
 #else
-			swprintf(sTemp, L"$%6d",gMercProfiles[ usMercID ].sSalary );
+			swprintf(sTemp, JA2_TEXT("$%6d"),gMercProfiles[ usMercID ].sSalary );
 #endif
 
 			DrawTextToScreen(sTemp, MERC_AC_THIRD_COLUMN_X, usPosY, MERC_AC_THIRD_COLUMN_WIDTH, MERC_ACCOUNT_DYNAMIC_TEXT_FONT, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED);
@@ -573,7 +573,7 @@ void DisplayHiredMercs()
 			{
 				uiContractCharge += gMercProfiles[ usMercID ].usOptionalGearCost;
 			}
-			swprintf(sTemp, L"$%6d", uiContractCharge );
+			swprintf(sTemp, JA2_TEXT("$%6d"), uiContractCharge );
 			DrawTextToScreen(sTemp, MERC_AC_FOURTH_COLUMN_X, usPosY, MERC_AC_FOURTH_COLUMN_WIDTH, MERC_ACCOUNT_DYNAMIC_TEXT_FONT, ubFontColor, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED);
 
 			//giMercTotalContractCharge += uiContractCharge;
@@ -585,7 +585,7 @@ void DisplayHiredMercs()
 	if (iCurrentAccountPage == iTotalAccountPages - 1)
 	{
 		// Output total contract
-		swprintf(sTemp, L"$%6d", giMercTotalContractCharge );
+		swprintf(sTemp, JA2_TEXT("$%6d"), giMercTotalContractCharge );
 		DrawTextToScreen(sTemp, MERC_AC_FOURTH_COLUMN_X, MERC_AC_TOTAL_COST_Y, MERC_AC_FOURTH_COLUMN_WIDTH, MERC_ACCOUNT_DYNAMIC_TEXT_FONT, MERC_ACCOUNT_DYNAMIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, CENTER_JUSTIFIED);
 	}
 }

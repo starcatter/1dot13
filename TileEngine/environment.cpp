@@ -871,7 +871,7 @@ void	ChangeWeather( UINT8 aSector, UINT8 aType )
 {
 	if ( aType >= WEATHER_FORECAST_MAX )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Error in ChangeWeather(): Invalid weather" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Error in ChangeWeather(): Invalid weather") );
 		return;
 	}
 
@@ -885,7 +885,7 @@ void	ChangeWeather( UINT8 aSector, UINT8 aType )
 			CHAR16 pStrSectorName[128];
 			GetSectorIDString( SECTORX( aSector ), SECTORY( aSector ), 0, pStrSectorName, TRUE );
 
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: Changed weather from %s to %s", pStrSectorName, szWeatherTypeText[SectorInfo[aSector].usWeather], szWeatherTypeText[aType] );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: Changed weather from %s to %s"), pStrSectorName, szWeatherTypeText[SectorInfo[aSector].usWeather], szWeatherTypeText[aType] );
 		}
 
 		// Flugente: additional dialogue

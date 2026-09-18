@@ -17,7 +17,7 @@ int iScreenMode = 1;	/* 1 for Windowed, 0 for Fullscreen */
 #else
 int iScreenMode = 0;	/* 0 for Fullscreen */
 #endif
-BOOL bScreenModeCmdLine = FALSE;
+BOOLEAN bScreenModeCmdLine = FALSE;
 
 UINT16 SCREEN_WIDTH;
 UINT16 SCREEN_HEIGHT;

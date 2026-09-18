@@ -247,7 +247,7 @@ STR16
 Incident_Stats::GetAttackerDirString( BOOLEAN fAttacker )
 {
 	CHAR16	helperstr[ 50 ];
-	swprintf(helperstr, L"" );
+	swprintf(helperstr, JA2_TEXT("") );
 
 	++tmpnr;
 	if ( tmpnr > 1 )
@@ -257,10 +257,10 @@ Incident_Stats::GetAttackerDirString( BOOLEAN fAttacker )
 
 	UINT8 dirs = 0;
 	CHAR16	dir1[ 10 ], dir2[ 10 ], dir3[ 10 ], dir4[ 10 ];
-	swprintf(dir1, L"" );
-	swprintf(dir2, L"" );
-	swprintf(dir3, L"" );
-	swprintf(dir4, L"" );
+	swprintf(dir1, JA2_TEXT("") );
+	swprintf(dir2, JA2_TEXT("") );
+	swprintf(dir3, JA2_TEXT("") );
+	swprintf(dir4, JA2_TEXT("") );
 
 	if ( (fAttacker && usIncidentFlags & INCIDENT_ATTACK_ENEMY) || (!fAttacker && usIncidentFlags & INCIDENT_ATTACK_PLAYERSIDE) )
 	{
@@ -436,19 +436,19 @@ Incident_Stats::GetAttackerDirString( BOOLEAN fAttacker )
 	switch ( dirs )
 	{
 	case 4:
-		swprintf(helperstr, L"%s, %s, %s %s %s", dir1, dir2, dir3, szCampaignHistoryDetail[TEXT_CAMPAIGNHISTORY_DETAIL_AND], dir4 );
+		swprintf(helperstr, JA2_TEXT("%s, %s, %s %s %s"), dir1, dir2, dir3, szCampaignHistoryDetail[TEXT_CAMPAIGNHISTORY_DETAIL_AND], dir4 );
 		break;
 
 	case 3:
-		swprintf(helperstr, L"%s, %s %s %s", dir1, dir2, szCampaignHistoryDetail[TEXT_CAMPAIGNHISTORY_DETAIL_AND], dir3 );
+		swprintf(helperstr, JA2_TEXT("%s, %s %s %s"), dir1, dir2, szCampaignHistoryDetail[TEXT_CAMPAIGNHISTORY_DETAIL_AND], dir3 );
 		break;
 
 	case 2:
-		swprintf(helperstr, L"%s %s %s", dir1, szCampaignHistoryDetail[TEXT_CAMPAIGNHISTORY_DETAIL_AND], dir2 );
+		swprintf(helperstr, JA2_TEXT("%s %s %s"), dir1, szCampaignHistoryDetail[TEXT_CAMPAIGNHISTORY_DETAIL_AND], dir2 );
 		break;
 
 	case 1:
-		swprintf(helperstr, L"%s", dir1 );
+		swprintf(helperstr, JA2_TEXT("%s"), dir1 );
 		break;
 
 	case 0:
@@ -672,7 +672,7 @@ Campaign_Stats::AddMoneyEarned(UINT8 aType, INT32 aVal)
 {
 	if ( aType >= CAMPAIGN_MONEY_MAX )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Error: Unknown money type!" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Error: Unknown money type!") );
 		return;
 	}
 
@@ -684,7 +684,7 @@ Campaign_Stats::AddConsumption(UINT8 aType, FLOAT aVal)
 {
 	if ( aType >= CAMPAIGN_CONSUMED_MAX )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Error: Unknown consumption type!" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Error: Unknown consumption type!") );
 		return;
 	}
 
@@ -777,7 +777,7 @@ INT32 GetPositionOfIncident( UINT32 aIncidentId )
 static CHAR16	gIncidentNameText[100];
 STR16	GetIncidentName( UINT32 aIncidentId )
 {
-	swprintf( gIncidentNameText, L"NAME NOT FOUND" );
+	swprintf( gIncidentNameText, JA2_TEXT("NAME NOT FOUND") );
 
 	std::vector<Incident_Stats>::iterator itend = gCampaignStats.mIncidentVector.end( );
 	for ( std::vector<Incident_Stats>::iterator it = gCampaignStats.mIncidentVector.begin( ); it != itend; ++it )

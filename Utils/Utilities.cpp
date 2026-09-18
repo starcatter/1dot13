@@ -164,7 +164,7 @@ BOOLEAN DisplayPaletteRep( PaletteRepID aPalRep, UINT8 ubXPos, UINT8 ubYPos, UIN
 
 	}
 
-	gprintf( ubXPos + ( 16 * 20 ), ubYPos, L"%S", gpPalRep[ ubPaletteRep ].ID );
+	gprintf( ubXPos + ( 16 * 20 ), ubYPos, JA2_TEXT("%S"), gpPalRep[ ubPaletteRep ].ID );
 
 	return( TRUE );
 }
@@ -222,7 +222,7 @@ BOOLEAN	WrapString( STR16 pStr, STR16 pStr2, UINT16 usWidth, INT32 uiFont )
 			if( !fLineSplit)
 			{
 				//We completed the check for a space, but failed, so use the hyphen method.
-				swprintf( pStr2, L"-%s", &(pStr[uiHyphenLet]) );
+				swprintf( pStr2, JA2_TEXT("-%s"), &(pStr[uiHyphenLet]) );
 				pStr[uiHyphenLet] = (INT16)'\0';
 				fLineSplit = TRUE;	//hyphen method
 				// HEADROCK HAM 3.6: This is erroneous. At this point, the function should RETURN, otherwise it

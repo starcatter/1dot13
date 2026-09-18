@@ -639,7 +639,7 @@ void HandleDialogue( )
 
 				EndModalTactical( );
 
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Ending Modal Tactical Quote." );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Ending Modal Tactical Quote.") );
 
 			}
 
@@ -1070,7 +1070,7 @@ void HandleDialogue( )
 
 		if ( QItem.uiSpecialEventFlag & DIALOGUE_SPECIAL_EVENT_SHOPKEEPER )
 		{
-			std::wstring zMoney{};
+			ja2::text::Utf16String zMoney{};
 			if( QItem.uiSpecialEventData < 3 )
 			{
 				// post a notice if the player wants to withdraw money from thier account to cover the difference?
@@ -2519,7 +2519,7 @@ BOOLEAN GetDialogue( UINT8 ubCharacterNum, UINT16 usQuoteNum, UINT32 iDataSize, 
 			LoadEncryptedDataFromFile( pFilename, zDialogueText, usQuoteNum * iDataSize, iDataSize );
 			if(zDialogueText[0] == 0)
 			{
-				swprintf( zDialogueText, L"I have no text in the EDT file ( %d ) %S", usQuoteNum, pFilename );
+				swprintf( zDialogueText, JA2_TEXT("I have no text in the EDT file ( %d ) %S"), usQuoteNum, pFilename );
 
 #ifndef JA2BETAVERSION
 				return( FALSE );
@@ -2530,7 +2530,7 @@ BOOLEAN GetDialogue( UINT8 ubCharacterNum, UINT16 usQuoteNum, UINT32 iDataSize, 
 		}
 		else
 		{
-			swprintf( zDialogueText, L"I have no text in the file ( %d ) %S", usQuoteNum , pFilename );
+			swprintf( zDialogueText, JA2_TEXT("I have no text in the file ( %d ) %S"), usQuoteNum , pFilename );
 
 #ifndef JA2BETAVERSION
 			return( FALSE );
@@ -2664,12 +2664,12 @@ BOOLEAN GetSnitchDialogue( UINT8 ubCharacterNum, UINT16 usQuoteNum, UINT32 iData
 			LoadEncryptedDataFromFile( pFilename1, zDialogueText, usQuoteNum * iDataSize, iDataSize );
 
 			// Flugente: replaced SnitchDialogueReplaceMercNicksWithProperData with ReplaceTextWithOtherText - less complicated an can be used for other things than merc names
-			ReplaceTextWithOtherText( zDialogueText, L"$MERCNICK$", gMercProfiles[ubTargetProfile].zNickname );
-			ReplaceTextWithOtherText( zDialogueText, L"$MERCNICK2$", gMercProfiles[ubSecondaryTargetProfile].zNickname );
+			ReplaceTextWithOtherText( zDialogueText, JA2_TEXT("$MERCNICK$"), gMercProfiles[ubTargetProfile].zNickname );
+			ReplaceTextWithOtherText( zDialogueText, JA2_TEXT("$MERCNICK2$"), gMercProfiles[ubSecondaryTargetProfile].zNickname );
 
 			if(zDialogueText[0] == 0)
 			{
-				swprintf( zDialogueText, L"I have no text in the EDT file ( %d ) %S", usQuoteNum, pFilename1 );
+				swprintf( zDialogueText, JA2_TEXT("I have no text in the EDT file ( %d ) %S"), usQuoteNum, pFilename1 );
 
 #ifndef JA2BETAVERSION
 				return( FALSE );
@@ -2680,7 +2680,7 @@ BOOLEAN GetSnitchDialogue( UINT8 ubCharacterNum, UINT16 usQuoteNum, UINT32 iData
 		}
 		else
 		{
-			swprintf( zDialogueText, L"I have no text in the file ( %d ) %S", usQuoteNum , pFilename1 );
+			swprintf( zDialogueText, JA2_TEXT("I have no text in the file ( %d ) %S"), usQuoteNum , pFilename1 );
 
 #ifndef JA2BETAVERSION
 			return( FALSE );
@@ -2728,9 +2728,9 @@ void HandleTacticalNPCTextUI( UINT8 ubCharacterNum, STR16 zQuoteStr )
 	}
 
 	// post message to mapscreen message system
-	swprintf( gTalkPanel.zQuoteStr, L"\"%s\"", zQuoteStr );
-	swprintf( zText, L"%s: \"%s\"", gMercProfiles[ ubCharacterNum ].zNickname, zQuoteStr );
-	MapScreenMessage( FONT_MCOLOR_WHITE, MSG_DIALOG, L"%s",	zText );
+	swprintf( gTalkPanel.zQuoteStr, JA2_TEXT("\"%s\""), zQuoteStr );
+	swprintf( zText, JA2_TEXT("%s: \"%s\""), gMercProfiles[ ubCharacterNum ].zNickname, zQuoteStr );
+	MapScreenMessage( FONT_MCOLOR_WHITE, MSG_DIALOG, JA2_TEXT("%s"),	zText );
 }
 
 
@@ -2748,9 +2748,9 @@ void DisplayTextForExternalNPC(	UINT8 ubCharacterNum, STR16 zQuoteStr )
 	}
 
 	// post message to mapscreen message system
-	swprintf( gTalkPanel.zQuoteStr, L"\"%s\"", zQuoteStr );
-	swprintf( zText, L"%s: \"%s\"", gMercProfiles[ ubCharacterNum ].zNickname, zQuoteStr );
-	MapScreenMessage( FONT_MCOLOR_WHITE, MSG_DIALOG, L"%s",	zText );
+	swprintf( gTalkPanel.zQuoteStr, JA2_TEXT("\"%s\""), zQuoteStr );
+	swprintf( zText, JA2_TEXT("%s: \"%s\""), gMercProfiles[ ubCharacterNum ].zNickname, zQuoteStr );
+	MapScreenMessage( FONT_MCOLOR_WHITE, MSG_DIALOG, JA2_TEXT("%s"),	zText );
 
 	if ( guiCurrentScreen == MAP_SCREEN )
 	{
@@ -2776,8 +2776,8 @@ void HandleTacticalTextUI( INT32 iFaceIndex, SOLDIERTYPE *pSoldier, STR16 zQuote
 
 	//BUild text
 	// How do we do this with defines?
-	//swprintf( zText, L"\xb4\xa2 %s: \xb5 \"%s\"", gMercProfiles[ ubCharacterNum ].zNickname, zQuoteStr );
-	swprintf( zText, L"\"%s\"", zQuoteStr );
+	//swprintf( zText, JA2_TEXT("\xb4\xa2 %s: \xb5 \"%s\""), gMercProfiles[ ubCharacterNum ].zNickname, zQuoteStr );
+	swprintf( zText, JA2_TEXT("\"%s\""), zQuoteStr );
 
 	// TODO.RW: Wenn wir in tactical sind, dann normal. In strategy den offset dazurechnen!
 	if ( guiCurrentScreen == GAME_SCREEN )
@@ -3014,13 +3014,13 @@ void HandleDialogueEnd( FACETYPE *pFace )
 
 		if ( pFace != gpCurrentTalkingFace )
 		{
-			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"HandleDialogueEnd() face mismatch." );
+			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("HandleDialogueEnd() face mismatch.") );
 			return;
 		}
 
 		if ( pFace->fTalking )
 		{
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"HandleDialogueEnd() face still talking." );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("HandleDialogueEnd() face still talking.") );
 			return;
 		}
 
@@ -3225,8 +3225,8 @@ void RenderFaceOverlay( VIDEO_OVERLAY *pBlitter )
 		//reset the font dest buffer
 		SetFontDestBuffer( pBlitter->uiDestBuff, 0,0,SCREEN_WIDTH,SCREEN_HEIGHT, FALSE);
 
-			VarFindFontCenterCoordinates( (INT16)( pBlitter->sX + 12 ), (INT16)( pBlitter->sY + 55 ), 73, 9, BLOCKFONT2, &sFontX, &sFontY, L"%s", pSoldier->name );
-			mprintf( sFontX, sFontY, L"%s", pSoldier->name );
+			VarFindFontCenterCoordinates( (INT16)( pBlitter->sX + 12 ), (INT16)( pBlitter->sY + 55 ), 73, 9, BLOCKFONT2, &sFontX, &sFontY, JA2_TEXT("%s"), pSoldier->name );
+			mprintf( sFontX, sFontY, JA2_TEXT("%s"), pSoldier->name );
 
 			// What sector are we in, ( and is it the same as ours? )
 			if ( pSoldier->sSectorX != gWorldSectorX || pSoldier->sSectorY != gWorldSectorY || pSoldier->bSectorZ != gbWorldSectorZ || pSoldier->flags.fBetweenSectors )
@@ -3235,8 +3235,8 @@ void RenderFaceOverlay( VIDEO_OVERLAY *pBlitter )
 
 				ReduceStringLength( zTownIDString, 64 , BLOCKFONT2 );
 
-				VarFindFontCenterCoordinates( (INT16)( pBlitter->sX + 12 ), (INT16)( pBlitter->sY + 68 ), 73, 9, BLOCKFONT2, &sFontX, &sFontY, L"%s", zTownIDString );
-				mprintf( sFontX, sFontY, L"%s", zTownIDString );
+				VarFindFontCenterCoordinates( (INT16)( pBlitter->sX + 12 ), (INT16)( pBlitter->sY + 68 ), 73, 9, BLOCKFONT2, &sFontX, &sFontY, JA2_TEXT("%s"), zTownIDString );
+				mprintf( sFontX, sFontY, JA2_TEXT("%s"), zTownIDString );
 			}
 
 		//reset the font dest buffer
@@ -3250,8 +3250,8 @@ void RenderFaceOverlay( VIDEO_OVERLAY *pBlitter )
 		}
 		else
 		{
-			VarFindFontCenterCoordinates( (INT16)( pBlitter->sX + 9 ), (INT16)( pBlitter->sY + 55 ), 73, 9, BLOCKFONT2, &sFontX, &sFontY, L"%s", gMercProfiles[ gpCurrentTalkingFace->ubCharacterNum ].zNickname );
-			mprintf( sFontX, sFontY, L"%s", gMercProfiles[ gpCurrentTalkingFace->ubCharacterNum ].zNickname );
+			VarFindFontCenterCoordinates( (INT16)( pBlitter->sX + 9 ), (INT16)( pBlitter->sY + 55 ), 73, 9, BLOCKFONT2, &sFontX, &sFontY, JA2_TEXT("%s"), gMercProfiles[ gpCurrentTalkingFace->ubCharacterNum ].zNickname );
+			mprintf( sFontX, sFontY, JA2_TEXT("%s"), gMercProfiles[ gpCurrentTalkingFace->ubCharacterNum ].zNickname );
 		}
 
 		//RenderAutoFace( gpCurrentTalkingFace->iID );
@@ -3637,7 +3637,7 @@ void CheckForStopTimeQuotes( UINT16 usQuoteNum )
 
 		gpCurrentTalkingFace->uiFlags		|= FACE_MODAL;
 
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Starting Modal Tactical Quote." );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Starting Modal Tactical Quote.") );
 
 	}
 }

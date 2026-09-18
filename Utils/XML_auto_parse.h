@@ -185,7 +185,7 @@ namespace xml_auto
 		{
 			SGP_THROW_IFFALSE(file.size() <=
 				static_cast<std::uint64_t>((std::numeric_limits<std::size_t>::max)()),
-				L"XML resource is too large");
+				JA2_TEXT("XML resource is too large"));
 			const std::size_t size = static_cast<std::size_t>(file.size());
 			std::vector<char> buffer(size + 1);
 			file.readExact(buffer.data(), size);

@@ -22,58 +22,58 @@
 
 // Skin colors
 /*STR16 sSkinTexts[]={
-	L"Pink Skin",
-	L"Tan Skin",
-	L"Dark Skin",
-	L"Black Skin",
-	L"none",
+	JA2_TEXT("Pink Skin"),
+	JA2_TEXT("Tan Skin"),
+	JA2_TEXT("Dark Skin"),
+	JA2_TEXT("Black Skin"),
+	JA2_TEXT("none"),
 };
  
 // Hair colors
 STR16 sHairTexts[]={
-	L"Brown Head",
-	L"Black Head",
-	L"White Head",
-	L"Blond Head",
-	L"Red Head",
-	L"none",
+	JA2_TEXT("Brown Head"),
+	JA2_TEXT("Black Head"),
+	JA2_TEXT("White Head"),
+	JA2_TEXT("Blond Head"),
+	JA2_TEXT("Red Head"),
+	JA2_TEXT("none"),
 };
 
 // Shirt colors
 STR16 sShirtTexts[]={
-	L"White Shirt",
-	L"Green-Yellow Shirt",
-	L"Yellow Shirt",
-	L"Grey Shirt",
-	L"Brown Shirt",
-	L"Purple Shirt",
-	L"Blue Shirt",
-	L"Jean Shirt",
-	L"Green Shirt",
-	L"Red Shirt",
-	L"Black Shirt",
-	L"none",
+	JA2_TEXT("White Shirt"),
+	JA2_TEXT("Green-Yellow Shirt"),
+	JA2_TEXT("Yellow Shirt"),
+	JA2_TEXT("Grey Shirt"),
+	JA2_TEXT("Brown Shirt"),
+	JA2_TEXT("Purple Shirt"),
+	JA2_TEXT("Blue Shirt"),
+	JA2_TEXT("Jean Shirt"),
+	JA2_TEXT("Green Shirt"),
+	JA2_TEXT("Red Shirt"),
+	JA2_TEXT("Black Shirt"),
+	JA2_TEXT("none"),
 };
 
 // Pant colors
 STR16 sPantsTexts[]={
-	L"Blue Pants",
-	L"Black Pants",
-	L"Jean Pants",
-	L"Tan Pants",
-	L"Beige Pants",
-	L"Green Pants",
-	L"none",
+	JA2_TEXT("Blue Pants"),
+	JA2_TEXT("Black Pants"),
+	JA2_TEXT("Jean Pants"),
+	JA2_TEXT("Tan Pants"),
+	JA2_TEXT("Beige Pants"),
+	JA2_TEXT("Green Pants"),
+	JA2_TEXT("none"),
 };
 
 STR16 sExplanationTexts[]=
 {
-	L"Hair Color",
-	L"Skin Color",
-	L"Shirt Color",
-	L"Pants Color",
-	L"Normal Body",
-	L"Big Body",
+	JA2_TEXT("Hair Color"),
+	JA2_TEXT("Skin Color"),
+	JA2_TEXT("Shirt Color"),
+	JA2_TEXT("Pants Color"),
+	JA2_TEXT("Normal Body"),
+	JA2_TEXT("Big Body"),
 };*/
 
 //*******************************************************************
@@ -491,11 +491,11 @@ void AddIMPColorChoiceButtons()
 		CHAR16 sBadAssHelpText[200];
 		if( gGameOptions.fNewTraitSystem )
 		{
-			swprintf( sBadAssHelpText, L"%s%s", gzIMPColorChoosingText[4], gzIMPColorChoosingText[5]);
+			swprintf( sBadAssHelpText, JA2_TEXT("%s%s"), gzIMPColorChoosingText[4], gzIMPColorChoosingText[5]);
 		}
 		else
 		{
-			swprintf( sBadAssHelpText, L"%s", gzIMPColorChoosingText[4]);
+			swprintf( sBadAssHelpText, JA2_TEXT("%s"), gzIMPColorChoosingText[4]);
 		}
 		SetButtonFastHelpText( giIMPColorChoiceButton[ 10 ], sBadAssHelpText );
 

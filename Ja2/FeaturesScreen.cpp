@@ -110,7 +110,7 @@ INT32		giDoneBtnImage;
 
 //checkbox to toggle tracking mode on or off
 UINT32	guiFeaturesToggles[MAX_NUMBER_OF_OPTION_TOGGLES]; //array of ButtonID, index's for button list
-BOOL Buttons_Exist_State = 0;
+BOOLEAN Buttons_Exist_State = 0;
 void BtnOptionsTogglesCallback(GUI_BUTTON* btn, INT32 reason);
 
 
@@ -755,7 +755,7 @@ void RenderScreen()
 	}
 
 	//Display the option page numbers
-	swprintf(sPage, L"%d / %d", OptionsList_Column_Offset + 1, max(1, Max_Number_Of_Pages - 1));
+	swprintf(sPage, JA2_TEXT("%d / %d"), OptionsList_Column_Offset + 1, max(1, Max_Number_Of_Pages - 1));
 	DisplayWrappedString(OPT_PAGE_X, OPT_PAGE_Y, OPT_SLIDER_TEXT_WIDTH, 2, OPT_BUTTON_FONT2, OPT_MAIN_COLOR,
 		sPage, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 
@@ -847,7 +847,9 @@ void GetUserInput()
 
 
 			case 'z':
+			#ifdef _WIN32
 				SetErrorMode(SEM_FAILCRITICALERRORS);
+			#endif
 				break;
 
 			//case 'q':
@@ -861,7 +863,7 @@ void GetUserInput()
 	// mousewheel input
 	if (OptionsList_Column_Offset > 0)
 	{
-		BOOL act = FALSE;
+		BOOLEAN act = FALSE;
 
 		// check general screen mouseregion
 		if (gSelectedToggleBoxAreaRegion.WheelState > 0)
@@ -884,7 +886,7 @@ void GetUserInput()
 
 	if (OptionsList_Column_Offset < Max_Number_Of_Pages-2)
 	{
-		BOOL act = FALSE;
+		BOOLEAN act = FALSE;
 
 		// check general screen mouseregion
 		if (gSelectedToggleBoxAreaRegion.WheelState < 0)
@@ -1557,7 +1559,7 @@ void DrawLeftPanel()
 	DisplayWrappedString( iScreenWidthOffset + 36, iScreenHeightOffset + 95, 176, 0, FONT10ARIAL, FONT_MCOLOR_LTGRAY, z113FeaturesScreenText[ FST_DESCRIPTION ], FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 	CHAR16 text[1000];
-	swprintf(text, L"%s", gbHighLightedOptionText != -1 ? z113FeaturesPanelText[toggle_box_array[gbHighLightedOptionText]] : z113FeaturesScreenText[FST_HOVER_FOR_MORE_INFO]);
+	swprintf(text, JA2_TEXT("%s"), gbHighLightedOptionText != -1 ? z113FeaturesPanelText[toggle_box_array[gbHighLightedOptionText]] : z113FeaturesScreenText[FST_HOVER_FOR_MORE_INFO]);
 	DisplayWrappedString( iScreenWidthOffset + 36, iScreenHeightOffset + 125, 176, 0, FONT12ARIAL, FONT_MCOLOR_WHITE, text, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 	SetFontShadow(DEFAULT_SHADOW);

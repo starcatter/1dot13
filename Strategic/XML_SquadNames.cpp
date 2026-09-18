@@ -16,7 +16,7 @@ struct
 }
 typedef squadnamesParseData;
 
-std::vector<std::wstring> gSquadNameVector;
+std::vector<ja2::text::Utf16String> gSquadNameVector;
 
 static void XMLCALL
 squadnamesStartElementHandle(void *userData, const XML_Char *name, const XML_Char **atts)

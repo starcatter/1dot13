@@ -18,6 +18,7 @@
 	#include "Text.h"
 	#include "Text Input.h"
 	#include "Soldier Profile.h"
+	#include "UtfConversion.h"
 
 #include "gameloop.h"
 #include "Game Init.h"
@@ -408,12 +409,12 @@ BOOLEAN		RenderMPSScreen()
 	DisplayWrappedString( MPS_LABEL_ACCURACY_X, MPS_LABEL_ACCURACY_Y, MPS_LABEL_ACCURACY_WIDTH, 2, MPS_TITLE_FONT, MPS_TITLE_COLOR, gzMPSScreenText[ MPS_ACCURACY_TEXT ], FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 	// Draw players
-	wchar_t szPlayerName[30];
-	wchar_t szPlayerKills[4];
-	wchar_t szPlayerDeaths[4];
-	wchar_t szPlayerHits[4];
-	wchar_t szPlayerMisses[4];
-	wchar_t szPlayerAccuracy[8];
+	CHAR16 szPlayerName[30];
+	CHAR16 szPlayerKills[4];
+	CHAR16 szPlayerDeaths[4];
+	CHAR16 szPlayerHits[4];
+	CHAR16 szPlayerMisses[4];
+	CHAR16 szPlayerAccuracy[8];
 	float flAccuracy = 0;
 	for(int i=0; i < 4; i++)
 	{
@@ -425,28 +426,28 @@ BOOLEAN		RenderMPSScreen()
 				usPosY = MPS_PLAYERLIST_Y + (i * MPS_PLAYER_GAP);
 
 				// Draw Player Name Column
-				memset(szPlayerName,0,30*sizeof(wchar_t));
-				mbstowcs( szPlayerName,client_names[i],30);
+				memset(szPlayerName,0,30*sizeof(CHAR16));
+				ja2::text::copyUtf8ToUtf16(client_names[i], szPlayerName);
 				
 				DisplayWrappedString( MPS_LABEL_PLAYER_X, usPosY, MPS_LABEL_PLAYER_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerName, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 				// Draw Kills Column
-				memset(szPlayerKills,0,4*sizeof(wchar_t));
+				memset(szPlayerKills,0,4*sizeof(CHAR16));
 				_itow(gMPPlayerStats[i].kills,szPlayerKills,10);
 				DisplayWrappedString( MPS_LABEL_KILLS_X, usPosY, MPS_LABEL_KILLS_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerKills, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 				// Draw Deaths Column
-				memset(szPlayerDeaths,0,4*sizeof(wchar_t));
+				memset(szPlayerDeaths,0,4*sizeof(CHAR16));
 				_itow(gMPPlayerStats[i].deaths,szPlayerDeaths,10);
 				DisplayWrappedString( MPS_LABEL_DEATHS_X, usPosY, MPS_LABEL_DEATHS_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerDeaths, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 				// Draw Hits Column
-				memset(szPlayerHits,0,4*sizeof(wchar_t));
+				memset(szPlayerHits,0,4*sizeof(CHAR16));
 				_itow(gMPPlayerStats[i].hits,szPlayerHits,10);
 				DisplayWrappedString( MPS_LABEL_HITS_X, usPosY, MPS_LABEL_HITS_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerHits, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 				// Draw Misses Column
-				memset(szPlayerMisses,0,4*sizeof(wchar_t));
+				memset(szPlayerMisses,0,4*sizeof(CHAR16));
 				_itow(gMPPlayerStats[i].misses,szPlayerMisses,10);
 				DisplayWrappedString( MPS_LABEL_MISSES_X, usPosY, MPS_LABEL_MISSES_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerMisses, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
@@ -455,8 +456,8 @@ BOOLEAN		RenderMPSScreen()
 					flAccuracy = ((float)gMPPlayerStats[i].hits / (float)(gMPPlayerStats[i].misses + gMPPlayerStats[i].hits)) * 100.0f;
 				else
 					flAccuracy = 0;
-				memset(szPlayerAccuracy,0,8*sizeof(wchar_t));
-				swprintf(szPlayerAccuracy,L"%i%%%%%%%%",(int)flAccuracy); // this thing goes through like three printfs before being rendered....
+				memset(szPlayerAccuracy,0,8*sizeof(CHAR16));
+				swprintf(szPlayerAccuracy,JA2_TEXT("%i%%%%%%%%"),(int)flAccuracy); // this thing goes through like three printfs before being rendered....
 				DisplayWrappedString( MPS_LABEL_ACCURACY_X, usPosY, MPS_LABEL_ACCURACY_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerAccuracy, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 			}
@@ -473,22 +474,22 @@ BOOLEAN		RenderMPSScreen()
 		DisplayWrappedString( MPS_LABEL_PLAYER_X, usPosY, MPS_LABEL_PLAYER_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, gzMPSScreenText[MPS_AITEAM_TEXT], FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 		// Draw Kills Column
-		memset(szPlayerKills,0,4*sizeof(wchar_t));
+		memset(szPlayerKills,0,4*sizeof(CHAR16));
 		_itow(gMPPlayerStats[4].kills,szPlayerKills,10);
 		DisplayWrappedString( MPS_LABEL_KILLS_X, usPosY, MPS_LABEL_KILLS_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerKills, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 		// Draw Deaths Column
-		memset(szPlayerDeaths,0,4*sizeof(wchar_t));
+		memset(szPlayerDeaths,0,4*sizeof(CHAR16));
 		_itow(gMPPlayerStats[4].deaths,szPlayerDeaths,10);
 		DisplayWrappedString( MPS_LABEL_DEATHS_X, usPosY, MPS_LABEL_DEATHS_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerDeaths, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 		// Draw Hits Column
-		memset(szPlayerHits,0,4*sizeof(wchar_t));
+		memset(szPlayerHits,0,4*sizeof(CHAR16));
 		_itow(gMPPlayerStats[4].hits,szPlayerHits,10);
 		DisplayWrappedString( MPS_LABEL_HITS_X, usPosY, MPS_LABEL_HITS_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerHits, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 		// Draw Misses Column
-		memset(szPlayerMisses,0,4*sizeof(wchar_t));
+		memset(szPlayerMisses,0,4*sizeof(CHAR16));
 		_itow(gMPPlayerStats[4].misses,szPlayerMisses,10);
 		DisplayWrappedString( MPS_LABEL_MISSES_X, usPosY, MPS_LABEL_MISSES_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerMisses, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
@@ -497,8 +498,8 @@ BOOLEAN		RenderMPSScreen()
 			flAccuracy = ((float)gMPPlayerStats[4].hits / (float)(gMPPlayerStats[4].misses + gMPPlayerStats[4].hits)) * 100.0f;
 		else
 			flAccuracy = 0;
-		memset(szPlayerAccuracy,0,8*sizeof(wchar_t));
-		swprintf(szPlayerAccuracy,L"%i%%%%%%%%",(int)flAccuracy);
+		memset(szPlayerAccuracy,0,8*sizeof(CHAR16));
+		swprintf(szPlayerAccuracy,JA2_TEXT("%i%%%%%%%%"),(int)flAccuracy);
 		DisplayWrappedString( MPS_LABEL_ACCURACY_X, usPosY, MPS_LABEL_ACCURACY_WIDTH, 2, MPS_LABEL_TEXT_FONT, MPS_LABEL_TEXT_COLOR, szPlayerAccuracy, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 	}
 

@@ -391,7 +391,7 @@ void RenderVoiceIndex( void )
 	INT16 sX, sY;
 
 	// render the voice index value on the the blank portrait
-	swprintf( sString, L"%s", gIMPVoice[iCurrentVoice].szVoiceSetName );
+	swprintf( sString, JA2_TEXT("%s"), gIMPVoice[iCurrentVoice].szVoiceSetName );
 
 	FindFontCenterCoordinates( 290 + LAPTOP_UL_X, 0, 100, 0, sString, FONT12ARIAL, &sX, &sY );
 

@@ -737,7 +737,7 @@ void DailyUpdateOfBobbyRaysNewInventory()
 
 #ifdef BR_INVENTORY_TURNOVER_DEBUG
 						if ( usItemIndex == ROCKET_LAUNCHER )
-							MapScreenMessage( 0, MSG_DEBUG, L"%s: BR Ordered %d, Has %d", WORLDTIMESTR, LaptopSaveInfo.BobbyRayInventory[ i ].ubQtyOnOrder, LaptopSaveInfo.BobbyRayInventory[ i ].ubQtyOnHand );
+							MapScreenMessage( 0, MSG_DEBUG, JA2_TEXT("%s: BR Ordered %d, Has %d"), WORLDTIMESTR, LaptopSaveInfo.BobbyRayInventory[ i ].ubQtyOnOrder, LaptopSaveInfo.BobbyRayInventory[ i ].ubQtyOnHand );
 #endif
 					}
 				}
@@ -889,7 +889,7 @@ void AddFreshBobbyRayInventory( UINT16 usItemIndex )
 
 #ifdef BR_INVENTORY_TURNOVER_DEBUG
 	if ( usItemIndex == ROCKET_LAUNCHER && !fUsed )
-		MapScreenMessage( 0, MSG_DEBUG, L"%s: BR Bought %d, Has %d", WORLDTIMESTR, pInventoryArray[ sInventorySlot ].ubQtyOnOrder, pInventoryArray[ sInventorySlot ].ubQtyOnHand );
+		MapScreenMessage( 0, MSG_DEBUG, JA2_TEXT("%s: BR Bought %d, Has %d"), WORLDTIMESTR, pInventoryArray[ sInventorySlot ].ubQtyOnOrder, pInventoryArray[ sInventorySlot ].ubQtyOnHand );
 #endif
 
 	// cancel order
@@ -933,7 +933,7 @@ void SimulateBobbyRayCustomer(STORE_INVENTORY *pInventoryArray, BOOLEAN fUsed)
 			if (ubItemsSold > 0 )
 			{
 				if ( i == ROCKET_LAUNCHER && !fUsed )
-					MapScreenMessage( 0, MSG_DEBUG, L"%s: BR Sold %d, Has %d", WORLDTIMESTR, ubItemsSold, pInventoryArray[ i ].ubQtyOnHand );
+					MapScreenMessage( 0, MSG_DEBUG, JA2_TEXT("%s: BR Sold %d, Has %d"), WORLDTIMESTR, ubItemsSold, pInventoryArray[ i ].ubQtyOnHand );
 			}
 #endif
 		}

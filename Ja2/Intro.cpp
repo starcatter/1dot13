@@ -163,7 +163,7 @@ enum EGameVideos
 
 EGameVideos	giCurrentIntroBeingPlayed = INTRO_NO_VIDEO;
 /*
-CHAR		*gpzSmackerFileNames[] =
+CHAR8		*gpzSmackerFileNames[] =
 {
 	//begining of the game
 	"INTRO\\Rebel_cr.smk",
@@ -220,8 +220,8 @@ UINT32	IntroScreenInit( void )
 	s_VFN[INTRO_PRAGUE]						= inireader.ReadString("INTRO_BEGINNING", "INTRO_PRAGUE",      no_defaults ? "" : "INTRO\\Prague");
 
 	//there are no more videos shown for the begining
-	s_VFN[INTRO_END_END_SPEECH_MIGUEL]		= inireader.ReadString("INTRO_ENDING","INTRO_END_END_SPEECH_MIGUEL",     no_defaults ? "" : "INTRO\\Throne_Mig");
-	s_VFN[INTRO_END_END_SPEECH_NO_MIGUEL]	= inireader.ReadString("INTRO_ENDING","INTRO_END_END_SPEECH_NO_MIGUEL",  no_defaults ? "" : "INTRO\\Throne_NoMig");
+	s_VFN[INTRO_END_END_SPEECH_MIGUEL]		= inireader.ReadString("INTRO_ENDING","INTRO_END_END_SPEECH_MIGUEJA2_TEXT(",     no_defaults ? ")" : "INTRO\\Throne_Mig");
+	s_VFN[INTRO_END_END_SPEECH_NO_MIGUEL]	= inireader.ReadString("INTRO_ENDING","INTRO_END_END_SPEECH_NO_MIGUEJA2_TEXT(",  no_defaults ? ")" : "INTRO\\Throne_NoMig");
 	s_VFN[INTRO_END_HELI_FLYBY]				= inireader.ReadString("INTRO_ENDING","INTRO_END_HELI_FLYBY",            no_defaults ? "" : "INTRO\\Heli_FlyBy");
 	s_VFN[INTRO_END_SKYRIDER_HELICOPTER]	= inireader.ReadString("INTRO_ENDING","INTRO_END_SKYRIDER_HELICOPTER",   no_defaults ? "" : "INTRO\\Heli_Sky");
 	s_VFN[INTRO_END_NOSKYRIDER_HELICOPTER]	= inireader.ReadString("INTRO_ENDING","INTRO_END_NOSKYRIDER_HELICOPTER", no_defaults ? "" : "INTRO\\Heli_NoSky");

@@ -23,6 +23,7 @@ add_library(ja2_shared_core STATIC
   sgp/FileMan.cpp
   sgp/himage.cpp
   sgp/LegacyStringConversion.cpp
+  sgp/LegacyUtf16.cpp
   sgp/fileio/BfVfsResourceStore.cpp
   sgp/fileio/DurableFileOperationsFactory.cpp
   sgp/fileio/FileServices.cpp
@@ -57,7 +58,8 @@ target_link_libraries(ja2_shared_core PUBLIC JA2::bfVFS Threads::Threads ZLIB::Z
 target_compile_options(ja2_shared_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 add_library(ja2_sdl3_backend STATIC
-  sgp/platform/sdl/Sdl3ApplicationHost.cpp
+	sgp/platform/sdl/Sdl3ApplicationPlatform.cpp
+	sgp/platform/sdl/Sdl3ApplicationHost.cpp
   sgp/platform/sdl/Sdl3InputTranslator.cpp
   sgp/platform/sdl/Sdl3LegacyInputSink.cpp
   sgp/presentation/sdl/Sdl3Presenter.cpp

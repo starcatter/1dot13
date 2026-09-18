@@ -94,7 +94,7 @@
 #include "transfer_rules.h"
 
 #include "Keys.h"
-#include "new.h"
+#include <new>
 #include "types.h"
 #include "connect.h"
 #include "message.h"
@@ -220,7 +220,7 @@ class ClientTransferCB : public FileListTransferCBInterface
 			RakAssert(hash1==hash2);
 			*/
 
-			//ScreenMsg( FONT_BCOLOR_ORANGE, MSG_MPSYSTEM, L"Saved file local in %S", file);
+			//ScreenMsg( FONT_BCOLOR_ORANGE, MSG_MPSYSTEM, JA2_TEXT("Saved file local in %S"), file);
 
 			// Return true to have RakNet delete the memory allocated to hold this file.
 			// False if you hold onto the memory, and plan to delete it yourself later
@@ -281,8 +281,8 @@ class ClientTransferCB : public FileListTransferCBInterface
 			}*/
 
 
-			//ScreenMsg( FONT_BLUE, MSG_MPSYSTEM, L"(%i%%) %S", 100*partCount/partTotal, onFileStruct->fileName);
-			//ScreenMsg( FONT_BLUE, MSG_MPSYSTEM, L"%i (%i%%) %i/%i %S %ib->%ib / %ib->%ib\n", onFileStruct->setID, 100*partCount/partTotal, onFileStruct->fileIndex+1, onFileStruct->setCount, onFileStruct->fileName, onFileStruct->compressedTransmissionLength, onFileStruct->finalDataLength, onFileStruct->setTotalCompressedTransmissionLength, onFileStruct->setTotalFinalLength, firstDataChunk);
+			//ScreenMsg( FONT_BLUE, MSG_MPSYSTEM, JA2_TEXT("(%i%%) %S"), 100*partCount/partTotal, onFileStruct->fileName);
+			//ScreenMsg( FONT_BLUE, MSG_MPSYSTEM, JA2_TEXT("%i (%i%%) %i/%i %S %ib->%ib / %ib->%ib\n"), onFileStruct->setID, 100*partCount/partTotal, onFileStruct->fileIndex+1, onFileStruct->setCount, onFileStruct->fileName, onFileStruct->compressedTransmissionLength, onFileStruct->finalDataLength, onFileStruct->setTotalCompressedTransmissionLength, onFileStruct->setTotalFinalLength, firstDataChunk);
 
 			//printf("%i (%i%%) %i/%i %s %ib->%ib / %ib->%ib\n", onFileStruct->setID, 100*partCount/partTotal, onFileStruct->fileIndex+1, onFileStruct->setCount, onFileStruct->fileName, onFileStruct->compressedTransmissionLength, onFileStruct->finalDataLength, onFileStruct->setTotalCompressedTransmissionLength, onFileStruct->setTotalFinalLength, firstDataChunk);
 		}
@@ -523,7 +523,7 @@ typedef struct
 	SoldierID	ubSoldierID;
 	UINT16		usExplosiveClassID;
 	INT16		sSubsequent;
-	BOOL			fRecompileMovementCosts;
+	BOOLEAN			fRecompileMovementCosts;
 	INT16		sWoundAmt;
 	INT16		sBreathAmt;
 	SoldierID	ubAttackerID;
@@ -622,16 +622,16 @@ void disconnected_callback(UINT8 ubResult);
 //hayden - i need this for message references
 CHAR16 TeamNameStrings[][30] =
 {
-	L"You", // player's turn
-	L"AI",
-	L"Creature",
-	L"Militia",
-	L"Civilian",
-	L"Player_Plan",// planning turn
-	L"Client #1",//hayden
-	L"Client #2",//hayden
-	L"Client #3",//hayden
-	L"Client #4",//hayden
+	JA2_TEXT("You"), // player's turn
+	JA2_TEXT("AI"),
+	JA2_TEXT("Creature"),
+	JA2_TEXT("Militia"),
+	JA2_TEXT("Civilian"),
+	JA2_TEXT("Player_Plan"),// planning turn
+	JA2_TEXT("Client #1"),//hayden
+	JA2_TEXT("Client #2"),//hayden
+	JA2_TEXT("Client #3"),//hayden
+	JA2_TEXT("Client #4"),//hayden
 
 };
 
@@ -765,7 +765,7 @@ void send_path (  SOLDIERTYPE *pSoldier, INT32 sDestGridNo, UINT16 usMovementAni
 {
 	if(pSoldier->ubID < 120)
 	{
-		//ScreenMsg( FONT_LTGREEN, MSG_MPSYSTEM, L"Sending new path" );
+		//ScreenMsg( FONT_LTGREEN, MSG_MPSYSTEM, JA2_TEXT("Sending new path") );
 
 		EV_S_SENDPATHTONETWORK SNetPath;
 
@@ -788,7 +788,7 @@ void send_path (  SOLDIERTYPE *pSoldier, INT32 sDestGridNo, UINT16 usMovementAni
 
 void recievePATH(RPCParameters *rpcParameters)
 {
-	//ScreenMsg( FONT_LTGREEN, MSG_MPSYSTEM, L"Recieving new path," );
+	//ScreenMsg( FONT_LTGREEN, MSG_MPSYSTEM, JA2_TEXT("Recieving new path,") );
 				
 	EV_S_SENDPATHTONETWORK* SNetPath = (EV_S_SENDPATHTONETWORK*)rpcParameters->input;
 
@@ -840,7 +840,7 @@ void send_stance ( SOLDIERTYPE *pSoldier, UINT8 ubDesiredStance )
 		SChangeStance.sYPos				= pSoldier->sY;
 		SChangeStance.uiUniqueId = pSoldier -> uiUniqueSoldierIdValue;
 
-		//ScreenMsg( FONT_LTGREEN, MSG_MPSYSTEM, L"change stance: %d",ubDesiredStance );
+		//ScreenMsg( FONT_LTGREEN, MSG_MPSYSTEM, JA2_TEXT("change stance: %d"),ubDesiredStance );
 	
 		client->RPC("sendSTANCE",(const char*)&SChangeStance, (int)sizeof(EV_S_CHANGESTANCE)*8, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, UNASSIGNED_NETWORK_ID,0);
 	}
@@ -933,7 +933,7 @@ void send_fire( SOLDIERTYPE *pSoldier, INT32 sTargetGridNo )
 void recieveFIRE(RPCParameters *rpcParameters)
 {		
 	EV_S_BEGINFIREWEAPON* SBeginFireWeapon = (EV_S_BEGINFIREWEAPON*)rpcParameters->input;
-	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"SendBeginFireWeaponEvent" );
+	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("SendBeginFireWeaponEvent") );
 
 	SOLDIERTYPE *pSoldier = SBeginFireWeapon->usSoldierID;
 
@@ -949,7 +949,7 @@ void recieveFIRE(RPCParameters *rpcParameters)
 
 void send_hit(  EV_S_WEAPONHIT *SWeaponHit  )
 {
-	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"sendHIT" );
+	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("sendHIT") );
 	//EV_S_WEAPONHIT* pWeaponHit =  (EV_S_WEAPONHIT*)pEventData;
 	//SOLDIERTYPE *pSoldier = MercPtrs[ usSoldierID ];
 
@@ -967,7 +967,7 @@ void send_hit(  EV_S_WEAPONHIT *SWeaponHit  )
 
 void recieveHIT(RPCParameters *rpcParameters)
 {
-	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"recieveHIT" );
+	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("recieveHIT") );
 		
 	EV_S_WEAPONHIT* SWeaponHit = (EV_S_WEAPONHIT*)rpcParameters->input;
 	
@@ -995,7 +995,7 @@ void recieveHIT(RPCParameters *rpcParameters)
 		StopBullet( iBullet );
 		RemoveBullet(iBullet);
 
-		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"removed bullet" );	
+		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("removed bullet") );	
 	}		
 }
 
@@ -1736,9 +1736,10 @@ void start_battle ( void )
 			for(i=0; i<4;i++)
 			{	
 				CHAR16 name[30];
-				int nm = mbstowcs( name, client_names[i], sizeof (char)*30 );
+				const auto convertedName =
+					ja2::text::copyUtf8ToUtf16(client_names[i], name);
 				//copy in client specified name for the player turn bar :)
-				if(nm)
+				if(convertedName.codeUnitsWritten > 0)
 				{
 					// OJW - 20090318 - fixed name copying bug with multiple games
 					CHAR16 full[255];
@@ -1948,7 +1949,7 @@ void send_interrupt (SOLDIERTYPE *pSoldier)
 				else
 				{
 					//for ai
-					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"starting ai" );
+					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("starting ai") );
 					AddTopMessage( COMPUTER_INTERRUPT_MESSAGE, TeamTurnString[ INT->bTeam ] );
 				}
 
@@ -1965,7 +1966,7 @@ void send_interrupt (SOLDIERTYPE *pSoldier)
 				if(INT->bTeam==netbTeam)//for us
 					AddTopMessage( PLAYER_INTERRUPT_MESSAGE, TeamTurnString[ INT->bTeam ] );
 
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Recieved interrupt between %s and %s.", TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Recieved interrupt between %s and %s."), TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );
 
 				 //start interrupt turn //real interrupt code
 				SOLDIERTYPE* pSoldier = INT->ubID;
@@ -1978,11 +1979,11 @@ void send_interrupt (SOLDIERTYPE *pSoldier)
 				//it for us ! :)
 				if(INT->gubOutOfTurnPersons==0)//indicates finished interrupt maybe can just call end interrupt
 				{
-					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"old int finish" );
+					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("old int finish") );
 				}
 				else //start our interrupt turn
 				{
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Interrupt of %s awarded to you.", TeamNameStrings[pOpponent->bTeam] );//was MPClientMessage[37], can be reconnected if text updated and translated
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Interrupt of %s awarded to you."), TeamNameStrings[pOpponent->bTeam] );//was MPClientMessage[37], can be reconnected if text updated and translated
 
 					SOLDIERTYPE* pSoldier = INT->ubID;
 					ManSeesMan(pSoldier,pOpponent,pOpponent->sGridNo,pOpponent->pathing.bLevel,2,1);
@@ -2011,7 +2012,7 @@ void send_interrupt (SOLDIERTYPE *pSoldier)
 				gubOutOfTurnPersons = INT->gubOutOfTurnPersons;
 
 				AddTopMessage( PLAYER_INTERRUPT_MESSAGE, TeamTurnString[ INT->bTeam ] );
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Interrupt of %s awarded to %s.", TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Interrupt of %s awarded to %s."), TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );
 			}
 
 			// WANNE - MP: This seems to cause the HANG on AI interrupt where we have to press ALT + E on the server!
@@ -2026,18 +2027,18 @@ void send_interrupt (SOLDIERTYPE *pSoldier)
 				gTacticalStatus.fInterruptOccurred = TRUE;
 
 				//this needed to add details of who's interrupt it is - hayden
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Interrupt with %s awarded to %s.", TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );//was MPClientMessage[17], can be reconnected if text updated and translated
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Interrupt with %s awarded to %s."), TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );//was MPClientMessage[17], can be reconnected if text updated and translated
 			}
 			else
 			{
 				//it for us ! :)
 				if(INT->gubOutOfTurnPersons==0)//indicates finished interrupt maybe can just call end interrupt
 				{
-					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"old int finish" );
+					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("old int finish") );
 				}
 				else //start our interrupt turn
 				{
-					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Interrupt of %s awarded to you.", TeamNameStrings[pOpponent->bTeam] );//was MPClientMessage[37], can be reconnected if text updated and translated
+					ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Interrupt of %s awarded to you."), TeamNameStrings[pOpponent->bTeam] );//was MPClientMessage[37], can be reconnected if text updated and translated
 
 					SOLDIERTYPE* pSoldier = INT->ubID;
 					ManSeesMan(pSoldier,pOpponent,pOpponent->sGridNo,pOpponent->pathing.bLevel,2,1);
@@ -2070,7 +2071,7 @@ void send_interrupt (SOLDIERTYPE *pSoldier)
 
 
 			AddTopMessage( PLAYER_INTERRUPT_MESSAGE, TeamTurnString[ INT->bTeam ] );
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Interrupt of %s awarded to %s.", TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Interrupt of %s awarded to %s."), TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );
 
 		}
 
@@ -2087,18 +2088,18 @@ void send_interrupt (SOLDIERTYPE *pSoldier)
 			gTacticalStatus.fInterruptOccurred = TRUE;
 
 			//this needed to add details of who's interrupt it is - hayden
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Interrupt with %s awarded to %s.", TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );//was MPClientMessage[17], can be reconnected if text updated and translated
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Interrupt with %s awarded to %s."), TeamNameStrings[pOpponent->bTeam], TeamNameStrings[INT->bTeam] );//was MPClientMessage[17], can be reconnected if text updated and translated
 		}
 		else
 		{
 			//it for us ! :)
 			if(INT->gubOutOfTurnPersons==0)//indicates finished interrupt maybe can just call end interrupt
 			{
-				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"old int finish" );
+				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("old int finish") );
 			}
 			else //start our interrupt turn
 			{
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Interrupt of %s awarded to you.", TeamNameStrings[pOpponent->bTeam] );//was MPClientMessage[37], can be reconnected if text updated and translated
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Interrupt of %s awarded to you."), TeamNameStrings[pOpponent->bTeam] );//was MPClientMessage[37], can be reconnected if text updated and translated
 
 				SOLDIERTYPE* pSoldier = MercPtrs[ INT->ubID ];
 				ManSeesMan(pSoldier,pOpponent,pOpponent->sGridNo,pOpponent->pathing.bLevel,2,1);
@@ -2111,7 +2112,7 @@ void send_interrupt (SOLDIERTYPE *pSoldier)
 
 void intAI (SOLDIERTYPE *pSoldier )
 {
-	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"intAI with %s", TeamNameStrings[pSoldier->bTeam] );//was MPClientMessage[17], can be reconnected if text updated and translated
+	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("intAI with %s"), TeamNameStrings[pSoldier->bTeam] );//was MPClientMessage[17], can be reconnected if text updated and translated
 	AddTopMessage( COMPUTER_INTERRUPT_MESSAGE, TeamTurnString[ pSoldier->bTeam ] );
 	gTacticalStatus.fInterruptOccurred = TRUE;		
 }
@@ -2154,7 +2155,7 @@ void resume_turn(RPCParameters *rpcParameters)
 	
 	if(INT->bTeam==netbTeam || (INT->bTeam==1 && is_server))//may need working //its for us or we are the server and its for the AI
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Resumed turn after interrupt of %s", TeamNameStrings[INT->bTeam] );//was MPClientMessage[18], can be reconnected if text updated and translated
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Resumed turn after interrupt of %s"), TeamNameStrings[INT->bTeam] );//was MPClientMessage[18], can be reconnected if text updated and translated
 
 		for(int i=0; i <= INT->gubOutOfTurnPersons; i++)
 		{
@@ -2171,7 +2172,7 @@ void resume_turn(RPCParameters *rpcParameters)
 	// WANNE - MP: This happens, when client 1 (=server) has done its interrupt and now it is enemies turn!
 	else if(INT->bTeam==1)
 	{
-		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"im not server but ai just got back its turn after being interrupted..." );
+		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("im not server but ai just got back its turn after being interrupted...") );
 		AddTopMessage( COMPUTER_TURN_MESSAGE, TeamTurnString[ 1 ] );
 	}
 }
@@ -2359,7 +2360,9 @@ void recieveFILE_TRANSFER_SETTINGS (RPCParameters *rpcParameters)
 
 		// Now get directory
 		strcpy( server_fileTransferDirectoryPath, fts->fileTransferDirectory );
-		vfs::Path profileRoot = vfs::Path(gzFileTransferDirectory) + vfs::Path(server_fileTransferDirectoryPath);
+		vfs::Path profileRoot = vfs::Path(
+			ja2::text::utf16ToUtf8ReplacingInvalid(gzFileTransferDirectory)) +
+			vfs::Path(server_fileTransferDirectoryPath);
 
 		/////////////////////////////////////////////////////////////////////
 		SGP_TRYCATCH_RETHROW( ja2::mp::InitializeMultiplayerProfile(profileRoot), L"" );
@@ -2840,7 +2843,7 @@ void recieveTEAMCHANGE( RPCParameters *rpcParameters )
 	if (!can_teamchange())
 	{
 		// error
-		ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"An error occured in recieveTEAMCHANGE that should not occur");
+		ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("An error occured in recieveTEAMCHANGE that should not occur"));
 	}
 	else
 	{
@@ -2862,7 +2865,7 @@ void recieveEDGECHANGE( RPCParameters *rpcParameters )
 	if (!can_edgechange())
 	{
 		// error
-		ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"An error occured in recieveEDGECHANGE that should not occur");
+		ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("An error occured in recieveEDGECHANGE that should not occur"));
 	}
 	else
 	{
@@ -2885,7 +2888,7 @@ void recieveMAPCHANGE( RPCParameters *rpcParameters )
 	if (!is_client || allowlaptop)
 	{
 		// error
-		ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"An error occured in recieveMAPCHANGE that should not occur");
+		ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("An error occured in recieveMAPCHANGE that should not occur"));
 	}
 	else
 	{
@@ -2937,7 +2940,7 @@ void send_grenade (OBJECTTYPE *pGameObj, float dLifeLength, float xPos, float yP
 			gren.uiPreRandomIndex = guiPreRandomIndex;
 
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf(tmpMPDbgString,"MP - send_grenade ( usItem : %i , sGridNo : %i , ubSoldierID : %i , uiPreRandomIndex : %i )\n",gren.usItem, gren.sTargetGridNo , gren.ubID.i , guiPreRandomIndex );
 			MPDebugMsg(tmpMPDbgString);
 			gfMPDebugOutputRandoms = true;
@@ -2963,7 +2966,7 @@ void recieveGRENADE (RPCParameters *rpcParameters)
 		if (!IsOurSoldier(pThrower) && (pThrower->bTeam != 1 || !is_server))
 		{
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf(tmpMPDbgString,"MP - recieveGRENADE ( usItem : %i , sGridNo : %i , ubSoldierID : %i , uiPreRandomIndex : %i )\n",gren->usItem, gren->sTargetGridNo , gren->ubID.i , guiPreRandomIndex );
 			MPDebugMsg(tmpMPDbgString);
 			gfMPDebugOutputRandoms = true;
@@ -3039,7 +3042,7 @@ void send_grenade_result (float xPos, float yPos, float zPos, INT32 sGridNo, Sol
 			gres.uiPreRandomIndex = guiPreRandomIndex;
 
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf( tmpMPDbgString, "MP - send_grenade_result ( RealObjectID : %i , sGridNo : %i , ubSoldierID : %i , uiPreRandomIndex : %i )\n", gres.RealObjectID, gres.sGridNo, gres.ubOwnerID.i, guiPreRandomIndex );
 			MPDebugMsg(tmpMPDbgString);
 			gfMPDebugOutputRandoms = true;
@@ -3063,7 +3066,7 @@ void recieveGRENADERESULT (RPCParameters *rpcParameters)
 		if (!IsOurSoldier(pThrower) && (pThrower->bTeam != 1 || !is_server))
 		{
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf( tmpMPDbgString, "MP - recieveGRENADERESULT ( RealObjectID : %i , sGridNo : %i , ubSoldierID : %i , uiPreRandomIndex : %i )\n", gres->RealObjectID, gres->sGridNo, gres->ubOwnerID.i, gres->uiPreRandomIndex );
 			MPDebugMsg(tmpMPDbgString);
 			gfMPDebugOutputRandoms = true;
@@ -3135,7 +3138,7 @@ void send_plant_explosive (SoldierID ubID,UINT16 usItem,UINT8 ubItemStatus,UINT1
 		exp.bDelayFreq = gWorldItems[ uiWorldItemIndex ].object[0]->data.misc.bDelay;
 
 #ifdef JA2BETAVERSION
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString,"MP - send_plant_explosive ( usItem : %i , sGridNo : %i , ubSoldierID : %i , uiPreRandomIndex : %i , uiWorldItemIndex : %i )\n",exp.usItem, exp.sGridNo , exp.ubID.i , guiPreRandomIndex , uiWorldItemIndex );
 	MPDebugMsg(tmpMPDbgString);
 #endif
@@ -3156,7 +3159,7 @@ void recievePLANTEXPLOSIVE (RPCParameters *rpcParameters)
 		if (!IsOurSoldier(pSoldier) && (pSoldier->bTeam != 1 || !is_server))
 		{
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf( tmpMPDbgString, "MP - recievePLANTEXPLOSIVE ( usItem : %i , sGridNo : %i , ubSoldierID : %i , uiPreRandomIndex : %i )\n", exp->usItem, exp->sGridNo, exp->ubID.i, guiPreRandomIndex );
 			MPDebugMsg(tmpMPDbgString);
 #endif
@@ -3261,7 +3264,7 @@ void send_detonate_explosive (UINT32 uiWorldIndex, SoldierID ubID)
 				det.uiPreRandomIndex = guiPreRandomIndex;
 
 #ifdef JA2BETAVERSION
-				CHAR tmpMPDbgString[512];
+				CHAR8 tmpMPDbgString[512];
 				sprintf(tmpMPDbgString,"MP - send_detonate_explosive ( MPTeam : %i , uiWorldIndex : %i , uiPreRandomIndex : %i )\n",det.ubMPTeamIndex, det.uiWorldItemIndex , det.uiPreRandomIndex );
 				MPDebugMsg(tmpMPDbgString);
 				gfMPDebugOutputRandoms = true;
@@ -3293,7 +3296,7 @@ void recieveDETONATEEXPLOSIVE (RPCParameters *rpcParameters)
 		if (pSoldier->bTeam != netbTeam && (pSoldier->bTeam != 1 || !is_server))
 		{
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf(tmpMPDbgString,"MP - recieveDETONATEEXPLOSIVE ( MPTeam : %i , uiWorldIndex : %i , uiPreRandomIndex : %i , ubID : %i )\n",det->ubMPTeamIndex, det->uiWorldItemIndex , det->uiPreRandomIndex , det->ubID.i );
 			MPDebugMsg(tmpMPDbgString);
 			gfMPDebugOutputRandoms = true;
@@ -3374,7 +3377,7 @@ void send_disarm_explosive(UINT32 sGridNo, UINT32 uiWorldItem, SoldierID ubID)
 				disarm.uiPreRandomIndex = guiPreRandomIndex;
 
 	#ifdef JA2BETAVERSION
-				CHAR tmpMPDbgString[512];
+				CHAR8 tmpMPDbgString[512];
 				sprintf(tmpMPDbgString,"MP - send_disarm_explosive ( MPTeam : %i , uiWorldIndex : %i , uiPreRandomIndex : %i , sGridNo : %i )\n", disarm.ubMPTeamIndex, disarm.uiWorldItemIndex , disarm.uiPreRandomIndex, disarm.sGridNo);
 				MPDebugMsg(tmpMPDbgString);
 				gfMPDebugOutputRandoms = true;
@@ -3406,7 +3409,7 @@ void recieveDISARMEXPLOSIVE (RPCParameters *rpcParameters)
 		if (pSoldier->bTeam != netbTeam && (pSoldier->bTeam != 1 || !is_server))
 		{
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf(tmpMPDbgString,"MP - recieveDISARMEXPLOSIVE ( MPTeam : %i , uiWorldItemIndex : %i , uiPreRandomIndex : %i , ubID : %i , sGridNo : %i )\n",disarm->ubMPTeamIndex, disarm->uiWorldItemIndex , disarm->uiPreRandomIndex , disarm->ubID.i, disarm->sGridNo );
 			MPDebugMsg(tmpMPDbgString);
 			gfMPDebugOutputRandoms = true;
@@ -3469,7 +3472,7 @@ void send_spreadeffect ( INT32 sGridNo, UINT8 ubRadius, UINT16 usItem, SoldierID
 	sef.uiPreRandomIndex = guiPreRandomIndex;
 
 #ifdef JA2BETAVERSION
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString,"MP - send_spreadeffect ( sGridNo : %i , ubRadius : %i , usItem : %i , ubOwner : %i , fSubsequent : %i , bLevel : %i , iSmokeEffectID : %i , uiPreRandomIndex : %i )\n",sef.sGridNo, sef.ubRadius ,sef.usItem, sef.ubOwner.i, sef.fSubsequent, sef.bLevel, sef.iSmokeEffectID, sef.uiPreRandomIndex );
 	MPDebugMsg(tmpMPDbgString);
 #endif
@@ -3491,7 +3494,7 @@ void recieveSPREADEFFECT (RPCParameters *rpcParameters)
 		if (!IsOurSoldier(pSoldier) && (pSoldier->bTeam != 1 || !is_server))
 		{
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf(tmpMPDbgString,"MP - recieveSPREADEFFECT ( sGridNo : %i , ubRadius : %i , usItem : %i , ubOwner : %i , fSubsequent : %i , bLevel : %i , iSmokeEffectID : %i , uiPreRandomIndex : %i )\n",sef->sGridNo, sef->ubRadius ,sef->usItem, sef->ubOwner.i, sef->fSubsequent, sef->bLevel, sef->iSmokeEffectID, sef->uiPreRandomIndex );
 			MPDebugMsg(tmpMPDbgString);
 #endif
@@ -3553,7 +3556,7 @@ void send_newsmokeeffect(INT32 sGridNo, UINT16 usItem, INT8 bLevel, SoldierID ub
 	sef.uiPreRandomIndex = guiPreRandomIndex;
 
 #ifdef JA2BETAVERSION
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString,"MP - send_newsmokeeffect ( sGridNo : %i , usItem : %i , ubOwner : %i , bLevel : %i , iSmokeEffectID : %i , uiPreRandomIndex : %i )\n",sef.sGridNo, sef.usItem, sef.ubOwner.i, sef.bLevel, sef.iSmokeEffectID, sef.uiPreRandomIndex );
 	MPDebugMsg(tmpMPDbgString);
 #endif
@@ -3575,7 +3578,7 @@ void recieveNEWSMOKEEFFECT (RPCParameters *rpcParameters)
 		if (!IsOurSoldier(pSoldier) && (pSoldier->bTeam != 1 || !is_server))
 		{
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf(tmpMPDbgString,"MP - recieveNEWSMOKEEFFECT ( sGridNo : %i , usItem : %i , ubOwner : %i , bLevel : %i , iSmokeEffectID : %i , uiPreRandomIndex : %i )\n",sef->sGridNo, sef->usItem, sef->ubOwner.i, sef->bLevel, sef->iSmokeEffectID, sef->uiPreRandomIndex );
 			MPDebugMsg(tmpMPDbgString);
 #endif
@@ -3615,7 +3618,7 @@ void send_gasdamage( SOLDIERTYPE * pSoldier, UINT16 usExplosiveClassID, INT16 sS
 	exp.uiPreRandomIndex = guiPreRandomIndex;
 
 #ifdef JA2BETAVERSION
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString, "MP - send_gasdamage ( ubSoldierID : %i , usExplosiveClassID : %i , sSubsequent : %i , recompileMoveCosts : %i , sWoundAmt : %i , sBreathAmt : %i , ubOwner : %i )\n", exp.ubSoldierID.i, usExplosiveClassID , sSubsequent , fRecompileMovementCosts , sWoundAmt , sBreathAmt , exp.ubAttackerID.i );
 	MPDebugMsg(tmpMPDbgString);
 #endif
@@ -3638,7 +3641,7 @@ void send_explosivedamage( SoldierID ubPerson, SoldierID ubOwner, INT32 sBombGri
 	exp.uiPreRandomIndex = guiPreRandomIndex;
 
 #ifdef JA2BETAVERSION
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString, "MP - send_explosivedamage ( ubPerson : %i , ubOwner : %i , sBombGridNo : %i , sWoundAmt : %i , sBreathAmt : %i , uiDist : %i , usItem : %i , sSubs : %i )\n", ubPerson.i, ubOwner.i, sBombGridNo , sWoundAmt , sBreathAmt , uiDist , usItem , sSubsequent );
 	MPDebugMsg(tmpMPDbgString);
 #endif
@@ -3662,7 +3665,7 @@ void recieveEXPLOSIONDAMAGE (RPCParameters *rpcParameters)
 		if (!IsOurSoldier(pSoldier) && (pSoldier->bTeam != 1 || !is_server))
 		{
 #ifdef JA2BETAVERSION
-			CHAR tmpMPDbgString[512];
+			CHAR8 tmpMPDbgString[512];
 			sprintf(tmpMPDbgString, "MP - recieveEXPLOSIONDAMAGE ( ubDamageFunc : %i , ubSoldierID : %i , ubAttackerID : %i , usItem : %i , usExplosiveClassID : %i , sWoundAmt : %i , sBreathAmt : %i , uiDist : %i , sSubs : %i , sBombGridNo : %i , uiPreRandomIndex : %i )\n", exp->ubDamageFunc , exp->ubSoldierID.i, exp->ubAttackerID.i, exp->usItem , exp->usExplosiveClassID , exp->sWoundAmt , exp->sBreathAmt , exp->uiDist , exp->sSubsequent , exp->sBombGridNo , exp->uiPreRandomIndex );
 			MPDebugMsg(tmpMPDbgString);
 #endif
@@ -3702,7 +3705,7 @@ void send_bullet(  BULLET * pBullet,UINT16 usHandItem )
 	netb.net_bullet=*pBullet;
 	netb.usHandItem=usHandItem;
 
-	//ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"Sent Bullet Id: %d",pBullet->iBullet);
+	//ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("Sent Bullet Id: %d"),pBullet->iBullet);
 
 	if(pBullet->ubTargetID < 20)netb.net_bullet.ubTargetID = netb.net_bullet.ubTargetID+ubID_prefix;
 	if(pBullet->ubFirerID < 20)netb.net_bullet.ubFirerID = netb.net_bullet.ubFirerID+ubID_prefix;
@@ -3733,7 +3736,7 @@ void recieveBULLET(RPCParameters *rpcParameters)
 #ifdef BETAVERSION
 	if (iBullet == -1)
 	{
-		ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"Failed to create bullet");
+		ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("Failed to create bullet"));
 	}
 #endif
 
@@ -3743,7 +3746,7 @@ void recieveBULLET(RPCParameters *rpcParameters)
 		
 	pBullet = GetBulletPtr( iBullet );
 
-	//ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"Created Bullet Id: %d",iBullet);		
+	//ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("Created Bullet Id: %d"),iBullet);		
 
 	pBullet->fCheckForRoof=netb->net_bullet.fCheckForRoof;
 	pBullet->qIncrX=netb->net_bullet.qIncrX;
@@ -3981,7 +3984,7 @@ void recieveDEATH (RPCParameters *rpcParameters)
 		pSoldier->usAnimState=50;
 
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"made merc corpse/dead");	
+			ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("made merc corpse/dead"));	
 		#endif
 
 		RemoveManAsTarget(pSoldier);
@@ -4001,7 +4004,7 @@ void recieveDEATH (RPCParameters *rpcParameters)
 	else
 	{
 		#ifdef JA2BETAVERSION
-			ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, L"merc already corpse/dead");	
+			ScreenMsg( FONT_YELLOW, MSG_MPSYSTEM, JA2_TEXT("merc already corpse/dead"));	
 		#endif
 
 		if (pSoldier->bTeam==1) 
@@ -4595,7 +4598,7 @@ void HandleClientConnectionLost()
 		iDisconnectedScreen = guiCurrentScreen;
 		SGPRect CenteringRect= {0 + xResOffset, 0 + yResOffset, SCREEN_WIDTH - xResOffset, SCREEN_HEIGHT - yResOffset };
 
-		if (wcscmp(gszDisconnectReason,L"")==0)
+		if (wcscmp(gszDisconnectReason,JA2_TEXT(""))==0)
 		{
 			UINT32 giMPHMessageBox = DoMessageBox(	MSG_BOX_BASIC_STYLE,	MPClientMessage[48],	guiCurrentScreen, ( UINT16 ) ( MSG_BOX_FLAG_OK | MSG_BOX_FLAG_USE_CENTERING_RECT ),disconnected_callback,	&CenteringRect );
 		}
@@ -4725,7 +4728,7 @@ void recieve_heal (RPCParameters *rpcParameters)
 	pSoldier->stats.bLife=data->bLife;
 
 #ifdef BETAVERSION
-	ScreenMsg( FONT_LTGREEN, MSG_INTERFACE, L"healing..." );
+	ScreenMsg( FONT_LTGREEN, MSG_INTERFACE, JA2_TEXT("healing...") );
 #endif
 }
 
@@ -4736,7 +4739,7 @@ void requestAIint(SOLDIERTYPE *pSoldier )
 	data.bteam=netbTeam;
 
 #ifdef BETAVERSION
-	ScreenMsg( FONT_LTGREEN, MSG_INTERFACE, L"interrupt requested" );
+	ScreenMsg( FONT_LTGREEN, MSG_INTERFACE, JA2_TEXT("interrupt requested") );
 #endif
 		
 	client->RPC("rINT",(const char*)&data, (int)sizeof(AIint)*8, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, UNASSIGNED_NETWORK_ID,0);
@@ -4751,7 +4754,7 @@ void awardINT (RPCParameters *rpcParameters)
 	StartInterrupt();
 
 #ifdef BETAVERSION
-	ScreenMsg( FONT_LTGREEN, MSG_INTERFACE, L"interrupt awarded" );
+	ScreenMsg( FONT_LTGREEN, MSG_INTERFACE, JA2_TEXT("interrupt awarded") );
 #endif
 
 }
@@ -5003,7 +5006,7 @@ void client_packet ( void )
 			{
 				case ID_DISCONNECTION_NOTIFICATION:
 					  // Connection lost normally
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_DISCONNECTION_NOTIFICATION");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_DISCONNECTION_NOTIFICATION"));
 					is_connected=false;
 					//OJW - 20081223
 					//Gracefully notify and disconnect the client
@@ -5014,19 +5017,19 @@ void client_packet ( void )
 					break;
 				case ID_ALREADY_CONNECTED:
 					// Connection lost normally
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_ALREADY_CONNECTED");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_ALREADY_CONNECTED"));
 					break;
 				case ID_REMOTE_DISCONNECTION_NOTIFICATION: // Server telling the clients of another client disconnecting gracefully.  You can manually broadcast this in a peer to peer enviroment if you want.
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_REMOTE_DISCONNECTION_NOTIFICATION");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_REMOTE_DISCONNECTION_NOTIFICATION"));
 					break;
 				case ID_REMOTE_CONNECTION_LOST: // Server telling the clients of another client disconnecting forcefully.  You can manually broadcast this in a peer to peer enviroment if you want.
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_REMOTE_CONNECTION_LOST");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_REMOTE_CONNECTION_LOST"));
 					break;
 				case ID_REMOTE_NEW_INCOMING_CONNECTION: // Server telling the clients of another client connecting.  You can manually broadcast this in a peer to peer enviroment if you want.
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_REMOTE_NEW_INCOMING_CONNECTION");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_REMOTE_NEW_INCOMING_CONNECTION"));
 					break;
 				case ID_CONNECTION_ATTEMPT_FAILED:
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_CONNECTION_ATTEMPT_FAILED");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_CONNECTION_ATTEMPT_FAILED"));
 					is_connected=false;
 					is_connecting=false;
 
@@ -5050,12 +5053,12 @@ void client_packet ( void )
 				case ID_NO_FREE_INCOMING_CONNECTIONS:
 					 // Sorry, the server is full.  I don't do anything here but
 					// A real app should tell the user
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_NO_FREE_INCOMING_CONNECTIONS");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_NO_FREE_INCOMING_CONNECTIONS"));
 					break;
 				case ID_CONNECTION_LOST:
 					// Couldn't deliver a reliable packet - i.e. the other system was abnormally
 					// terminated
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_CONNECTION_LOST");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_CONNECTION_LOST"));
 					
 					is_connected=false;
 					//OJW - 20081223
@@ -5066,7 +5069,7 @@ void client_packet ( void )
 					break;
 				case ID_CONNECTION_REQUEST_ACCEPTED:
 					// This tells the client they have connected
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_CONNECTION_REQUEST_ACCEPTED");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_CONNECTION_REQUEST_ACCEPTED"));
 					is_connected=true;
 					is_connecting=false;
 
@@ -5078,14 +5081,14 @@ void client_packet ( void )
 					break;
 				case ID_NEW_INCOMING_CONNECTION:
 					//tells server client has connected
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_NEW_INCOMING_CONNECTION");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_NEW_INCOMING_CONNECTION"));
 					break;
 				case ID_MODIFIED_PACKET:
 					// Cheater!
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"ID_MODIFIED_PACKET");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("ID_MODIFIED_PACKET"));
 					break;
 				default:
-					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, L"** a packet has been recieved for which i dont know what to do... **");
+					ScreenMsg( FONT_BEIGE, MSG_MPSYSTEM, JA2_TEXT("** a packet has been recieved for which i dont know what to do... **"));
 					break;
 			}
 
@@ -5250,7 +5253,7 @@ void StartScoreScreen( void )
 
 void ChatCallback( UINT8 ubResult )
 {
-	if (ubResult == MSG_BOX_RETURN_OK && wcscmp(gszChatBoxInputString,L"") > 0)
+	if (ubResult == MSG_BOX_RETURN_OK && wcscmp(gszChatBoxInputString,JA2_TEXT("")) > 0)
 	{
 		chat_msg cmsg;
 		wchar_t szPlayerName[30];

@@ -405,6 +405,12 @@ typedef struct SoldierID
 		if ( i > TOTAL_SOLDIERS || i < 0)
 			i = TOTAL_SOLDIERS;
 	}
+#ifndef _WIN32
+	// LP64 hosts use long for Lua integers and size_t.  Windows aliases these
+	// call sites to the 32-bit constructors above.
+	constexpr SoldierID(const long val) : SoldierID(static_cast<INT32>(val)) {}
+	constexpr SoldierID(const unsigned long val) : SoldierID(static_cast<UINT32>(val)) {}
+#endif
 
 	// No conversions from 8-bit integers!
 	SoldierID( const UINT8 ) = delete;
@@ -477,6 +483,9 @@ inline SoldierID operator-(const SoldierID lhs, const unsigned int rhs) { return
 inline SoldierID operator-(const SoldierID lhs, const UINT16 rhs) { return SoldierID{ static_cast<UINT16>(lhs.i - rhs) }; }
 inline SoldierID operator-(const int lhs, const SoldierID rhs) { return SoldierID{ static_cast<UINT16>(lhs - rhs.i) }; }
 inline SoldierID operator-(const unsigned int lhs, const SoldierID rhs) { return SoldierID{ static_cast<UINT16>(lhs - rhs.i) }; }
+#ifndef _WIN32
+inline std::size_t operator-(const std::size_t lhs, const SoldierID rhs) { return lhs - rhs.i; }
+#endif
 
 inline SoldierID operator+(const SoldierID lhs, const SoldierID rhs) { return SoldierID{ static_cast<UINT16>(lhs.i + rhs.i) }; }
 inline SoldierID operator+(const SoldierID lhs, const int rhs) { return SoldierID{ static_cast<UINT16>(lhs.i + rhs) }; }
@@ -484,6 +493,9 @@ inline SoldierID operator+(const SoldierID lhs, const unsigned int rhs) { return
 inline SoldierID operator+(const SoldierID lhs, const UINT16 rhs) { return SoldierID{ static_cast<UINT16>(lhs.i + rhs) }; }
 inline SoldierID operator+(const unsigned int lhs, const SoldierID rhs) { return SoldierID{ static_cast<UINT16>(lhs + rhs.i) }; }
 inline SoldierID operator+(const INT16 lhs, const SoldierID rhs) { return SoldierID{ static_cast<UINT16>(lhs + rhs.i) }; }
+#ifndef _WIN32
+inline std::size_t operator+(const std::size_t lhs, const SoldierID rhs) { return lhs + rhs.i; }
+#endif
 
 
 inline constexpr SoldierID NOBODY{ TOTAL_SOLDIERS };

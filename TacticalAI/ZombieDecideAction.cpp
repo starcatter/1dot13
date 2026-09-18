@@ -733,7 +733,7 @@ INT8 ZombieDecideActionRed(SOLDIERTYPE *pSoldier)
 						}
 
 						DebugAI( AI_MSG_INFO, pSoldier, String("wait for next turn"));
-						//ScreenMsg(FONT_GREEN, MSG_INTERFACE, L"[%d] wait for next turn", pSoldier->ubID);
+						//ScreenMsg(FONT_GREEN, MSG_INTERFACE, JA2_TEXT("[%d] wait for next turn"), pSoldier->ubID);
 						return AI_ACTION_NONE;
 					}
 				}
@@ -1023,7 +1023,7 @@ INT8 ZombieDecideActionBlack(SOLDIERTYPE *pSoldier)
 
 				if (BestStab.ubPossible && pSoldier->ubSoldierClass == SOLDIER_CLASS_ZOMBIE)
 				{
-					//ScreenMsg( FONT_LTGREEN, MSG_INTERFACE, L"[%d] can attack %s", pSoldier->ubID, MercPtrs[BestStab.ubOpponent]->GetName());
+					//ScreenMsg( FONT_LTGREEN, MSG_INTERFACE, JA2_TEXT("[%d] can attack %s"), pSoldier->ubID, MercPtrs[BestStab.ubOpponent]->GetName());
 					// now we KNOW FOR SURE that we will do something (stab, at least)
 					NPCDoesAct(pSoldier);
 					ubBestAttackAction = AI_ACTION_KNIFE_MOVE;

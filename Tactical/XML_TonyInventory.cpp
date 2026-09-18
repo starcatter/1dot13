@@ -100,7 +100,7 @@ static void DisplayAndLogParserError (const char *err, const XML_Char *name) {
 	sprintf(errorBuf, "XML Parser Error at line %d in file %s: %s %s", XML_GetCurrentLineNumber(parser), gFileName, err, name);
 	LiveMessage(errorBuf);
 	CHAR16 str[511];
-	swprintf( str, L"%S", errorBuf );
+	swprintf( str, JA2_TEXT("%S"), errorBuf );
     DisplayWrappedString( 10, y+=28, 630, 2, FONT12ARIAL, FONT_RED, str, FONT_BLACK, TRUE, LEFT_JUSTIFIED );
 	errorInData = true;
 }

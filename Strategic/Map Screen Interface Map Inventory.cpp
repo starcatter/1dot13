@@ -1,4 +1,5 @@
 	#include "Map Screen Interface Map Inventory.h"
+	#include "UtfConversion.h"
 	#include "Render Dirty.h"
 	#include "vobject.h"
 	#include "WCheck.h"
@@ -736,7 +737,7 @@ BOOLEAN RenderItemInPoolSlot( INT32 iCurrentSlot, INT32 iFirstSlotOnPage )
 
 	if( StringPixLength( sString, MAP_INVEN_NAME_FONT ) >= ( MAP_INVEN_SLOT_WIDTH ) )
 	{
-		ReduceStringLength( sString, ( INT16 )( MAP_INVEN_SLOT_WIDTH - StringPixLength( L" ...", MAP_INVEN_NAME_FONT ) ), MAP_INVEN_NAME_FONT );
+		ReduceStringLength( sString, ( INT16 )( MAP_INVEN_SLOT_WIDTH - StringPixLength( JA2_TEXT(" ..."), MAP_INVEN_NAME_FONT ) ), MAP_INVEN_NAME_FONT );
 	}
 
 	FindFontCenterCoordinates( (INT16)( 4 + MAP_INVENTORY_POOL_SLOT_START_X + ( ( MAP_INVEN_SPACE_BTWN_SLOTS ) * ( iCurrentSlot / MAP_INV_SLOT_COLS ) ) ),
@@ -778,7 +779,7 @@ BOOLEAN RenderItemInPoolSlot( INT32 iCurrentSlot, INT32 iFirstSlotOnPage )
 
 			INT32 iPrice = SellItem( pInventoryPoolList[iCurrentSlot + iFirstSlotOnPage].object, _KeyDown( SHIFT ) );
 
-			swprintf( sString, L"$%d", iPrice );
+			swprintf( sString, JA2_TEXT("$%d"), iPrice );
 
 			mprintf( sX, sY, sString );
 			sY += usFontHeight + 2;
@@ -797,7 +798,7 @@ BOOLEAN RenderItemInPoolSlot( INT32 iCurrentSlot, INT32 iFirstSlotOnPage )
 					SetFontForeground( FONT_ORANGE );
 					SetFontBackground( FONT_BLACK );
 
-					swprintf( sString, L"%-5.2f", dvalue_Gun );
+					swprintf( sString, JA2_TEXT("%-5.2f"), dvalue_Gun );
 					mprintf( sX, sY, sString );
 					sY += usFontHeight + 2;
 				}
@@ -807,7 +808,7 @@ BOOLEAN RenderItemInPoolSlot( INT32 iCurrentSlot, INT32 iFirstSlotOnPage )
 					SetFontForeground( FONT_LTKHAKI );
 					SetFontBackground( FONT_BLACK );
 
-					swprintf( sString, L"%-5.2f", dvalue_Armour );
+					swprintf( sString, JA2_TEXT("%-5.2f"), dvalue_Armour );
 					mprintf( sX, sY, sString );
 					sY += usFontHeight + 2;
 				}
@@ -817,7 +818,7 @@ BOOLEAN RenderItemInPoolSlot( INT32 iCurrentSlot, INT32 iFirstSlotOnPage )
 					SetFontForeground( FONT_LTBLUE );
 					SetFontBackground( FONT_BLACK );
 
-					swprintf( sString, L"%-5.2f", dvalue_Misc );
+					swprintf( sString, JA2_TEXT("%-5.2f"), dvalue_Misc );
 					mprintf( sX, sY, sString );
 					sY += usFontHeight + 2;
 				}
@@ -844,14 +845,14 @@ void UpdateHelpTextForInvnentoryStashSlots( void )
 		if( pInventoryPoolList[ iCounter + iFirstSlotOnPage ].object.exists() == true )
 		{
 			GetHelpTextForItem( pTemp , &( pInventoryPoolList[ iCounter + iFirstSlotOnPage ].object ), NULL );
-			swprintf( pStr, L"%s\n \n%s", pTemp, gzMiscItemStatsFasthelp[ 34 ] );
+			swprintf( pStr, JA2_TEXT("%s\n \n%s"), pTemp, gzMiscItemStatsFasthelp[ 34 ] );
 			SetRegionFastHelpText( &(MapInventoryPoolSlots[ iCounter ] ), pStr );
 
 			/*
 			// set text for current item
 			if( pInventoryPoolList[ iCounter + iFirstSlotOnPage ].object.usItem == MONEY )
 			{
-				swprintf( pStr, L"$%ld", pInventoryPoolList[ iCounter + iFirstSlotOnPage ].object[0]->data.money.uiMoneyAmount );
+				swprintf( pStr, JA2_TEXT("$%ld"), pInventoryPoolList[ iCounter + iFirstSlotOnPage ].object[0]->data.money.uiMoneyAmount );
 				SetRegionFastHelpText( &(MapInventoryPoolSlots[ iCounter ]), pStr );
 			}
 			else
@@ -863,7 +864,7 @@ void UpdateHelpTextForInvnentoryStashSlots( void )
 		else
 		{
 			//OK, for each item, set dirty text if applicable!
-			SetRegionFastHelpText( &(MapInventoryPoolSlots[ iCounter ]), L"" );
+			SetRegionFastHelpText( &(MapInventoryPoolSlots[ iCounter ]), JA2_TEXT("") );
 		}
 	}
 
@@ -1114,7 +1115,7 @@ void SaveSeenAndUnseenItems( void )
 		//save the items to file (skipping all checks of AddWorldItemsToUnLoadedSector(), allready done here!, also we do not delete the file before we overwrite)
 		if ( !SaveWorldItemsToTempItemFile( sSelMapX, sSelMapY, ( INT8 ) iCurrentMapSectorZ, uiNumberOfUnSeenItems + iExistingItems, worldItemsSaveList ) )//dnl ch75 271013
 		{
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Error: Could not save %d seen and %d unseen items to disc! Please Report.", iExistingItems, uiNumberOfUnSeenItems );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Error: Could not save %d seen and %d unseen items to disc! Please Report."), iExistingItems, uiNumberOfUnSeenItems );
 			return;
 		}
 	}
@@ -2160,7 +2161,7 @@ void BuildStashForSelectedSector( INT16 sMapX, INT16 sMapY, INT16 sMapZ )
 				// dont skip it, we reuse this loop to create a complete list of all items
 				fWorldItems.push_back( gWorldItems[ i ] );
 #ifdef _DEBUG
-				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"The %d item in the list is hidden or does not exist.", i );
+				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("The %d item in the list is hidden or does not exist."), i );
 #endif
 			}
 		}
@@ -2210,7 +2211,7 @@ void BuildStashForSelectedSector( INT16 sMapX, INT16 sMapY, INT16 sMapZ )
 			// TEST!!  If the item exists, and is NOT VALID, report it
 			if( fWorldItems[i].fExists &&  fWorldItems[ i ].object.usItem > gMAXITEMS_READ )
 			{
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"The %d item in the list is NOT valid (ID%d). Please send save.  DF 1.", i, fWorldItems[i].object.usItem );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("The %d item in the list is NOT valid (ID%d). Please send save.  DF 1."), i, fWorldItems[i].object.usItem );
 			}
 
 			if( IsMapScreenWorldItemVisibleInMapInventory( &fWorldItems[ i ] ) )
@@ -2246,7 +2247,7 @@ void BuildStashForSelectedSector( INT16 sMapX, INT16 sMapY, INT16 sMapZ )
 				// dont skip it, we reuse this loop to create a complete list of existing items
 				fNumTotal++;
 #ifdef _DEBUG
-				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"The %d item in the list does not exist.", i );
+				//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("The %d item in the list does not exist."), i );
 #endif
 			}
 		}
@@ -2282,9 +2283,9 @@ void BuildStashForSelectedSector( INT16 sMapX, INT16 sMapY, INT16 sMapZ )
 	if( fNumFlagsSet > 0 )
 	{
 #ifndef _DEBUG
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Item with invalid gridno doesnt have flag set:# %d, this was corrected.", fNumFlagsSet );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Item with invalid gridno doesnt have flag set:# %d, this was corrected."), fNumFlagsSet );
 #else
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Item with invalid gridno doesnt have flag set:# %d, this was not corrected! Figure out why.", fNumFlagsSet );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Item with invalid gridno doesnt have flag set:# %d, this was not corrected! Figure out why."), fNumFlagsSet );
 #endif
 	}
 
@@ -3018,7 +3019,7 @@ extern void EquipmentListMenu( );
 
 void TemplateNameInputCallBack(UINT8 ubResult)
 {
-	if (ubResult == MSG_BOX_RETURN_OK && wcscmp(gszMsgBoxInputString, L"") > 0)
+	if (ubResult == MSG_BOX_RETURN_OK && wcscmp(gszMsgBoxInputString, JA2_TEXT("")) > 0)
 	{
 		SOLDIERTYPE* pSoldier = gCharactersList[bSelectedInfoChar].usSolID;
 		if (pSoldier)
@@ -3185,7 +3186,7 @@ void DisplayPagesForMapInventoryPool( void )
 	SetFontDestBuffer( guiSAVEBUFFER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
 
 	// grab current and last pages
-	swprintf( sString, L"%d / %d", iCurrentInventoryPoolPage + 1, iLastInventoryPoolPage + 1 );
+	swprintf( sString, JA2_TEXT("%d / %d"), iCurrentInventoryPoolPage + 1, iLastInventoryPoolPage + 1 );
 
 	// grab centered coords
 	FindFontCenterCoordinates(MAPINV_PAGE_X, MAPINV_PAGE_Y, MAP_INVENTORY_POOL_PAGE_WIDTH ,MAP_INVENTORY_POOL_PAGE_HEIGHT ,sString , MAP_SCREEN_FONT, &sX, &sY);
@@ -3239,7 +3240,7 @@ void DrawNumberOfIventoryPoolItems( void )
 	iNumberOfItems = GetTotalNumberOfItemsInSectorStash( );
 
 	// get number of items
-	swprintf( sString, L"%d", iNumberOfItems );
+	swprintf( sString, JA2_TEXT("%d"), iNumberOfItems );
 
 	// set font stuff
 	SetFont( COMPFONT );
@@ -3292,7 +3293,7 @@ void DisplayCurrentSector( void )
 	CHAR16 sString[ 32 ];
 	INT16 sX, sY;
 
-	swprintf( sString, L"%s%s%s", pMapVertIndex[ sSelMapY ], pMapHortIndex[ sSelMapX ], pMapDepthIndex[ iCurrentMapSectorZ ] );
+	swprintf( sString, JA2_TEXT("%s%s%s"), pMapVertIndex[ sSelMapY ], pMapHortIndex[ sSelMapX ], pMapDepthIndex[ iCurrentMapSectorZ ] );
 
 	// set font stuff
 	SetFont( COMPFONT );
@@ -3554,7 +3555,7 @@ void DrawTextOnSectorInventory( void )
 	swprintf( sString, zMarksMapScreenText[ 11 ] );
 
 	if(gGameExternalOptions.fEnableInventoryPoolQ && gInventoryPoolIndex != '0')//dnl ch51 081009
-		swprintf(sString, L"Inventory Pool %c", gInventoryPoolIndex);
+		swprintf(sString, JA2_TEXT("Inventory Pool %c"), gInventoryPoolIndex);
 
 	
 	SetFontDestBuffer( guiSAVEBUFFER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, FALSE );
@@ -3766,7 +3767,7 @@ void CheckGridNoOfItemsInMapScreenMapInventory()
 #ifdef JA2BETAVERSION
 	if( uiNumFlagsNotSet > 0 )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Item with invalid gridno doesnt have flag set.", uiNumFlagsNotSet );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Item with invalid gridno doesnt have flag set."), uiNumFlagsNotSet );
 	}
 #endif
 }
@@ -4149,7 +4150,7 @@ BOOLEAN	DisplaySectorItemsInfo(void)//dnl ch51 090913 //dnl ch75 021113
 		}
 //SendFmtMsg("Item%.4d:%4d %d %.4X %.4X %.2X %.2X %.2X %d", iCounter, pWorldItem->bVisible, pWorldItem->fExists, pWorldItem->sGridNo, pWorldItem->usFlags, pWorldItem->object[0]->data.bTrap, pWorldItem->object[0]->data.fUsed, pWorldItem->object[0]->data.misc.usBombItem, pWorldItem->object.usItem);
 	}
-	ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%d unseen items and %d boobytraps left with %d/%d bombs.", iItemCount, iItemTraps, iItemBombs, guiNumWorldBombs);
+	ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%d unseen items and %d boobytraps left with %d/%d bombs."), iItemCount, iItemTraps, iItemBombs, guiNumWorldBombs);
 	return(TRUE);
 }
 //dnl ch51 081009 finish
@@ -4662,7 +4663,7 @@ void AnimateZoomInventory ( UINT16 iLocationInPool, UINT16 iCounter, INT32 iStar
 		wcscpy( sString, ShortItemNames[ pInventoryPoolList[ iLocationInPool ].object.usItem ] );
 		if( StringPixLength( sString, MAP_INVEN_NAME_FONT ) >= ( MAP_INVEN_SLOT_WIDTH ) )
 		{
-			ReduceStringLength( sString, ( INT16 )( MAP_INVEN_SLOT_WIDTH - StringPixLength( L" ...", MAP_INVEN_NAME_FONT ) ), MAP_INVEN_NAME_FONT );
+			ReduceStringLength( sString, ( INT16 )( MAP_INVEN_SLOT_WIDTH - StringPixLength( JA2_TEXT(" ..."), MAP_INVEN_NAME_FONT ) ), MAP_INVEN_NAME_FONT );
 		}
 		INT16 iFontWidth = 0;
 		INT16 iFontHeight = 0;
@@ -5016,13 +5017,13 @@ void SortSectorInventoryEmptyLBE() {
 						int dropCnt = 0;
 
 						for (auto lbeInvIter = lbePtr->inv.begin(); lbeInvIter != lbePtr->inv.end(); lbeInvIter++) {
-							OBJECTTYPE * LBEStack = lbeInvIter._Ptr;
+							OBJECTTYPE * LBEStack = &*lbeInvIter;
 							dropCnt += LBEStack->ubNumberOfObjects;
 
 							AutoPlaceObjectToWorld(pSoldier, LBEStack, TRUE);
 							if (LBEStack != NULL)
 							{
-								DeleteObj(lbeInvIter._Ptr);
+								DeleteObj(&*lbeInvIter);
 							}
 						}
 
@@ -5221,7 +5222,7 @@ void SortSectorInventoryStackAndMerge(bool ammoOnly )
 // Flugente: on a key press, we loop over each team members' inventory and exchange it with world items that have a higher status
 // however, we ignore items that have inseparable attachments
 // the goal is to simulate the player manually changing items, as that is rather tedious
-BOOL GetBetterObject_InventoryPool(UINT16 usItem, INT16 status, UINT32& arLoop, UINT8& arIndex)
+BOOLEAN GetBetterObject_InventoryPool(UINT16 usItem, INT16 status, UINT32& arLoop, UINT8& arIndex)
 {
 	OBJECTTYPE* pBestObj = NULL;
 
@@ -5268,7 +5269,7 @@ BOOL GetBetterObject_InventoryPool(UINT16 usItem, INT16 status, UINT32& arLoop, 
 }
 
 // Flugente: tell us the position of the first inventory item with a fitting calibre and ammotype
-BOOL GetFittingAmmo_InventoryPool( UINT8 usCalibre, UINT8 usAmmoType, UINT32& arLoop )
+BOOLEAN GetFittingAmmo_InventoryPool( UINT8 usCalibre, UINT8 usAmmoType, UINT32& arLoop )
 {
 	for ( UINT32 uiLoop = 0; uiLoop < pInventoryPoolList.size( ); ++uiLoop )
 	{
@@ -5544,7 +5545,7 @@ void CreateMapInventoryFilterMenu( )
 	swprintf( pStr, gzMapInventoryFilterOptions[ 0 ] );
 	// Add option: "SHOW ALL"
 	uiFlags = IC_MAPFILTER_ALL;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterSet, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterSet, uiFlags ) );
 	if (guiMapInventoryFilter == IC_MAPFILTER_ALL)
 	{
 		// Set this option off.
@@ -5556,7 +5557,7 @@ void CreateMapInventoryFilterMenu( )
 	if (guiMapInventoryFilter & IC_MAPFILTER_GUN)
 	{
 		// Hide guns
-		swprintf( pStr, L"%s *", gzMapInventoryFilterOptions[ 1 ]  );
+		swprintf( pStr, JA2_TEXT("%s *"), gzMapInventoryFilterOptions[ 1 ]  );
 	}
 	else
 	{
@@ -5564,13 +5565,13 @@ void CreateMapInventoryFilterMenu( )
 		swprintf( pStr, gzMapInventoryFilterOptions[ 1 ]  );
 	}
 	uiFlags = IC_MAPFILTER_GUN;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
 	gMapInventoryFilterPopup->addOption( *pOption );
 
 	if (guiMapInventoryFilter & IC_MAPFILTER_AMMO)
 	{
 		// Hide guns
-		swprintf( pStr, L"%s *", gzMapInventoryFilterOptions[ 2 ]  );
+		swprintf( pStr, JA2_TEXT("%s *"), gzMapInventoryFilterOptions[ 2 ]  );
 	}
 	else
 	{
@@ -5578,13 +5579,13 @@ void CreateMapInventoryFilterMenu( )
 		swprintf( pStr, gzMapInventoryFilterOptions[ 2 ] );
 	}
 	uiFlags = IC_MAPFILTER_AMMO;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
 	gMapInventoryFilterPopup->addOption( *pOption );
 
 	if (guiMapInventoryFilter & IC_MAPFILTER_EXPLOSV)
 	{
 		// Hide guns
-		swprintf( pStr, L"%s *", gzMapInventoryFilterOptions[ 3 ] );
+		swprintf( pStr, JA2_TEXT("%s *"), gzMapInventoryFilterOptions[ 3 ] );
 	}
 	else
 	{
@@ -5592,13 +5593,13 @@ void CreateMapInventoryFilterMenu( )
 		swprintf( pStr, gzMapInventoryFilterOptions[ 3 ] );
 	}
 	uiFlags = IC_MAPFILTER_EXPLOSV;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
 	gMapInventoryFilterPopup->addOption( *pOption );
 
 	if (guiMapInventoryFilter & IC_MAPFILTER_MELEE)
 	{
 		// Hide guns
-		swprintf( pStr, L"%s *", gzMapInventoryFilterOptions[ 4 ] );
+		swprintf( pStr, JA2_TEXT("%s *"), gzMapInventoryFilterOptions[ 4 ] );
 	}
 	else
 	{
@@ -5606,13 +5607,13 @@ void CreateMapInventoryFilterMenu( )
 		swprintf( pStr, gzMapInventoryFilterOptions[ 4 ] );
 	}
 	uiFlags = IC_MAPFILTER_MELEE;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
 	gMapInventoryFilterPopup->addOption( *pOption );
 
 	if (guiMapInventoryFilter & IC_MAPFILTER_ARMOR)
 	{
 		// Hide guns
-		swprintf( pStr, L"%s *", gzMapInventoryFilterOptions[ 5 ] );
+		swprintf( pStr, JA2_TEXT("%s *"), gzMapInventoryFilterOptions[ 5 ] );
 	}
 	else
 	{
@@ -5620,13 +5621,13 @@ void CreateMapInventoryFilterMenu( )
 		swprintf( pStr, gzMapInventoryFilterOptions[ 5 ] );
 	}
 	uiFlags = IC_MAPFILTER_ARMOR;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
 	gMapInventoryFilterPopup->addOption( *pOption );
 
 	if (guiMapInventoryFilter & IC_MAPFILTER_LBE)
 	{
 		// Hide guns
-		swprintf( pStr, L"%s *", gzMapInventoryFilterOptions[ 6 ] );
+		swprintf( pStr, JA2_TEXT("%s *"), gzMapInventoryFilterOptions[ 6 ] );
 	}
 	else
 	{
@@ -5634,13 +5635,13 @@ void CreateMapInventoryFilterMenu( )
 		swprintf( pStr, gzMapInventoryFilterOptions[ 6 ] );
 	}
 	uiFlags = IC_MAPFILTER_LBE;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
 	gMapInventoryFilterPopup->addOption( *pOption );
 
 	if (guiMapInventoryFilter & IC_MAPFILTER_KIT)
 	{
 		// Hide guns
-		swprintf( pStr, L"%s *", gzMapInventoryFilterOptions[ 7 ] );
+		swprintf( pStr, JA2_TEXT("%s *"), gzMapInventoryFilterOptions[ 7 ] );
 	}
 	else
 	{
@@ -5648,13 +5649,13 @@ void CreateMapInventoryFilterMenu( )
 		swprintf( pStr, gzMapInventoryFilterOptions[ 7 ] );
 	}
 	uiFlags = IC_MAPFILTER_KIT;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
 	gMapInventoryFilterPopup->addOption( *pOption );
 
 	if (guiMapInventoryFilter & IC_MAPFILTER_MISC)
 	{
 		// Hide guns
-		swprintf( pStr, L"%s *", gzMapInventoryFilterOptions[ 8 ] );
+		swprintf( pStr, JA2_TEXT("%s *"), gzMapInventoryFilterOptions[ 8 ] );
 	}
 	else
 	{
@@ -5662,13 +5663,13 @@ void CreateMapInventoryFilterMenu( )
 		swprintf( pStr, gzMapInventoryFilterOptions[ 8 ] );
 	}
 	uiFlags = IC_MAPFILTER_MISC;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterToggle, uiFlags ) );
 	gMapInventoryFilterPopup->addOption( *pOption );
 
 	swprintf( pStr, gzMapInventoryFilterOptions[ 9 ] );
 	// Add option: "HIDE ALL"
 	uiFlags = 0;
-	pOption = new POPUP_OPTION(std::wstring( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterSet, uiFlags ) );
+	pOption = new POPUP_OPTION(ja2::text::Utf16String( pStr ), new popupCallbackFunction<void,UINT32>( &MapInventoryFilterMenuPopup_FilterSet, uiFlags ) );
 	if (guiMapInventoryFilter == 0)
 	{
 		// Set this option off.
@@ -6009,7 +6010,7 @@ void HandleItemCooldownFunctions( OBJECTTYPE* itemStack, INT32 deltaSeconds, BOO
 			FLOAT newguntemperature = max(0.0f, guntemperature - tickspassed * cooldownfactor );	// ... calculate new temperature ...
 
 #if JA2TESTVERSION
-			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"World: Item temperature lowered from %4.2f to %4.2f", guntemperature, newguntemperature);
+			ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("World: Item temperature lowered from %4.2f to %4.2f"), guntemperature, newguntemperature);
 #endif
 
 			(*itemStack)[i]->data.bTemperature = newguntemperature;			// ... set new temperature
@@ -6030,7 +6031,7 @@ void HandleItemCooldownFunctions( OBJECTTYPE* itemStack, INT32 deltaSeconds, BOO
 					(*iter)[0]->data.bTemperature = newtemperature;				// ... set new temperature
 
 #if JA2TESTVERSION
-					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"World: Item temperature lowered from %4.2f to %4.2f", temperature, newtemperature);
+					ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("World: Item temperature lowered from %4.2f to %4.2f"), temperature, newtemperature);
 #endif
 
 					// we assume that there can exist only 1 underbarrel weapon per gun

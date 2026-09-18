@@ -137,17 +137,17 @@ void testMXLWriter()
 {
 	//XMLWriter<char> xmlw;
 	XMLWriter xmlw;
-	//xmlw.openNode(L"root");
+	//xmlw.openNode(JA2_TEXT("root"));
 	xmlw.openNode("root");
 	xmlw.addAttributeToNextValue("attr1",10);
 	xmlw.addAttributeToNextValue("attr2","string");
-	//xmlw.AddValue(L"val1",10);
+	//xmlw.AddValue(JA2_TEXT("val1"),10);
 	xmlw.addValue("val1",10);
 
 	xmlw.addAttributeToNextValue("node_attr",17);
 	xmlw.addComment("bbb -->\n <a> comment</a> <!-- aaa");
 	xmlw.openNode("test");
-	//xmlw.addValue(L"val2",10.5);
+	//xmlw.addValue(JA2_TEXT("val2"),10.5);
 	xmlw.addValue("val2",10.5);
 	xmlw.closeNode();
 	xmlw.closeNode();

@@ -33,6 +33,7 @@
 // of trained troops.
 #include "SkillCheck.h"
 #include "Soldier Control.h"
+#include <cmath>
 #include "soldier profile type.h"
 
 #define SIZE_OF_MILITIA_COMPLETED_TRAINING_LIST 50
@@ -897,7 +898,7 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Militia2");
 		}
 		else
 		{
-			swprintf( sString, L"%s%d. %s", pMilitiaConfirmStrings[0], giTotalCostOfTraining, pMilitiaConfirmStrings[1] );
+			swprintf( sString, JA2_TEXT("%s%d. %s"), pMilitiaConfirmStrings[0], giTotalCostOfTraining, pMilitiaConfirmStrings[1] );
 		}
 
 		// if we are in mapscreen, make a pop up
@@ -1072,7 +1073,7 @@ void PayMilitiaTrainingYesNoBoxCallback( UINT8 bExitValue )
 		{
 			StopTimeCompression();
 
-			swprintf( sString, L"%s", pMilitiaConfirmStrings[ 2 ] );
+			swprintf( sString, JA2_TEXT("%s"), pMilitiaConfirmStrings[ 2 ] );
 			DoMapMessageBox( MSG_BOX_BASIC_STYLE, sString, MAP_SCREEN, MSG_BOX_FLAG_OK, CantTrainMilitiaOkBoxCallback );
 		}
 	}
@@ -1736,7 +1737,7 @@ void BuildMilitiaPromotionsString( STR16 str )
 {
 	CHAR16 pStr[256];
 	BOOLEAN fAddSpace = FALSE;
-	swprintf( str, L"" );
+	swprintf( str, JA2_TEXT("") );
 
 	if( !gbMilitiaPromotions )
 	{
@@ -1758,7 +1759,7 @@ void BuildMilitiaPromotionsString( STR16 str )
 	{
 		if( fAddSpace )
 		{
-			wcscat( str, L" " );
+			wcscat( str, JA2_TEXT(" ") );
 		}
 		swprintf( pStr, gzLateLocalizedString[23], gbGreenToRegPromotions );
 		wcscat( str, pStr );
@@ -1768,7 +1769,7 @@ void BuildMilitiaPromotionsString( STR16 str )
 	{
 		if( fAddSpace )
 		{
-			wcscat( str, L" " );
+			wcscat( str, JA2_TEXT(" ") );
 		}
 		wcscat( str, gzLateLocalizedString[30] );
 		fAddSpace = TRUE;
@@ -1778,7 +1779,7 @@ void BuildMilitiaPromotionsString( STR16 str )
 	{
 		if( fAddSpace )
 		{
-			wcscat( str, L" " );
+			wcscat( str, JA2_TEXT(" ") );
 		}
 		swprintf( pStr, gzLateLocalizedString[24], gbRegToElitePromotions );
 		wcscat( str, pStr );
@@ -1787,7 +1788,7 @@ void BuildMilitiaPromotionsString( STR16 str )
 	{
 		if( fAddSpace )
 		{
-			wcscat( str, L" " );
+			wcscat( str, JA2_TEXT(" ") );
 		}
 		wcscat( str, gzLateLocalizedString[31] );
 		fAddSpace = TRUE;
@@ -2126,7 +2127,7 @@ FLOAT CalcHourlyVolunteerGain()
 		}
 	}
 
-	FLOAT hourlygain = log( 1.0 + loyalpopulation * populationmodifier * gGameExternalOptions.dMilitiaVolunteerGainFactorHourly);
+	FLOAT hourlygain = std::log( 1.0 + loyalpopulation * populationmodifier * gGameExternalOptions.dMilitiaVolunteerGainFactorHourly);
 
 	return hourlygain;
 }
@@ -2331,9 +2332,9 @@ void AddIntel( FLOAT aValue, BOOLEAN aDoMessage )
 	if ( aDoMessage )
 	{
 		if ( aValue >= 0.0f )
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Gained %.2f intel.", aValue );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Gained %.2f intel."), aValue );
 		else
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Spent %.2f intel.", -aValue );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Spent %.2f intel."), -aValue );
 	}
 
 	if ( !IsBookMarkSet( INTELMARKET_BOOKMARK ) )

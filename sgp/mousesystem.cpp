@@ -1457,7 +1457,7 @@ void DisplayFastHelp( MOUSE_REGION *region )
 INT16 GetWidthOfString(const STR16 inputString)
 {
 	INT16 width = 0;
-	CHAR16 stringBuffer[256] = L"";
+	CHAR16 stringBuffer[256] = JA2_TEXT("");
 	INT32 bufferIndex = 0;
 	bool isBold = false;
 
@@ -1472,8 +1472,8 @@ INT16 GetWidthOfString(const STR16 inputString)
 			// if the lines don't fit the screen the last line is ...
 			if ((lineCounter + 2) * (iFontHeight + 1) > (SCREEN_HEIGHT - 10)) {
 				lineWidth = isTooltipScalingEnabled()
-					? WinFontStringPixLength(L"...", TOOLTIP_IFONT)
-					: StringPixLength(L"...", FONT10ARIAL);
+					? WinFontStringPixLength(JA2_TEXT("..."), TOOLTIP_IFONT)
+					: StringPixLength(JA2_TEXT("..."), FONT10ARIAL);
 				if (width < lineWidth) {
 					width = lineWidth;
 				}
@@ -1527,7 +1527,7 @@ void DisplayHelpTokenizedString(const STR16 inputString, INT16 sX, INT16 sY)
 
 	INT32 fontHeight = GetScaledFontHeight();
 
-	CHAR16 stringBuffer[256] = L"";
+	CHAR16 stringBuffer[256] = JA2_TEXT("");
 	INT32 bufferIndex = 0;
 	bool isBold = false;
 
@@ -1540,11 +1540,11 @@ void DisplayHelpTokenizedString(const STR16 inputString, INT16 sX, INT16 sY)
 			// if the lines don't fit the screen the last line is ...
 			if ((lineCounter + 2) * (fontHeight + 1) > (SCREEN_HEIGHT - 10)) {
 				if (isTooltipScalingEnabled()) {
-					PrintWinFont(FontDestBuffer, TOOLTIP_IFONT, sX, sY + lineCounter * (fontHeight + 1), L"...");
+					PrintWinFont(FontDestBuffer, TOOLTIP_IFONT, sX, sY + lineCounter * (fontHeight + 1), JA2_TEXT("..."));
 				}
 				else {
 					SetFont(FONT10ARIAL);
-					mprintf(sX, sY + lineCounter * (fontHeight + 1), L"...");
+					mprintf(sX, sY + lineCounter * (fontHeight + 1), JA2_TEXT("..."));
 				}
 				break;
 			}
@@ -1569,14 +1569,14 @@ void DisplayHelpTokenizedString(const STR16 inputString, INT16 sX, INT16 sY)
 				if (isTooltipScalingEnabled()) {
 					// the font color is set on font initialization
 					INT32 iFont = isBold ? TOOLTIP_IFONT_BOLD : TOOLTIP_IFONT;
-					PrintWinFont(FontDestBuffer, iFont, sX + xDelta, sY + lineCounter * (fontHeight + 1), L"%s", stringBuffer);
+					PrintWinFont(FontDestBuffer, iFont, sX + xDelta, sY + lineCounter * (fontHeight + 1), JA2_TEXT("%s"), stringBuffer);
 					xDelta += WinFontStringPixLength(stringBuffer, iFont);
 				}
 				else {
 					INT32 iFont = isBold ? FONT10ARIALBOLD : FONT10ARIAL;
 					SetFont(iFont);
 					SetFontForeground(isBold ? 146 : FONT_BEIGE);
-					mprintf(sX + xDelta, sY + lineCounter * (fontHeight + 1), L"%s", stringBuffer);
+					mprintf(sX + xDelta, sY + lineCounter * (fontHeight + 1), JA2_TEXT("%s"), stringBuffer);
 					xDelta += StringPixLength(stringBuffer, iFont);
 				}
 				bufferIndex = 0;
@@ -1649,7 +1649,7 @@ INT16 GetWidthOfString( const STR16 pStringA )
 	wcscpy( pString, pStringA );
 
 	// tokenize
-	pToken = wcstok( pString, L"\n" );
+	pToken = wcstok( pString, JA2_TEXT("\n") );
 
 	while( pToken != NULL )
 	{
@@ -1658,7 +1658,7 @@ INT16 GetWidthOfString( const STR16 pStringA )
 			sWidth = StringPixLength( pToken, ghTinyMonoFont );
 		}
 
-		pToken = wcstok( NULL, L"\n" );
+		pToken = wcstok( NULL, JA2_TEXT("\n") );
 	}
 
 	return( sWidth );
@@ -1706,7 +1706,7 @@ void DisplayHelpTokenizedString( const STR16 pStringA, INT16 sX, INT16 sY )
 	wcscpy( pString, pStringA );
 
 	// tokenize
-	pToken = wcstok( pString, L"\n" );
+	pToken = wcstok( pString, JA2_TEXT("\n") );
 
 	while( pToken != NULL )
 	{
@@ -1725,9 +1725,9 @@ void DisplayHelpTokenizedString( const STR16 pStringA, INT16 sX, INT16 sY )
 				SetFont( ghTinyMonoFont );
 				SetFontForeground( 2 );
 			}
-			mprintf( sX + uiCursorXPos, sY + iCounter * (GetFontHeight(ghTinyMonoFont)+1), L"%c", pToken[ i ] );
+			mprintf( sX + uiCursorXPos, sY + iCounter * (GetFontHeight(ghTinyMonoFont)+1), JA2_TEXT("%c"), pToken[ i ] );
 		}
-		pToken = wcstok( NULL, L"\n" );
+		pToken = wcstok( NULL, JA2_TEXT("\n") );
 		iCounter++;
 	}
 }

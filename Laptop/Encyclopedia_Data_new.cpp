@@ -724,9 +724,9 @@ BOOLEAN CreateData( INT16 newID )
 			}
 			else
 			{//read .xml
-				if( !Loc::GetString(Loc::AIM_BIOGRAPHY, L"Bio", newID, szMercInfo, 400) )
+				if( !Loc::GetString(Loc::AIM_BIOGRAPHY, JA2_TEXT("Bio"), newID, szMercInfo, 400) )
 					szMercInfo[0] = 0;
-				if( !Loc::GetString(Loc::AIM_BIOGRAPHY, L"Add", newID, szMercInfo2, 160) )
+				if( !Loc::GetString(Loc::AIM_BIOGRAPHY, JA2_TEXT("Add"), newID, szMercInfo2, 160) )
 					szMercInfo2[0] = 0;
 			}
 			//print
@@ -734,8 +734,8 @@ BOOLEAN CreateData( INT16 newID )
 			//if( gstEncyclopediaDataEntry.uiTextPage == 0 && (strLen < sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16)) )
 			//{//both fit on one page
 			//	wcscpy_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), szMercInfo );
-			//	wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), L"                                                                               " );
-			//	wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), L"                                                                               " );
+			//	wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), JA2_TEXT("                                                                               ") );
+			//	wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), JA2_TEXT("                                                                               ") );
 			//	wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), szMercInfo2 );
 			//}
 			//else
@@ -749,7 +749,7 @@ BOOLEAN CreateData( INT16 newID )
 			}
 			else if( gstEncyclopediaDataEntry.uiTextPage == 2 )
 			{//2: debug text misc flag
-				STR16 dbgText = { L"PROFILE=%d, FLAG_RECRUITED=%d, FLAG_HAVESEENCREATURE=%d, FLAG_FORCENPCQUOTE=%d, FLAG_WOUNDEDBYPLAYER=%d, FLAG_TEMP_NPC_QUOTE_DATA_EXISTS=%d, FLAG_SAID_HOSTILE_QUOTE=%d, FLAG_EPCACTIVE=%d, FLAG_ALREADY_USED_ITEMS=%d" }; 
+				STR16 dbgText = { JA2_TEXT("PROFILE=%d, FLAG_RECRUITED=%d, FLAG_HAVESEENCREATURE=%d, FLAG_FORCENPCQUOTE=%d, FLAG_WOUNDEDBYPLAYER=%d, FLAG_TEMP_NPC_QUOTE_DATA_EXISTS=%d, FLAG_SAID_HOSTILE_QUOTE=%d, FLAG_EPCACTIVE=%d, FLAG_ALREADY_USED_ITEMS=%d") }; 
 				swprintf( gstEncyclopediaDataEntry.sDescr, dbgText, newID,
 					gMercProfiles[newID].ubMiscFlags & PROFILE_MISC_FLAG_RECRUITED,
 					gMercProfiles[newID].ubMiscFlags & PROFILE_MISC_FLAG_HAVESEENCREATURE,
@@ -762,7 +762,7 @@ BOOLEAN CreateData( INT16 newID )
 			}
 			else if( gstEncyclopediaDataEntry.uiTextPage == 3 )
 			{//3: debug text misc flag2
-				STR16 dbgText = { L"PROFILE=%d, FLAG2_DONT_ADD_TO_SECTOR=%d, FLAG2_LEFT_COUNTRY=%d, FLAG2_BANDAGED_TODAY=%d, FLAG2_SAID_FIRSTSEEN_QUOTE=%d, FLAG2_NEEDS_TO_SAY_HOSTILE_QUOTE=%d, FLAG2_MARRIED_TO_HICKS=%d, FLAG2_ASKED_BY_HICKS=%d, FLAG2_MERC_GEARKIT_UNPAID=%d" }; 
+				STR16 dbgText = { JA2_TEXT("PROFILE=%d, FLAG2_DONT_ADD_TO_SECTOR=%d, FLAG2_LEFT_COUNTRY=%d, FLAG2_BANDAGED_TODAY=%d, FLAG2_SAID_FIRSTSEEN_QUOTE=%d, FLAG2_NEEDS_TO_SAY_HOSTILE_QUOTE=%d, FLAG2_MARRIED_TO_HICKS=%d, FLAG2_ASKED_BY_HICKS=%d, FLAG2_MERC_GEARKIT_UNPAID=%d") }; 
 				swprintf( gstEncyclopediaDataEntry.sDescr, dbgText, newID,
 					gMercProfiles[newID].ubMiscFlags2 & PROFILE_MISC_FLAG2_DONT_ADD_TO_SECTOR,
 					gMercProfiles[newID].ubMiscFlags2 & PROFILE_MISC_FLAG2_LEFT_COUNTRY,
@@ -775,7 +775,7 @@ BOOLEAN CreateData( INT16 newID )
 			}
 			else if( gstEncyclopediaDataEntry.uiTextPage == 4 )
 			{//4: debug text misc flag3
-				STR16 dbgText = { L"PROFILE=%d, FLAG3_PLAYER_LEFT_MSG_FOR_MERC_AT_AIM=%d, FLAG3_PERMANENT_INSERTION_CODE=%d, FLAG3_PLAYER_HAD_CHANCE_TO_HIRE=%d, FLAG3_HANDLE_DONE_TRAVERSAL=%d, FLAG3_NPC_PISSED_OFF=%d, FLAG3_MERC_MERC_IS_DEAD_AND_QUOTE_SAID=%d, FLAG3_TOWN_DOESNT_CARE_ABOUT_DEATH=%d, FLAG3_GOODGUY=%d" }; 
+				STR16 dbgText = { JA2_TEXT("PROFILE=%d, FLAG3_PLAYER_LEFT_MSG_FOR_MERC_AT_AIM=%d, FLAG3_PERMANENT_INSERTION_CODE=%d, FLAG3_PLAYER_HAD_CHANCE_TO_HIRE=%d, FLAG3_HANDLE_DONE_TRAVERSAL=%d, FLAG3_NPC_PISSED_OFF=%d, FLAG3_MERC_MERC_IS_DEAD_AND_QUOTE_SAID=%d, FLAG3_TOWN_DOESNT_CARE_ABOUT_DEATH=%d, FLAG3_GOODGUY=%d") }; 
 				swprintf( gstEncyclopediaDataEntry.sDescr, dbgText, newID,
 					gMercProfiles[newID].ubMiscFlags3 & PROFILE_MISC_FLAG3_PLAYER_LEFT_MSG_FOR_MERC_AT_AIM,
 					gMercProfiles[newID].ubMiscFlags3 & PROFILE_MISC_FLAG3_PERMANENT_INSERTION_CODE,
@@ -846,8 +846,8 @@ BOOLEAN CreateData( INT16 newID )
 		wcscpy_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), questStartedString );
 		if( gubQuest[(UINT8) newID] == QUESTDONE )
 		{
-			wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), L"                                                                               " );
-			wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), L"                                                                               " );
+			wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), JA2_TEXT("                                                                               ") );
+			wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), JA2_TEXT("                                                                               ") );
 			GetQuestEndedString( (UINT8)newID, questCompletedString );
 			wcscat_s( gstEncyclopediaDataEntry.sDescr, sizeof(gstEncyclopediaDataEntry.sDescr)/sizeof(CHAR16), questCompletedString );
 		}

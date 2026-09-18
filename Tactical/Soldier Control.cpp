@@ -5984,7 +5984,7 @@ void SOLDIERTYPE::EVENT_SoldierGotHit( UINT16 usWeaponIndex, INT16 sDamage, INT1
 		{
 		case FIRE_WEAPON_BLINDED_AND_DEAFENED:
 			this->bDeafenedCounter = bDeafValue;
-			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Soldier is blinded and deafened" );
+			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Soldier is blinded and deafened") );
 
 			// if soldier in building OR underground
 			if ( InBuilding( sLocationGrid ) || (gbWorldSectorZ) )
@@ -6020,7 +6020,7 @@ void SOLDIERTYPE::EVENT_SoldierGotHit( UINT16 usWeaponIndex, INT16 sDamage, INT1
 			break;
 
 		case FIRE_WEAPON_DEAFENED:
-			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Soldier is deafened" );		
+			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Soldier is deafened") );		
 			this->bDeafenedCounter = bDeafValue;
 			PossiblyStartEnemyTaunt( this, TAUNT_GOT_DEAFENED, ubAttackerID );
 			break;
@@ -8141,7 +8141,7 @@ BOOLEAN SOLDIERTYPE::ConvertAniCodeToAniFrame( UINT16 usAniFrame )
 	if ( this->usAniFrame >= gAnimSurfaceDatabase[usAnimSurface].hVideoObject->usNumberOfObjects )
 	{
 		// Debug msg here....
-		//		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Soldier Animation: Wrong Number of frames per number of objects: %d vs %d, %S",  gAnimSurfaceDatabase[ usAnimSurface ].uiNumFramesPerDir, gAnimSurfaceDatabase[ usAnimSurface ].hVideoObject->usNumberOfObjects, gAnimControl[ this->usAnimState ].zAnimStr );
+		//		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Soldier Animation: Wrong Number of frames per number of objects: %d vs %d, %S"),  gAnimSurfaceDatabase[ usAnimSurface ].uiNumFramesPerDir, gAnimSurfaceDatabase[ usAnimSurface ].hVideoObject->usNumberOfObjects, gAnimControl[ this->usAnimState ].zAnimStr );
 
 		this->usAniFrame = 0;
 	}
@@ -9969,7 +9969,7 @@ UINT8 SOLDIERTYPE::SoldierTakeDamage( INT8 bHeight, INT16 sLifeDeduct, INT16 sBr
 {
 #ifdef JA2BETAVERSION
 	if ( is_networked ) {
-		CHAR tmpMPDbgString[512];
+		CHAR8 tmpMPDbgString[512];
 		sprintf( tmpMPDbgString, "SoldierTakeDamage ( bHeight : %i , sLifeDeduct : %i , sBreathLoss : %i , ubReason : %i , ubAttacker : %i , sSourceGrid : %i , sSubsequent : %i , fShowDamage : %i )\n", bHeight, sLifeDeduct, sBreathLoss, ubReason, ubAttacker.i, sSourceGrid, sSubsequent, fShowDamage );
 		MPDebugMsg( tmpMPDbgString );
 	}
@@ -10488,7 +10488,7 @@ UINT8 SOLDIERTYPE::SoldierTakeDamage( INT8 bHeight, INT16 sLifeDeduct, INT16 sBr
 		}
 
 #ifdef JA2TESTVERSION
-		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Chance To Drop Weapon: str: %d Dam: %d Chance: %d", sTestOne, sTestTwo, sChanceToDrop );
+		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Chance To Drop Weapon: str: %d Dam: %d Chance: %d"), sTestOne, sTestTwo, sChanceToDrop );
 #endif
 
 		if ((INT16)Random(100) < sChanceToDrop)
@@ -14467,7 +14467,7 @@ BOOLEAN SOLDIERTYPE::InternalIsValidStance( INT8 bDirection, INT8 bNewStance )
 
 		// Something gone funny here....
 		usAnimState = this->usAnimState;
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"Wrong desired stance given: %d, %d.", bNewStance, this->usAnimState );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("Wrong desired stance given: %d, %d."), bNewStance, this->usAnimState );
 	}
 
 	usAnimSurface = DetermineSoldierAnimationSurface( this, usAnimState );
@@ -16107,7 +16107,7 @@ BOOLEAN		SOLDIERTYPE::SeemsLegit( SoldierID ubObserverID )
 		 (NightTime( ) || this->bSectorZ > 0) &&
 		 this->GetBestEquippedFlashLightRange( ) > 0 )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s has a flashlight!", this->GetName( ) );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s has a flashlight!"), this->GetName( ) );
 		return FALSE;
 	}
 
@@ -19491,7 +19491,7 @@ void	SOLDIERTYPE::Infect( UINT8 aDisease )
 		}
 
 		// remove later on, for testing only
-		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s was infected with %s", gMercProfiles[this->ubProfile].zNickname, Disease[aDisease].szName );
+		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s was infected with %s"), gMercProfiles[this->ubProfile].zNickname, Disease[aDisease].szName );
 	}
 }
 
@@ -19656,7 +19656,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 		fShowExactPoints = TRUE;
 
 	CHAR16	atStr[500];
-	swprintf( atStr, L"\n  \n" );
+	swprintf( atStr, JA2_TEXT("\n  \n") );
 	wcscat( apStr, atStr );
 
 	for ( int i = 0; i < NUM_DISEASES; ++i )
@@ -19665,11 +19665,11 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 		{
 			if ( fShowExactPoints )
 			{
-				swprintf( atStr, L"\n\n%s - %d / %d\n", Disease[i].szFatName, this->sDiseasePoints[i], Disease[i].sInfectionPtsFull );
+				swprintf( atStr, JA2_TEXT("\n\n%s - %d / %d\n"), Disease[i].szFatName, this->sDiseasePoints[i], Disease[i].sInfectionPtsFull );
 			}
 			else
 			{
-				swprintf( atStr, L"\n\n%s\n", Disease[i].szFatName );
+				swprintf( atStr, JA2_TEXT("\n\n%s\n"), Disease[i].szFatName );
 			}
 
 			wcscat( apStr, atStr );
@@ -19677,7 +19677,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 			// if we give a full description, also print out the effects at the moment
 			if ( fFullDesc )
 			{
-				swprintf( atStr, L"%s\n", Disease[i].szDescription );
+				swprintf( atStr, JA2_TEXT("%s\n"), Disease[i].szDescription );
 				wcscat( apStr, atStr );
 
 				FLOAT magnitude = GetDiseaseMagnitude( i );
@@ -19688,7 +19688,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 
 					if ( val )
 					{
-						swprintf( atStr, szDiseaseText[j], val > 0 ? L"+" : L"", val );
+						swprintf( atStr, szDiseaseText[j], val > 0 ? JA2_TEXT("+") : JA2_TEXT(""), val );
 						wcscat( apStr, atStr );
 					}
 				}
@@ -19698,7 +19698,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 
 					if ( val )
 					{
-						swprintf( atStr, szDiseaseText[TEXT_DISEASE_AP], val > 0 ? L"+" : L"", val );
+						swprintf( atStr, szDiseaseText[TEXT_DISEASE_AP], val > 0 ? JA2_TEXT("+") : JA2_TEXT(""), val );
 						wcscat( apStr, atStr );
 					}
 				}
@@ -19708,7 +19708,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 
 					if ( val )
 					{
-						swprintf( atStr, szDiseaseText[TEXT_DISEASE_MAXBREATH], L"-", val );
+						swprintf( atStr, szDiseaseText[TEXT_DISEASE_MAXBREATH], JA2_TEXT("-"), val );
 						wcscat( apStr, atStr );
 					}
 				}
@@ -19718,7 +19718,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 
 					if ( val )
 					{
-						swprintf( atStr, szDiseaseText[TEXT_DISEASE_CARRYSTRENGTH], val > 0 ? L"+" : L"", val );
+						swprintf( atStr, szDiseaseText[TEXT_DISEASE_CARRYSTRENGTH], val > 0 ? JA2_TEXT("+") : JA2_TEXT(""), val );
 						wcscat( apStr, atStr );
 					}
 				}
@@ -19728,7 +19728,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 
 					if ( val )
 					{
-						swprintf( atStr, szDiseaseText[TEXT_DISEASE_LIFEREGENHUNDREDS], val > 0 ? L"+" : L"", val );
+						swprintf( atStr, szDiseaseText[TEXT_DISEASE_LIFEREGENHUNDREDS], val > 0 ? JA2_TEXT("+") : JA2_TEXT(""), val );
 						wcscat( apStr, atStr );
 					}
 				}
@@ -19738,7 +19738,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 
 					if ( val )
 					{
-						swprintf( atStr, szDiseaseText[TEXT_DISEASE_NEEDTOSLEEP], val > 0 ? L"+" : L"", val );
+						swprintf( atStr, szDiseaseText[TEXT_DISEASE_NEEDTOSLEEP], val > 0 ? JA2_TEXT("+") : JA2_TEXT(""), val );
 						wcscat( apStr, atStr );
 					}
 				}
@@ -19748,7 +19748,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 
 					if ( val )
 					{
-						swprintf( atStr, szDiseaseText[TEXT_DISEASE_DRINK], val > 0 ? L"+" : L"", val );
+						swprintf( atStr, szDiseaseText[TEXT_DISEASE_DRINK], val > 0 ? JA2_TEXT("+") : JA2_TEXT(""), val );
 						wcscat( apStr, atStr );
 					}
 				}
@@ -19758,7 +19758,7 @@ void SOLDIERTYPE::PrintDiseaseDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 
 					if ( val )
 					{
-						swprintf( atStr, szDiseaseText[TEXT_DISEASE_FOOD], val > 0 ? L"+" : L"", val );
+						swprintf( atStr, szDiseaseText[TEXT_DISEASE_FOOD], val > 0 ? JA2_TEXT("+") : JA2_TEXT(""), val );
 						wcscat( apStr, atStr );
 					}
 				}
@@ -19819,7 +19819,7 @@ void SOLDIERTYPE::PrintFoodDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 		return;
 	
 	CHAR16	atStr[500];
-	swprintf( atStr, L"" );
+	swprintf( atStr, JA2_TEXT("") );
 
 	UINT8 foodsituation;
 	UINT8 watersituation;
@@ -19847,31 +19847,31 @@ void SOLDIERTYPE::PrintFoodDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 	{
 		if ( bMoraleModifier_Water )
 		{
-			swprintf( atStr, szFoodText[2], bMoraleModifier_Water > 0 ? L"+" : L"", bMoraleModifier_Water );
+			swprintf( atStr, szFoodText[2], bMoraleModifier_Water > 0 ? JA2_TEXT("+") : JA2_TEXT(""), bMoraleModifier_Water );
 			wcscat( apStr, atStr );
 		}
 
 		if ( bSleepModifier_Water )
 		{
-			swprintf( atStr, szFoodText[3], bSleepModifier_Water > 0 ? L"+" : L"", bSleepModifier_Water );
+			swprintf( atStr, szFoodText[3], bSleepModifier_Water > 0 ? JA2_TEXT("+") : JA2_TEXT(""), bSleepModifier_Water );
 			wcscat( apStr, atStr );
 		}
 
 		if ( bBreathRegenModifier_Water )
 		{
-			swprintf( atStr, szFoodText[4], bBreathRegenModifier_Water > 0 ? L"+" : L"", bBreathRegenModifier_Water );
+			swprintf( atStr, szFoodText[4], bBreathRegenModifier_Water > 0 ? JA2_TEXT("+") : JA2_TEXT(""), bBreathRegenModifier_Water );
 			wcscat( apStr, atStr );
 		}
 
 		if ( bAssignmentEfficiencyModifier_Water )
 		{
-			swprintf( atStr, szFoodText[5], bAssignmentEfficiencyModifier_Water > 0 ? L"+" : L"", bAssignmentEfficiencyModifier_Water );
+			swprintf( atStr, szFoodText[5], bAssignmentEfficiencyModifier_Water > 0 ? JA2_TEXT("+") : JA2_TEXT(""), bAssignmentEfficiencyModifier_Water );
 			wcscat( apStr, atStr );
 		}
 
 		if ( ubStatDamageChance_Water )
 		{
-			swprintf( atStr, szFoodText[6], ubStatDamageChance_Water > 0 ? L"+" : L"", ubStatDamageChance_Water );
+			swprintf( atStr, szFoodText[6], ubStatDamageChance_Water > 0 ? JA2_TEXT("+") : JA2_TEXT(""), ubStatDamageChance_Water );
 			wcscat( apStr, atStr );
 		}
 	}
@@ -19883,31 +19883,31 @@ void SOLDIERTYPE::PrintFoodDesc( CHAR16* apStr, BOOLEAN fFullDesc )
 	{
 		if ( bMoraleModifier_Food )
 		{
-			swprintf( atStr, szFoodText[2], bMoraleModifier_Food > 0 ? L"+" : L"", bMoraleModifier_Food );
+			swprintf( atStr, szFoodText[2], bMoraleModifier_Food > 0 ? JA2_TEXT("+") : JA2_TEXT(""), bMoraleModifier_Food );
 			wcscat( apStr, atStr );
 		}
 
 		if ( bSleepModifier_Food )
 		{
-			swprintf( atStr, szFoodText[3], bSleepModifier_Food > 0 ? L"+" : L"", bSleepModifier_Food );
+			swprintf( atStr, szFoodText[3], bSleepModifier_Food > 0 ? JA2_TEXT("+") : JA2_TEXT(""), bSleepModifier_Food );
 			wcscat( apStr, atStr );
 		}
 
 		if ( bBreathRegenModifier_Food )
 		{
-			swprintf( atStr, szFoodText[4], bBreathRegenModifier_Food > 0 ? L"+" : L"", bBreathRegenModifier_Food );
+			swprintf( atStr, szFoodText[4], bBreathRegenModifier_Food > 0 ? JA2_TEXT("+") : JA2_TEXT(""), bBreathRegenModifier_Food );
 			wcscat( apStr, atStr );
 		}
 
 		if ( bAssignmentEfficiencyModifier_Food )
 		{
-			swprintf( atStr, szFoodText[5], bAssignmentEfficiencyModifier_Food > 0 ? L"+" : L"", bAssignmentEfficiencyModifier_Food );
+			swprintf( atStr, szFoodText[5], bAssignmentEfficiencyModifier_Food > 0 ? JA2_TEXT("+") : JA2_TEXT(""), bAssignmentEfficiencyModifier_Food );
 			wcscat( apStr, atStr );
 		}
 
 		if ( ubStatDamageChance_Food )
 		{
-			swprintf( atStr, szFoodText[6], ubStatDamageChance_Food > 0 ? L"+" : L"", ubStatDamageChance_Food );
+			swprintf( atStr, szFoodText[6], ubStatDamageChance_Food > 0 ? JA2_TEXT("+") : JA2_TEXT(""), ubStatDamageChance_Food );
 			wcscat( apStr, atStr );
 		}
 	}
@@ -19920,7 +19920,7 @@ void SOLDIERTYPE::PrintSleepDesc( CHAR16* apStr )
 		return;
 
 	CHAR16	atStr[100];
-	swprintf( atStr, L"\n  \n" );
+	swprintf( atStr, JA2_TEXT("\n  \n") );
 	wcscat( apStr, atStr );
 
 	swprintf( atStr, gpStrategicString[STR_BREATH_REGEN_SLEEP], this->GetSleepBreathRegeneration( ) );
@@ -22865,7 +22865,7 @@ void SOLDIERTYPE::EVENT_SoldierTakeBloodFromPerson( INT32 sGridNo, UINT8 ubDirec
 			}
 			else
 			{
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Error: no blood bag item found in Items.xml!" );
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Error: no blood bag item found in Items.xml!") );
 			}
 		}
 
@@ -23957,13 +23957,13 @@ void DebugValidateSoldierData( )
 					!(pSoldier->flags.uiStatusFlags & (SOLDIER_DRIVER | SOLDIER_PASSENGER)) )
 				{
 					// This is bad!
-					swprintf( sString, L"Soldier Data Error: Soldier %d is alive but has a zero group ID.", cnt.i );
+					swprintf( sString, JA2_TEXT("Soldier Data Error: Soldier %d is alive but has a zero group ID."), cnt.i );
 					fProblemDetected = TRUE;
 				}
 				else if ( (pSoldier->ubGroupID != 0) && (GetGroup( pSoldier->ubGroupID ) == NULL) )
 				{
 					// This is bad!
-					swprintf( sString, L"Soldier Data Error: Soldier %d has an invalid group ID of %d.", cnt.i, pSoldier->ubGroupID );
+					swprintf( sString, JA2_TEXT("Soldier Data Error: Soldier %d has an invalid group ID of %d."), cnt.i, pSoldier->ubGroupID );
 					fProblemDetected = TRUE;
 				}
 			}
@@ -23972,7 +23972,7 @@ void DebugValidateSoldierData( )
 				//if ( pSoldier->ubGroupID != 0 && (pSoldier->flags.uiStatusFlags & SOLDIER_DEAD) )
 				{
 					// Dead guys should have 0 group IDs
-					//swprintf( sString, L"GroupID Error: Soldier %d is dead but has a non-zero group ID.", cnt );
+					//swprintf( sString, JA2_TEXT("GroupID Error: Soldier %d is dead but has a non-zero group ID."), cnt );
 					//fProblemDetected = TRUE;
 				}
 			}
@@ -23983,7 +23983,7 @@ void DebugValidateSoldierData( )
 				 (pSoldier->sSectorY <= 0) || (pSoldier->sSectorY >= 17) ||
 				 (pSoldier->bSectorZ  < 0) || (pSoldier->bSectorZ > (SPY_LOCATION( pSoldier->bAssignment ) ? 13 : 3) ) ) )
 			{
-				swprintf( sString, L"Soldier Data Error: Soldier %d is located at %d/%d/%d.", cnt.i, pSoldier->sSectorX, pSoldier->sSectorY, pSoldier->bSectorZ );
+				swprintf( sString, JA2_TEXT("Soldier Data Error: Soldier %d is located at %d/%d/%d."), cnt.i, pSoldier->sSectorX, pSoldier->sSectorY, pSoldier->bSectorZ );
 				fProblemDetected = TRUE;
 			}
 		}
@@ -24570,7 +24570,7 @@ UINT8 RegainDamagedStats( SOLDIERTYPE * pSoldier, UINT16 usAmountRegainedHundred
 	UINT16 usStatIncreasement;
 	//BOOLEAN fAnyStatToBeRepaired = FALSE;
 	UINT8 cnt, ubAmountRegained;
-	STR16 sStat = L"";
+	STR16 sStat = JA2_TEXT("");
 
 	UINT8 bStatsReturned = 0;
 

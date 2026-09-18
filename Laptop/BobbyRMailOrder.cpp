@@ -372,7 +372,7 @@ vector<PShipmentStruct> gShipmentTable;
 // WANNE: This method gets called when the shippment arrived
 void BobbyRDeliveryCallback(RefToCShipmentManipulator ShipmentManipulator)
 {
-	// ScreenMsg(FONT_MCOLOR_RED, MSG_DEBUG, L"Shipment from Bobby Ray has arrived at %s!", ShipmentManipulator.GetDestination().wstrName.c_str());
+	// ScreenMsg(FONT_MCOLOR_RED, MSG_DEBUG, JA2_TEXT("Shipment from Bobby Ray has arrived at %s!"), ShipmentManipulator.GetDestination().wstrName.c_str());
 	gusCurShipmentDestinationID = ShipmentManipulator.GetDestination().usID;	
 }
 
@@ -804,7 +804,7 @@ void RenderBobbyRMailOrder()
 
 	//Display the minimum weight disclaimer at the bottom of the page
 	usHeight = GetFontHeight( BOBBYR_DISCLAIMER_FONT ) + 2;
-	swprintf( sTemp, L"%s %2.1f %s.", BobbyROrderFormText[BOBBYR_MINIMUM_WEIGHT], GetWeightBasedOnMetricOption( MIN_SHIPPING_WEIGHT ) / 10.0, GetWeightUnitString() );
+	swprintf( sTemp, JA2_TEXT("%s %2.1f %s."), BobbyROrderFormText[BOBBYR_MINIMUM_WEIGHT], GetWeightBasedOnMetricOption( MIN_SHIPPING_WEIGHT ) / 10.0, GetWeightUnitString() );
 	DrawTextToScreen( sTemp, BOBBYR_USED_WARNING_X, (UINT16)(BOBBYR_USED_WARNING_Y+usHeight+1), 0, BOBBYR_DISCLAIMER_FONT, BOBBYR_ORDER_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED | TEXT_SHADOWED );
 
 
@@ -1081,11 +1081,11 @@ void DisplayPurchasedItems( BOOLEAN fCalledFromOrderPage, UINT16 usGridX, UINT16
 			//Display the qty, order#, item name, unit price and the total
 
 			//qty
-			swprintf(sTemp, L"%3d", pBobbyRayPurchase[i].ubNumberPurchased );
+			swprintf(sTemp, JA2_TEXT("%3d"), pBobbyRayPurchase[i].ubNumberPurchased );
 			DrawTextToScreen(sTemp, (UINT16)(usGridX+BOBBYR_GRID_FIRST_COLUMN_X-2), usPosY, BOBBYR_GRID_FIRST_COLUMN_WIDTH, BOBBYR_ORDER_DYNAMIC_TEXT_FONT, BOBBYR_ORDER_DYNAMIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 
 			//weight
-			swprintf( sTemp, L"%3.1f", GetWeightBasedOnMetricOption( Item[ pBobbyRayPurchase[i].usItemIndex ].ubWeight ) / (FLOAT)( 10.0 ) * pBobbyRayPurchase[i].ubNumberPurchased );
+			swprintf( sTemp, JA2_TEXT("%3.1f"), GetWeightBasedOnMetricOption( Item[ pBobbyRayPurchase[i].usItemIndex ].ubWeight ) / (FLOAT)( 10.0 ) * pBobbyRayPurchase[i].ubNumberPurchased );
 			DrawTextToScreen(sTemp, (UINT16)(usGridX+BOBBYR_GRID_SECOND_COLUMN_X-2), usPosY, BOBBYR_GRID_SECOND_COLUMN_WIDTH, BOBBYR_ORDER_DYNAMIC_TEXT_FONT, BOBBYR_ORDER_DYNAMIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 
 			//Display Items Name
@@ -1102,7 +1102,7 @@ void DisplayPurchasedItems( BOOLEAN fCalledFromOrderPage, UINT16 usGridX, UINT16
 			if( pBobbyRayPurchase[i].fUsed )
 			{
 				LoadBRName(pBobbyRayPurchase[i].usItemIndex,sBack);
-				swprintf(sText, L"%s %s", L"*", sBack);
+				swprintf(sText, JA2_TEXT("%s %s"), JA2_TEXT("*"), sBack);
 			}
 			else
 				LoadBRName(pBobbyRayPurchase[i].usItemIndex,sText);
@@ -1120,7 +1120,7 @@ void DisplayPurchasedItems( BOOLEAN fCalledFromOrderPage, UINT16 usGridX, UINT16
 					usPixLength += StringPixLength(OneChar, BOBBYR_ORDER_DYNAMIC_TEXT_FONT);
 				}
 				sBack[j] = 0;
-				swprintf(sText, L"%s...", sBack);
+				swprintf(sText, JA2_TEXT("%s..."), sBack);
 			}
 
 			DrawTextToScreen(sText, (UINT16)(usGridX+BOBBYR_GRID_THIRD_COLUMN_X+2), usPosY, BOBBYR_GRID_THIRD_COLUMN_WIDTH, BOBBYR_ORDER_DYNAMIC_TEXT_FONT, BOBBYR_ORDER_DYNAMIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
@@ -1808,7 +1808,7 @@ void DrawSelectedCity( UINT8 ubCityNumber )
 
 void DisplayShippingLocationCity()
 {
-	std::wstring sTemp{ L"$0" };
+	ja2::text::Utf16String sTemp{ JA2_TEXT("$0") };
 	UINT16 usPosY;
 
 	//display the name on the title bar
@@ -1833,7 +1833,7 @@ void DisplayShippingLocationCity()
 
 	if( gbSelectedCity != -1 )
 	{
-//		swprintf( sTemp, L"%d", ( INT32 )(BobbyROrderLocations[gbSelectedCity].usOverNightExpress/GetWeightBasedOnMetricOption( 1 ) )	);
+//		swprintf( sTemp, JA2_TEXT("%d"), ( INT32 )(BobbyROrderLocations[gbSelectedCity].usOverNightExpress/GetWeightBasedOnMetricOption( 1 ) )	);
 		sTemp = FormatMoney(static_cast<INT32>(gPostalService.GetDestinationFee(0, gDestinationTable[gbSelectedCity]->usID) / GetWeightBasedOnMetricOption(1)));
 	}
 
@@ -2601,8 +2601,8 @@ void DisplayPackageWeight( )
 	DrawTextToScreen(BobbyROrderFormText[ BOBBYR_PACKAGE_WEIGHT ], BOBBYR_PACKAXGE_WEIGHT_X+8, BOBBYR_PACKAXGE_WEIGHT_Y+4, BOBBYR_PACKAXGE_WEIGHT_WIDTH, BOBBYR_ORDER_STATIC_TEXT_FONT, BOBBYR_ORDER_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED);
 
 	//Display the weight
-//	swprintf( zTemp, L"%3.1f %s", fWeight, pMessageStrings[ MSG_KILOGRAM_ABBREVIATION ] );
-	swprintf( zTemp, L"%3.1f %s", ( GetWeightBasedOnMetricOption( uiTotalWeight ) / 10.0f ), GetWeightUnitString() );
+//	swprintf( zTemp, JA2_TEXT("%3.1f %s"), fWeight, pMessageStrings[ MSG_KILOGRAM_ABBREVIATION ] );
+	swprintf( zTemp, JA2_TEXT("%3.1f %s"), ( GetWeightBasedOnMetricOption( uiTotalWeight ) / 10.0f ), GetWeightUnitString() );
 	DrawTextToScreen( zTemp, BOBBYR_PACKAXGE_WEIGHT_X+3, BOBBYR_PACKAXGE_WEIGHT_Y+4, BOBBYR_PACKAXGE_WEIGHT_WIDTH, BOBBYR_ORDER_STATIC_TEXT_FONT, BOBBYR_ORDER_STATIC_TEXT_COLOR, FONT_MCOLOR_BLACK, FALSE, RIGHT_JUSTIFIED);
 }
 

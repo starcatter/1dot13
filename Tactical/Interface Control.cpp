@@ -878,8 +878,8 @@ void RenderTopmostTacticalInterface( )
 		SetFont( LARGEFONT1 );
 		SetFontBackground( FONT_MCOLOR_BLACK );
 		SetFontForeground( FONT_MCOLOR_WHITE );
-		gprintfdirty( 0, 300, L"OPPONENT %d DEADLOCKED - 'Q' TO DEBUG, <ALT><ENTER> END OPP TURN", gUIDeadlockedSoldier	);
-		mprintf( 0, 300, L"OPPONENT %d DEADLOCKED - 'Q' TO DEBUG, <ALT><ENTER> END OPP TURN", gUIDeadlockedSoldier );
+		gprintfdirty( 0, 300, JA2_TEXT("OPPONENT %d DEADLOCKED - 'Q' TO DEBUG, <ALT><ENTER> END OPP TURN"), gUIDeadlockedSoldier	);
+		mprintf( 0, 300, JA2_TEXT("OPPONENT %d DEADLOCKED - 'Q' TO DEBUG, <ALT><ENTER> END OPP TURN"), gUIDeadlockedSoldier );
 
 	}
 */
@@ -1270,13 +1270,13 @@ void PrintCounter( INT16 x, INT16 y, INT16 data, UINT16 &width, UINT8 ubForegoun
 	// scale > 1 - print num asterisks
 	if( scale > PRINT_SCALE_PLAIN_NUMBER )
 	{
-		swprintf( pStr, L"*" );
+		swprintf( pStr, JA2_TEXT("*") );
 		for ( i = 1; i<num; i++)
-			wcscat( pStr, L"*" );
+			wcscat( pStr, JA2_TEXT("*") );
 	}
 	else
 	{
-		swprintf( pStr, L"%d ", data );
+		swprintf( pStr, JA2_TEXT("%d "), data );
 	}
 	gprintfdirty( x+width, y, pStr );
 	mprintf( x+width, y, pStr );
@@ -1412,7 +1412,7 @@ void DrawCounters( SOLDIERTYPE *pSoldier )
 			{								
 				// Flugente: it is possible that someone might regain negative damage as zombies can regenerate health through bleeding
 				SetFontForeground( FONT_MCOLOR_LTGREEN );
-				swprintf( pStr, L"+%d ", -pSoldier->sDamage );
+				swprintf( pStr, JA2_TEXT("+%d "), -pSoldier->sDamage );
 				gprintfdirty( sDamageX, sDamageY, pStr );
 				mprintf( sDamageX, sDamageY, pStr );
 				widthDamage += StringPixLength ( pStr, TINYFONT1 );
@@ -1426,7 +1426,7 @@ void DrawCounters( SOLDIERTYPE *pSoldier )
 					if( pSoldier->sDamage > 0 )
 					{
 						//PrintCounter( sDamageX, sDamageY, pSoldier->sDamage, widthDamage, FONT_MCOLOR_WHITE, PRINT_SCALE_PLAIN_NUMBER );
-						swprintf( pStr, L"-%d ", pSoldier->sDamage );
+						swprintf( pStr, JA2_TEXT("-%d "), pSoldier->sDamage );
 						gprintfdirty( sDamageX, sDamageY, pStr );
 						mprintf( sDamageX, sDamageY, pStr );
 						widthDamage += StringPixLength ( pStr, TINYFONT1 );
@@ -1435,7 +1435,7 @@ void DrawCounters( SOLDIERTYPE *pSoldier )
 				case 1:				// show ? indicator
 					if( pSoldier->sDamage != 0 )
 					{
-						swprintf( pStr, L"%s ", gzHiddenHitCountStr[0] );
+						swprintf( pStr, JA2_TEXT("%s "), gzHiddenHitCountStr[0] );
 						gprintfdirty( sDamageX, sDamageY, pStr );
 						mprintf( sDamageX, sDamageY, pStr );
 						widthDamage += StringPixLength ( pStr, TINYFONT1 );
@@ -1458,8 +1458,8 @@ void DrawCounters( SOLDIERTYPE *pSoldier )
 					SetFontBackground( FONT_MCOLOR_BLACK );
 					SetFontForeground( COLOR_ORANGE );
 
-					//swprintf( pStr, L"%d/%d ", pSoldier->iLastBulletImpact, pSoldier->iLastArmourProtection );
-					swprintf( pStr, L"%d ", pSoldier->iLastArmourProtection );
+					//swprintf( pStr, JA2_TEXT("%d/%d "), pSoldier->iLastBulletImpact, pSoldier->iLastArmourProtection );
+					swprintf( pStr, JA2_TEXT("%d "), pSoldier->iLastArmourProtection );
 					gprintfdirty( sDamageX + widthDamage, sDamageY, pStr );
 					mprintf( sDamageX + widthDamage, sDamageY, pStr );
 					widthDamage += StringPixLength ( pStr, TINYFONT1 );

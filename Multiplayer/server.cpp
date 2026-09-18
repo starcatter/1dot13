@@ -30,6 +30,7 @@
 #include "fresh_header.h"
 #include "Debug Control.h"
 #include "MPXmlTeams.hpp"
+#include "UtfConversion.h"
 
 extern CHAR16 gzFileTransferDirectory[100];
 
@@ -181,7 +182,7 @@ int f_rec_num(int mode, SystemAddress sender)//from client data
 	}
 	if(mode == 0)//'no free slots'
 	{
-	ScreenMsg( FONT_RED, MSG_MPSYSTEM, L"Client Record Error, Restart Server, and Report Error." );
+	ScreenMsg( FONT_RED, MSG_MPSYSTEM, JA2_TEXT("Client Record Error, Restart Server, and Report Error.") );
 	return (255);
 	}
 	return(254);
@@ -357,7 +358,7 @@ void sendDEATH(RPCParameters *rpcParameters)
 	_itow(nDeath->attacker_team,ateam,10);
 	_itow(nDeath->soldier_team,steam,10);
 	_itow(iCLnum,clnum,10);
-	ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, L"DEBUG: Soldier Killed : Attacking team %s , Soldier Team %s, Sender %s",ateam,steam,clnum);
+	ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, JA2_TEXT("DEBUG: Soldier Killed : Attacking team %s , Soldier Team %s, Sender %s"),ateam,steam,clnum);
 	char logmsg[100];
 	sprintf( logmsg, "MP DEBUG: Soldier Killed #%i : Attacking team %i , Soldier Team %i, Sender %i\n", nDeath->soldier_id.i, nDeath->attacker_team, nDeath->soldier_team, iCLnum );
 	MPDebugMsg( logmsg );
@@ -532,7 +533,7 @@ void sendREAL(RPCParameters *rpcParameters)
 		if (numreadyteams >= numactiveteams)
 		{
 			//if all send notification for realtime changeover
-			//ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, L"Switching to realtime..." );
+			//ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, JA2_TEXT("Switching to realtime...") );
 			numreadyteams=0;
 			memset( &readyteamreg , 0 , sizeof (int) * 10);
 
@@ -615,7 +616,9 @@ void requestFILE_TRANSFER_SETTINGS(RPCParameters *rpcParameters)
 	filetransfersettings_struct fts;
 
 	fts.syncClientsDirectory = gSyncGameDirectory;
-	strcpy(fts.fileTransferDirectory, s_ServerId.getServerId(vfs::Path(gzFileTransferDirectory)).utf8().c_str());
+	strcpy(fts.fileTransferDirectory,
+		s_ServerId.getServerId(vfs::Path(
+			ja2::text::utf16ToUtf8ReplacingInvalid(gzFileTransferDirectory))).utf8().c_str());
 	strcpy(fts.serverName, cServerName);
 	fts.totalTransferBytes = fileListTotalBytes;
 
@@ -645,7 +648,7 @@ void requestSETTINGS(RPCParameters *rpcParameters )
 			// send disconnect reason only to this client
 			server->RPC("recieveDISCONNECTREASON",(const char*)&verErrMsg, (int)sizeof(CHAR16)*255*8, HIGH_PRIORITY, RELIABLE, 0, rpcParameters->sender, false, 0, UNASSIGNED_NETWORK_ID,0);
 
-			ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"CONNECTION REJECTED - CLIENT HAS WRONG VERSION");
+			ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("CONNECTION REJECTED - CLIENT HAS WRONG VERSION"));
 			// disconnect this client
 			server->CloseConnection(rpcParameters->sender, true);
 			return;
@@ -813,7 +816,7 @@ void CheckIncomingConnection(Packet* p)
 	// we dont want to allow this as thier game will be out of state
 	if (!can_joingame())
 	{
-		ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, L"CONNECTION REJECTED - GAME HAS STARTED");
+		ScreenMsg( FONT_LTBLUE, MSG_MPSYSTEM, JA2_TEXT("CONNECTION REJECTED - GAME HAS STARTED"));
 		// disconnect this client, no need to notify them as they will know if they disconnected
 		// before receiving a settings packet that they were not allowed to join
 		server->CloseConnection(p->systemAddress, true);
@@ -1118,50 +1121,50 @@ void server_packet ( void )
 
 		// We got a packet, get the identifier with our handy function
 		SpacketIdentifier = SGetPacketIdentifier(p);
-		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"packet recieved");
+		//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("packet recieved"));
 		// Check if this is a network message packet
 		switch (SpacketIdentifier)
 		{
 			case ID_DISCONNECTION_NOTIFICATION://client disconnected purposefullly
 				// Connection lost normally
-				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_DISCONNECTION_NOTIFICATION");
+				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_DISCONNECTION_NOTIFICATION"));
 				HandleDisconnect(p->systemAddress);//clear record
 				break;
 			case ID_ALREADY_CONNECTED:
 				// Connection lost normally
-				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_ALREADY_CONNECTED");
+				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_ALREADY_CONNECTED"));
 				break;
 			case ID_REMOTE_DISCONNECTION_NOTIFICATION: // Server telling the clients of another client disconnecting gracefully.  You can manually broadcast this in a peer to peer enviroment if you want.
-				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_REMOTE_DISCONNECTION_NOTIFICATION");
+				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_REMOTE_DISCONNECTION_NOTIFICATION"));
 				break;
 			case ID_REMOTE_CONNECTION_LOST: // Server telling the clients of another client disconnecting forcefully.  You can manually broadcast this in a peer to peer enviroment if you want.
-				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_REMOTE_CONNECTION_LOST");
+				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_REMOTE_CONNECTION_LOST"));
 				break;
 			case ID_REMOTE_NEW_INCOMING_CONNECTION: // Server telling the clients of another client connecting.  You can manually broadcast this in a peer to peer enviroment if you want.
-				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_REMOT/MING_CONNECTION");
+				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_REMOT/MING_CONNECTION"));
 				break;
 			case ID_CONNECTION_ATTEMPT_FAILED:
-				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_CONNECTION_ATTEMPT_FAILED");
+				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_CONNECTION_ATTEMPT_FAILED"));
 				break;
 			case ID_NO_FREE_INCOMING_CONNECTIONS:
 				// Sorry, the server is full.  I don't do anything here but
 				// A real app should tell the user
-				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_NO_FREE_INCOMING_CONNECTIONS");
+				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_NO_FREE_INCOMING_CONNECTIONS"));
 				break;
 			case ID_CONNECTION_LOST:
 				// Couldn't deliver a reliable packet - i.e. the other system was abnormally
 				// terminated
-				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_CONNECTION_LOST");//client dropped
+				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_CONNECTION_LOST"));//client dropped
 				HandleDisconnect(p->systemAddress);//clear record
 				break;
 			case ID_CONNECTION_REQUEST_ACCEPTED:
 				// This tells the client they have connected
-				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_CONNECTION_REQUEST_ACCEPTED");
+				ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_CONNECTION_REQUEST_ACCEPTED"));
 				break;
 			case ID_NEW_INCOMING_CONNECTION:
 				//tells server client has connected
 				#ifdef JA2BETAVERSION
-					ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_NEW_INCOMING_CONNECTION");
+					ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_NEW_INCOMING_CONNECTION"));
 				#endif
 				// make sure they can connect
 				CheckIncomingConnection(p);
@@ -1171,12 +1174,12 @@ void server_packet ( void )
 			case ID_MODIFIED_PACKET:
 				// Cheater!
 				#ifdef JA2BETAVERSION
-					ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"ID_MODIFIED_PACKET");
+					ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("ID_MODIFIED_PACKET"));
 				#endif
 				break;
 			default:
 				#ifdef JA2BETAVERSION	
-					ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, L"** a packet has been recieved for which i dont know what to do... **");
+					ScreenMsg( FONT_ORANGE, MSG_MPSYSTEM, JA2_TEXT("** a packet has been recieved for which i dont know what to do... **"));
 				#endif
 				break;
 		}

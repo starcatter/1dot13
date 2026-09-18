@@ -221,7 +221,7 @@ public:
 	/*
 	 * Set help text decribing what can be selected
 	 */
-	void SetHelpText( STR16 aText )			{ swprintf( mHelpText, L"" ); wcscat( mHelpText, aText ); }
+	void SetHelpText( STR16 aText )			{ swprintf( mHelpText, JA2_TEXT("") ); wcscat( mHelpText, aText ); }
 
 	/*
 	 * Get key of selected entry

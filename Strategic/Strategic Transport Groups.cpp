@@ -93,7 +93,7 @@ BOOLEAN DeployTransportGroup()
 
 	for (int a = 0; a < mineSectorIds.size(); ++a)
 	{
-		TRANSPORT_GROUP_DEBUG(L"DeployTransportGroup valid town destination: %d (%d/%d)", mineSectorIds[a], SECTORX(mineSectorIds[a]), SECTORY(mineSectorIds[a]));
+		TRANSPORT_GROUP_DEBUG(JA2_TEXT("DeployTransportGroup valid town destination: %d (%d/%d)"), mineSectorIds[a], SECTORX(mineSectorIds[a]), SECTORY(mineSectorIds[a]));
 	}
 
 	// no valid destinations
@@ -114,7 +114,7 @@ BOOLEAN DeployTransportGroup()
 
 	for (int a = 0; a < groupIds.size(); ++a)
 	{
-		TRANSPORT_GROUP_DEBUG(L"DeployTransportGroup found existing transport groupid: %d at %d/%d", std::get<0>(groupIds[a]), std::get<1>(groupIds[a]), std::get<2>(groupIds[a]));
+		TRANSPORT_GROUP_DEBUG(JA2_TEXT("DeployTransportGroup found existing transport groupid: %d at %d/%d"), std::get<0>(groupIds[a]), std::get<1>(groupIds[a]), std::get<2>(groupIds[a]));
 	}
 
 	// track recent transport group interceptions
@@ -127,7 +127,7 @@ BOOLEAN DeployTransportGroup()
 
 	const UINT8 ubSectorID = (UINT8)mineSectorIds[Random(mineSectorIds.size())];
 
-	TRANSPORT_GROUP_DEBUG(L"DeployTransportGroup sending group to sectorId: %d (%d/%d)", ubSectorID, SECTORX(ubSectorID), SECTORY(ubSectorID));
+	TRANSPORT_GROUP_DEBUG(JA2_TEXT("DeployTransportGroup sending group to sectorId: %d (%d/%d)"), ubSectorID, SECTORX(ubSectorID), SECTORY(ubSectorID));
 
 	UINT16 admins, troops, elites, robots, jeeps, tanks;
 	const UINT8 progress = min(125, HighestPlayerProgressPercentage() + recentLossCount * 5);
@@ -194,7 +194,7 @@ BOOLEAN ReturnTransportGroup(INT32 groupId)
 
 	if (pGroup == nullptr)
 	{
-		TRANSPORT_GROUP_DEBUG(L"RETURN_TRANSPORT_GROUP failed to find groupid %d", groupId);
+		TRANSPORT_GROUP_DEBUG(JA2_TEXT("RETURN_TRANSPORT_GROUP failed to find groupid %d"), groupId);
 		return FALSE;
 	}
 
@@ -632,7 +632,7 @@ void UpdateTransportGroupInventory()
 
 			if (soldierClassIter != groupIter->second.end() && cachedGroupJeepCount.find(groupIter->first) != cachedGroupJeepCount.end() && cachedGroupJeepCount[groupIter->first] > 0)
 			{
-				TRANSPORT_GROUP_DEBUG(L"Found groupid[%d] with admin[%d] troop[%d] elite[%d] jeep[%d]", groupIter->first, groupIter->second[SOLDIER_CLASS_ADMINISTRATOR], groupIter->second[SOLDIER_CLASS_ARMY], groupIter->second[SOLDIER_CLASS_ELITE], groupIter->second[SOLDIER_CLASS_JEEP]);
+				TRANSPORT_GROUP_DEBUG(JA2_TEXT("Found groupid[%d] with admin[%d] troop[%d] elite[%d] jeep[%d]"), groupIter->first, groupIter->second[SOLDIER_CLASS_ADMINISTRATOR], groupIter->second[SOLDIER_CLASS_ARMY], groupIter->second[SOLDIER_CLASS_ELITE], groupIter->second[SOLDIER_CLASS_JEEP]);
 				// this group has a jeep in it!
 				// only jeeps carry things
 				// but give a little extra, since the jeep exploding can outright destroy things
@@ -739,7 +739,7 @@ void UpdateTransportGroupInventory()
 									break;
 
 								default:
-									TRANSPORT_GROUP_DEBUG(L"Warning: ignoring unhandled transport group loot type: %d", itemType);
+									TRANSPORT_GROUP_DEBUG(JA2_TEXT("Warning: ignoring unhandled transport group loot type: %d"), itemType);
 									// nothing!
 									break;
 								}
@@ -787,7 +787,7 @@ void UpdateTransportGroupInventory()
 			}
 			else
 			{
-				TRANSPORT_GROUP_DEBUG(L"Found jeepless groupid[%d] with admin[%d] troop[%d] elite[%d] jeep[%d]", groupIter->first, groupIter->second[SOLDIER_CLASS_ADMINISTRATOR], groupIter->second[SOLDIER_CLASS_ARMY], groupIter->second[SOLDIER_CLASS_ELITE], groupIter->second[SOLDIER_CLASS_JEEP]);
+				TRANSPORT_GROUP_DEBUG(JA2_TEXT("Found jeepless groupid[%d] with admin[%d] troop[%d] elite[%d] jeep[%d]"), groupIter->first, groupIter->second[SOLDIER_CLASS_ADMINISTRATOR], groupIter->second[SOLDIER_CLASS_ARMY], groupIter->second[SOLDIER_CLASS_ELITE], groupIter->second[SOLDIER_CLASS_JEEP]);
 				// no jeep in group, add things normally
 				soldierClassIter = groupIter->second.find(pSoldier->ubSoldierClass);
 				if (soldierClassIter != groupIter->second.end())
@@ -848,7 +848,7 @@ void UpdateTransportGroupInventory()
 										break;
 
 									default:
-										TRANSPORT_GROUP_DEBUG(L"Warning: ignoring unhandled transport group loot type: %d", itemType);
+										TRANSPORT_GROUP_DEBUG(JA2_TEXT("Warning: ignoring unhandled transport group loot type: %d"), itemType);
 										// nothing!
 										break;
 									}

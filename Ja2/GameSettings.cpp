@@ -42,6 +42,7 @@
 #include "GameInitOptionsScreen.h"
 
 #include <vfs/Core/vfs.h>
+#include <climits>
 
 #define				GAME_SETTINGS_FILE				"Ja2_Settings.ini"
 
@@ -4291,81 +4292,81 @@ void FreeGameExternalOptions()
 void DisplayGameSettings( )
 {
 	//Display the version number
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s %s", pMessageStrings[ MSG_VERSION ], zProductLabel, zBuildInformation );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s %s"), pMessageStrings[ MSG_VERSION ], zProductLabel, zBuildInformation );
 
 	//Display the difficulty level
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_DIF_LEVEL_TEXT ], zDiffSetting[gGameOptions.ubDifficultyLevel].szDiffName );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_DIF_LEVEL_TEXT ], zDiffSetting[gGameOptions.ubDifficultyLevel].szDiffName );
 	
 	//Test Settings
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", L"AllowReinforcements", gGameExternalOptions.gfAllowReinforcements ? L"YES" : L"NO" );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), JA2_TEXT("AllowReinforcements"), gGameExternalOptions.gfAllowReinforcements ? JA2_TEXT("YES") : JA2_TEXT("NO") );
 	
 	//Bobby Ray option 1
 	if ( gGameOptions.ubBobbyRayQuality >= BR_GOOD && gGameOptions.ubBobbyRayQuality < BR_GREAT )
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s (%d)", gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], gzGIOScreenText[ GIO_BR_GOOD_TEXT ], gGameOptions.ubBobbyRayQuality );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s (%d)"), gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], gzGIOScreenText[ GIO_BR_GOOD_TEXT ], gGameOptions.ubBobbyRayQuality );
 	else if ( gGameOptions.ubBobbyRayQuality >= BR_GREAT && gGameOptions.ubBobbyRayQuality < BR_EXCELLENT )
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s (%d)", gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], gzGIOScreenText[ GIO_BR_GREAT_TEXT ], gGameOptions.ubBobbyRayQuality );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s (%d)"), gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], gzGIOScreenText[ GIO_BR_GREAT_TEXT ], gGameOptions.ubBobbyRayQuality );
 	else if ( gGameOptions.ubBobbyRayQuality >= BR_EXCELLENT && gGameOptions.ubBobbyRayQuality < BR_AWESOME )
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s (%d)", gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], gzGIOScreenText[ GIO_BR_EXCELLENT_TEXT ], gGameOptions.ubBobbyRayQuality );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s (%d)"), gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], gzGIOScreenText[ GIO_BR_EXCELLENT_TEXT ], gGameOptions.ubBobbyRayQuality );
 	else
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s (%d)", gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], gzGIOScreenText[ GIO_BR_AWESOME_TEXT ], gGameOptions.ubBobbyRayQuality );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s (%d)"), gzGIOScreenText[ GIO_BR_QUALITY_TEXT ], gzGIOScreenText[ GIO_BR_AWESOME_TEXT ], gGameOptions.ubBobbyRayQuality );
 
 	//Bobby Ray option 2
 	if ( gGameOptions.ubBobbyRayQuantity >= BR_GOOD && gGameOptions.ubBobbyRayQuantity < BR_GREAT )
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s (%dx)", gzGIOScreenText[ GIO_BR_QUANTITY_TEXT ], gzGIOScreenText[ GIO_BR_GOOD_TEXT ], gGameOptions.ubBobbyRayQuantity );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s (%dx)"), gzGIOScreenText[ GIO_BR_QUANTITY_TEXT ], gzGIOScreenText[ GIO_BR_GOOD_TEXT ], gGameOptions.ubBobbyRayQuantity );
 	else if ( gGameOptions.ubBobbyRayQuantity >= BR_GREAT && gGameOptions.ubBobbyRayQuantity < BR_EXCELLENT )
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s (%dx)", gzGIOScreenText[ GIO_BR_QUANTITY_TEXT ], gzGIOScreenText[ GIO_BR_GREAT_TEXT ], gGameOptions.ubBobbyRayQuantity );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s (%dx)"), gzGIOScreenText[ GIO_BR_QUANTITY_TEXT ], gzGIOScreenText[ GIO_BR_GREAT_TEXT ], gGameOptions.ubBobbyRayQuantity );
 	else if ( gGameOptions.ubBobbyRayQuantity >= BR_EXCELLENT && gGameOptions.ubBobbyRayQuantity < BR_AWESOME )
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s (%dx)", gzGIOScreenText[ GIO_BR_QUANTITY_TEXT ], gzGIOScreenText[ GIO_BR_EXCELLENT_TEXT ], gGameOptions.ubBobbyRayQuantity );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s (%dx)"), gzGIOScreenText[ GIO_BR_QUANTITY_TEXT ], gzGIOScreenText[ GIO_BR_EXCELLENT_TEXT ], gGameOptions.ubBobbyRayQuantity );
 	else
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s (%dx)", gzGIOScreenText[ GIO_BR_QUANTITY_TEXT ], gzGIOScreenText[ GIO_BR_AWESOME_TEXT ], gGameOptions.ubBobbyRayQuantity );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s (%dx)"), gzGIOScreenText[ GIO_BR_QUANTITY_TEXT ], gzGIOScreenText[ GIO_BR_AWESOME_TEXT ], gGameOptions.ubBobbyRayQuantity );
 
 	// Item Progress Speed Option
 	switch( gGameOptions.ubProgressSpeedOfItemsChoices )
 	{
 		case ITEM_PROGRESS_VERY_SLOW:
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_VERY_SLOW_TEXT ] );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_VERY_SLOW_TEXT ] );
 			break;
 		case ITEM_PROGRESS_SLOW:
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_SLOW_TEXT ] );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_SLOW_TEXT ] );
 			break;
 		case ITEM_PROGRESS_NORMAL:
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_NORMAL_TEXT ] );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_NORMAL_TEXT ] );
 			break;
 		case ITEM_PROGRESS_FAST:
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_FAST_TEXT ] );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_FAST_TEXT ] );
 			break;
 		case ITEM_PROGRESS_VERY_FAST:
-			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_VERY_FAST_TEXT ] );
+			ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_PROGRESS_TITLE_TEXT ], gzGIOScreenText[ GIO_PROGRESS_VERY_FAST_TEXT ] );
 			break;
 	}
 
 	// Iron Man Mode
-	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_GAME_SAVE_STYLE_TEXT ], gzGIOScreenText[ GIO_SAVE_ANYWHERE_TEXT + gGameOptions.fIronManMode ] );
+	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_GAME_SAVE_STYLE_TEXT ], gzGIOScreenText[ GIO_SAVE_ANYWHERE_TEXT + gGameOptions.fIronManMode ] );
 
 	// All Terrorists Option
 	//if( gGameExternalOptions.fEnableAllTerrorists )
-	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_TERRORISTS_TITLE_TEXT ], gzGIOScreenText[ GIO_TERRORISTS_ALL_TEXT ] );
+	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_TERRORISTS_TITLE_TEXT ], gzGIOScreenText[ GIO_TERRORISTS_ALL_TEXT ] );
 	//else
-	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_TERRORISTS_TITLE_TEXT ], gzGIOScreenText[ GIO_TERRORISTS_RANDOM_TEXT ] );
+	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_TERRORISTS_TITLE_TEXT ], gzGIOScreenText[ GIO_TERRORISTS_RANDOM_TEXT ] );
 
 	//// All Weapon Caches Option
 	//if( gGameOptions.fEnableAllWeaponCaches )
-	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_CACHES_TITLE_TEXT ], gzGIOScreenText[ GIO_CACHES_ALL_TEXT ] );
+	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_CACHES_TITLE_TEXT ], gzGIOScreenText[ GIO_CACHES_ALL_TEXT ] );
 	//else
-	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_CACHES_TITLE_TEXT ], gzGIOScreenText[ GIO_CACHES_RANDOM_TEXT ] );
+	//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_CACHES_TITLE_TEXT ], gzGIOScreenText[ GIO_CACHES_RANDOM_TEXT ] );
 
 	// Tons of Guns Option
 	if( gGameOptions.fGunNut )
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_GUN_OPTIONS_TEXT ], gzGIOScreenText[ GIO_GUN_NUT_TEXT ] );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_GUN_OPTIONS_TEXT ], gzGIOScreenText[ GIO_GUN_NUT_TEXT ] );
 	else
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_GUN_OPTIONS_TEXT ], gzGIOScreenText[ GIO_REDUCED_GUNS_TEXT ] );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_GUN_OPTIONS_TEXT ], gzGIOScreenText[ GIO_REDUCED_GUNS_TEXT ] );
 
 	//Sci fi option
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_GAME_STYLE_TEXT ], gzGIOScreenText[ GIO_REALISTIC_TEXT + gGameOptions.ubGameStyle ] );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_GAME_STYLE_TEXT ], gzGIOScreenText[ GIO_REALISTIC_TEXT + gGameOptions.ubGameStyle ] );
 
 	////Timed Turns option
 	//// JA2Gold: no timed turns
-	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", gzGIOScreenText[ GIO_TIMED_TURN_TITLE_TEXT ], gzGIOScreenText[ GIO_NO_TIMED_TURNS_TEXT + gGameOptions.fTurnTimeLimit ] );
+	//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), gzGIOScreenText[ GIO_TIMED_TURN_TITLE_TEXT ], gzGIOScreenText[ GIO_NO_TIMED_TURNS_TEXT + gGameOptions.fTurnTimeLimit ] );
 
 	if (!is_networked)
 		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, gzLateLocalizedString[58], CurrentPlayerProgressPercentage(), HighestPlayerProgressPercentage() );

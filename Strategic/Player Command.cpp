@@ -56,7 +56,7 @@ void AddFacilitiesToBox( INT16 sMapX, INT16 sMapY, UINT32 *uiHandle, BOOLEAN fCi
 			// For a city info box, always show this line on the left side if not hidden
 			if( gfHiddenTown[ GetTownIdForSector( sMapX, sMapY ) ] )
 			{
-				swprintf( szFacilityString, L"%s:", pwTownInfoStrings[ 8 ] );
+				swprintf( szFacilityString, JA2_TEXT("%s:"), pwTownInfoStrings[ 8 ] );
 				AddMonoString( uiHandle, szFacilityString );
 				fHeaderAdded = TRUE;
 			}
@@ -71,13 +71,13 @@ void AddFacilitiesToBox( INT16 sMapX, INT16 sMapY, UINT32 *uiHandle, BOOLEAN fCi
 				if (!fCityInfoBox && uiNumFacilities == 0 && !fHeaderAdded )
 				{
 					// For a non-city info box, show this line on the left side only if there's at least one facility.
-					swprintf( szFacilityString, L"%s:", pwTownInfoStrings[ 8 ] );
+					swprintf( szFacilityString, JA2_TEXT("%s:"), pwTownInfoStrings[ 8 ] );
 					AddMonoString( uiHandle, szFacilityString );
 				}
 				else if (uiNumFacilities > 0)
 				{
 					// Add empty line on the left size to make room for text on the right.
-					AddMonoString( uiHandle, L"" );
+					AddMonoString( uiHandle, JA2_TEXT("") );
 				}
 
 				AddSecondColumnMonoString( uiHandle, gFacilityTypes[cnt].szFacilityName );
@@ -91,9 +91,9 @@ void AddFacilitiesToBox( INT16 sMapX, INT16 sMapY, UINT32 *uiHandle, BOOLEAN fCi
 						if ( wcslen( ( *prodit ).szAdditionalRequirementTips ) > 0 )
 						{
 							// Add empty line on the left size to make room for text on the right.
-							AddMonoString( uiHandle, L"" );
+							AddMonoString( uiHandle, JA2_TEXT("") );
 
-							swprintf( szTmpString, L"%s", ( *prodit ).szAdditionalRequirementTips );
+							swprintf( szTmpString, JA2_TEXT("%s"), ( *prodit ).szAdditionalRequirementTips );
 							AddSecondColumnMonoString( uiHandle, szTmpString );
 							++uiNumFacilities;
 						}
@@ -114,7 +114,7 @@ void AddFacilitiesToBox( INT16 sMapX, INT16 sMapY, UINT32 *uiHandle, BOOLEAN fCi
 	// hospital
 	if( SectorInfo[ SECTOR( sMapX, sMapY ) ].uiFacilitiesFlags & (1 << FACILITY_HOSPITAL) )
 	{
-		swprintf( sFacilitiesString, L"%s", sFacilitiesStrings[ FACILITY_HOSPITAL ] );
+		swprintf( sFacilitiesString, JA2_TEXT("%s"), sFacilitiesStrings[ FACILITY_HOSPITAL ] );
 	}
 
 	// industry
@@ -122,11 +122,11 @@ void AddFacilitiesToBox( INT16 sMapX, INT16 sMapY, UINT32 *uiHandle, BOOLEAN fCi
 	{
 		if( wcslen( sFacilitiesString ) == 0 )
 		{
-		swprintf( sFacilitiesString, L"%s", sFacilitiesStrings[ 2 ] );
+		swprintf( sFacilitiesString, JA2_TEXT("%s"), sFacilitiesStrings[ 2 ] );
 		}
 		else
 		{
-			wcscat( sFacilitiesString, L", ");
+			wcscat( sFacilitiesString, JA2_TEXT(", "));
 			wcscat( sFacilitiesString, sFacilitiesStrings[ 2 ]);
 		}
 	}
@@ -136,11 +136,11 @@ void AddFacilitiesToBox( INT16 sMapX, INT16 sMapY, UINT32 *uiHandle, BOOLEAN fCi
 	{
 		if( wcslen( sFacilitiesString ) == 0 )
 		{
-		swprintf( sFacilitiesString, L"%s", sFacilitiesStrings[ 3 ] );
+		swprintf( sFacilitiesString, JA2_TEXT("%s"), sFacilitiesStrings[ 3 ] );
 		}
 		else
 		{
-			wcscat( sFacilitiesString, L", ");
+			wcscat( sFacilitiesString, JA2_TEXT(", "));
 			wcscat( sFacilitiesString, sFacilitiesStrings[ 3 ]);
 		}
 	}
@@ -150,11 +150,11 @@ void AddFacilitiesToBox( INT16 sMapX, INT16 sMapY, UINT32 *uiHandle, BOOLEAN fCi
 	{
 		if( wcslen( sFacilitiesString ) == 0 )
 		{
-		swprintf( sFacilitiesString, L"%s", sFacilitiesStrings[ 4 ] );
+		swprintf( sFacilitiesString, JA2_TEXT("%s"), sFacilitiesStrings[ 4 ] );
 		}
 		else
 		{
-			wcscat( sFacilitiesString, L", ");
+			wcscat( sFacilitiesString, JA2_TEXT(", "));
 			wcscat( sFacilitiesString, sFacilitiesStrings[ 4 ]);
 		}
 	}
@@ -164,11 +164,11 @@ void AddFacilitiesToBox( INT16 sMapX, INT16 sMapY, UINT32 *uiHandle, BOOLEAN fCi
 	{
 		if( wcslen( sFacilitiesString ) == 0 )
 		{
-		swprintf( sFacilitiesString, L"%s", sFacilitiesStrings[ 5 ] );
+		swprintf( sFacilitiesString, JA2_TEXT("%s"), sFacilitiesStrings[ 5 ] );
 		}
 		else
 		{
-			wcscat( sFacilitiesString, L", ");
+			wcscat( sFacilitiesString, JA2_TEXT(", "));
 			wcscat( sFacilitiesString, sFacilitiesStrings[ 5 ]);
 		}
 	}
@@ -178,11 +178,11 @@ void AddFacilitiesToBox( INT16 sMapX, INT16 sMapY, UINT32 *uiHandle, BOOLEAN fCi
 	{
 		if( wcslen( sFacilitiesString ) == 0 )
 		{
-		swprintf( sFacilitiesString, L"%s", sFacilitiesStrings[ 6 ] );
+		swprintf( sFacilitiesString, JA2_TEXT("%s"), sFacilitiesStrings[ 6 ] );
 		}
 		else
 		{
-			wcscat( sFacilitiesString, L", ");
+			wcscat( sFacilitiesString, JA2_TEXT(", "));
 			wcscat( sFacilitiesString, sFacilitiesStrings[ 6 ]);
 		}
 	}

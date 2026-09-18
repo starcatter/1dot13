@@ -903,7 +903,7 @@ void DisplayFlowerDynamicItems()
 */
 	//order number
 	usPosX = StringPixLength( sOrderFormText[FLORIST_ORDER_ORDER_NUMBER], FLOWER_ORDER_SMALL_FONT) + 5 + FLOWER_ORDER_ORDER_NUM_NAME_X;
-	swprintf(sTemp, L"%d", LaptopSaveInfo.uiFlowerOrderNumber );
+	swprintf(sTemp, JA2_TEXT("%d"), LaptopSaveInfo.uiFlowerOrderNumber );
 	DrawTextToScreen( sTemp, usPosX, FLOWER_ORDER_ORDER_NUM_NAME_Y, 0, FLOWER_ORDER_SMALL_FONT, FLOWER_ORDER_SMALL_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 
 	guiFlowerPrice = 0;
@@ -927,7 +927,7 @@ void DisplayFlowerDynamicItems()
 	usPosX = StringPixLength( sOrderFormText[FLORIST_ORDER_PRICE], FLOWER_ORDER_SMALL_FONT) + 5 + FLOWER_ORDER_BOUQUET_NAME_X;
 	uiStartLoc = FLOR_GALLERY_TEXT_TOTAL_SIZE * guiCurrentlySelectedFlower + FLOR_GALLERY_TEXT_TITLE_SIZE;
 	LoadEncryptedDataFromFile(FLOR_GALLERY_TEXT_FILE, sTemp, uiStartLoc, FLOR_GALLERY_TEXT_PRICE_SIZE);
-	swscanf( sTemp, L"%hu", &usPrice);
+	swscanf( sTemp, JA2_TEXT("%hu"), &usPrice);
 
 	//if its the next day delivery
 	if( gfFLoristCheckBox0Down )
@@ -938,7 +938,7 @@ void DisplayFlowerDynamicItems()
 		//guiFlowerPrice += usPrice + FlowerOrderLocations[ gubCurrentlySelectedFlowerLocation ].ubWhenItGetsThereCost;
 		guiFlowerPrice += usPrice + gPostalService.GetDestinationFee(1, gDestinationTable[gubCurrentlySelectedFlowerLocation]->usID) / 2;
 
-	swprintf( sTemp, L"$%d.00 %s", guiFlowerPrice, pMessageStrings[ MSG_USDOLLAR_ABBREVIATION ] );
+	swprintf( sTemp, JA2_TEXT("$%d.00 %s"), guiFlowerPrice, pMessageStrings[ MSG_USDOLLAR_ABBREVIATION ] );
 	DrawTextToScreen( sTemp, usPosX, FLOWER_ORDER_BOUQUET_NAME_Y, 0, FLOWER_ORDER_SMALL_FONT, FLOWER_ORDER_SMALL_COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 }
 

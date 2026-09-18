@@ -1761,13 +1761,13 @@ void ShowMapEdgepoints()
 	}
 	if( !usIllegal1 && !usIllegal2 )
 	{
-		ScreenMsg( 0, MSG_TESTVERSION, L"Showing display of map edgepoints" );
+		ScreenMsg( 0, MSG_TESTVERSION, JA2_TEXT("Showing display of map edgepoints") );
 	}
 	else
 	{
-		ScreenMsg( 0, MSG_TESTVERSION, L"Showing display of map edgepoints (%d illegal primary, %d illegal secondary)" );
+		ScreenMsg( 0, MSG_TESTVERSION, JA2_TEXT("Showing display of map edgepoints (%d illegal primary, %d illegal secondary)") );
 	}
-	ScreenMsg( 0, MSG_TESTVERSION, L"N:%d:%d E:%d:%d S:%d:%d W:%d:%d",
+	ScreenMsg( 0, MSG_TESTVERSION, JA2_TEXT("N:%d:%d E:%d:%d S:%d:%d W:%d:%d"),
 		gus1stNorthEdgepointArraySize, gus2ndNorthEdgepointArraySize,
 		gus1stEastEdgepointArraySize,	gus2ndEastEdgepointArraySize,
 		gus1stSouthEdgepointArraySize, gus2ndSouthEdgepointArraySize,
@@ -1777,7 +1777,7 @@ void ShowMapEdgepoints()
 void HideMapEdgepoints()
 {
 	INT32 i;
-	ScreenMsg( 0, MSG_TESTVERSION, L"Removing display of map edgepoints" );
+	ScreenMsg( 0, MSG_TESTVERSION, JA2_TEXT("Removing display of map edgepoints") );
 	for( i = 0 ; i < gus1stNorthEdgepointArraySize; i++ )
 	{
 		if( gps1stNorthEdgepointArray[ i ] != -1 )

@@ -9393,7 +9393,7 @@ void CheckEquipmentForFragileItemDamage( SOLDIERTYPE *pSoldier, INT32 iDamage )
 BOOLEAN DamageItemOnGround( OBJECTTYPE * pObject, INT32 sGridNo, INT8 bLevel, INT32 iDamage, SoldierID ubOwner )
 {
 #ifdef JA2BETAVERSION
-	CHAR tmpMPDbgString[512];
+	CHAR8 tmpMPDbgString[512];
 	sprintf(tmpMPDbgString,"DamageItemOnGround ( usItem : %i , sGridNo : %i , bLevel : %i , iDamage : %i , ubOwner : %i )\n",pObject->usItem, sGridNo , bLevel , iDamage , ubOwner.i );
 	MPDebugMsg(tmpMPDbgString);
 #endif
@@ -11189,7 +11189,7 @@ INT16 GetRateOfFireBonus( OBJECTTYPE * pObj )
 		if ( (gMAXITEMS_READ <= pObj->usItem) || (gMAXITEMS_READ <= (*pObj)[0]->data.gun.usGunAmmoItem) )
 		{
 			DebugMsg( TOPIC_JA2, DBG_LEVEL_1, String( "GetRateOfFireBonus would crash: pObj->usItem=%d or (*pObj)[0]->data.gun.usGunAmmoItem=%d ist higher than max %d", pObj->usItem, (*pObj)[0]->data.gun.usGunAmmoItem, gMAXITEMS_READ ) );
-			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, L"GetRateOfFireBonus would crash: pObj->usItem=%d or (*pObj)[0]->data.gun.usGunAmmoItem=%d ist higher than max %d", pObj->usItem, (*pObj)[0]->data.gun.usGunAmmoItem, gMAXITEMS_READ );
+			ScreenMsg( MSG_FONT_RED, MSG_DEBUG, JA2_TEXT("GetRateOfFireBonus would crash: pObj->usItem=%d or (*pObj)[0]->data.gun.usGunAmmoItem=%d ist higher than max %d"), pObj->usItem, (*pObj)[0]->data.gun.usGunAmmoItem, gMAXITEMS_READ );
 			AssertMsg( 0, "GetRateOfFireBonus would crash" );
 			return 0; /* cannot calculate Bonus, this only happens sometimes in FULLSCREEN */
 		}
@@ -15678,11 +15678,11 @@ UINT16 rdclasstaboocnt = 0;
 
 INT8  rditemmaxcoolness = 0;
 
-BOOL AddToRandomListFromRandomItemClass( UINT16 usRandomItemClass );
-BOOL AddToRandomListFromRandomItem( UINT16 usRandomItem );
-BOOL AddToRandomListFromItem( UINT16 usItem );
-BOOL RandomItemClassIsTaboo( UINT16 usRandomItemClass );
-BOOL RandomItemIsTaboo( UINT16 usRandomItem );
+BOOLEAN AddToRandomListFromRandomItemClass( UINT16 usRandomItemClass );
+BOOLEAN AddToRandomListFromRandomItem( UINT16 usRandomItem );
+BOOLEAN AddToRandomListFromItem( UINT16 usItem );
+BOOLEAN RandomItemClassIsTaboo( UINT16 usRandomItemClass );
+BOOLEAN RandomItemIsTaboo( UINT16 usRandomItem );
 
 BOOLEAN GetItemFromRandomItem( UINT16 usRandomItem, UINT16* pusNewItem )
 {
@@ -15730,7 +15730,7 @@ BOOLEAN GetItemFromRandomItem( UINT16 usRandomItem, UINT16* pusNewItem )
 	return FALSE;
 }
 
-BOOL AddToRandomListFromRandomItemClass( UINT16 usRandomItemClass )
+BOOLEAN AddToRandomListFromRandomItemClass( UINT16 usRandomItemClass )
 {
 	if ( usRandomItemClass && !RandomItemClassIsTaboo(usRandomItemClass) )
 	{
@@ -15759,7 +15759,7 @@ BOOL AddToRandomListFromRandomItemClass( UINT16 usRandomItemClass )
 }
 
 // add from a random item to the list
-BOOL AddToRandomListFromRandomItem( UINT16 usRandomItem )
+BOOLEAN AddToRandomListFromRandomItem( UINT16 usRandomItem )
 {
 	if ( Item[usRandomItem].randomitem > 0 && !RandomItemIsTaboo( usRandomItem ) )
 	{
@@ -15774,7 +15774,7 @@ BOOL AddToRandomListFromRandomItem( UINT16 usRandomItem )
 }
 
 // add an item to the list
-BOOL AddToRandomListFromItem( UINT16 usItem )
+BOOLEAN AddToRandomListFromItem( UINT16 usItem )
 {
 	if ( usItem )
 	{
@@ -15805,7 +15805,7 @@ BOOL AddToRandomListFromItem( UINT16 usItem )
 }
 
 // check wether this class is already on the taboo list (forbidden to add from there again, because this can lead to loops). If not, add this to the taboo list
-BOOL RandomItemClassIsTaboo( UINT16 usRandomItemClass )
+BOOLEAN RandomItemClassIsTaboo( UINT16 usRandomItemClass )
 {
 	for ( int i = 0; i < rdclasstaboocnt; ++i)
 	{
@@ -15819,7 +15819,7 @@ BOOL RandomItemClassIsTaboo( UINT16 usRandomItemClass )
 	return FALSE;
 }
 
-BOOL RandomItemIsTaboo( UINT16 usRandomItem )
+BOOLEAN RandomItemIsTaboo( UINT16 usRandomItem )
 {
 	for ( int i = 0; i < rdtaboocnt; ++i)
 	{

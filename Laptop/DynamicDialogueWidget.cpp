@@ -39,7 +39,7 @@ DDBox::DDBox( UINT8 aID )
 	musHeight = 0;
 	musWidth = 0;						// width of text field
 
-	swprintf( mText, L"" );
+	swprintf( mText, JA2_TEXT("") );
 
 	musCreationTime = musEndTime = GetJA2Clock( );
 
@@ -412,7 +412,7 @@ IMPDialogueChooseBox::IMPDialogueChooseBox( )
 
 	mEntryVector.clear( );
 
-	swprintf( mText, L"" );
+	swprintf( mText, JA2_TEXT("") );
 
 	mSelectedEntry = 0;
 

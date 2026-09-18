@@ -31,7 +31,7 @@ extern INT16 sGridX; // symbol already declared globally in editscreen.cpp (jona
 extern INT16 sGridY; // symbol already declared globally in editscreen.cpp (jonathanl)
 INT32 sBadMarker = -1;
 
-//STR16 wszSelType[6]= { L"Small", L"Medium", L"Large", L"XLarge", L"Width: xx", L"Area" };
+//STR16 wszSelType[6]= { JA2_TEXT("Small"), JA2_TEXT("Medium"), JA2_TEXT("Large"), JA2_TEXT("XLarge"), JA2_TEXT("Width: xx"), JA2_TEXT("Area") };
 
 BOOLEAN gfAllowRightButtonSelections = FALSE;
 BOOLEAN gfCurrentSelectionWithRightButton = FALSE;

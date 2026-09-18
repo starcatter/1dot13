@@ -6,6 +6,7 @@
 #include "GameSettings.h"
 #include "fileio/FileServices.h"
 #include "fileio/StoreRouter.h"
+#include "UtfConversion.h"
 
 #include <sstream>
 
@@ -76,9 +77,10 @@ bool MDItemVideoObjects::registerItemsFromFilePattern(std::string_view filePatte
 		std::istringstream name(entry.name);
 		if(!(name >> item))
 		{
-			std::wstring err = _BS(L"Could not extract item number from file \"") <<
-				vfs::String(entry.name) << L"\"" << _BS::wget;
-			WriteMessageToFile( const_cast<STR16>(err.c_str()) );
+			CHAR16 error[512];
+			const ja2::text::Utf16String name = ja2::text::utf8ToUtf16ReplacingInvalid(entry.name);
+			swprintf(error, JA2_TEXT("Could not extract item number from file \"%s\""), name.c_str());
+			WriteMessageToFile(error);
 			continue;
 		}
 		const std::string fileName = directory + entry.name;

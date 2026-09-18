@@ -510,8 +510,8 @@ void RenderEditorItemsInfo()
 		if (usGraphicNum >= hVObject->usNumberOfObjects) // Tried to access graphics outside of hvObject's indices
 		{
 			static vfs::Log& editorLog = *vfs::Log::create(L"EditorItems.log");
-			editorLog	<< L"Tried to access item [" 
-						<< item->ubGraphicNum << L"/" << hVObject->usNumberOfObjects 
+			editorLog	<< JA2_TEXT("Tried to access item [") 
+						<< item->ubGraphicNum << JA2_TEXT("/") << hVObject->usNumberOfObjects 
 						<< L"]" << vfs::Log::endl;
 		}
 		sWidth = hVObject->pETRLEObject[usGraphicNum].usWidth;
@@ -526,12 +526,12 @@ void RenderEditorItemsInfo()
 
 		if (eInfo.uiItemType == TBAR_MODE_ITEM_KEYS)
 		{
-			swprintf(pStr, L"%S", LockTable[i].ubEditorName);
+			swprintf(pStr, JA2_TEXT("%S"), LockTable[i].ubEditorName);
 		}
 		else if (eInfo.uiItemType != TBAR_MODE_ITEM_TRIGGERS)
 		{
 			LoadItemInfo(eInfo.pusItemIndex[i], pItemName, NULL);
-			swprintf(pStr, L"%s", pItemName);
+			swprintf(pStr, JA2_TEXT("%s"), pItemName);
 		}
 		else
 		{
@@ -578,11 +578,11 @@ void RenderEditorItemsInfo()
 		SetFontForeground(FONT_LTGREEN);
 		SetFontShadow(FONT_NEARBLACK);
 		// item index number
-		mprintf( x + 12, y + 18, L"%d", eInfo.pusItemIndex[ i ] );
+		mprintf( x + 12, y + 18, JA2_TEXT("%d"), eInfo.pusItemIndex[ i ] );
 
 		// index number within usItemClass
 		SetFontForeground( FONT_LTBLUE );
-		mprintf( x + 40, y + 18, L"%d", i );
+		mprintf( x + 40, y + 18, JA2_TEXT("%d"), i );
 
 		// numbers of each visible item
 		usNumItems = CountNumberOfEditorPlacementsInWorld( i, &usQuantity );
@@ -591,9 +591,9 @@ void RenderEditorItemsInfo()
 			SetFont( FONT10ARIAL );
 			SetFontForeground( FONT_YELLOW );
 			if( usNumItems == usQuantity )
-				mprintf( x + 10, y + 4, L"%d", usNumItems );
+				mprintf( x + 10, y + 4, JA2_TEXT("%d"), usNumItems );
 			else
-				mprintf( x + 10, y + 4, L"%d(%d)", usNumItems, usQuantity );
+				mprintf( x + 10, y + 4, JA2_TEXT("%d(%d)"), usNumItems, usQuantity );
 		}
 	}
 }

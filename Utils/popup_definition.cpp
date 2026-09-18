@@ -23,7 +23,7 @@
 		}
 	}
 
-	BOOL popupDef::applyToBox(POPUP* popup){
+	BOOLEAN popupDef::applyToBox(POPUP* popup){
 		for(std::vector<popupDefContent*>::iterator content=this->content.begin(); content != this->content.end(); ++content)
 		{
 			if ( (*content)->addToBox( popup ) != TRUE ) return FALSE;
@@ -32,7 +32,7 @@
 		return TRUE;
 	}
 
-	BOOL popupDef::addOption(std::wstring* name, UINT16 callbackId, UINT16 availId){
+	BOOLEAN popupDef::addOption(ja2::text::Utf16String* name, UINT16 callbackId, UINT16 availId){
 		// TODO: check for vaid callbacl/avail ID
 		
 		this->content.push_back( new popupDefOption(name,callbackId,availId) );
@@ -40,7 +40,7 @@
 		return TRUE;
 	}
 
-	popupDef * popupDef::addSubPopup(std::wstring* name){
+	popupDef * popupDef::addSubPopup(ja2::text::Utf16String* name){
 
 		popupDefSubPopupOption * sub = new popupDefSubPopupOption(name);
 
@@ -49,14 +49,14 @@
 		return sub->getSubDef();
 	}
 
-	BOOL popupDef::addSubPopup(popupDefSubPopupOption* sub){
+	BOOLEAN popupDef::addSubPopup(popupDefSubPopupOption* sub){
 		// TODO: add check for max options
 		this->content.push_back( sub );
 
 		return TRUE;
 	};
 
-	BOOL popupDef::addGenerator(UINT16 id){
+	BOOLEAN popupDef::addGenerator(UINT16 id){
 		// TODO: check for valid generator id
 
 		this->content.push_back( new popupDefContentGenerator(id) );
@@ -77,7 +77,7 @@
 //	popupDefOption helpers
 //////////////////////////////////////
 
-	static BOOL setPopupDefCallback( POPUP_OPTION * opt, UINT16 callbackId ){
+	static BOOLEAN setPopupDefCallback( POPUP_OPTION * opt, UINT16 callbackId ){
 	
 		// TODO
 		opt->setAction(NULL);
@@ -86,7 +86,7 @@
 
 	}
 
-	static BOOL setPopupDefAvail( POPUP_OPTION * opt, UINT16 callbackId ){
+	static BOOLEAN setPopupDefAvail( POPUP_OPTION * opt, UINT16 callbackId ){
 	
 		// TODO
 		opt->setAvail(NULL);
@@ -104,7 +104,7 @@
 
 	~popupDefOption::popupDefOption(){}
 	*/
-	BOOL popupDefOption::addToBox(POPUP * popup){
+	BOOLEAN popupDefOption::addToBox(POPUP * popup){
 	
 		POPUP_OPTION * opt = new POPUP_OPTION();
 
@@ -130,7 +130,7 @@
 	
 	popupDefSubPopupOption::~popupDefSubPopupOption(){}
 	*/
-	BOOL popupDefSubPopupOption::addToBox(POPUP * popup){
+	BOOLEAN popupDefSubPopupOption::addToBox(POPUP * popup){
 	
 		POPUP_SUB_POPUP_OPTION * sub = new POPUP_SUB_POPUP_OPTION( *this->name );
 
@@ -162,14 +162,14 @@
 	void addDrugsToPocketPopup( SOLDIERTYPE *pSoldier, INT16 sPocket, POPUP* popup );
 	*/
 
-	static BOOL applyPopupContentGenerator( POPUP * popup, UINT16 generatorId ){
+	static BOOLEAN applyPopupContentGenerator( POPUP * popup, UINT16 generatorId ){
 
 		SOLDIERTYPE	*pSoldier;
 		GetSoldier( &pSoldier, gCharactersList[ bSelectedInfoChar ].usSolID );
 
 		switch(generatorId){
 		case popupGenerators::dummy:
-			popup->addOption(L"Dummy generator", NULL);
+			popup->addOption(JA2_TEXT("Dummy generator"), NULL);
 			break;
 
 		case popupGenerators::addArmor:
@@ -227,7 +227,7 @@
 	popupDefContentGenerator::~popupDefContentGenerator(){}
 	*/
 
-	BOOL popupDefContentGenerator::addToBox(POPUP * popup){
+	BOOLEAN popupDefContentGenerator::addToBox(POPUP * popup){
 	
 		return applyPopupContentGenerator( popup, this->generatorId );
 	

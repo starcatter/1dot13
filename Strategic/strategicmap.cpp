@@ -1640,20 +1640,20 @@ void EndLoadScreen( )
 	SetFontBackground( FONT_NEARBLACK );
 	if ( !gbWorldSectorZ )
 	{
-		swprintf( str, L"%c%d ENTER SECTOR TIME:  %d.%02d seconds.",
+		swprintf( str, JA2_TEXT("%c%d ENTER SECTOR TIME:  %d.%02d seconds."),
 				  'A' + gWorldSectorY - 1, gWorldSectorX, uiSeconds, uiHundreths );
 	}
 	else
 	{
-		swprintf( str, L"%c%d_b%d ENTER SECTOR TIME:  %d.%02d seconds.",
+		swprintf( str, JA2_TEXT("%c%d_b%d ENTER SECTOR TIME:  %d.%02d seconds."),
 				  'A' + gWorldSectorY - 1, gWorldSectorX, gbWorldSectorZ, uiSeconds, uiHundreths );
 	}
 	ScreenMsg( FONT_YELLOW, MSG_TESTVERSION, str );
 	sgp::Logger_ID time_log_id = sgp::Logger::instance( ).createLogger( );
-	sgp::Logger::instance( ).connectFile( time_log_id, L"TimeResults.txt", true, sgp::Logger::FLUSH_ON_ENDL );
+	sgp::Logger::instance( ).connectFile( time_log_id, "TimeResults.txt", true, sgp::Logger::FLUSH_ON_ENDL );
 	sgp::Logger::LogInstance timeResults = SGP_LOG( time_log_id );
 
-	ScreenMsg( FONT_YELLOW, MSG_TESTVERSION, L"See JA2\\Data\\TimeResults.txt for more detailed timings." );
+	ScreenMsg( FONT_YELLOW, MSG_TESTVERSION, JA2_TEXT("See JA2\\Data\\TimeResults.txt for more detailed timings.") );
 
 	//Record all of the timings.
 	timeResults << str << sgp::endl;
@@ -1898,7 +1898,7 @@ void InitializeSAMSites( void )
 void GetShortSectorString( INT16 sMapX, INT16 sMapY, STR16 sString )
 {
 	// OK, build string id like J11
-	swprintf( sString, L"%S%S", pVertStrings[sMapY], pHortStrings[sMapX] );
+	swprintf( sString, JA2_TEXT("%S%S"), pVertStrings[sMapY], pHortStrings[sMapX] );
 }
 
 
@@ -1954,7 +1954,7 @@ void GetMapFileName( INT16 sMapX, INT16 sMapY, INT8 bSectorZ, STR8 bString, BOOL
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String( "Map does not exist for %s, using default.", bTestString ) );
 		// Set to a string we know!
 		sprintf( bString, "H10.DAT");
-		ScreenMsg( FONT_YELLOW, MSG_DEBUG, L"Using PLACEHOLDER map!" );
+		ScreenMsg( FONT_YELLOW, MSG_DEBUG, JA2_TEXT("Using PLACEHOLDER map!") );
 	}
 	return;
 }
@@ -2650,7 +2650,7 @@ void PrepareLoadedSector( )
 		else
 		{
 #ifdef JA2BETAVERSION
-			ScreenMsg( FONT_RED, MSG_ERROR, L"Ambush aborted in sector %c%d -- no center point in map.  LC:1", gWorldSectorY + 'A' - 1, gWorldSectorX );
+			ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Ambush aborted in sector %c%d -- no center point in map.  LC:1"), gWorldSectorY + 'A' - 1, gWorldSectorX );
 #endif
 		}
 	}
@@ -2670,7 +2670,7 @@ void PrepareLoadedSector( )
 		CalculateNonPersistantPBIInfo( );
 	}
 
-	ScreenMsg( FONT_YELLOW, MSG_DEBUG, L"Current Time is: %d", GetWorldTotalMin( ) );
+	ScreenMsg( FONT_YELLOW, MSG_DEBUG, JA2_TEXT("Current Time is: %d"), GetWorldTotalMin( ) );
 
 #ifdef JA2UB	
 	HandleSectorSpecificModificatioToMap( gWorldSectorX, gWorldSectorY, gbWorldSectorZ, FALSE );
@@ -3024,7 +3024,7 @@ BOOLEAN EnterSector( INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ )
 	//#ifdef JA2TESTVERSION
 	//	//add more detailed progress bar
 	//	DefineProgressBarPanel( 0, 65, 79, 94, 130, 350, 510, 430 );
-	//	swprintf( str, L"Loading map:  %S", bFilename );
+	//	swprintf( str, JA2_TEXT("Loading map:  %S"), bFilename );
 	//	SetProgressBarTitle( 0, str, FONT12POINT1, FONT_BLACK, FONT_BLACK );
 	//#endif
 	if ( !LoadWorld( bFilename ) )
@@ -3359,7 +3359,7 @@ void UpdateMercInSector( SOLDIERTYPE *pSoldier, INT16 sSectorX, INT16 sSectorY, 
 #endif					
 				if ( TileIsOutOfBounds( pSoldier->sInsertionGridNo ) )
 				{
-					ScreenMsg( FONT_RED, MSG_ERROR, L"Main edgepoint search failed for %s -- substituting entrypoint.", pSoldier->name );
+					ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Main edgepoint search failed for %s -- substituting entrypoint."), pSoldier->name );
 					pSoldier->ubStrategicInsertionCode = (UINT8)pSoldier->usStrategicInsertionData;
 					goto MAPEDGEPOINT_SEARCH_FAILED;
 				}
@@ -3376,7 +3376,7 @@ void UpdateMercInSector( SOLDIERTYPE *pSoldier, INT16 sSectorX, INT16 sSectorY, 
 #endif					
 				if ( TileIsOutOfBounds( pSoldier->sInsertionGridNo ) )
 				{
-					ScreenMsg( FONT_RED, MSG_ERROR, L"Isolated edgepont search failed for %s -- substituting entrypoint.", pSoldier->name );
+					ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Isolated edgepont search failed for %s -- substituting entrypoint."), pSoldier->name );
 					pSoldier->ubStrategicInsertionCode = (UINT8)pSoldier->usStrategicInsertionData;
 					goto MAPEDGEPOINT_SEARCH_FAILED;
 				}
@@ -3423,32 +3423,32 @@ void UpdateMercInSector( SOLDIERTYPE *pSoldier, INT16 sSectorX, INT16 sSectorY, 
 				GetLoadedSectorString( szSector );
 				if ( gMapInformation.sNorthGridNo != -1 )
 				{
-					swprintf( szEntry, L"north" );
+					swprintf( szEntry, JA2_TEXT("north") );
 					sGridNo = gMapInformation.sNorthGridNo;
 				}
 				else if ( gMapInformation.sEastGridNo != -1 )
 				{
-					swprintf( szEntry, L"east" );
+					swprintf( szEntry, JA2_TEXT("east") );
 					sGridNo = gMapInformation.sEastGridNo;
 				}
 				else if ( gMapInformation.sSouthGridNo != -1 )
 				{
-					swprintf( szEntry, L"south" );
+					swprintf( szEntry, JA2_TEXT("south") );
 					sGridNo = gMapInformation.sSouthGridNo;
 				}
 				else if ( gMapInformation.sWestGridNo != -1 )
 				{
-					swprintf( szEntry, L"west" );
+					swprintf( szEntry, JA2_TEXT("west") );
 					sGridNo = gMapInformation.sWestGridNo;
 				}
 				else if ( gMapInformation.sCenterGridNo != -1 )
 				{
-					swprintf( szEntry, L"center" );
+					swprintf( szEntry, JA2_TEXT("center") );
 					sGridNo = gMapInformation.sCenterGridNo;
 				}
 				else
 				{
-					ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Sector %s has NO entrypoints -- using precise center of map for %s.", szSector, pSoldier->name );
+					ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Sector %s has NO entrypoints -- using precise center of map for %s."), szSector, pSoldier->name );
 					pSoldier->sInsertionGridNo = (WORLD_ROWS * WORLD_COLS + WORLD_COLS) / 2;//12880
 					AddSoldierToSector( pSoldier->ubID );
 					return;
@@ -3457,19 +3457,19 @@ void UpdateMercInSector( SOLDIERTYPE *pSoldier, INT16 sSectorX, INT16 sSectorY, 
 				switch ( pSoldier->ubStrategicInsertionCode )
 				{
 				case INSERTION_CODE_NORTH:
-					ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Sector %s doesn't have a north entrypoint -- substituting  %s entrypoint for %s.", szSector, szEntry, pSoldier->name );
+					ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Sector %s doesn't have a north entrypoint -- substituting  %s entrypoint for %s."), szSector, szEntry, pSoldier->name );
 					break;
 				case INSERTION_CODE_EAST:
-					ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Sector %s doesn't have a east entrypoint -- substituting  %s entrypoint for %s.", szSector, szEntry, pSoldier->name );
+					ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Sector %s doesn't have a east entrypoint -- substituting  %s entrypoint for %s."), szSector, szEntry, pSoldier->name );
 					break;
 				case INSERTION_CODE_SOUTH:
-					ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Sector %s doesn't have a south entrypoint -- substituting  %s entrypoint for %s.", szSector, szEntry, pSoldier->name );
+					ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Sector %s doesn't have a south entrypoint -- substituting  %s entrypoint for %s."), szSector, szEntry, pSoldier->name );
 					break;
 				case INSERTION_CODE_WEST:
-					ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Sector %s doesn't have a west entrypoint -- substituting  %s entrypoint for %s.", szSector, szEntry, pSoldier->name );
+					ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Sector %s doesn't have a west entrypoint -- substituting  %s entrypoint for %s."), szSector, szEntry, pSoldier->name );
 					break;
 				case INSERTION_CODE_CENTER:
-					ScreenMsg( FONT_RED, MSG_BETAVERSION, L"Sector %s doesn't have a center entrypoint -- substituting  %s entrypoint for %s.", szSector, szEntry, pSoldier->name );
+					ScreenMsg( FONT_RED, MSG_BETAVERSION, JA2_TEXT("Sector %s doesn't have a center entrypoint -- substituting  %s entrypoint for %s."), szSector, szEntry, pSoldier->name );
 					break;
 				}
 			}
@@ -3496,7 +3496,7 @@ void GetSectorIDString( INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ, STR16 zSt
 
 	if ( sSectorX <= 0 || sSectorY <= 0 || bSectorZ < 0 )
 	{
-		//swprintf( zString, L"%s", pErrorStrings[0] );
+		//swprintf( zString, JA2_TEXT("%s"), pErrorStrings[0] );
 	}
 	else if ( bSectorZ != 0 ) // UNDERGROUND SECTORS
 	{
@@ -3512,7 +3512,7 @@ void GetSectorIDString( INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ, STR16 zSt
 		AssertLT( ubSectorID, 256 );
 		pSector = &SectorInfo[ubSectorID];
 		ubLandType = pSector->ubTraversability[4];
-		swprintf( zString, L"%c%d: ", 'A' + sSectorY - 1, sSectorX );
+		swprintf( zString, JA2_TEXT("%c%d: "), 'A' + sSectorY - 1, sSectorX );
 
 		BOOLEAN fSectorHasXMLNames = TRUE;
 		CHAR16 zUnexploredUnderground[MAX_SECTOR_NAME_LENGTH];
@@ -3554,7 +3554,7 @@ void GetSectorIDString( INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ, STR16 zSt
 				bMineIndex = GetIdOfMineForSector( sSectorX, sSectorY, bSectorZ );
 				if ( bMineIndex != -1 )
 				{
-					swprintf( zString, L"%c%d: %s %s", 'A' + sSectorY - 1, sSectorX, pTownNames[GetTownAssociatedWithMine( bMineIndex )], pwMineStrings[0] );
+					swprintf( zString, JA2_TEXT("%c%d: %s %s"), 'A' + sSectorY - 1, sSectorX, pTownNames[GetTownAssociatedWithMine( bMineIndex )], pwMineStrings[0] );
 				}
 				else if ( pUnderground->fVisited )
 				{
@@ -3580,9 +3580,9 @@ void GetSectorIDString( INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ, STR16 zSt
 				}
 
 				if ( pUnderground->ubNumCreatures )
-					swprintf( zString, L"%c%d: %s", 'A' + sSectorY - 1, sSectorX, pLandTypeStrings[CREATURE_LAIR] );
+					swprintf( zString, JA2_TEXT("%c%d: %s"), 'A' + sSectorY - 1, sSectorX, pLandTypeStrings[CREATURE_LAIR] );
 				//else
-				//	swprintf( zString, L"%c%d-%d", 'A' + sSectorY - 1, sSectorX, bSectorZ );
+				//	swprintf( zString, JA2_TEXT("%c%d-%d"), 'A' + sSectorY - 1, sSectorX, bSectorZ );
 			}
 		}
 		else // UNDERGROUND HARDCODED
@@ -3593,36 +3593,36 @@ void GetSectorIDString( INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ, STR16 zSt
 				bMineIndex = GetIdOfMineForSector( sSectorX, sSectorY, bSectorZ );
 				if ( bMineIndex != -1 )
 				{
-					swprintf( zString, L"%c%d: %s %s", 'A' + sSectorY - 1, sSectorX, pTownNames[GetTownAssociatedWithMine( bMineIndex )], pwMineStrings[0] );
+					swprintf( zString, JA2_TEXT("%c%d: %s %s"), 'A' + sSectorY - 1, sSectorX, pTownNames[GetTownAssociatedWithMine( bMineIndex )], pwMineStrings[0] );
 				}
 				else switch ( SECTOR( sSectorX, sSectorY ) )
 				{
 				case SEC_A10:
-					swprintf( zString, L"A10: %s", pLandTypeStrings[REBEL_HIDEOUT] );
+					swprintf( zString, JA2_TEXT("A10: %s"), pLandTypeStrings[REBEL_HIDEOUT] );
 					break;
 				case SEC_J9:
-					swprintf( zString, L"J9: %s", pLandTypeStrings[TIXA_DUNGEON] );
+					swprintf( zString, JA2_TEXT("J9: %s"), pLandTypeStrings[TIXA_DUNGEON] );
 					break;
 				case SEC_K4:
-					swprintf( zString, L"K4: %s", pLandTypeStrings[ORTA_BASEMENT] );
+					swprintf( zString, JA2_TEXT("K4: %s"), pLandTypeStrings[ORTA_BASEMENT] );
 					break;
 				case SEC_O3:
-					swprintf( zString, L"O3: %s", pLandTypeStrings[TUNNEL] );
+					swprintf( zString, JA2_TEXT("O3: %s"), pLandTypeStrings[TUNNEL] );
 					break;
 				case SEC_P3:
-					swprintf( zString, L"P3: %s", pLandTypeStrings[SHELTER] );
+					swprintf( zString, JA2_TEXT("P3: %s"), pLandTypeStrings[SHELTER] );
 					break;
 				default:
 					if ( pUnderground->ubNumCreatures )
-						swprintf( zString, L"%c%d: %s", 'A' + sSectorY - 1, sSectorX, pLandTypeStrings[CREATURE_LAIR] );
+						swprintf( zString, JA2_TEXT("%c%d: %s"), 'A' + sSectorY - 1, sSectorX, pLandTypeStrings[CREATURE_LAIR] );
 					else
-						swprintf( zString, L"%c%d-%d", 'A' + sSectorY - 1, sSectorX, bSectorZ );
+						swprintf( zString, JA2_TEXT("%c%d-%d"), 'A' + sSectorY - 1, sSectorX, bSectorZ );
 					break;
 				}
 			}
 			else
 			{ //Display nothing
-				wcscpy( zString, L"" );
+				wcscpy( zString, JA2_TEXT("") );
 			}
 		}
 #else
@@ -3644,7 +3644,7 @@ void GetSectorIDString( INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ, STR16 zSt
 		AssertLT( ubSectorID, 256 );
 		pSector = &SectorInfo[ubSectorID];
 		ubLandType = pSector->ubTraversability[4];
-		swprintf( zString, L"%c%d: ", 'A' + sSectorY - 1, sSectorX );
+		swprintf( zString, JA2_TEXT("%c%d: "), 'A' + sSectorY - 1, sSectorX );
 
 		////////////////////////////////////
 		// Read and verify XML sector names
@@ -3801,7 +3801,7 @@ void GetSectorIDString( INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ, STR16 zSt
 							UINT8 ubMineIndex = GetMineIndexForSector( sSectorX, sSectorY );
 							if ( gMineStatus[ubMineIndex].sSectorX == sSectorX && gMineStatus[ubMineIndex].sSectorY == sSectorY )
 							{
-							swprintf( zString, L" %s", MineralsName[gMineStatus[ubMineIndex].ubMineType].sType );
+							swprintf( zString, JA2_TEXT(" %s"), MineralsName[gMineStatus[ubMineIndex].ubMineType].sType );
 							}
 							*/
 							switch ( ubSectorID )
@@ -3812,7 +3812,7 @@ void GetSectorIDString( INT16 sSectorX, INT16 sSectorY, INT8 bSectorZ, STR16 zSt
 							case SEC_H3:
 							case SEC_H8:
 							case SEC_I14:
-								wcscat( zString, L" " ); //space
+								wcscat( zString, JA2_TEXT(" ") ); //space
 								wcscat( zString, pwMineStrings[0] ); //then "Mine"
 								break;
 							}
@@ -3867,7 +3867,7 @@ UINT8 SetInsertionDataFromAdjacentMoveDirection( SOLDIERTYPE *pSoldier, UINT8 ub
 		// Wrong direction given!
 #ifdef JA2BETAVERSION
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String( "Improper insertion direction %d given to SetInsertionDataFromAdjacentMoveDirection", ubTacticalDirection ) );
-		ScreenMsg( FONT_RED, MSG_ERROR, L"Improper insertion direction %d given to SetInsertionDataFromAdjacentMoveDirection", ubTacticalDirection );
+		ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Improper insertion direction %d given to SetInsertionDataFromAdjacentMoveDirection"), ubTacticalDirection );
 #endif
 		ubDirection = EAST_STRATEGIC_MOVE;
 		pSoldier->ubStrategicInsertionCode = INSERTION_CODE_WEST;
@@ -3904,7 +3904,7 @@ UINT8 GetInsertionDataFromAdjacentMoveDirection( UINT8 ubTacticalDirection, INT3
 		// Wrong direction given!
 #ifdef JA2BETAVERSION
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String( "Improper insertion direction %d given to GetInsertionDataFromAdjacentMoveDirection", ubTacticalDirection ) );
-		ScreenMsg( FONT_RED, MSG_ERROR, L"Improper insertion direction %d given to GetInsertionDataFromAdjacentMoveDirection", ubTacticalDirection );
+		ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Improper insertion direction %d given to GetInsertionDataFromAdjacentMoveDirection"), ubTacticalDirection );
 #endif
 		ubDirection = EAST_STRATEGIC_MOVE;
 	}
@@ -3940,7 +3940,7 @@ UINT8 GetStrategicInsertionDataFromAdjacentMoveDirection( UINT8 ubTacticalDirect
 		// Wrong direction given!
 #ifdef JA2BETAVERSION
 		DebugMsg( TOPIC_JA2, DBG_LEVEL_3, String( "Improper insertion direction %d given to SetInsertionDataFromAdjacentMoveDirection", ubTacticalDirection ) );
-		ScreenMsg( FONT_RED, MSG_ERROR, L"Improper insertion direction %d given to GetStrategicInsertionDataFromAdjacentMoveDirection", ubTacticalDirection );
+		ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Improper insertion direction %d given to GetStrategicInsertionDataFromAdjacentMoveDirection"), ubTacticalDirection );
 #endif
 		ubDirection = EAST_STRATEGIC_MOVE;
 	}
@@ -6317,16 +6317,16 @@ void GetLoadedSectorString( STR16 pString )
 {
 	if ( !gfWorldLoaded )
 	{
-		swprintf( pString, L"" );
+		swprintf( pString, JA2_TEXT("") );
 		return;
 	}
 	if ( gbWorldSectorZ )
 	{
-		swprintf( pString, L"%c%d_b%d", gWorldSectorY + 'A' - 1, gWorldSectorX, gbWorldSectorZ );
+		swprintf( pString, JA2_TEXT("%c%d_b%d"), gWorldSectorY + 'A' - 1, gWorldSectorX, gbWorldSectorZ );
 	}
 	else if ( !gbWorldSectorZ )
 	{
-		swprintf( pString, L"%c%d", gWorldSectorY + 'A' - 1, gWorldSectorX );
+		swprintf( pString, JA2_TEXT("%c%d"), gWorldSectorY + 'A' - 1, gWorldSectorX );
 	}
 }
 
@@ -6484,7 +6484,7 @@ BOOLEAN HandleDefiniteUnloadingOfWorld( UINT8 ubUnloadCode )
 		//Save the current sectors open temp files to the disk
 		if ( !SaveCurrentSectorsInformationToTempItemFile( ) )
 		{
-			ScreenMsg( FONT_MCOLOR_WHITE, MSG_TESTVERSION, L"ERROR in SaveCurrentSectorsInformationToTempItemFile()" );
+			ScreenMsg( FONT_MCOLOR_WHITE, MSG_TESTVERSION, JA2_TEXT("ERROR in SaveCurrentSectorsInformationToTempItemFile()") );
 			return FALSE;
 		}
 
@@ -6821,7 +6821,7 @@ void CrippledVersionFailureToLoadMapCheck( )
 {
 	CHAR16	zString[512];
 
-	swprintf( zString, L"Error! Sorry, you must stay between sectors A and E in this limited press version." );
+	swprintf( zString, JA2_TEXT("Error! Sorry, you must stay between sectors A and E in this limited press version.") );
 
 	DoScreenIndependantMessageBox( zString, MSG_BOX_FLAG_OK, CrippledVersionFailureToLoadMapCallBack );
 }

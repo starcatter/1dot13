@@ -2002,19 +2002,19 @@ void DebugStructurePage1( void )
 
 	static CHAR16 WallOrientationString[5][15] =
 	{
-		L"None",
-		L"Inside left",
-		L"Inside right",
-		L"Outside left",
-		L"Outside right"
+		JA2_TEXT("None"),
+		JA2_TEXT("Inside left"),
+		JA2_TEXT("Inside right"),
+		JA2_TEXT("Outside left"),
+		JA2_TEXT("Outside right")
 	};
 
 	SetFont( LARGEFONT1 );
-	gprintf( 0, 0, L"DEBUG STRUCTURES PAGE 1 OF 1" );
+	gprintf( 0, 0, JA2_TEXT("DEBUG STRUCTURES PAGE 1 OF 1") );
 	if (GetMouseMapPos( &sGridNo ) == FALSE)
 	{
 		return;
-		//gprintf( 0, LINE_HEIGHT * 1, L"No structure selected" );
+		//gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("No structure selected") );
 	}
 
 	if (gsInterfaceLevel == I_GROUND_LEVEL)
@@ -2026,11 +2026,11 @@ void DebugStructurePage1( void )
 		sDesiredLevel = STRUCTURE_ON_ROOF;
 	}
 
-	gprintf( 320, 0, L"Building %d", gubBuildingInfo[ sGridNo ] );
+	gprintf( 320, 0, JA2_TEXT("Building %d"), gubBuildingInfo[ sGridNo ] );
 	/*
 	pLand = gpWorldLevelData[sGridNo].pLandHead;
-	gprintf( 320, 0, L"Fake light %d", pLand->ubFakeShadeLevel );
-	gprintf( 320, LINE_HEIGHT, L"Real light: ground %d roof %d", LightTrueLevel( sGridNo, 0 ), LightTrueLevel( sGridNo, 1 ) );
+	gprintf( 320, 0, JA2_TEXT("Fake light %d"), pLand->ubFakeShadeLevel );
+	gprintf( 320, LINE_HEIGHT, JA2_TEXT("Real light: ground %d roof %d"), LightTrueLevel( sGridNo, 0 ), LightTrueLevel( sGridNo, 1 ) );
 	*/
 
 	pStructure = gpWorldLevelData[sGridNo].pStructureHead;
@@ -2047,70 +2047,70 @@ void DebugStructurePage1( void )
 	{
 		if (pStructure->fFlags & STRUCTURE_GENERIC)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"Generic structure %x #%d", pStructure->fFlags, pStructure->pDBStructureRef->pDBStructure->usStructureNumber );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("Generic structure %x #%d"), pStructure->fFlags, pStructure->pDBStructureRef->pDBStructure->usStructureNumber );
 		}
 		else if (pStructure->fFlags & STRUCTURE_TREE)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"Tree");
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("Tree"));
 		}
 		else if (pStructure->fFlags & STRUCTURE_WALL)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"Wall with orientation %s", WallOrientationString[pStructure->ubWallOrientation] );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("Wall with orientation %s"), WallOrientationString[pStructure->ubWallOrientation] );
 		}
 		else if (pStructure->fFlags & STRUCTURE_WALLNWINDOW)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"Wall with window" );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("Wall with window") );
 		}
 		else if (pStructure->fFlags & STRUCTURE_VEHICLE)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"Vehicle %d", pStructure->pDBStructureRef->pDBStructure->usStructureNumber );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("Vehicle %d"), pStructure->pDBStructureRef->pDBStructure->usStructureNumber );
 		}
 		else if (pStructure->fFlags & STRUCTURE_NORMAL_ROOF)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"Roof" );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("Roof") );
 		}
 		else if (pStructure->fFlags & STRUCTURE_SLANTED_ROOF)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"Slanted roof" );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("Slanted roof") );
 		}
 		else if (pStructure->fFlags & STRUCTURE_DOOR)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"Door with orientation %s", WallOrientationString[pStructure->ubWallOrientation] );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("Door with orientation %s"), WallOrientationString[pStructure->ubWallOrientation] );
 		}
 		else if (pStructure->fFlags & STRUCTURE_SLIDINGDOOR)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"%s sliding door with orientation %s",
-				(pStructure->fFlags & STRUCTURE_OPEN) ? L"Open" : L"Closed",
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("%s sliding door with orientation %s"),
+				(pStructure->fFlags & STRUCTURE_OPEN) ? JA2_TEXT("Open") : JA2_TEXT("Closed"),
 				WallOrientationString[pStructure->ubWallOrientation] );
 		}
 		else if (pStructure->fFlags & STRUCTURE_DDOOR_LEFT)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"DDoorLft with orientation %s", WallOrientationString[pStructure->ubWallOrientation] );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("DDoorLft with orientation %s"), WallOrientationString[pStructure->ubWallOrientation] );
 		}
 		else if (pStructure->fFlags & STRUCTURE_DDOOR_RIGHT)
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"DDoorRt with orientation %s", WallOrientationString[pStructure->ubWallOrientation] );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("DDoorRt with orientation %s"), WallOrientationString[pStructure->ubWallOrientation] );
 		}
 		else if (pStructure->fFlags & STRUCTURE_PERSON)
 		{
 			if (pStructure->pDBStructureRef != NULL && pStructure->pDBStructureRef->pDBStructure != NULL)
-				gprintf( 0, LINE_HEIGHT * 1, L"PersonStructure with StructureNumber %d", pStructure->pDBStructureRef->pDBStructure->usStructureNumber );
+				gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("PersonStructure with StructureNumber %d"), pStructure->pDBStructureRef->pDBStructure->usStructureNumber );
 		}
 		else
 		{
-			gprintf( 0, LINE_HEIGHT * 1, L"UNKNOWN STRUCTURE! (%x)", pStructure->fFlags );
+			gprintf( 0, LINE_HEIGHT * 1, JA2_TEXT("UNKNOWN STRUCTURE! (%x)"), pStructure->fFlags );
 		}
 		bHeight = StructureHeight( pStructure );
 		pBase = FindBaseStructure( pStructure );
-		gprintf( 0, LINE_HEIGHT * 2, L"Structure height %d, cube offset %d, armour %d, HP %d", bHeight, pStructure->sCubeOffset, gubMaterialArmour[pStructure->pDBStructureRef->pDBStructure->ubArmour], pBase->ubHitPoints );
+		gprintf( 0, LINE_HEIGHT * 2, JA2_TEXT("Structure height %d, cube offset %d, armour %d, HP %d"), bHeight, pStructure->sCubeOffset, gubMaterialArmour[pStructure->pDBStructureRef->pDBStructure->ubArmour], pBase->ubHitPoints );
 		if (StructureDensity( pStructure, (UINT8 *)&bDens0, (UINT8 *)&bDens1, (UINT8 *)&bDens2, (UINT8 *)&bDens3 ) == TRUE)
 		{
-			gprintf( 0, LINE_HEIGHT * 3, L"Structure fill %d%%/%d%%/%d%%/%d%% density %d", bDens0, bDens1, bDens2, bDens3,
+			gprintf( 0, LINE_HEIGHT * 3, JA2_TEXT("Structure fill %d%%/%d%%/%d%%/%d%% density %d"), bDens0, bDens1, bDens2, bDens3,
 				pStructure->pDBStructureRef->pDBStructure->ubDensity );
 		}
 
 		#ifndef LOS_DEBUG
-		gprintf( 0, LINE_HEIGHT * 4, L"Structure ID %d", pStructure->usStructureID );
+		gprintf( 0, LINE_HEIGHT * 4, JA2_TEXT("Structure ID %d"), pStructure->usStructureID );
 		#endif
 
 		pStructure = gpWorldLevelData[sGridNo].pStructureHead;
@@ -2118,46 +2118,46 @@ void DebugStructurePage1( void )
 		{
 			bStructures++;
 		}
-		gprintf( 0, LINE_HEIGHT * 12, L"Number of structures = %d", bStructures );
+		gprintf( 0, LINE_HEIGHT * 12, JA2_TEXT("Number of structures = %d"), bStructures );
 	}
 	#ifdef LOS_DEBUG
 		if (gLOSTestResults.fLOSTestPerformed)
 		{
-			gprintf( 0, LINE_HEIGHT * 4, L"LOS from (%7d,%7d,%7d)", gLOSTestResults.iStartX, gLOSTestResults.iStartY, gLOSTestResults.iStartZ);
-			gprintf( 0, LINE_HEIGHT * 5, L"to (%7d,%7d,%7d)", gLOSTestResults.iEndX, gLOSTestResults.iEndY, gLOSTestResults.iEndZ);
+			gprintf( 0, LINE_HEIGHT * 4, JA2_TEXT("LOS from (%7d,%7d,%7d)"), gLOSTestResults.iStartX, gLOSTestResults.iStartY, gLOSTestResults.iStartZ);
+			gprintf( 0, LINE_HEIGHT * 5, JA2_TEXT("to (%7d,%7d,%7d)"), gLOSTestResults.iEndX, gLOSTestResults.iEndY, gLOSTestResults.iEndZ);
 			if (gLOSTestResults.fOutOfRange)
 			{
-				gprintf( 0, LINE_HEIGHT * 6, L"is out of range" );
+				gprintf( 0, LINE_HEIGHT * 6, JA2_TEXT("is out of range") );
 			}
 			else if (gLOSTestResults.fLOSClear)
 			{
-				gprintf( 0, LINE_HEIGHT * 6, L"is clear!" );
+				gprintf( 0, LINE_HEIGHT * 6, JA2_TEXT("is clear!") );
 			}
 			else
 			{
-				gprintf( 0, LINE_HEIGHT * 6, L"is blocked at (%7d,%7d,%7d)!", gLOSTestResults.iStoppedX, gLOSTestResults.iStoppedY, gLOSTestResults.iStoppedZ );
-				gprintf( 0, LINE_HEIGHT * 10, L"Blocked at cube level %d", gLOSTestResults.iCurrCubesZ );
+				gprintf( 0, LINE_HEIGHT * 6, JA2_TEXT("is blocked at (%7d,%7d,%7d)!"), gLOSTestResults.iStoppedX, gLOSTestResults.iStoppedY, gLOSTestResults.iStoppedZ );
+				gprintf( 0, LINE_HEIGHT * 10, JA2_TEXT("Blocked at cube level %d"), gLOSTestResults.iCurrCubesZ );
 			}
-			gprintf( 0, LINE_HEIGHT * 7, L"Passed through %d tree bits!", gLOSTestResults.ubTreeSpotsHit );
-			gprintf( 0, LINE_HEIGHT * 8, L"Maximum range was %7d", gLOSTestResults.iMaxDistance );
-			gprintf( 0, LINE_HEIGHT * 9, L"actual range was %7d", gLOSTestResults.iDistance );
+			gprintf( 0, LINE_HEIGHT * 7, JA2_TEXT("Passed through %d tree bits!"), gLOSTestResults.ubTreeSpotsHit );
+			gprintf( 0, LINE_HEIGHT * 8, JA2_TEXT("Maximum range was %7d"), gLOSTestResults.iMaxDistance );
+			gprintf( 0, LINE_HEIGHT * 9, JA2_TEXT("actual range was %7d"), gLOSTestResults.iDistance );
 			if (gLOSTestResults.ubChanceToGetThrough <= 100)
 			{
-				gprintf( 0, LINE_HEIGHT * 11, L"Chance to get through was %d", gLOSTestResults.ubChanceToGetThrough );
+				gprintf( 0, LINE_HEIGHT * 11, JA2_TEXT("Chance to get through was %d"), gLOSTestResults.ubChanceToGetThrough );
 			}
 		}
 	#endif
-	gprintf( 0, LINE_HEIGHT * 13, L"N %d NE %d E %d SE %d",
+	gprintf( 0, LINE_HEIGHT * 13, JA2_TEXT("N %d NE %d E %d SE %d"),
 		gubWorldMovementCosts[ sGridNo ][ NORTH ][ gsInterfaceLevel ],
 		gubWorldMovementCosts[ sGridNo ][ NORTHEAST ][ gsInterfaceLevel ],
 		gubWorldMovementCosts[ sGridNo ][ EAST ][ gsInterfaceLevel ],
 		gubWorldMovementCosts[ sGridNo ][ SOUTHEAST ][ gsInterfaceLevel ] );
-	gprintf( 0, LINE_HEIGHT * 14, L"S %d SW %d W %d NW %d",
+	gprintf( 0, LINE_HEIGHT * 14, JA2_TEXT("S %d SW %d W %d NW %d"),
 		gubWorldMovementCosts[ sGridNo ][ SOUTH ][ gsInterfaceLevel ],
 		gubWorldMovementCosts[ sGridNo ][ SOUTHWEST ][ gsInterfaceLevel ],
 		gubWorldMovementCosts[ sGridNo ][ WEST ][ gsInterfaceLevel ],
 		gubWorldMovementCosts[ sGridNo ][ NORTHWEST ][ gsInterfaceLevel ] );
-	gprintf( 0, LINE_HEIGHT * 15, L"Ground smell %d strength %d",
+	gprintf( 0, LINE_HEIGHT * 15, JA2_TEXT("Ground smell %d strength %d"),
 		SMELL_TYPE( gpWorldLevelData[ sGridNo ].ubSmellInfo ),
 		SMELL_STRENGTH( gpWorldLevelData[ sGridNo ].ubSmellInfo ) );
 
@@ -2165,7 +2165,7 @@ void DebugStructurePage1( void )
 	if (guiTotalPathChecks > 0)
 	{
 		gprintf( 0, LINE_HEIGHT * 16,
-			L"Total %ld, %%succ %3ld | %%failed %3ld | %%unsucc %3ld",
+			JA2_TEXT("Total %ld, %%succ %3ld | %%failed %3ld | %%unsucc %3ld"),
 			guiTotalPathChecks,
 			100 * guiSuccessfulPathChecks / guiTotalPathChecks,
 			100 * guiFailedPathChecks / guiTotalPathChecks,
@@ -2174,7 +2174,7 @@ void DebugStructurePage1( void )
 	}
 	#else
 	gprintf( 0, LINE_HEIGHT * 16,
-		L"Adj soldiers %d", gpWorldLevelData[sGridNo].ubAdjacentSoldierCnt );
+		JA2_TEXT("Adj soldiers %d"), gpWorldLevelData[sGridNo].ubAdjacentSoldierCnt );
 	#endif
 }
 

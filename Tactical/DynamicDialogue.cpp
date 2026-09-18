@@ -328,7 +328,7 @@ BOOLEAN LoadDynamicDialogue( HWFILE hwFile )
 
 		if ( safetycheck1 != gDynDiaSaveCheck || safetycheck2 != gDynDiaSaveCheck )
 		{
-			ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, L"Eyecatcher corruption detected while loading dynamic dialogue events!" );
+			ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, JA2_TEXT("Eyecatcher corruption detected while loading dynamic dialogue events!") );
 			return FALSE;
 		}
 	}
@@ -1007,7 +1007,7 @@ BOOLEAN DynamicOpinionTacticalCharacterDialogue( DynamicOpinionSpeechEvent& aEve
 		
 		// interjector decides to say nothing
 	case DOST_INTERJECTOR_NOTHING:
-		wcscpy( gzQuoteStr, L"I don't want to say anything, but a bug forces me to! Help! Inform Flugente!" );
+		wcscpy( gzQuoteStr, JA2_TEXT("I don't want to say anything, but a bug forces me to! Help! Inform Flugente!") );
 		break;
 
 		// another person sides with victim
@@ -1026,18 +1026,18 @@ BOOLEAN DynamicOpinionTacticalCharacterDialogue( DynamicOpinionSpeechEvent& aEve
 	}
 
 	// insert character nicknames
-	ReplaceTextWithOtherText( gzQuoteStr, L"$VICTIM$", gMercProfiles[aEvent.data.event.ubProfileComplainant].zNickname );
-	ReplaceTextWithOtherText( gzQuoteStr, L"$CAUSE$", gMercProfiles[aEvent.data.event.ubProfileCause].zNickname );
-	ReplaceTextWithOtherText( gzQuoteStr, L"$INTERJECTOR$", gMercProfiles[aEvent.data.ubProfileINTERJECTOR].zNickname );
-	ReplaceTextWithOtherText( gzQuoteStr, L"$SPEAKER$", gMercProfiles[aEvent.usSpeaker].zNickname );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$VICTIM$"), gMercProfiles[aEvent.data.event.ubProfileComplainant].zNickname );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$CAUSE$"), gMercProfiles[aEvent.data.event.ubProfileCause].zNickname );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$INTERJECTOR$"), gMercProfiles[aEvent.data.ubProfileINTERJECTOR].zNickname );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$SPEAKER$"), gMercProfiles[aEvent.usSpeaker].zNickname );
 
 	// insert 'he'/'she', 'him'/'her'
-	ReplaceTextWithOtherText( gzQuoteStr, L"$VICTIM_GENDER$", (gMercProfiles[aEvent.data.event.ubProfileComplainant].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
-	ReplaceTextWithOtherText( gzQuoteStr, L"$VICTIM_PRONOUN$", (gMercProfiles[aEvent.data.event.ubProfileComplainant].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
-	ReplaceTextWithOtherText( gzQuoteStr, L"$CAUSE_GENDER$", (gMercProfiles[aEvent.data.event.ubProfileCause].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
-	ReplaceTextWithOtherText( gzQuoteStr, L"$CAUSE_PRONOUN$", (gMercProfiles[aEvent.data.event.ubProfileCause].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
-	ReplaceTextWithOtherText( gzQuoteStr, L"$INTERJECTOR_GENDER$", (gMercProfiles[aEvent.data.ubProfileINTERJECTOR].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
-	ReplaceTextWithOtherText( gzQuoteStr, L"$INTERJECTOR_PRONOUN$", (gMercProfiles[aEvent.data.ubProfileINTERJECTOR].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$VICTIM_GENDER$"), (gMercProfiles[aEvent.data.event.ubProfileComplainant].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$VICTIM_PRONOUN$"), (gMercProfiles[aEvent.data.event.ubProfileComplainant].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$CAUSE_GENDER$"), (gMercProfiles[aEvent.data.event.ubProfileCause].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$CAUSE_PRONOUN$"), (gMercProfiles[aEvent.data.event.ubProfileCause].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$INTERJECTOR_GENDER$"), (gMercProfiles[aEvent.data.ubProfileINTERJECTOR].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
+	ReplaceTextWithOtherText( gzQuoteStr, JA2_TEXT("$INTERJECTOR_PRONOUN$"), (gMercProfiles[aEvent.data.ubProfileINTERJECTOR].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
 	
 	pDDBox->SetText( gzQuoteStr );
 	pDDBox->SetEvent( aEvent );
@@ -1045,7 +1045,7 @@ BOOLEAN DynamicOpinionTacticalCharacterDialogue( DynamicOpinionSpeechEvent& aEve
 	pDDBox->SetStartTime( aEvent.usStarttime );
 
 	// print out the dialogue to the log, too
-	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s: %s", pSoldier->GetName(), gzQuoteStr );
+	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s: %s"), pSoldier->GetName(), gzQuoteStr );
 
 	// delay destruction of all current boxes - as long as new dialogue comes in, they will be kept
 	DelayBoxDestruction( aEvent.usStarttime + gGameExternalOptions.sDynamicDialogueTimeOffset * 3.5f );
@@ -1059,16 +1059,16 @@ BOOLEAN DynamicOpinionTacticalCharacterDialogue( DynamicOpinionSpeechEvent& aEve
 			wcscpy( stupidarray[i], szDynamicDialogueText_DOST_INTERJECTOR_DIALOGUESELECTION_SHORTTEXT[i] );
 
 			// insert character nicknames
-			ReplaceTextWithOtherText( stupidarray[i], L"$VICTIM$", gMercProfiles[aEvent.data.event.ubProfileComplainant].zNickname );
-			ReplaceTextWithOtherText( stupidarray[i], L"$CAUSE$", gMercProfiles[aEvent.data.event.ubProfileCause].zNickname );
-			ReplaceTextWithOtherText( stupidarray[i], L"$INTERJECTOR$", gMercProfiles[aEvent.data.ubProfileINTERJECTOR].zNickname );
-			ReplaceTextWithOtherText( stupidarray[i], L"SPEAKER", gMercProfiles[aEvent.usSpeaker].zNickname );
+			ReplaceTextWithOtherText( stupidarray[i], JA2_TEXT("$VICTIM$"), gMercProfiles[aEvent.data.event.ubProfileComplainant].zNickname );
+			ReplaceTextWithOtherText( stupidarray[i], JA2_TEXT("$CAUSE$"), gMercProfiles[aEvent.data.event.ubProfileCause].zNickname );
+			ReplaceTextWithOtherText( stupidarray[i], JA2_TEXT("$INTERJECTOR$"), gMercProfiles[aEvent.data.ubProfileINTERJECTOR].zNickname );
+			ReplaceTextWithOtherText( stupidarray[i], JA2_TEXT("SPEAKER"), gMercProfiles[aEvent.usSpeaker].zNickname );
 
 			// insert 'he'/'she', 'him'/'her'
-			ReplaceTextWithOtherText( stupidarray[i], L"$VICTIM_GENDER$", (gMercProfiles[aEvent.data.event.ubProfileComplainant].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
-			ReplaceTextWithOtherText( stupidarray[i], L"$VICTIM_PRONOUN$", (gMercProfiles[aEvent.data.event.ubProfileComplainant].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
-			ReplaceTextWithOtherText( stupidarray[i], L"$CAUSE_GENDER$", (gMercProfiles[aEvent.data.event.ubProfileCause].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
-			ReplaceTextWithOtherText( stupidarray[i], L"$CAUSE_PRONOUN$", (gMercProfiles[aEvent.data.event.ubProfileCause].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
+			ReplaceTextWithOtherText( stupidarray[i], JA2_TEXT("$VICTIM_GENDER$"), (gMercProfiles[aEvent.data.event.ubProfileComplainant].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
+			ReplaceTextWithOtherText( stupidarray[i], JA2_TEXT("$VICTIM_PRONOUN$"), (gMercProfiles[aEvent.data.event.ubProfileComplainant].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
+			ReplaceTextWithOtherText( stupidarray[i], JA2_TEXT("$CAUSE_GENDER$"), (gMercProfiles[aEvent.data.event.ubProfileCause].bSex == MALE) ? szDynamicDialogueText_GenderText[0] : szDynamicDialogueText_GenderText[1] );
+			ReplaceTextWithOtherText( stupidarray[i], JA2_TEXT("$CAUSE_PRONOUN$"), (gMercProfiles[aEvent.data.event.ubProfileCause].bSex == MALE) ? szDynamicDialogueText_GenderText[2] : szDynamicDialogueText_GenderText[3] );
 
 			entryvec.push_back( std::make_pair( i, stupidarray[i] ) );
 		}
@@ -1246,7 +1246,7 @@ void AddOpinionEvent( UINT16 usProfileA, UINT16 usProfileB, UINT8 usEvent, BOOLE
 		// if this option is turned on, a small message will show us how opinions have changed
 		if ( gGameExternalOptions.fDynamicOpinionsShowChange )
 		{
-			ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, gDynamicOpinionEvent[usEvent].sOpinionModifier >= 0 ? L"%s: %s +%d" : L"%s: %s %d", gMercProfiles[usProfileA].zNickname, gMercProfiles[usProfileB].zNickname, gDynamicOpinionEvent[usEvent].sOpinionModifier );
+			ScreenMsg( FONT_MCOLOR_LTGREEN, MSG_INTERFACE, gDynamicOpinionEvent[usEvent].sOpinionModifier >= 0 ? JA2_TEXT("%s: %s +%d") : JA2_TEXT("%s: %s %d"), gMercProfiles[usProfileA].zNickname, gMercProfiles[usProfileB].zNickname, gDynamicOpinionEvent[usEvent].sOpinionModifier );
 		}
 
 		// if dialogue is allowed, set up dialogue

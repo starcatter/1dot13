@@ -30,8 +30,8 @@ public:
 	void Flush() { m_log.flush(); }
 
 	template <typename T> LuaLogger& operator<<(const T& message) { if (m_active) m_log << message; return *this; }
-	template <> LuaLogger& operator<<(const vfs::Log::_endl& endl) { if (m_active) m_log << vfs::Log::endl; return *this; }
-	template <> LuaLogger& operator<<(const LoggingState& state) { m_active = state == ON; return *this; }
+	LuaLogger& operator<<(const vfs::Log::_endl&) { if (m_active) m_log << vfs::Log::endl; return *this; }
+	LuaLogger& operator<<(LoggingState state) { m_active = state == ON; return *this; }
 	
 };
 

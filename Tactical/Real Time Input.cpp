@@ -823,7 +823,7 @@ void	QueryRTLeftButton( UINT32 *puiNewEvent )
 																						//		*puiNewEvent = M_CHANGE_TO_HANDMODE;
 																						//	}
 																					}
-																					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, L"Invalid move destination." );
+																					//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_UI_FEEDBACK, JA2_TEXT("Invalid move destination.") );
 
 																					// Goto hand cursor mode...
 																					//*puiNewEvent = M_CHANGE_TO_HANDMODE;
@@ -1677,12 +1677,12 @@ void GetRTMousePositionInput( UINT32 *puiNewEvent )
 //		//pSector = &SectorInfo[ SECTOR(gWorldSectorX, gWorldSectorY) ];
 //		//if( pSector->bUSUSED <= 0 ) //check the number of available sandbags
 //		//{
-//		//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"No Sandbags");
+//		//	ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("No Sandbags"));
 //		//}
 //usIndex =1;
 //		//GetTileIndexFromTypeSubIndex( SECONDLARGEEXPDEBRIS, usSubIndex, &usIndex ); //only for tileset 0
 //GetTileIndexFromTypeSubIndex( 150, usSubIndex, &usIndex ); //only for tileset 0
-//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"No Sandbags");
+//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("No Sandbags"));
 //		//GetTileIndexFromTypeSubIndex( SECONDLARGEEXPDEBRIS, usSubIndex, &usIndex );
 //		ApplyMapChangesToMapTempFile( TRUE );
 //		AddStructToHead( sGridNo, usIndex);
@@ -2032,7 +2032,7 @@ void HandleMouseRTWheel( void )
 				return;
 			}
 
-			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"wheel %d", gViewportRegion.WheelState);
+			//ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("wheel %d"), gViewportRegion.WheelState);
 			if ( gusSelectedSoldier != NOBODY )
 			{ //Select next merc
 				bID = FindNextMercInTeamPanel( gusSelectedSoldier, FALSE, FALSE );

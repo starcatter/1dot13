@@ -100,7 +100,7 @@ static BOOLEAN AdvanceTimeCounter(INT32& counter, std::uint64_t ticks)
 
 static void HandleJA2ClockOverflow()
 {
-	MapScreenMessage(162, 0, L"guiBaseJA2Clock overflow detected!");
+	MapScreenMessage(162, 0, JA2_TEXT("guiBaseJA2Clock overflow detected!"));
 	for (UINT32 index = 0; index < TOTAL_SOLDIERS; ++index)
 	{
 		if (MercPtrs[index]) MercPtrs[index]->ResetSoldierChangeStatTimer();

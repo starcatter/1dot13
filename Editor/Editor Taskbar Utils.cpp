@@ -520,7 +520,7 @@ void DrawEditorInfoBox( STR16 str, UINT32 uiFont, UINT16 x, UINT16 y, UINT16 w, 
 	SetFontShadow( FONT_BLACK );
 	x += (w - (UINT16)StringPixLength( str, uiFont )) / 2;
 	y += (h - (UINT16)GetFontHeight( uiFont)) / 2;
-	mprintf( x, y, L"%s", str );
+	mprintf( x, y, JA2_TEXT("%s"), str );
 	InvalidateRegion( x, y, x2, y2 );
 }
 
@@ -756,7 +756,7 @@ void RenderDoorLockInfo()
 		if( sScreenY > (2 * iScreenHeightOffset + 390) )
 			continue;
 		if( DoorTable[ i ].ubLockID != 255 )
-			swprintf( str, L"%S", LockTable[ DoorTable[ i ].ubLockID ].ubEditorName );
+			swprintf( str, JA2_TEXT("%S"), LockTable[ DoorTable[ i ].ubLockID ].ubEditorName );
 		else
 			swprintf( str, iRenderDoorLockInfoText[0] );
 		xp = sScreenX - 10;
@@ -840,7 +840,7 @@ void RenderSelectedItemBlownUp()
 	}
 	else if( Item[ gpItem->usItem ].usItemClass == IC_KEY )
 	{
-		swprintf( szItemName, L"%S", LockTable[ (*gpItem)[0]->data.key.ubKeyID ].ubEditorName );
+		swprintf( szItemName, JA2_TEXT("%S"), LockTable[ (*gpItem)[0]->data.key.ubKeyID ].ubEditorName );
 	}
 	else
 	{
@@ -868,7 +868,7 @@ void RenderSelectedItemBlownUp()
 		yp += 10;
 		SetFont( BLOCKFONTNARROW );
 		SetFontForeground( FONT_LTGREEN );
-		mprintf( xp, yp, L"%d", Item[ gpItem->usItem ].uiIndex );
+		mprintf( xp, yp, JA2_TEXT("%d"), Item[ gpItem->usItem ].uiIndex );
 	}
 
 	//Display current item stack index and number of items in stack
@@ -889,9 +889,9 @@ void RenderSelectedItemBlownUp()
 	SetFontForeground( FONT_YELLOW );
 	//Omit current item stack index if only 1 item in stack
 	if ( i == 1 )
-		mprintf( xp, yp, L"%d", i );
+		mprintf( xp, yp, JA2_TEXT("%d"), i );
 	else
-		mprintf( xp - 6, yp, L"%d/%d", iStackIndex , i );	
+		mprintf( xp - 6, yp, JA2_TEXT("%d/%d"), iStackIndex , i );	
 
 	//If the item is hidden, render a blinking H (just like DG)
 	if( gWorldItems[ gpItemPool->iItemIndex ].bVisible == HIDDEN_ITEM ||
@@ -902,7 +902,7 @@ void RenderSelectedItemBlownUp()
 		{
 			SetFontForeground( 249 );
 		}
-		mprintf( sScreenX + 16, sScreenY + 7, L"H" );
+		mprintf( sScreenX + 16, sScreenY + 7, JA2_TEXT("H") );
 		InvalidateRegion( sScreenX + 16, sScreenY + 7, sScreenX + 24, sScreenY + 27 );
 	}
 }
@@ -924,10 +924,10 @@ void RenderEditorInfo( )
 	{
 		INT16 sGridX, sGridY;
 		GetMouseXY(&sGridX, &sGridY);
-		swprintf(FPSText, L"%4d %4d %6d ", sGridX, sGridY, iMapIndexD);
+		swprintf(FPSText, JA2_TEXT("%4d %4d %6d "), sGridX, sGridY, iMapIndexD);
 	}
 	else
-		swprintf(FPSText, L"                  ");
+		swprintf(FPSText, JA2_TEXT("                  "));
 
 	mprintfEditor( (UINT16)(iScreenWidthOffset + 50-StringPixLength( FPSText, FONT12POINT1 )/2), 2 * iScreenHeightOffset + 463, FPSText );
 
@@ -949,10 +949,10 @@ void RenderEditorInfo( )
 
 			// WANNE: Comment this two lines, because we always get an exception here.
 			//if( gusSelectionType == LINESELECTION )
-			//	swprintf( wszSelType[LINESELECTION], L"Width: %d", gusSelectionWidth );
+			//	swprintf( wszSelType[LINESELECTION], JA2_TEXT("Width: %d"), gusSelectionWidth );
 
 			DrawEditorInfoBox( wszSelType[gusSelectionType], FONT12POINT1, iScreenWidthOffset + 220, 2 * iScreenHeightOffset + 430, 60, 30 );
-			swprintf( FPSText, L"%d%%", gusSelectionDensity );
+			swprintf( FPSText, JA2_TEXT("%d%%"), gusSelectionDensity );
 			DrawEditorInfoBox( FPSText, FONT12POINT1, iScreenWidthOffset + 310, 2 * iScreenHeightOffset + 430, 40, 30 );
 			break;
 		case TASK_ITEMS:
@@ -965,7 +965,7 @@ void RenderEditorInfo( )
 
 			// WANNE: Comment this two lines, because we always get an exception here.
 			//if( gusSelectionType == LINESELECTION )
-			//	swprintf( wszSelType[LINESELECTION], L"%d", gusSelectionWidth );
+			//	swprintf( wszSelType[LINESELECTION], JA2_TEXT("%d"), gusSelectionWidth );
 
 			DrawEditorInfoBox( wszSelType[gusSelectionType], FONT12POINT1, iScreenWidthOffset + 530, 2 * iScreenHeightOffset + 430, 60, 30 );
 			break;
@@ -980,7 +980,7 @@ void RenderEditorInfo( )
 			UpdateMapInfo();
 			// WANNE: EDITOR: Comment this two lines, because we always get an exception here!
 			//if( gusSelectionType == LINESELECTION )
-			//	swprintf( wszSelType[LINESELECTION], L"Width: %d", gusSelectionWidth );
+			//	swprintf( wszSelType[LINESELECTION], JA2_TEXT("Width: %d"), gusSelectionWidth );
 
 			DrawEditorInfoBox( wszSelType[gusSelectionType], FONT12POINT1, iScreenWidthOffset + 440, 2 * iScreenHeightOffset + 430, 60, 30 );
 			break;

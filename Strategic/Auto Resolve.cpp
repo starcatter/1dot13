@@ -640,7 +640,7 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Autoresolve1");
 		default:
 			//shouldn't happen
 			#ifdef JA2BETAVERSION
-				ScreenMsg( FONT_RED, MSG_ERROR, L"Autoresolving with entering enemy sector code %d -- illegal KM:1", GetEnemyEncounterCode() );
+				ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Autoresolving with entering enemy sector code %d -- illegal KM:1"), GetEnemyEncounterCode() );
 			#endif
 			break;
 	}
@@ -1792,7 +1792,7 @@ void RenderAutoResolve()
 	#ifdef JA2BETAVERSION
 		if( gpAR->fAllowCapture )
 		{
-			mprintf( 2, 2, L"Enemy capture enabled." );
+			mprintf( 2, 2, JA2_TEXT("Enemy capture enabled.") );
 		}
 	#endif
 
@@ -1968,7 +1968,7 @@ void RenderAutoResolve()
 
 			//Render the total battle time elapsed.
 			SetFont( FONT10ARIAL );
-			swprintf( str, L"%s: %dm %02ds",
+			swprintf( str, JA2_TEXT("%s: %dm %02ds"),
 				gpStrategicString[ STR_AR_TIME_ELAPSED ],
 				gpAR->uiTotalElapsedBattleTimeInMilliseconds/60000,
 				(gpAR->uiTotalElapsedBattleTimeInMilliseconds%60000)/1000 );
@@ -2624,7 +2624,7 @@ DebugMsg (TOPIC_JA2,DBG_LEVEL_3,"Autoresolve2");
 				case SOLDIER_CLASS_ELITE_MILITIA:		ubCurrentRank = ELITE_MILITIA;		break;
 				default:
 					#ifdef JA2BETAVERSION
-						ScreenMsg( FONT_RED, MSG_ERROR, L"Removing autoresolve militia with invalid ubSoldierClass %d.",gpCivs[ i ].pSoldier->ubSoldierClass );
+						ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Removing autoresolve militia with invalid ubSoldierClass %d."),gpCivs[ i ].pSoldier->ubSoldierClass );
 					#endif
 					break;
 			}
@@ -4081,12 +4081,12 @@ void DrawDebugText( SOLDIERCELL *pCell )
 	if( pCell->uiFlags & CELL_TEAMLEADER )
 	{
 		//debug str
-		mprintf( xp, yp, L"LEADER" );
+		mprintf( xp, yp, JA2_TEXT("LEADER") );
 		yp += 9;
 	}
-	mprintf( xp, yp, L"AT: %d", pCell->usAttack );
+	mprintf( xp, yp, JA2_TEXT("AT: %d"), pCell->usAttack );
 	yp += 9;
-	mprintf( xp, yp, L"DF: %d", pCell->usDefence );
+	mprintf( xp, yp, JA2_TEXT("DF: %d"), pCell->usDefence );
 	yp += 9;
 
 	xp = pCell->xp;
@@ -4096,21 +4096,21 @@ void DrawDebugText( SOLDIERCELL *pCell )
 	if( pCell->uiFlags & CELL_FIREDATTARGET )
 	{
 		SetFontForeground( FONT_YELLOW );
-		mprintf( xp, yp, L"FIRE" );
+		mprintf( xp, yp, JA2_TEXT("FIRE") );
 		pCell->uiFlags &= ~CELL_FIREDATTARGET;
 		yp += 13;
 	}
 	if( pCell->uiFlags & CELL_DODGEDATTACK )
 	{
 		SetFontForeground( FONT_BLUE );
-		mprintf( xp, yp, L"MISS" );
+		mprintf( xp, yp, JA2_TEXT("MISS") );
 		pCell->uiFlags &= ~CELL_DODGEDATTACK;
 		yp += 13;
 	}
 	if( pCell->uiFlags & CELL_HITBYATTACKER )
 	{
 		SetFontForeground( FONT_RED );
-		mprintf( xp, yp, L"HIT" );
+		mprintf( xp, yp, JA2_TEXT("HIT") );
 		pCell->uiFlags &= ~CELL_HITBYATTACKER;
 		yp += 13;
 	}
@@ -6003,7 +6003,7 @@ void AutoResolveMilitiaDropAndPromote()
 			case SOLDIER_CLASS_ELITE_MILITIA:		ubCurrentRank = ELITE_MILITIA;		break;
 			default:
 #ifdef JA2BETAVERSION
-				ScreenMsg( FONT_RED, MSG_ERROR, L"Removing autoresolve militia with invalid ubSoldierClass %d.", gpCivs[i].pSoldier->ubSoldierClass );
+				ScreenMsg( FONT_RED, MSG_ERROR, JA2_TEXT("Removing autoresolve militia with invalid ubSoldierClass %d."), gpCivs[i].pSoldier->ubSoldierClass );
 #endif
 				break;
 			}

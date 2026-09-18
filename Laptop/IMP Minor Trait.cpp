@@ -478,7 +478,7 @@ void IMPMinorTraitDisplaySkills()
 		DrawTextToScreen( gzIMPSkillTraitsTextNewMinor[ uiCnt ], usPosX, usPosY, 0, IMP_MINOR_TRAIT__FONT, IMP_MINOR_TRAIT__COLOR, FONT_MCOLOR_BLACK, FALSE, LEFT_JUSTIFIED );
 		
 		CHAR16	apStr[5000];
-		swprintf( apStr, L"" );
+		swprintf( apStr, JA2_TEXT("") );
 		AssignPersonnelSkillTraitHelpText( gusNewMinorTraitRemap[uiCnt], FALSE, FALSE, apStr );
 
 		// Set region help text

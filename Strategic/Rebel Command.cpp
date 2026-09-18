@@ -720,7 +720,7 @@ void CreateItemAtAirport(UINT16 itemId, INT16 status)
 	const BOOLEAN success = CreateItem(itemId, status, &obj);
 	if (!success)
 	{
-		ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, L"Warning - CreateItemAtAirport() failed for itemid %d", itemId);
+		ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Warning - CreateItemAtAirport() failed for itemid %d"), itemId);
 		return;
 	}
 	const BOOLEAN airportSectorLoaded = gWorldSectorX == BOBBYR_SHIPPING_DEST_SECTOR_X && gWorldSectorY == BOBBYR_SHIPPING_DEST_SECTOR_Y && gbWorldSectorZ == BOBBYR_SHIPPING_DEST_SECTOR_Z;
@@ -804,7 +804,7 @@ void GetDirectiveEffect(const RebelCommandDirectives directive, STR16 text)
 		break;
 
 	default:
-		swprintf(text, L"Unrecognised directive id: %d. Do you need to add it to GetDirectiveEffect?", directive);
+		swprintf(text, JA2_TEXT("Unrecognised directive id: %d. Do you need to add it to GetDirectiveEffect?"), directive);
 		break;
 	}
 }
@@ -1151,7 +1151,7 @@ void SetDirectiveDescriptionHelpText(INT32 reason, MOUSE_REGION& region, RebelCo
 	if (reason == MSYS_CALLBACK_REASON_MOVE)
 		SetRegionFastHelpText(&region, szRebelCommandDirectivesText[text]);
 	else if (reason == MSYS_CALLBACK_REASON_LOST_MOUSE)
-		SetRegionFastHelpText(&region, L"");
+		SetRegionFastHelpText(&region, JA2_TEXT(""));
 }
 
 void SetRegionHelpText(INT32 reason, MOUSE_REGION& helpTextRegion, RebelCommandHelpText text)
@@ -1159,7 +1159,7 @@ void SetRegionHelpText(INT32 reason, MOUSE_REGION& helpTextRegion, RebelCommandH
 	if (reason == MSYS_CALLBACK_REASON_MOVE)
 		SetRegionFastHelpText(&helpTextRegion, szRebelCommandHelpText[text]);
 	else if (reason == MSYS_CALLBACK_REASON_LOST_MOUSE)
-		SetRegionFastHelpText(&helpTextRegion, L"");
+		SetRegionFastHelpText(&helpTextRegion, JA2_TEXT(""));
 }
 
 void SetWebsiteView(WebsiteState newState)
@@ -1351,7 +1351,7 @@ void RenderHeader(RebelCommandText titleText)
 	// supply count
 	usPosX = WEBSITE_LEFT + 55;
 	usPosY = WEBSITE_TOP + 20;
-	swprintf(sText, L"%d", rebelCommandSaveInfo.iSupplies);
+	swprintf(sText, JA2_TEXT("%d"), rebelCommandSaveInfo.iSupplies);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, rebelCommandSaveInfo.iSupplies > 0 ? FONT_GREEN : FONT_MCOLOR_LTRED, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// intel
@@ -1363,7 +1363,7 @@ void RenderHeader(RebelCommandText titleText)
 	usPosX = WEBSITE_LEFT + 185;
 	usPosY = WEBSITE_TOP + 20;
 	const int intel = (int)GetIntel();
-	swprintf(sText, L"%d", intel);
+	swprintf(sText, JA2_TEXT("%d"), intel);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, intel > 0 ? FONT_GREEN : FONT_MCOLOR_LTRED, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// supplies region
@@ -1419,7 +1419,7 @@ void RenderHeader(RebelCommandText titleText)
 		INT32 btnId;
 		usPosX = WEBSITE_LEFT + 400;
 		usPosY = WEBSITE_TOP + 380;
-		btnId = CreateTextButton(L"DEBUG MAGIC!", FONT10ARIAL, FONT_MCOLOR_LTYELLOW, FONT_BLACK, BUTTON_USE_DEFAULT, usPosX, usPosY, 99, 14, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, [](GUI_BUTTON* btn, INT32 reason) {
+		btnId = CreateTextButton(JA2_TEXT("DEBUG MAGIC!"), FONT10ARIAL, FONT_MCOLOR_LTYELLOW, FONT_BLACK, BUTTON_USE_DEFAULT, usPosX, usPosY, 99, 14, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, [](GUI_BUTTON* btn, INT32 reason) {
 			ButtonHelper(btn, reason, []() { DEBUG_DAY(); });
 			});
 		btnIds.push_back(btnId);
@@ -1446,7 +1446,7 @@ void RenderNationalOverview()
 	usPosX = WEBSITE_LEFT + 5;
 	usPosY += 10;
 	iIncomingSuppliesPerDay = CalcIncomingSuppliesPerDay(static_cast<RebelCommandDirectives>(rebelCommandSaveInfo.iSelectedDirective));
-	swprintf(sText, L"%d", iIncomingSuppliesPerDay);
+	swprintf(sText, JA2_TEXT("%d"), iIncomingSuppliesPerDay);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, iIncomingSuppliesPerDay > 0 ? FONT_GREEN : FONT_MCOLOR_LTRED, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	INT32 width = 0;
@@ -1491,14 +1491,14 @@ void RenderNationalOverview()
 					if (upkeepCount > 0)
 					{
 						const INT32 totalUpkeep = upkeepCount * supplyUpkeep;
-						swprintf(text, L"%s\n-%d (%s)", text, totalUpkeep, pTownNames[a]);
+						swprintf(text, JA2_TEXT("%s\n-%d (%s)"), text, totalUpkeep, pTownNames[a]);
 					}
 				}
 
 				SetRegionFastHelpText(&suppliesIncomeHelpTextRegion, text);
 			}
 			else if (iReason == MSYS_CALLBACK_REASON_LOST_MOUSE)
-				SetRegionFastHelpText(&suppliesIncomeHelpTextRegion, L"");
+				SetRegionFastHelpText(&suppliesIncomeHelpTextRegion, JA2_TEXT(""));
 		 }, MSYS_NO_CALLBACK);
 	MSYS_AddRegion(&suppliesIncomeHelpTextRegion);
 	MSYS_SetRegionUserData(&suppliesIncomeHelpTextRegion, 0, 0);
@@ -1614,13 +1614,13 @@ void RenderNationalOverview()
 	// values
 	usPosX += 45;
 	usPosY = militiaY - 2;
-	swprintf(sText, L"%d", militiaGreen);
+	swprintf(sText, JA2_TEXT("%d"), militiaGreen);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_LTGREEN, FONT_MCOLOR_BLACK, FALSE, 0);
 	usPosY += 15;
-	swprintf(sText, L"%d", militiaRegular);
+	swprintf(sText, JA2_TEXT("%d"), militiaRegular);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_LTBLUE, FONT_MCOLOR_BLACK, FALSE, 0);
 	usPosY += 15;
-	swprintf(sText, L"%d", militiaElite);
+	swprintf(sText, JA2_TEXT("%d"), militiaElite);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_DKBLUE, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// militia volunteer pool, if enabled
@@ -1649,7 +1649,7 @@ void RenderNationalOverview()
 		// value
 		usPosY += 12;
 		const INT16 volunteerPool = static_cast<INT16>(LaptopSaveInfo.dMilitiaVolunteerPool);
-		swprintf(sText, L"%d", GetVolunteerPool());
+		swprintf(sText, JA2_TEXT("%d"), GetVolunteerPool());
 		DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 		usPosX += 50;
@@ -1686,13 +1686,13 @@ void RenderNationalOverview()
 		// values
 		usPosX -= 132;
 		usPosY += 12;
-		swprintf(sText, L"%.1f", LaptopSaveInfo.dMilitiaGunPool);
+		swprintf(sText, JA2_TEXT("%.1f"), LaptopSaveInfo.dMilitiaGunPool);
 		DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_ORANGE, FONT_MCOLOR_BLACK, FALSE, 0);
 		usPosX += 66;
-		swprintf(sText, L"%.1f", LaptopSaveInfo.dMilitiaArmourPool);
+		swprintf(sText, JA2_TEXT("%.1f"), LaptopSaveInfo.dMilitiaArmourPool);
 		DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_LTKHAKI, FONT_MCOLOR_BLACK, FALSE, 0);
 		usPosX += 66;
-		swprintf(sText, L"%.1f", LaptopSaveInfo.dMilitiaMiscPool);
+		swprintf(sText, JA2_TEXT("%.1f"), LaptopSaveInfo.dMilitiaMiscPool);
 		DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_LTBLUE, FONT_MCOLOR_BLACK, FALSE, 0);
 	}
 
@@ -1750,7 +1750,7 @@ void RenderNationalOverview()
 	usPosX = WEBSITE_LEFT + 15;
 	usPosY += 12;
 	const INT16 cost = static_cast<const INT16>(gGameExternalOptions.iMilitiaTrainingCost * GetMilitiaTrainingCostModifier());
-	swprintf(sText, L"$%d", cost);
+	swprintf(sText, JA2_TEXT("$%d"), cost);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// upkeep costs
@@ -1758,16 +1758,16 @@ void RenderNationalOverview()
 	const INT16 costRegular = static_cast<const INT16>(gGameExternalOptions.usDailyCostTown[REGULAR_MILITIA] * GetMilitiaUpkeepCostModifier());
 	const INT16 costElite = static_cast<const INT16>(gGameExternalOptions.usDailyCostTown[ELITE_MILITIA] * GetMilitiaUpkeepCostModifier());
 	usPosX += 140;
-	swprintf(sText, L"$%d", costGreen);
+	swprintf(sText, JA2_TEXT("$%d"), costGreen);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 	usPosX += 66;
-	swprintf(sText, L"$%d", costRegular);
+	swprintf(sText, JA2_TEXT("$%d"), costRegular);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 	usPosX += 66;
-	swprintf(sText, L"$%d", costElite);
+	swprintf(sText, JA2_TEXT("$%d"), costElite);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 	usPosX += 75;
-	swprintf(sText, L"$%d", (costGreen * militiaGreen + costRegular * militiaRegular + costElite * militiaElite));
+	swprintf(sText, JA2_TEXT("$%d"), (costGreen * militiaGreen + costRegular * militiaRegular + costElite * militiaElite));
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// line
@@ -1795,14 +1795,14 @@ void RenderNationalOverview()
 	usPosX += 5;
 	usPosY += 12;
 	value = GetMilitiaTrainingSpeedBonus();
-	swprintf(sText, L"%d", value);
+	swprintf(sText, JA2_TEXT("%d"), value);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 	width = 0;
 	do {
 		width += value % 10 == 1 ? 6 : 8;
 		value /= 10;
 	} while (value != 0);
-	DrawTextToScreen(L"%%", usPosX + width, usPosY + 3, 0, FONT10ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
+	DrawTextToScreen(JA2_TEXT("%%"), usPosX + width, usPosY + 3, 0, FONT10ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// draw vertical line
 	usPosX = WEBSITE_LEFT + 130;
@@ -1831,12 +1831,12 @@ void RenderNationalOverview()
 	// physical stat value
 	usPosX += 120;
 	usPosY -= 18;
-	swprintf(sText, L"+%d", gRebelCommandSettings.iMilitiaStatBonusPerLevel * rebelCommandSaveInfo.iMilitiaStatsLevel);
+	swprintf(sText, JA2_TEXT("+%d"), gRebelCommandSettings.iMilitiaStatBonusPerLevel * rebelCommandSaveInfo.iMilitiaStatsLevel);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// marksmanship value
 	usPosY += 15;
-	swprintf(sText, L"+%d", gRebelCommandSettings.iMilitiaMarksmanshipBonusPerLevel * rebelCommandSaveInfo.iMilitiaStatsLevel);
+	swprintf(sText, JA2_TEXT("+%d"), gRebelCommandSettings.iMilitiaMarksmanshipBonusPerLevel * rebelCommandSaveInfo.iMilitiaStatsLevel);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// upgrade militia stats button
@@ -1894,7 +1894,7 @@ void RenderRegionalOverview()
 	// region value
 	usPosX = WEBSITE_LEFT + 5;
 	usPosY += 12;
-	swprintf(sText, L"%s", pTownNames[iCurrentRegionId]);
+	swprintf(sText, JA2_TEXT("%s"), pTownNames[iCurrentRegionId]);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// line between region info and admin info
@@ -1970,7 +1970,7 @@ void RenderRegionalOverview()
 	// loyalty value
 	usPosX += 10;
 	usPosY += 12;
-	swprintf(sText, L"%d", GetRegionLoyalty(iCurrentRegionId));
+	swprintf(sText, JA2_TEXT("%d"), GetRegionLoyalty(iCurrentRegionId));
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 	INT32 width = 0;
 	INT32 value = GetRegionLoyalty(iCurrentRegionId);
@@ -1978,7 +1978,7 @@ void RenderRegionalOverview()
 		width += value % 10 == 1 ? 6 : 8;
 		value /= 10;
 	} while (value != 0);
-	DrawTextToScreen(L"%%", usPosX + width, usPosY + 3, 0, FONT10ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
+	DrawTextToScreen(JA2_TEXT("%%"), usPosX + width, usPosY + 3, 0, FONT10ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// loyalty region
 	usPosX -= 10;
@@ -2012,7 +2012,7 @@ void RenderRegionalOverview()
 	// max loyalty value
 	usPosX += 10;
 	usPosY += 12;
-	swprintf(sText, L"%d", rebelCommandSaveInfo.regions[iCurrentRegionId].ubMaxLoyalty);
+	swprintf(sText, JA2_TEXT("%d"), rebelCommandSaveInfo.regions[iCurrentRegionId].ubMaxLoyalty);
 	DrawTextToScreen(sText, usPosX, usPosY, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 	width = 0;
 	value = rebelCommandSaveInfo.regions[iCurrentRegionId].ubMaxLoyalty;
@@ -2020,7 +2020,7 @@ void RenderRegionalOverview()
 		width += value % 10 == 1 ? 6 : 8;
 		value /= 10;
 	} while (value != 0);
-	DrawTextToScreen(L"%%", usPosX + width, usPosY + 3, 0, FONT10ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
+	DrawTextToScreen(JA2_TEXT("%%"), usPosX + width, usPosY + 3, 0, FONT10ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// max loyalty region
 	usPosX -= 10;
@@ -2225,7 +2225,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 	case RCAM_SOLDIER_BOUNTIES_KINGPIN:			swprintf(sText, szRebelCommandAgentMissionsText[RCAMT_SOLDIER_BOUNTIES_KINGPIN_TITLE]); break;
 	case RCAM_TRAIN_MILITIA_ANYWHERE:			swprintf(sText, szRebelCommandAgentMissionsText[RCAMT_TRAIN_MILITIA_ANYWHERE_TITLE]); break;
 
-	default:									swprintf(sText, L"Mission Index: %d", rebelCommandSaveInfo.availableMissions[index]); break;
+	default:									swprintf(sText, JA2_TEXT("Mission Index: %d"), rebelCommandSaveInfo.availableMissions[index]); break;
 	}
 	DrawTextToScreen(sText, x+5, y+5, 0, FONT14ARIAL, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
@@ -2272,7 +2272,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 		
 	default: break;
 	}
-	swprintf(sText, szRebelCommandText[RCT_MISSION_SUCCESS_CHANCE], missionSuccessChanceBase, L"%%");
+	swprintf(sText, szRebelCommandText[RCT_MISSION_SUCCESS_CHANCE], missionSuccessChanceBase, JA2_TEXT("%%"));
 	DrawTextToScreen(sText, x+5, y+33, 0, FONT10ARIALBOLD, FONT_MCOLOR_BLACK, FONT_MCOLOR_BLACK, FALSE, 0);
 
 	// draw mission description
@@ -2291,7 +2291,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 	case RCAM_SOLDIER_BOUNTIES_KINGPIN:			swprintf(sText, szRebelCommandAgentMissionsText[RCAMT_SOLDIER_BOUNTIES_KINGPIN_DESC], gRebelCommandSettings.iSoldierBountiesKingpinPayout_Limit); break;
 	case RCAM_TRAIN_MILITIA_ANYWHERE:			swprintf(sText, szRebelCommandAgentMissionsText[RCAMT_TRAIN_MILITIA_ANYWHERE_DESC]); break;
 
-	default: swprintf(sText, L"Mission description goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut faucibus libero dui. Etiam facilisis posuere dictum. Etiam a velit viverra, interdum eros non, placerat lectus. Vivamus ut lorem id velit tempus auctor. Donec molestie, erat at molestie malesuada, diam purus tincidunt eros, vel hendrerit mi elit vitae leo. Suspendisse dui lectus, malesuada eu elementum at, viverra eu odio."); break;
+	default: swprintf(sText, JA2_TEXT("Mission description goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut faucibus libero dui. Etiam facilisis posuere dictum. Etiam a velit viverra, interdum eros non, placerat lectus. Vivamus ut lorem id velit tempus auctor. Donec molestie, erat at molestie malesuada, diam purus tincidunt eros, vel hendrerit mi elit vitae leo. Suspendisse dui lectus, malesuada eu elementum at, viverra eu odio.")); break;
 	}
 	DisplayWrappedString(x+5, y+45, 220, 2, FONT10ARIAL, FONT_MCOLOR_BLACK, sText, FONT_MCOLOR_BLACK, FALSE, 0);
 
@@ -2302,7 +2302,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 
 		// draw question mark
 		SetFontShadow(NO_SHADOW);
-		DrawTextToScreen(L"?", x+5+20, y+150+10+16, 0, FONT14HUMANIST, FONT_MCOLOR_WHITE, FONT_MCOLOR_BLACK, FALSE, 0);
+		DrawTextToScreen(JA2_TEXT("?"), x+5+20, y+150+10+16, 0, FONT14HUMANIST, FONT_MCOLOR_WHITE, FONT_MCOLOR_BLACK, FALSE, 0);
 		SetFontShadow(FONT_GRAY1);
 
 		// draw name
@@ -2370,7 +2370,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 	}
 
 	// draw btns under face
-	btnId = CreateTextButton(L"<<", FONT10ARIAL, FONT_MCOLOR_LTYELLOW, FONT_BLACK, BUTTON_USE_DEFAULT, x+5, y+150+54, 24, 20, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, [](GUI_BUTTON* btn, INT32 reason)
+	btnId = CreateTextButton(JA2_TEXT("<<"), FONT10ARIAL, FONT_MCOLOR_LTYELLOW, FONT_BLACK, BUTTON_USE_DEFAULT, x+5, y+150+54, 24, 20, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, [](GUI_BUTTON* btn, INT32 reason)
 		{
 			const INT8 index = MSYS_GetBtnUserData(btn, 0);
 			ButtonHelper(btn, reason, [btn, index]() { agentIndex[index]--; });
@@ -2378,7 +2378,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 	MSYS_SetBtnUserData(btnId, 0, index);
 	btnIds.push_back(btnId);
 
-	btnId = CreateTextButton(L">>", FONT10ARIAL, FONT_MCOLOR_LTYELLOW, FONT_BLACK, BUTTON_USE_DEFAULT, x+5+24, y+150+54, 24, 20, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, [](GUI_BUTTON* btn, INT32 reason)
+	btnId = CreateTextButton(JA2_TEXT(">>"), FONT10ARIAL, FONT_MCOLOR_LTYELLOW, FONT_BLACK, BUTTON_USE_DEFAULT, x+5+24, y+150+54, 24, 20, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, [](GUI_BUTTON* btn, INT32 reason)
 		{
 			const INT8 index = MSYS_GetBtnUserData(btn, 0);
 			ButtonHelper(btn, reason, [btn, index]() { agentIndex[index]++; });
@@ -2393,14 +2393,14 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 	// draw agent bonus text
 	UINT32 durationBonus = 0;
 	int durationBonusSkill = 0;
-	std::vector<std::wstring> agentBonusText;
+	std::vector<ja2::text::Utf16String> agentBonusText;
 	if (agentIndex[index] < static_cast<INT8>(mercs.size()))
 	{
 		const MERCPROFILESTRUCT merc = gMercProfiles[mercs[agentIndex[index]]->ubProfile];
 		const INT8 successBonus_expLevel = GetMissionSuccessChanceBonus(&merc);
 		CHAR16 successText[100];
 		// stupid string hack to get the percent sign to display correctly
-		swprintf(successText, szRebelCommandText[RCT_MISSION_BONUS_SUCCESS_CHANCE], successBonus_expLevel, L"%s", pShortAttributeStrings[5]); // "Lvl"
+		swprintf(successText, szRebelCommandText[RCT_MISSION_BONUS_SUCCESS_CHANCE], successBonus_expLevel, JA2_TEXT("%s"), pShortAttributeStrings[5]); // "Lvl"
 		agentBonusText.push_back(successText);
 
 		const STR16* locSkillText = gGameOptions.fNewTraitSystem ? gzMercSkillTextNew : gzMercSkillText;
@@ -2426,7 +2426,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 			CHAR16 text[100];
 			floatModifier = max(floatModifier, gRebelCommandSettings.fDisruptAsdIncomeReductionModifier);
 			floatModifier *= 100.f;
-			swprintf(text, szRebelCommandText[RCT_MISSION_BONUS_ASD_INCOME_REDUCTION], floatModifier, L"%s", locSkillText[floatModifierSkill]);
+			swprintf(text, szRebelCommandText[RCT_MISSION_BONUS_ASD_INCOME_REDUCTION], floatModifier, JA2_TEXT("%s"), locSkillText[floatModifierSkill]);
 			agentBonusText.push_back(text);
 
 			if (gGameOptions.fNewTraitSystem)
@@ -2475,7 +2475,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 			floatModifier -= 1.f;
 			floatModifier *= 100.f;
 			CHAR16 rangeText[100];
-			swprintf(rangeText, szRebelCommandText[RCT_MISSION_BONUS_DECISION_TIME], floatModifier, L"%s", locSkillText[floatModifierSkill]);
+			swprintf(rangeText, szRebelCommandText[RCT_MISSION_BONUS_DECISION_TIME], floatModifier, JA2_TEXT("%s"), locSkillText[floatModifierSkill]);
 			agentBonusText.push_back(rangeText);
 		}
 		break;
@@ -2485,7 +2485,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 			floatModifier = max(floatModifier, gRebelCommandSettings.fReduceUnlaertedEnemyVisionModifier);
 			floatModifier *= 100.f;
 			CHAR16 text[100];
-			swprintf(text, szRebelCommandText[RCT_MISSION_BONUS_UNALERTED_VISION_PENALTY], floatModifier, L"%s", locSkillText[floatModifierSkill]);
+			swprintf(text, szRebelCommandText[RCT_MISSION_BONUS_UNALERTED_VISION_PENALTY], floatModifier, JA2_TEXT("%s"), locSkillText[floatModifierSkill]);
 			agentBonusText.push_back(text);
 		}
 		break;
@@ -2525,7 +2525,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 			{
 				floatModifier *= 100;
 				floatModifier -= 100;
-				swprintf(text, szRebelCommandText[RCT_MISSION_BONUS_PAYOUT], floatModifier, L"%s", locSkillText[floatModifierSkill]);
+				swprintf(text, szRebelCommandText[RCT_MISSION_BONUS_PAYOUT], floatModifier, JA2_TEXT("%s"), locSkillText[floatModifierSkill]);
 				agentBonusText.push_back(text);
 			}
 
@@ -2577,7 +2577,7 @@ BOOLEAN SetupMissionAgentBox(UINT16 x, UINT16 y, INT8 index)
 		for (UINT8 i = 0; i < agentBonusText.size(); ++i)
 		{
 			// the percent sign here is a hack to get it to display properly for string that need a percent sign
-			swprintf(sText, agentBonusText[i].c_str(), L"%%");
+			swprintf(sText, agentBonusText[i].c_str(), JA2_TEXT("%%"));
 			DrawTextToScreen(sText, x+10, y+150+54+20+2+11*(i+1), 0, FONT10ARIAL, FONT_GREEN, FONT_MCOLOR_BLACK, FALSE, 0);
 		}
 	}
@@ -2661,7 +2661,7 @@ void RenderMissionOverview()
 	RenderHeader(RCT_AGENT_OVERVIEW);
 
 	// display help button
-	btnId = CreateTextButton(L"?", FONT12ARIAL, FONT_MCOLOR_WHITE, FONT_BLACK, BUTTON_USE_DEFAULT, WEBSITE_LEFT + 15, WEBSITE_TOP + 40, 30, 20, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, [](GUI_BUTTON* btn, INT32 reason)
+	btnId = CreateTextButton(JA2_TEXT("?"), FONT12ARIAL, FONT_MCOLOR_WHITE, FONT_BLACK, BUTTON_USE_DEFAULT, WEBSITE_LEFT + 15, WEBSITE_TOP + 40, 30, 20, BUTTON_TOGGLE, MSYS_PRIORITY_HIGH, DEFAULT_MOVE_CALLBACK, [](GUI_BUTTON* btn, INT32 reason)
 		{
 			ButtonHelper(btn, reason, []()
 			{
@@ -2739,8 +2739,8 @@ void RenderMissionOverview()
 			}
 			else
 			{
-				std::vector<std::wstring> evt1Strings;
-				std::vector<std::wstring> evt2Strings;
+				std::vector<ja2::text::Utf16String> evt1Strings;
+				std::vector<ja2::text::Utf16String> evt2Strings;
 				std::vector<std::pair<UINT32,UINT32>> missions = GetAllStrategicEventsOfType(EVENT_REBELCOMMAND);
 				for (std::vector<std::pair<UINT32, UINT32>>::iterator it = missions.begin(); it != missions.end(); ++it)
 				{
@@ -2768,13 +2768,13 @@ void RenderMissionOverview()
 				}
 
 				UINT16 y = WEBSITE_TOP + 90;
-				for (std::vector<std::wstring>::size_type i = 0; i < evt1Strings.size(); ++i)
+				for (std::vector<ja2::text::Utf16String>::size_type i = 0; i < evt1Strings.size(); ++i)
 				{
 					DrawTextToScreen(const_cast<STR16>(evt1Strings[i].c_str()), WEBSITE_LEFT + 35, y, 0, FONT12ARIAL, FONT_DKYELLOW, FONT_MCOLOR_BLACK, FALSE, 0);
 					y += 15;
 				}
 
-				for (std::vector<std::wstring>::size_type i = 0; i < evt2Strings.size(); ++i)
+				for (std::vector<ja2::text::Utf16String>::size_type i = 0; i < evt2Strings.size(); ++i)
 				{
 					DrawTextToScreen(const_cast<STR16>(evt2Strings[i].c_str()), WEBSITE_LEFT + 35, y, 0, FONT12ARIAL, FONT_DKGREEN, FONT_MCOLOR_BLACK, FALSE, 0);
 					y += 15;
@@ -3581,7 +3581,7 @@ void RaidMines(INT32 &playerIncome, INT32 &enemyIncome)
 	{
 		CHAR16 text[200];
 		swprintf(text, szRebelCommandText[RCT_MINE_RAID_SUCCESSFUL], stolenIncome);
-		ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s", text);
+		ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s"), text);
 	}
 }
 
@@ -3879,7 +3879,7 @@ void DailyUpdate()
 	if (intelGain > 0)
 	{
 		swprintf(text, szRebelCommandText[RCT_DEAD_DROP_INCOME], intelGain);
-		ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s", text);
+		ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s"), text);
 
 		AddIntel(intelGain, FALSE);
 	}
@@ -3887,7 +3887,7 @@ void DailyUpdate()
 	if (supplyGain > 0)
 	{
 		swprintf(text, szRebelCommandText[RCT_SMUGGLER_INCOME], supplyGain);
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"%s", text );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("%s"), text );
 
 		rebelCommandSaveInfo.iSupplies += supplyGain;
 	}
@@ -4933,7 +4933,7 @@ void HandleStrategicEvent(const UINT32 eventParam)
 
 			default:
 			{
-				ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, L"Unrecognised mission ID: %d", mission);
+				ScreenMsg(FONT_MCOLOR_RED, MSG_INTERFACE, JA2_TEXT("Unrecognised mission ID: %d"), mission);
 			}
 			break;
 			}

@@ -1439,18 +1439,18 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 						// with the new Laser Performance Bonus we need to display a different text for laser on a weapons general tab
 						if ( cnt == 6
 							&& (gGameCTHConstants.LASER_PERFORMANCE_BONUS_HIP + gGameCTHConstants.LASER_PERFORMANCE_BONUS_IRON + gGameCTHConstants.LASER_PERFORMANCE_BONUS_SCOPE != 0) )
-							swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 64 ], szUDBGenWeaponsStatsExplanationsTooltipText[ cnt ]);
+							swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 64 ], szUDBGenWeaponsStatsExplanationsTooltipText[ cnt ]);
 						else if ( cnt == 10 && gGameExternalOptions.fAdvRepairSystem && !gSkillTraitValues.fTETraitsCanRestoreItemThreshold )
-							swprintf( pStr, L"%s%s", szUDBGenWeaponsStatsTooltipText[ cnt ], szUDBGenWeaponsStatsExplanationsTooltipText[ 22 ]);
+							swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenWeaponsStatsTooltipText[ cnt ], szUDBGenWeaponsStatsExplanationsTooltipText[ 22 ]);
 						else
-							swprintf( pStr, L"%s%s", szUDBGenWeaponsStatsTooltipText[ cnt ], szUDBGenWeaponsStatsExplanationsTooltipText[ cnt ]);
+							swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenWeaponsStatsTooltipText[ cnt ], szUDBGenWeaponsStatsExplanationsTooltipText[ cnt ]);
 					}
 					else
 					{
 						if ( cnt == 11 && gGameExternalOptions.fAdvRepairSystem && !gSkillTraitValues.fTETraitsCanRestoreItemThreshold )
-							swprintf( pStr, L"%s", gzWeaponStatsFasthelpTactical[ 32 ]);
+							swprintf( pStr, JA2_TEXT("%s"), gzWeaponStatsFasthelpTactical[ 32 ]);
 						else
-							swprintf( pStr, L"%s", gzWeaponStatsFasthelpTactical[ cnt ]);
+							swprintf( pStr, JA2_TEXT("%s"), gzWeaponStatsFasthelpTactical[ cnt ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iRegionsCreated ]), pStr );
 					SetRegionHelpEndCallback( &(gUDBFasthelpRegions[ iRegionsCreated ]), HelpTextDoneCallback );
@@ -1473,9 +1473,9 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 	
 					MSYS_AddRegion( &gUDBFasthelpRegions[ iRegionsCreated ]);
 					if(UsingNewCTHSystem() == true)
-						swprintf( pStr, L"%s%s", szUDBGenWeaponsStatsTooltipText[ cnt ], szUDBGenWeaponsStatsExplanationsTooltipText[ cnt ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenWeaponsStatsTooltipText[ cnt ], szUDBGenWeaponsStatsExplanationsTooltipText[ cnt ]);
 					else
-						swprintf( pStr, L"%s", gzWeaponStatsFasthelpTactical[ cnt ]);
+						swprintf( pStr, JA2_TEXT("%s"), gzWeaponStatsFasthelpTactical[ cnt ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iRegionsCreated ]), pStr );
 					SetRegionHelpEndCallback( &(gUDBFasthelpRegions[ iRegionsCreated ]), HelpTextDoneCallback );
 					MSYS_DisableRegion( &gUDBFasthelpRegions[ iRegionsCreated ] );
@@ -1495,9 +1495,9 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 	
 					MSYS_AddRegion( &gUDBFasthelpRegions[ iRegionsCreated ]);
 					if(UsingNewCTHSystem() == true)
-						swprintf( pStr, L"%s%s", szUDBGenWeaponsStatsTooltipText[ cnt ], szUDBGenWeaponsStatsExplanationsTooltipText[ cnt ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenWeaponsStatsTooltipText[ cnt ], szUDBGenWeaponsStatsExplanationsTooltipText[ cnt ]);
 					else
-						swprintf( pStr, L"%s", gzWeaponStatsFasthelpTactical[ cnt ]);
+						swprintf( pStr, JA2_TEXT("%s"), gzWeaponStatsFasthelpTactical[ cnt ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iRegionsCreated ]), pStr );
 					SetRegionHelpEndCallback( &(gUDBFasthelpRegions[ iRegionsCreated ]), HelpTextDoneCallback );
 					MSYS_DisableRegion( &gUDBFasthelpRegions[ iRegionsCreated ] );
@@ -1789,9 +1789,9 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 	
 					MSYS_AddRegion( &gUDBFasthelpRegions[ iRegionsCreated ]);
 					if ( cnt == 3 && gGameExternalOptions.fAdvRepairSystem && !gSkillTraitValues.fTETraitsCanRestoreItemThreshold )
-						swprintf( pStr, L"%s%s", szUDBGenArmorStatsTooltipText[ cnt ], szUDBGenArmorStatsExplanationsTooltipText[ 4 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenArmorStatsTooltipText[ cnt ], szUDBGenArmorStatsExplanationsTooltipText[ 4 ]);
 					else
-						swprintf( pStr, L"%s%s", szUDBGenArmorStatsTooltipText[ cnt ], szUDBGenArmorStatsExplanationsTooltipText[ cnt ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenArmorStatsTooltipText[ cnt ], szUDBGenArmorStatsExplanationsTooltipText[ cnt ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iRegionsCreated ]), pStr );
 					SetRegionHelpEndCallback( &(gUDBFasthelpRegions[ iRegionsCreated ]), HelpTextDoneCallback );
 					MSYS_DisableRegion( &gUDBFasthelpRegions[ iRegionsCreated ] );
@@ -1873,7 +1873,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 					MSYS_PRIORITY_HIGHEST, MSYS_NO_CURSOR, MSYS_NO_CALLBACK, ItemDescCallback );
 	
 					MSYS_AddRegion( &gUDBFasthelpRegions[ iRegionsCreated ]);
-					swprintf( pStr, L"%s%s", szUDBGenAmmoStatsTooltipText[ cnt ], szUDBGenAmmoStatsExplanationsTooltipText[ cnt ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenAmmoStatsTooltipText[ cnt ], szUDBGenAmmoStatsExplanationsTooltipText[ cnt ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iRegionsCreated ]), pStr );
 					SetRegionHelpEndCallback( &(gUDBFasthelpRegions[ iRegionsCreated ]), HelpTextDoneCallback );
 					MSYS_DisableRegion( &gUDBFasthelpRegions[ iRegionsCreated ] );
@@ -1979,7 +1979,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////// DAMAGE
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDamage > 0 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 0 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 0 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 0 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 0 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 0 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 0 ] );
 			}
@@ -1987,7 +1987,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////// STUN-DAMAGE
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubStunDamage > 0 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 1 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 1 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 1 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 1 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 1 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 1 ] );
 			}
@@ -1996,7 +1996,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////// EXPLODE ON IMPACT
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].fExplodeOnImpact )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 2 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 2 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 2 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 2 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 2 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 2 ] );
 			}
@@ -2006,7 +2006,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType != 5 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType != 1 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 3 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 3 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 3 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 3 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 3 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 3 ] );
 			}
@@ -2015,7 +2015,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration == 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 1 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 4 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 4 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 4 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 4 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 3 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 3 ] );
 			}
@@ -2024,7 +2024,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration == 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 5 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 5 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 5 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 5 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 5 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 3 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 3 ] );
 			}
@@ -2033,7 +2033,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 2 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 6 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 6 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 6 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 6 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 3 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 3 ] );
 			}
@@ -2042,7 +2042,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 3 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 7 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 7 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 7 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 7 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 3 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 3 ] );
 			}
@@ -2051,7 +2051,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 4 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 8 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 8 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 8 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 8 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 3 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 3 ] );
 			}
@@ -2060,7 +2060,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 6 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 9 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 9 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 9 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 9 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 3 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 3 ] );
 			}
@@ -2069,7 +2069,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 8 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 10 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 10 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 10 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 10 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 3 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 3 ] );
 			}
@@ -2078,7 +2078,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 2 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 11 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 11 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 11 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 11 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 4 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 4 ] );
 			}
@@ -2087,7 +2087,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 3 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 12 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 12 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 12 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 12 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 4 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 4 ] );
 			}
@@ -2096,7 +2096,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 4 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 13 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 13 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 13 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 13 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 4 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 4 ] );
 			}
@@ -2105,7 +2105,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 6 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 14 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 14 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 14 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 14 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 4 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 4 ] );
 			}
@@ -2114,7 +2114,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 
 				&& Explosive[Item[ gpItemDescObject->usItem].ubClassIndex ].ubType == 8 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 15 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 15 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 15 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 15 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 4 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 4 ] );
 			}
@@ -2122,7 +2122,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////// DURATION
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubDuration > 0 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 16 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 16 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 16 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 16 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 5 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 5 ] );
 			}
@@ -2131,7 +2131,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////// NUMBER OF FRAGMENTS
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].usNumFragments > 0 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 17 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 17 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 17 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 17 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 6 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 6 ] );
 			}
@@ -2139,7 +2139,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////// FRAGMENT DAMAGE
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].usNumFragments > 0 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 18 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 18 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 18 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 18 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 7 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 7 ] );
 			}
@@ -2147,14 +2147,14 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////// FRAGMENT RANGE
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].usNumFragments > 0 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 19 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 19 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 19 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 19 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 8 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 8 ] );
 			}
 
 			//////////////////// LOUDNESS
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 20 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 20 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 20 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 20 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 9 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 9 ] );
 			}
@@ -2162,14 +2162,14 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////// VOLATILITY
 			if ( Explosive[Item[ gpItemDescObject->usItem ].ubClassIndex ].ubVolatility > 0 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 21 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 21 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 21 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 21 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 10 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 10 ] );
 			}
 
 			//////////////////// REPAIR EASE
 			{
-				swprintf( pStr, L"%s%s", szUDBGenExplosiveStatsTooltipText[ 22 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 22 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenExplosiveStatsTooltipText[ 22 ], szUDBGenExplosiveStatsExplanationsTooltipText[ 22 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 11 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 11 ] );
 			}
@@ -2244,7 +2244,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			// not for weapons. They have this one their primary page
 			if ( !(Item[ gpItemDescObject->usItem ].usItemClass & IC_WEAPON || Item[ gpItemDescObject->usItem ].usItemClass & IC_PUNCH) )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenCommonStatsTooltipText[ 0 ], szUDBGenCommonStatsExplanationsTooltipText[ 0 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenCommonStatsTooltipText[ 0 ], szUDBGenCommonStatsExplanationsTooltipText[ 0 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 0 ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 0 ] );
 			}
@@ -2254,14 +2254,14 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				//////////////////// LBE AVAILABLE VOLUME (for MOLLE carriers)
 				if ( LoadBearingEquipment[ Item[ gpItemDescObject->usItem ].ubClassIndex ].lbeAvailableVolume > 0 )
 				{
-					swprintf( pStr, L"%s%s", szUDBGenCommonStatsTooltipText[ 1 ], szUDBGenCommonStatsExplanationsTooltipText[ 1 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenCommonStatsTooltipText[ 1 ], szUDBGenCommonStatsExplanationsTooltipText[ 1 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 1 ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 1 ] );
 				}
 				//////////////////// POCKET VOLUME (for MOLLE pockets)
 				if ( Item[ gpItemDescObject->usItem ].nasAttachmentClass != 0 && GetFirstPocketOnItem(gpItemDescObject->usItem) != 0 )
 				{
-					swprintf( pStr, L"%s%s", szUDBGenCommonStatsTooltipText[ 2 ], szUDBGenCommonStatsExplanationsTooltipText[ 2 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenCommonStatsTooltipText[ 2 ], szUDBGenCommonStatsExplanationsTooltipText[ 2 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + 2 ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + 2 ] );
 				}
@@ -2303,7 +2303,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////// EXPLOSIVE RESISTANCE
 			if (ItemIsFlakJacket(gpItemDescObject->usItem))
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 5 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 5 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 5 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 5 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2315,7 +2315,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				CHAR16 pStr2[256];
 				swprintf( pStr2, szUDBGenSecondaryStatsExplanationsTooltipText[45], Item[gpItemDescObject->usItem].sFireResistance );
 
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[45], pStr2 );
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[45], pStr2 );
 				SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 				cnt++;
@@ -2327,7 +2327,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			/////////////////// TRACER AMMO
 			if ( AmmoTypes[Magazine[Item[ gpItemDescObject->usItem ].ubClassIndex].ubAmmoType].tracerEffect )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 0 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 0 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 0 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 0 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2336,7 +2336,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			/////////////////// ANTI-TANK AMMO
 			if ( AmmoTypes[Magazine[Item[gpItemDescObject->usItem].ubClassIndex].ubAmmoType].dDamageModifierTank >= 0.1f )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 1 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 1 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 1 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 1 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2345,7 +2345,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			/////////////////// IGNORE ARMOR AMMO
 			if ( AmmoTypes[Magazine[Item[ gpItemDescObject->usItem ].ubClassIndex].ubAmmoType].ignoreArmour )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 2 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 2 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 2 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 2 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2354,7 +2354,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			/////////////////// ACIDIC AMMO
 			if ( AmmoTypes[Magazine[Item[ gpItemDescObject->usItem ].ubClassIndex].ubAmmoType].acidic )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 3 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 3 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 3 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 3 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2363,7 +2363,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			/////////////////// LOCKBUSTING AMMO
 			if ( AmmoTypes[Magazine[Item[ gpItemDescObject->usItem ].ubClassIndex].ubAmmoType].lockBustingPower )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 4 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 4 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 4 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 4 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2372,7 +2372,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			////////////////// ANTI-MATERIEL AMMO
 			if ( AmmoTypes[Magazine[Item[ gpItemDescObject->usItem ].ubClassIndex].ubAmmoType].ammoflag & AMMO_ANTIMATERIEL )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 37 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 37 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 37 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 37 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2381,7 +2381,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			////////////////// Ammo with white smoke trail 
 			if ( AmmoTypes[Magazine[Item[gpItemDescObject->usItem].ubClassIndex].ubAmmoType].ammoflag & AMMO_TRAIL_WHITESMOKE )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[49], szUDBGenSecondaryStatsExplanationsTooltipText[49] );
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[49], szUDBGenSecondaryStatsExplanationsTooltipText[49] );
 				SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 				cnt++;
@@ -2390,7 +2390,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			//////////////////  Ammo with fire trail 
 			if ( AmmoTypes[Magazine[Item[gpItemDescObject->usItem].ubClassIndex].ubAmmoType].ammoflag & AMMO_TRAIL_FIRE )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[50], szUDBGenSecondaryStatsExplanationsTooltipText[50] );
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[50], szUDBGenSecondaryStatsExplanationsTooltipText[50] );
 				SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 				cnt++;
@@ -2402,7 +2402,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			////////////////// LOCK BOMB
 			if (ItemIsLockBomb(gpItemDescObject->usItem))
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 25 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 25 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 25 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 25 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2415,7 +2415,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// WATERPROOF
 		if (!ItemIsDamagedByWater(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 6 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 6 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 6 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 6 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2424,7 +2424,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// ELECTRONIC
 		if (ItemIsElectronic(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 7 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 7 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 7 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 7 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2433,7 +2433,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// GAS MASK
 		if (ItemIsGasmask(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 8 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 8 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 8 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 8 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2442,7 +2442,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// NEEDS BATTERIES
 		if (ItemNeedsBatteries(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 9 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 9 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 9 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 9 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2451,7 +2451,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// LOCKSMITH'S KIT
 		if (ItemIsLocksmithKit(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s%d", szUDBGenSecondaryStatsTooltipText[ 10 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 10 ], (Item[ gpItemDescObject->usItem ].LockPickModifier > 0 ?
+			swprintf( pStr, JA2_TEXT("%s%s%d"), szUDBGenSecondaryStatsTooltipText[ 10 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 10 ], (Item[ gpItemDescObject->usItem ].LockPickModifier > 0 ?
 				( Item[ gpItemDescObject->usItem ].LockPickModifier * (*gpItemDescObject)[0]->data.objectStatus / 100 ) : Item[ gpItemDescObject->usItem ].LockPickModifier ) );
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
@@ -2461,7 +2461,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// WIRE CUTTERS
 		if (ItemIsWirecutters(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 11 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 11 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 11 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 11 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2470,7 +2470,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// CROWBAR
 		if (ItemIsCrowbar(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s%d", szUDBGenSecondaryStatsTooltipText[ 12 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 12 ], Item[ gpItemDescObject->usItem ].CrowbarModifier );
+			swprintf( pStr, JA2_TEXT("%s%s%d"), szUDBGenSecondaryStatsTooltipText[ 12 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 12 ], Item[ gpItemDescObject->usItem ].CrowbarModifier );
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2479,7 +2479,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// METAL DETECTOR
 		if (ItemIsMetalDetector(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 13 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 13 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 13 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 13 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2488,7 +2488,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// REMOTE TRIGGER
 		if (ItemIsRemoteTrigger(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 14 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 14 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 14 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 14 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2497,7 +2497,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// REMOTE DETONATOR
 		if ( IsAttachmentClass( gpItemDescObject->usItem, AC_REMOTEDET ) )
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 15 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 15 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 15 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 15 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2506,7 +2506,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// TIMER DETONATOR
 		if ( IsAttachmentClass( gpItemDescObject->usItem, AC_DETONATOR ))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 16 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 16 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 16 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 16 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2515,7 +2515,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// GAS CAN
 		if (ItemIsGascan(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 17 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 17 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 17 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 17 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2524,7 +2524,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// TOOLKIT
 		if (ItemIsToolkit(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s%d", szUDBGenSecondaryStatsTooltipText[ 18 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 18 ], Item[ gpItemDescObject->usItem ].RepairModifier );
+			swprintf( pStr, JA2_TEXT("%s%s%d"), szUDBGenSecondaryStatsTooltipText[ 18 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 18 ], Item[ gpItemDescObject->usItem ].RepairModifier );
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2533,7 +2533,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// THERMAL OPTICS
 		if (ItemIsThermalOptics(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 19 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 19 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 19 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 19 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2542,7 +2542,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// X-RAY DEVICE
 		if (ItemHasXRay(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 20 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 20 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 20 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 20 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2551,7 +2551,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// CANTEEN
 		if (ItemIsCanteen(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 21 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 21 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 21 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 21 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2560,7 +2560,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// ALCOHOL
 		if ( Item[gpItemDescObject->usItem].alcohol > 0.0f )
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 22 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 22 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 22 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 22 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2569,7 +2569,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// FIRST-AID KIT
 		if (ItemIsFirstAidKit(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 23 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 23 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 23 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 23 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2578,7 +2578,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// MEDICAL KIT
 		if (ItemIsMedicalKit(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 24 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 24 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 24 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 24 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2590,7 +2590,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		{
 			if ( Food[foodtype].bDrinkPoints > 0 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 26 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 26 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 26 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 26 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2598,7 +2598,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 
 			if ( Food[foodtype].bFoodPoints > 0 )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 27 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 27 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 27 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 27 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2610,21 +2610,21 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		{
 			if (HasItemFlag(gpItemDescObject->usItem, BELT_FED))
 			{
-				swprintf(pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[51], szUDBGenSecondaryStatsExplanationsTooltipText[51]);
+				swprintf(pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[51], szUDBGenSecondaryStatsExplanationsTooltipText[51]);
 				SetRegionFastHelpText(&(gUDBFasthelpRegions[iFirstDataRegion + cnt]), pStr);
 				MSYS_EnableRegion(&gUDBFasthelpRegions[iFirstDataRegion + cnt]);
 				cnt++;
 			}
 			else if ( HasItemFlag(gpItemDescObject->usItem, AMMO_BELT) )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 28 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 28 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 28 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 28 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
 			}
 			else if ( HasItemFlag(gpItemDescObject->usItem, AMMO_BELT_VEST) )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 29 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 29 ]);
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 29 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 29 ]);
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 				cnt++;
@@ -2633,7 +2633,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		///////////////////// DEFUSAL KIT
 		if ( Item[gpItemDescObject->usItem].DisarmModifier > 0)
 		{
-			swprintf( pStr, L"%s%s%d", szUDBGenSecondaryStatsTooltipText[ 30 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 30 ], Item[gpItemDescObject->usItem].DisarmModifier);
+			swprintf( pStr, JA2_TEXT("%s%s%d"), szUDBGenSecondaryStatsTooltipText[ 30 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 30 ], Item[gpItemDescObject->usItem].DisarmModifier);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2642,7 +2642,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// COVERT ITEM
 		if ( HasItemFlag(gpItemDescObject->usItem, COVERT) )
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 31 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 31 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 31 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 31 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2651,7 +2651,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// NOT DAMAGEABLE
 		if (!ItemIsDamageable(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 32 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 32 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 32 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 32 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2660,7 +2660,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// METAL
 		if (ItemIsMetal(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 33 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 33 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 33 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 33 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2669,7 +2669,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// SINKS
 		if (ItemSinks(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 34 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 34 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 34 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 34 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2678,7 +2678,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// TWO HANDED
 		if (ItemIsTwoHanded(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 35 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 35 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 35 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 35 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2687,7 +2687,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// BLOCKS IRON SIGHTS
 		if (ItemBlocksIronsight(gpItemDescObject->usItem))
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[ 36 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 36 ]);
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[ 36 ], szUDBGenSecondaryStatsExplanationsTooltipText[ 36 ]);
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + cnt ]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + cnt ] );
 			cnt++;
@@ -2698,14 +2698,14 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		{
 			if ( HasItemFlag( gpItemDescObject->usItem, DISEASEPROTECTION_1 ) )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[38], szUDBGenSecondaryStatsExplanationsTooltipText[38] );
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[38], szUDBGenSecondaryStatsExplanationsTooltipText[38] );
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[iFirstDataRegion + cnt]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 				cnt++;
 			}
 			if ( HasItemFlag( gpItemDescObject->usItem, DISEASEPROTECTION_2 ) )
 			{
-				swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[39], szUDBGenSecondaryStatsExplanationsTooltipText[39] );
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[39], szUDBGenSecondaryStatsExplanationsTooltipText[39] );
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[iFirstDataRegion + cnt]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 				cnt++;
@@ -2715,7 +2715,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// SHIELD
 		if ( Item[gpItemDescObject->usItem].usRiotShieldStrength > 0 )
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[40], szUDBGenSecondaryStatsExplanationsTooltipText[40] );
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[40], szUDBGenSecondaryStatsExplanationsTooltipText[40] );
 			SetRegionFastHelpText( &(gUDBFasthelpRegions[iFirstDataRegion + cnt]), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 			++cnt;
@@ -2724,7 +2724,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// CAMERA
 		if ( HasItemFlag( gpItemDescObject->usItem, CAMERA ) )
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[41], szUDBGenSecondaryStatsExplanationsTooltipText[41] );
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[41], szUDBGenSecondaryStatsExplanationsTooltipText[41] );
 			SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 			++cnt;
@@ -2733,7 +2733,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// BURIAL MODIFIER
 		if ( Item[gpItemDescObject->usItem].usBurialModifier  )
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[42], szUDBGenSecondaryStatsExplanationsTooltipText[42] );
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[42], szUDBGenSecondaryStatsExplanationsTooltipText[42] );
 			SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 			++cnt;
@@ -2742,7 +2742,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// EMPTY BLOOD BAG
 		if ( HasItemFlag( gpItemDescObject->usItem, EMPTY_BLOOD_BAG ) )
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[43], szUDBGenSecondaryStatsExplanationsTooltipText[43] );
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[43], szUDBGenSecondaryStatsExplanationsTooltipText[43] );
 			SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 			++cnt;
@@ -2751,7 +2751,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// BLOOD BAG
 		if ( HasItemFlag( gpItemDescObject->usItem, BLOOD_BAG ) )
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[44], szUDBGenSecondaryStatsExplanationsTooltipText[44] );
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[44], szUDBGenSecondaryStatsExplanationsTooltipText[44] );
 			SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 			++cnt;
@@ -2763,7 +2763,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			CHAR16 pStr2[256];
 			swprintf( pStr2, szUDBGenSecondaryStatsExplanationsTooltipText[46], Item[gpItemDescObject->usItem].usAdministrationModifier );
 
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[46], pStr2 );
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[46], pStr2 );
 			SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 			++cnt;
@@ -2775,7 +2775,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			CHAR16 pStr2[256];
 			swprintf( pStr2, szUDBGenSecondaryStatsExplanationsTooltipText[47], Item[gpItemDescObject->usItem].usHackingModifier );
 
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[47], pStr2 );
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[47], pStr2 );
 			SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 			++cnt;
@@ -2784,7 +2784,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 		//////////////////// MEDICAL_SPLINT
 		if ( HasItemFlag( gpItemDescObject->usItem, MEDICAL_SPLINT ) )
 		{
-			swprintf( pStr, L"%s%s", szUDBGenSecondaryStatsTooltipText[48], szUDBGenSecondaryStatsExplanationsTooltipText[48] );
+			swprintf( pStr, JA2_TEXT("%s%s"), szUDBGenSecondaryStatsTooltipText[48], szUDBGenSecondaryStatsExplanationsTooltipText[48] );
 			SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + cnt] ), pStr );
 			MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + cnt] );
 			++cnt;
@@ -2855,11 +2855,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 0 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 0 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 0 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 0 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 0 ], szUDBAdvStatsExplanationsTooltipText[ 0 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 0 ], szUDBAdvStatsExplanationsTooltipText[ 0 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -2878,11 +2878,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass& (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 1 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 1 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 1 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 1 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 1 ], szUDBAdvStatsExplanationsTooltipText[ 1 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 1 ], szUDBAdvStatsExplanationsTooltipText[ 1 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -2902,11 +2902,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 2 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 2 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 2 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 2 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 2 ], szUDBAdvStatsExplanationsTooltipText[ 2 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 2 ], szUDBAdvStatsExplanationsTooltipText[ 2 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -2926,11 +2926,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 3 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 3 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 3 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 3 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 3 ], szUDBAdvStatsExplanationsTooltipText[ 3 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 3 ], szUDBAdvStatsExplanationsTooltipText[ 3 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -2950,11 +2950,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 4 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 4 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 4 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 4 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 4 ], szUDBAdvStatsExplanationsTooltipText[ 4 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 4 ], szUDBAdvStatsExplanationsTooltipText[ 4 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -2972,15 +2972,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 5 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 5 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 5 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 5 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 5 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 5 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 5 ], szUDBAdvStatsExplanationsTooltipText[ 5 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 5 ], szUDBAdvStatsExplanationsTooltipText[ 5 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -2997,15 +2997,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if( UsingNewCTHSystem() == false )
 					{
-						swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 47 ]);
+						swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 47 ]);
 					}
 					else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 47 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 47 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 47 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 47 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 47 ], szUDBAdvStatsExplanationsTooltipText[ 47 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 47 ], szUDBAdvStatsExplanationsTooltipText[ 47 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3024,15 +3024,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if( UsingNewCTHSystem() == false )
 					{
-						swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 46 ]);
+						swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 46 ]);
 					}
 					else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 46 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 46 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 46 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 46 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 46 ], szUDBAdvStatsExplanationsTooltipText[ 46 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 46 ], szUDBAdvStatsExplanationsTooltipText[ 46 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3052,11 +3052,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 6 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 6 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 6 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 6 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 6 ], szUDBAdvStatsExplanationsTooltipText[ 6 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 6 ], szUDBAdvStatsExplanationsTooltipText[ 6 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3076,11 +3076,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 7 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 7 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 7 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 7 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 7 ], szUDBAdvStatsExplanationsTooltipText[ 7 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 7 ], szUDBAdvStatsExplanationsTooltipText[ 7 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3100,11 +3100,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 8 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 8 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 8 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 8 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 8 ], szUDBAdvStatsExplanationsTooltipText[ 8 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 8 ], szUDBAdvStatsExplanationsTooltipText[ 8 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3124,11 +3124,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 9 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 9 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 9 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 9 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 9 ], szUDBAdvStatsExplanationsTooltipText[ 9 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 9 ], szUDBAdvStatsExplanationsTooltipText[ 9 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3144,15 +3144,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 10 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 10 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 10 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 10 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 10 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 10 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 10 ], szUDBAdvStatsExplanationsTooltipText[ 10 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 10 ], szUDBAdvStatsExplanationsTooltipText[ 10 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3167,15 +3167,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 11 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 11 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 11 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 11 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 11 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 11 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 11 ], szUDBAdvStatsExplanationsTooltipText[ 11 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 11 ], szUDBAdvStatsExplanationsTooltipText[ 11 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3190,15 +3190,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 12 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 12 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 12 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 12 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 12 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 12 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 12 ], szUDBAdvStatsExplanationsTooltipText[ 12 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 12 ], szUDBAdvStatsExplanationsTooltipText[ 12 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3215,11 +3215,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 13 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 13 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 13 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 13 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 13 ], szUDBAdvStatsExplanationsTooltipText[ 13 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 13 ], szUDBAdvStatsExplanationsTooltipText[ 13 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3238,11 +3238,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 64 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 14 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 64 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 14 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 64 ], szUDBAdvStatsExplanationsTooltipText[ 14 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 64 ], szUDBAdvStatsExplanationsTooltipText[ 14 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3257,11 +3257,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 14 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 14 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 14 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 14 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 14 ], szUDBAdvStatsExplanationsTooltipText[ 14 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 14 ], szUDBAdvStatsExplanationsTooltipText[ 14 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3279,11 +3279,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 65 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 52 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 65 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 52 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 65 ], szUDBAdvStatsExplanationsTooltipText[ 65 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 65 ], szUDBAdvStatsExplanationsTooltipText[ 65 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3304,11 +3304,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 15 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 15 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 15 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 15 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 15 ], szUDBAdvStatsExplanationsTooltipText[ 15 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 15 ], szUDBAdvStatsExplanationsTooltipText[ 15 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3326,11 +3326,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 16 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 16 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 16 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 16 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 16 ], szUDBAdvStatsExplanationsTooltipText[ 16 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 16 ], szUDBAdvStatsExplanationsTooltipText[ 16 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3351,11 +3351,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 44 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 44 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 44 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 44 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 44 ], szUDBAdvStatsExplanationsTooltipText[ 44 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 44 ], szUDBAdvStatsExplanationsTooltipText[ 44 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3375,11 +3375,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 17 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 17 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 17 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 17 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 17 ], szUDBAdvStatsExplanationsTooltipText[ 17 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 17 ], szUDBAdvStatsExplanationsTooltipText[ 17 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3399,11 +3399,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 18 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 18 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 18 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 18 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 18 ], szUDBAdvStatsExplanationsTooltipText[ 18 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 18 ], szUDBAdvStatsExplanationsTooltipText[ 18 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3419,15 +3419,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 20 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 20 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 20 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 20 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 20 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 20 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 20 ], szUDBAdvStatsExplanationsTooltipText[ 20 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 20 ], szUDBAdvStatsExplanationsTooltipText[ 20 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3442,15 +3442,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 21 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 21 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 21 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 21 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 21 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 21 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 21 ], szUDBAdvStatsExplanationsTooltipText[ 21 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 21 ], szUDBAdvStatsExplanationsTooltipText[ 21 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3465,15 +3465,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 22 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 22 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 22 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 22 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 22 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 22 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 22 ], szUDBAdvStatsExplanationsTooltipText[ 22 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 22 ], szUDBAdvStatsExplanationsTooltipText[ 22 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3488,15 +3488,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 23 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 23 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 23 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 23 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 23 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 23 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 23 ], szUDBAdvStatsExplanationsTooltipText[ 23 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 23 ], szUDBAdvStatsExplanationsTooltipText[ 23 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3511,15 +3511,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 24 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 24 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 24 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 24 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 24 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 24 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 24 ], szUDBAdvStatsExplanationsTooltipText[ 24 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 24 ], szUDBAdvStatsExplanationsTooltipText[ 24 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3534,15 +3534,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 25 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 25 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 25 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 25 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 25 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 25 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 25 ], szUDBAdvStatsExplanationsTooltipText[ 25 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 25 ], szUDBAdvStatsExplanationsTooltipText[ 25 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3557,15 +3557,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 26 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 26 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 26 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 26 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 26 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 26 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 26 ], szUDBAdvStatsExplanationsTooltipText[ 26 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 26 ], szUDBAdvStatsExplanationsTooltipText[ 26 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3580,15 +3580,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 27 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 27 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 27 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 27 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 27 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 27 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 27 ], szUDBAdvStatsExplanationsTooltipText[ 27 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 27 ], szUDBAdvStatsExplanationsTooltipText[ 27 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3603,15 +3603,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 28 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 28 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 28 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 28 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 28 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 28 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 28 ], szUDBAdvStatsExplanationsTooltipText[ 28 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 28 ], szUDBAdvStatsExplanationsTooltipText[ 28 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3626,15 +3626,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 29 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 29 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 29 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 29 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 29 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 29 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 29 ], szUDBAdvStatsExplanationsTooltipText[ 29 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 29 ], szUDBAdvStatsExplanationsTooltipText[ 29 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3649,15 +3649,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 30 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 30 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 30 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 30 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 30 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 30 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 30 ], szUDBAdvStatsExplanationsTooltipText[ 30 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 30 ], szUDBAdvStatsExplanationsTooltipText[ 30 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3673,15 +3673,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 31 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 31 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 31 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 31 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 31 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 31 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 31 ], szUDBAdvStatsExplanationsTooltipText[ 31 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 31 ], szUDBAdvStatsExplanationsTooltipText[ 31 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3696,15 +3696,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 32 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 32 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 32 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 32 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 32 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 32 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 32 ], szUDBAdvStatsExplanationsTooltipText[ 32 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 32 ], szUDBAdvStatsExplanationsTooltipText[ 32 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3719,15 +3719,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 33 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 33 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 33 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 33 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 33 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 33 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 33 ], szUDBAdvStatsExplanationsTooltipText[ 33 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 33 ], szUDBAdvStatsExplanationsTooltipText[ 33 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3742,15 +3742,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 34 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 34 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 34 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 34 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 34 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 34 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 34 ], szUDBAdvStatsExplanationsTooltipText[ 34 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 34 ], szUDBAdvStatsExplanationsTooltipText[ 34 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3765,15 +3765,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 35 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 35 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 35 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 35 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 35 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 35 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 35 ], szUDBAdvStatsExplanationsTooltipText[ 35 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 35 ], szUDBAdvStatsExplanationsTooltipText[ 35 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3788,15 +3788,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 36 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 36 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 36 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 36 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 36 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 36 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 36 ], szUDBAdvStatsExplanationsTooltipText[ 36 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 36 ], szUDBAdvStatsExplanationsTooltipText[ 36 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3811,15 +3811,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 37 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 37 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 37 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 37 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 37 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 37 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 37 ], szUDBAdvStatsExplanationsTooltipText[ 37 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 37 ], szUDBAdvStatsExplanationsTooltipText[ 37 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3834,15 +3834,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 38 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 38 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 38 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 38 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 38 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 38 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 38 ], szUDBAdvStatsExplanationsTooltipText[ 38 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 38 ], szUDBAdvStatsExplanationsTooltipText[ 38 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3857,15 +3857,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 39 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 39 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 39 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 39 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 39 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 39 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 39 ], szUDBAdvStatsExplanationsTooltipText[ 39 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 39 ], szUDBAdvStatsExplanationsTooltipText[ 39 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3880,15 +3880,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 40 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 40 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 40 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 40 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 40 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 40 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 40 ], szUDBAdvStatsExplanationsTooltipText[ 40 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 40 ], szUDBAdvStatsExplanationsTooltipText[ 40 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3903,15 +3903,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 41 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 41 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 41 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 41 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 41 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 41 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 41 ], szUDBAdvStatsExplanationsTooltipText[ 41 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 41 ], szUDBAdvStatsExplanationsTooltipText[ 41 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3926,15 +3926,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 42 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 42 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 42 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 42 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 42 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 42 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 42 ], szUDBAdvStatsExplanationsTooltipText[ 42 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 42 ], szUDBAdvStatsExplanationsTooltipText[ 42 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3949,15 +3949,15 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if( UsingNewCTHSystem() == false )
 				{
-					swprintf( pStr, L"%s", szUDBAdvStatsTooltipText[ 43 ]);
+					swprintf( pStr, JA2_TEXT("%s"), szUDBAdvStatsTooltipText[ 43 ]);
 				}
 				else if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 43 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 43 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 43 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 43 ]);
 				}
 				else
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 43 ], szUDBAdvStatsExplanationsTooltipText[ 43 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 43 ], szUDBAdvStatsExplanationsTooltipText[ 43 ]);
 				}
 				SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3979,11 +3979,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 48 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 48 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 48 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 48 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 48 ], szUDBAdvStatsExplanationsTooltipText[ 48 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 48 ], szUDBAdvStatsExplanationsTooltipText[ 48 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -3995,11 +3995,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 49 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 49 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 49 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 49 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 49 ], szUDBAdvStatsExplanationsTooltipText[ 49 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 49 ], szUDBAdvStatsExplanationsTooltipText[ 49 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -4011,11 +4011,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 50 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 50 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 50 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 50 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 50 ], szUDBAdvStatsExplanationsTooltipText[ 50 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 50 ], szUDBAdvStatsExplanationsTooltipText[ 50 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -4027,11 +4027,11 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (Item[ gpItemDescObject->usItem ].usItemClass & (IC_WEAPON|IC_PUNCH))
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 51 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 51 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 51 ], szUDBAdvStatsExplanationsTooltipTextForWeapons[ 51 ]);
 					}
 					else
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 51 ], szUDBAdvStatsExplanationsTooltipText[ 51 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 51 ], szUDBAdvStatsExplanationsTooltipText[ 51 ]);
 					}
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
@@ -4044,7 +4044,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				///////////////////// COOLDOWN FACTOR
 				if (cnt >= sFirstLine && cnt < sLastLine)
 				{					
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 49 ], szUDBAdvStatsExplanationsTooltipText[ 49 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 49 ], szUDBAdvStatsExplanationsTooltipText[ 49 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
  				}
@@ -4060,7 +4060,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (cnt >= sFirstLine && cnt < sLastLine)
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 52 ], szUDBAdvStatsExplanationsTooltipText[ 52 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 52 ], szUDBAdvStatsExplanationsTooltipText[ 52 ]);
 						SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 						MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
  					}
@@ -4072,7 +4072,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (cnt >= sFirstLine && cnt < sLastLine)
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 53 ], szUDBAdvStatsExplanationsTooltipText[ 53 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 53 ], szUDBAdvStatsExplanationsTooltipText[ 53 ]);
 						SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 						MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
  					}
@@ -4084,7 +4084,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (cnt >= sFirstLine && cnt < sLastLine)
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 54 ], szUDBAdvStatsExplanationsTooltipText[ 54 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 54 ], szUDBAdvStatsExplanationsTooltipText[ 54 ]);
 						SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 						MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
  					}
@@ -4096,7 +4096,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				{
 					if (cnt >= sFirstLine && cnt < sLastLine)
 					{
-						swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 55 ], szUDBAdvStatsExplanationsTooltipText[ 55 ]);
+						swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 55 ], szUDBAdvStatsExplanationsTooltipText[ 55 ]);
 						SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 						MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
  					}
@@ -4112,7 +4112,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 				if (!fDrawGenIndexes) fDrawGenIndexes = ++cnt;		// new index line here?
 				if (cnt >= sFirstLine && cnt < sLastLine )
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 57 ], szUDBAdvStatsExplanationsTooltipText[ 57 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 57 ], szUDBAdvStatsExplanationsTooltipText[ 57 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
 				}
@@ -4128,7 +4128,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 
 			if ( cnt >= sFirstLine && cnt < sLastLine )
 			{
-				swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 66 ], szUDBAdvStatsExplanationsTooltipText[ 66 ] );
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 66 ], szUDBAdvStatsExplanationsTooltipText[ 66 ] );
 				SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + ( cnt - sFirstLine )] ), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + ( cnt - sFirstLine )] );
 			}
@@ -4143,7 +4143,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 
 			if ( cnt >= sFirstLine && cnt < sLastLine )
 			{
-				swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[67], szUDBAdvStatsExplanationsTooltipText[67] );
+				swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[67], szUDBAdvStatsExplanationsTooltipText[67] );
 				SetRegionFastHelpText( &( gUDBFasthelpRegions[iFirstDataRegion + ( cnt - sFirstLine )] ), pStr );
 				MSYS_EnableRegion( &gUDBFasthelpRegions[iFirstDataRegion + ( cnt - sFirstLine )] );
 			}
@@ -4160,7 +4160,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if (cnt >= sFirstLine && cnt < sLastLine)
 				{//reusing Poison text here
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 58 ], szUDBAdvStatsExplanationsTooltipText[ 58 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 58 ], szUDBAdvStatsExplanationsTooltipText[ 58 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
 				}
@@ -4172,7 +4172,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if (cnt >= sFirstLine && cnt < sLastLine)
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 59 ], szUDBAdvStatsExplanationsTooltipText[ 59 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 59 ], szUDBAdvStatsExplanationsTooltipText[ 59 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
 				}
@@ -4183,7 +4183,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if (cnt >= sFirstLine && cnt < sLastLine)
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 60 ], szUDBAdvStatsExplanationsTooltipText[ 60 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 60 ], szUDBAdvStatsExplanationsTooltipText[ 60 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
 				}
@@ -4194,7 +4194,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if (cnt >= sFirstLine && cnt < sLastLine)
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 61 ], szUDBAdvStatsExplanationsTooltipText[ 61 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 61 ], szUDBAdvStatsExplanationsTooltipText[ 61 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
 				}
@@ -4206,7 +4206,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if (cnt >= sFirstLine && cnt < sLastLine)
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 62 ], szUDBAdvStatsExplanationsTooltipText[ 62 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 62 ], szUDBAdvStatsExplanationsTooltipText[ 62 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
 				}
@@ -4218,7 +4218,7 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			{
 				if (cnt >= sFirstLine && cnt < sLastLine)
 				{
-					swprintf( pStr, L"%s%s", szUDBAdvStatsTooltipText[ 63 ], szUDBAdvStatsExplanationsTooltipText[ 63 ]);
+					swprintf( pStr, JA2_TEXT("%s%s"), szUDBAdvStatsTooltipText[ 63 ], szUDBAdvStatsExplanationsTooltipText[ 63 ]);
 					SetRegionFastHelpText( &(gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ]), pStr );
 					MSYS_EnableRegion( &gUDBFasthelpRegions[ iFirstDataRegion + (cnt-sFirstLine) ] );
 				}
@@ -6497,9 +6497,9 @@ void DrawPropertyValueInColour( INT16 iValue, UINT8 ubNumLine, UINT8 ubNumRegion
 		if( uiOverwriteColour )
 			SetFontForeground( uiOverwriteColour );
 		if ( iValue == 0 )
-			swprintf( pStr, L"--" );
+			swprintf( pStr, JA2_TEXT("--") );
 		else
-			swprintf( pStr, L"%d", iValue );
+			swprintf( pStr, JA2_TEXT("%d"), iValue );
 	}
 	else
 	{
@@ -6511,7 +6511,7 @@ void DrawPropertyValueInColour( INT16 iValue, UINT8 ubNumLine, UINT8 ubNumRegion
 				SetFontForeground( ITEMDESC_FONTNEGATIVE );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"+%d", iValue );
+			swprintf( pStr, JA2_TEXT("+%d"), iValue );
 		}
 		else if ( iValue < 0 )
 		{
@@ -6521,44 +6521,44 @@ void DrawPropertyValueInColour( INT16 iValue, UINT8 ubNumLine, UINT8 ubNumRegion
 				SetFontForeground( ITEMDESC_FONTPOSITIVE );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"%d", iValue );
+			swprintf( pStr, JA2_TEXT("%d"), iValue );
 		}
 		else if ( fModifier && fComparisonMode )
 		{
 			SetFontForeground( 5 );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"=" );
+			swprintf( pStr, JA2_TEXT("=") );
 		}
 		else if ( fModifier )
 		{
 			SetFontForeground( 5 );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"--" );
+			swprintf( pStr, JA2_TEXT("--") );
 		}
 		else if ( fComparisonMode )
 		{
 			SetFontForeground( 5 );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"=" );
+			swprintf( pStr, JA2_TEXT("=") );
 		}
 	}
 	
-	if( fPercentSign && wcscmp( pStr, L"--" ) != 0 && wcscmp( pStr, L"=" ) != 0 )
+	if( fPercentSign && wcscmp( pStr, JA2_TEXT("--") ) != 0 && wcscmp( pStr, JA2_TEXT("=") ) != 0 )
 	{
-		wcscat( pStr, L"%" );	
+		wcscat( pStr, JA2_TEXT("%") );	
 	}
 
 	FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 
-	if( fPercentSign && wcscmp( pStr, L"--" ) != 0 && wcscmp( pStr, L"=" ) != 0 )
+	if( fPercentSign && wcscmp( pStr, JA2_TEXT("--") ) != 0 && wcscmp( pStr, JA2_TEXT("=") ) != 0 )
 	{
 	if( g_lang == i18n::Lang::zh ) {
 		wcscat( pStr, ChineseSpecString1 );
 	} else {
-		wcscat( pStr, L"%" );
+		wcscat( pStr, JA2_TEXT("%") );
 	}
 	}
 
@@ -6587,9 +6587,9 @@ void DrawPropertyValueInColour_X( INT16 iValue, UINT8 numBullets, UINT8 ubNumLin
 		if ( uiOverwriteColour )
 			SetFontForeground( uiOverwriteColour );
 		if ( iValue == 0 )
-			swprintf( pStr, L"--" );
+			swprintf( pStr, JA2_TEXT("--") );
 		else
-			swprintf( pStr, L"%d", iValue );
+			swprintf( pStr, JA2_TEXT("%d"), iValue );
 	}
 	else
 	{
@@ -6601,7 +6601,7 @@ void DrawPropertyValueInColour_X( INT16 iValue, UINT8 numBullets, UINT8 ubNumLin
 				SetFontForeground( ITEMDESC_FONTNEGATIVE );
 			if ( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"+%d", iValue );
+			swprintf( pStr, JA2_TEXT("+%d"), iValue );
 		}
 		else if ( iValue < 0 )
 		{
@@ -6611,49 +6611,49 @@ void DrawPropertyValueInColour_X( INT16 iValue, UINT8 numBullets, UINT8 ubNumLin
 				SetFontForeground( ITEMDESC_FONTPOSITIVE );
 			if ( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"%d", iValue );
+			swprintf( pStr, JA2_TEXT("%d"), iValue );
 		}
 		else if ( fModifier && fComparisonMode )
 		{
 			SetFontForeground( 5 );
 			if ( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"=" );
+			swprintf( pStr, JA2_TEXT("=") );
 		}
 		else if ( fModifier )
 		{
 			SetFontForeground( 5 );
 			if ( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"--" );
+			swprintf( pStr, JA2_TEXT("--") );
 		}
 		else if ( fComparisonMode )
 		{
 			SetFontForeground( 5 );
 			if ( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"=" );
+			swprintf( pStr, JA2_TEXT("=") );
 		}
 	}
 
-	if ( fPercentSign && wcscmp( pStr, L"--" ) != 0 && wcscmp( pStr, L"=" ) != 0 )
+	if ( fPercentSign && wcscmp( pStr, JA2_TEXT("--") ) != 0 && wcscmp( pStr, JA2_TEXT("=") ) != 0 )
 	{
-		wcscat( pStr, L"%" );
+		wcscat( pStr, JA2_TEXT("%") );
 	}
 
 	if ( numBullets > 1)
 	{
-		swprintf( pStr, L"%sX%d", pStr, numBullets );
+		swprintf( pStr, JA2_TEXT("%sX%d"), pStr, numBullets );
 	}
 
 	FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY );
 
-	if ( fPercentSign && wcscmp( pStr, L"--" ) != 0 && wcscmp( pStr, L"=" ) != 0 )
+	if ( fPercentSign && wcscmp( pStr, JA2_TEXT("--") ) != 0 && wcscmp( pStr, JA2_TEXT("=") ) != 0 )
 	{
 if( g_lang == i18n::Lang::zh ) {
 		wcscat( pStr, ChineseSpecString1 );
 } else {
-		wcscat( pStr, L"%" );
+		wcscat( pStr, JA2_TEXT("%") );
 }
 	}
 
@@ -6722,7 +6722,7 @@ void DrawPropertyValueInColourFloat( FLOAT fValue, UINT8 ubNumLine, UINT8 ubNumR
 		}
 		if( uiOverwriteColour )
 			SetFontForeground( uiOverwriteColour );
-		swprintf( pStr, L"%3.*f", ubDecimals, fValue );
+		swprintf( pStr, JA2_TEXT("%3.*f"), ubDecimals, fValue );
 	}
 	else
 	{
@@ -6734,7 +6734,7 @@ void DrawPropertyValueInColourFloat( FLOAT fValue, UINT8 ubNumLine, UINT8 ubNumR
 				SetFontForeground( ITEMDESC_FONTNEGATIVE );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"+%3.*f", ubDecimals, fValue );
+			swprintf( pStr, JA2_TEXT("+%3.*f"), ubDecimals, fValue );
 		}
 		else if ( fValue < 0.0f )
 		{
@@ -6744,28 +6744,28 @@ void DrawPropertyValueInColourFloat( FLOAT fValue, UINT8 ubNumLine, UINT8 ubNumR
 				SetFontForeground( ITEMDESC_FONTPOSITIVE );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"%3.*f", ubDecimals, fValue );
+			swprintf( pStr, JA2_TEXT("%3.*f"), ubDecimals, fValue );
 		}
 		else if ( fModifier && fComparisonMode )
 		{
 			SetFontForeground( 5 );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"=" );
+			swprintf( pStr, JA2_TEXT("=") );
 		}
 		else if ( fModifier )
 		{
 			SetFontForeground( 5 );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"--" );
+			swprintf( pStr, JA2_TEXT("--") );
 		}
 		else if ( fComparisonMode )
 		{
 			SetFontForeground( 5 );
 			if( uiOverwriteColour )
 				SetFontForeground( uiOverwriteColour );
-			swprintf( pStr, L"=" );
+			swprintf( pStr, JA2_TEXT("=") );
 		}
 	}
 			
@@ -6824,17 +6824,17 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 		}
 
 		// "PRIMARY" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 0 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 0 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sTop, gItemDescGenHeaderRegions[0].sRight - gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sBottom - gItemDescGenHeaderRegions[0].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
 		// "AP COSTS" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 2 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 2 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sTop, gItemDescGenHeaderRegions[1].sRight - gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sBottom - gItemDescGenHeaderRegions[1].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
 		// "BURST / AUTOFIRE" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 3 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 3 ] );
 		// If weapon has no burst/autofire, draw in greyish color.
 		if( !fComparisonMode )
 		{
@@ -6892,7 +6892,7 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			for (UINT8 cnt2 = 0; cnt2 < 4; cnt2++)
 			{
 				// Select "PROPERTY", "0", "+" or "=" as appropriate.
-				swprintf(pStr, L"%s", gzItemDescGenIndexes[ cnt2 ]);
+				swprintf(pStr, JA2_TEXT("%s"), gzItemDescGenIndexes[ cnt2 ]);
 
 				FindFontCenterCoordinates( gItemDescGenIndexRegions[cnt][cnt2].sLeft, gItemDescGenIndexRegions[cnt][cnt2].sTop, gItemDescGenIndexRegions[cnt][cnt2].sRight - gItemDescGenIndexRegions[cnt][cnt2].sLeft, gItemDescGenIndexRegions[cnt][cnt2].sBottom - gItemDescGenIndexRegions[cnt][cnt2].sTop, pStr, BLOCKFONT2, &usX, &usY);
 				mprintf( usX, usY, pStr );
@@ -7402,12 +7402,12 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				if( iScopeMagValue > 1.0f )
 					DrawPropertyValueInColourFloat( iScopeMagValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE, 5 );
 				else
-					DrawPropertyTextInColour( L"--", ubNumLine, 1 ); 
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 1 ); 
 				// Print modifier
 				if (iScopeMagModifier > 1.0f && iScopeMagModifier > iScopeMagValue)
 					DrawPropertyValueInColourFloat( iScopeMagModifier, ubNumLine, 2, fComparisonMode, TRUE, TRUE  );
 				else
-					DrawPropertyTextInColour( L"--", ubNumLine, 2 ); 
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 ); 
 				// Print final value
 				DrawPropertyValueInColourFloat( iFinalScopeMagValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -7446,12 +7446,12 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			if( iScopeMagValue > 1.0f )
 				DrawPropertyValueInColourFloat( iScopeMagValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 			else
-				DrawPropertyTextInColour( L"=", ubNumLine, 1 ); 
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 1 ); 
 			// Print modifier
 			if (iScopeMagModifier > 1.0f && iScopeMagModifier > iScopeMagValue)
 				DrawPropertyValueInColourFloat( iScopeMagModifier, ubNumLine, 2, fComparisonMode, TRUE, TRUE  );
 			else
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 ); 
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 ); 
 			// Print final value
 			DrawPropertyValueInColourFloat( iFinalScopeMagValue - 1.0f, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 		}
@@ -7561,12 +7561,12 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 					if( iProjectionValue > 0.0f )
 						DrawPropertyValueInColourFloat( iProjectionValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE, 5 );
 					else
-						DrawPropertyTextInColour( L"--", ubNumLine, 1 );
+						DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 1 );
 					// Print modifier
 					if (iProjectionModifier > 0.0f && iProjectionModifier > iProjectionValue)
 						DrawPropertyValueInColourFloat( iProjectionModifier, ubNumLine, 2, fComparisonMode, TRUE, TRUE );
 					else
-						DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+						DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 					// Print final value
 					DrawPropertyValueInColourFloat( iFinalProjectionValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 				}
@@ -7576,12 +7576,12 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 					if( iProjectionValue > 1.0f )
 						DrawPropertyValueInColourFloat( iProjectionValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE, 5 );
 					else
-						DrawPropertyTextInColour( L"--", ubNumLine, 1 );
+						DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 1 );
 					// Print modifier
 					if (iProjectionModifier > 1.0f && iProjectionModifier > iProjectionValue)
 						DrawPropertyValueInColourFloat( iProjectionModifier, ubNumLine, 2, fComparisonMode, TRUE, TRUE );
 					else
-						DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+						DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 					// Print final value
 					DrawPropertyValueInColourFloat( iFinalProjectionValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 				}
@@ -7655,12 +7655,12 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				if( iProjectionValue > 0.0f )
 					DrawPropertyValueInColourFloat( iProjectionValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				else
-					DrawPropertyTextInColour( L"=", ubNumLine, 1 );
+					DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 1 );
 				// Print modifier
 				if (iProjectionModifier > 0.0f && iProjectionModifier > iProjectionValue)
 					DrawPropertyValueInColourFloat( iProjectionModifier, ubNumLine, 2, fComparisonMode, TRUE, TRUE );
 				else
-					DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+					DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColourFloat( iFinalProjectionValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -7670,12 +7670,12 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				if( iProjectionValue > 1.0f )
 					DrawPropertyValueInColourFloat( iProjectionValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				else
-					DrawPropertyTextInColour( L"=", ubNumLine, 1 );
+					DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 1 );
 				// Print modifier
 				if (iProjectionModifier > 1.0f && iProjectionModifier > iProjectionValue)
 					DrawPropertyValueInColourFloat( iProjectionModifier, ubNumLine, 2, fComparisonMode, TRUE, TRUE );
 				else
-					DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+					DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColourFloat( iFinalProjectionValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -7815,20 +7815,20 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				if ( iFlashValue )
 				{
 					// Print base value
-					DrawPropertyTextInColour( L"Y", ubNumLine, 1 );
+					DrawPropertyTextInColour( JA2_TEXT("Y"), ubNumLine, 1 );
 					// Print modifier
-					DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 
 				}
 				else
 				{
 					// Print base value
-					DrawPropertyTextInColour( L"--", ubNumLine, 1 );
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 1 );
 					// Print modifier
-					DrawPropertyTextInColour( L"Y", ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
+					DrawPropertyTextInColour( JA2_TEXT("Y"), ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
 				}			
 				// Print final value
-				DrawPropertyTextInColour( L"Y", ubNumLine, 3, FONT_MCOLOR_WHITE );
+				DrawPropertyTextInColour( JA2_TEXT("Y"), ubNumLine, 3, FONT_MCOLOR_WHITE );
 			}
 			else if( IsFlashSuppressorAlt( gpComparedItemDescObject ) == TRUE )
 			{
@@ -7837,49 +7837,49 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				{
 					if (iComparedFlashValue)
 					{
-						DrawPropertyTextInColour( L"=", ubNumLine, 1 );
-						DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+						DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 1 );
+						DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 					}
 					else
 					{
-						DrawPropertyTextInColour( L"N", ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
-						DrawPropertyTextInColour( L"Y", ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
+						DrawPropertyTextInColour( JA2_TEXT("N"), ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
+						DrawPropertyTextInColour( JA2_TEXT("Y"), ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
 					}
 				}
 				else
 				{
 					if (!iComparedFlashValue)
 					{
-						DrawPropertyTextInColour( L"=", ubNumLine, 1 );
-						DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+						DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 1 );
+						DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 					}
 					else
 					{
-						DrawPropertyTextInColour( L"Y", ubNumLine, 1, ITEMDESC_FONTPOSITIVE );
-						DrawPropertyTextInColour( L"N", ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
+						DrawPropertyTextInColour( JA2_TEXT("Y"), ubNumLine, 1, ITEMDESC_FONTPOSITIVE );
+						DrawPropertyTextInColour( JA2_TEXT("N"), ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
 					}
 				}
 				// Print final value
-				DrawPropertyTextInColour( L"=", ubNumLine, 3 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 3 );
 			}
 			else
 			{
 				if ( iFlashValue )
 				{
 					// Print base value
-					DrawPropertyTextInColour( L"N", ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
+					DrawPropertyTextInColour( JA2_TEXT("N"), ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
 					// Print modifier
-					DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				}
 				else
 				{
 					// Print base value
-					DrawPropertyTextInColour( L"--", ubNumLine, 1 );
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 1 );
 					// Print modifier
-					DrawPropertyTextInColour( L"N", ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
+					DrawPropertyTextInColour( JA2_TEXT("N"), ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
 				}			
 				// Print final value
-				DrawPropertyTextInColour( L"N", ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("N"), ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
 			}
 		}
 		else if( fComparisonMode && IsFlashSuppressorAlt( gpComparedItemDescObject ) == TRUE )
@@ -7893,19 +7893,19 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			if ( iFlashValue )
 			{
 				// Print base value
-				DrawPropertyTextInColour( L"Y", ubNumLine, 1, ITEMDESC_FONTPOSITIVE );
+				DrawPropertyTextInColour( JA2_TEXT("Y"), ubNumLine, 1, ITEMDESC_FONTPOSITIVE );
 				// Print modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			}
 			else
 			{
 				// Print base value
-				DrawPropertyTextInColour( L"=", ubNumLine, 1 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 1 );
 				// Print modifier
-				DrawPropertyTextInColour( L"Y", ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
+				DrawPropertyTextInColour( JA2_TEXT("Y"), ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
 			}			
 			// Print final value
-			DrawPropertyTextInColour( L"Y", ubNumLine, 3, ITEMDESC_FONTPOSITIVE );
+			DrawPropertyTextInColour( JA2_TEXT("Y"), ubNumLine, 3, ITEMDESC_FONTPOSITIVE );
 		}
 		////////////////// LOUDNESS
 		//if ( Item[ gpItemDescObject->usItem ].usItemClass & (IC_GUN|IC_LAUNCHER) )
@@ -8129,14 +8129,14 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			if( iDrawAPCost > 0 )
 				DrawPropertyValueInColour( iDrawAPCost, ubNumLine, 1, fComparisonMode, FALSE, FALSE, ITEMDESC_FONTNEGATIVE );
 			else
-				DrawPropertyTextInColour( L"=", ubNumLine, 1 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 1 );
 			// Print modifier
 			DrawPropertyValueInColour( iDrawAPCostModifier, ubNumLine, 2, fComparisonMode, TRUE, FALSE );
 			// Print final value
 			if( iFinalDrawAPCost > 0 )
 				DrawPropertyValueInColour( iFinalDrawAPCost, ubNumLine, 3, fComparisonMode, FALSE, FALSE, ITEMDESC_FONTNEGATIVE );
 			else
-				DrawPropertyTextInColour( L"=", ubNumLine, 3 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 3 );
 
 		}
 
@@ -8181,9 +8181,9 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			}
 			else
 			{
-				DrawPropertyTextInColour( L"-", ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
 			}
 		}
 		else if( fComparisonMode && !Weapon[gpComparedItemDescObject->usItem].NoSemiAuto )
@@ -8248,9 +8248,9 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			}
 			else
 			{
-				DrawPropertyTextInColour( L"-", ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
 			}
 		}
 		else if( fComparisonMode && GetShotsPerBurst(gpComparedItemDescObject) > 0 )
@@ -8317,9 +8317,9 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			}
 			else
 			{
-				DrawPropertyTextInColour( L"-", ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
 			}
 		}
 		else if( fComparisonMode && GetAutofireShotsPerFiveAPs(gpComparedItemDescObject) > 0 )
@@ -8434,9 +8434,9 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			}
 			else
 			{
-				DrawPropertyTextInColour( L"-", ubNumLine, 1, ITEMDESC_FONTPOSITIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 3, ITEMDESC_FONTPOSITIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 1, ITEMDESC_FONTPOSITIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 3, ITEMDESC_FONTPOSITIVE );
 			}
 		}
 		else if( fComparisonMode && ( Item[ gpComparedItemDescObject->usItem ].usItemClass & (IC_GUN|IC_LAUNCHER) && !ItemIsSingleShotRocketLauncher(gpComparedItemDescObject->usItem) ) )
@@ -8560,9 +8560,9 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			}
 			else
 			{
-				DrawPropertyTextInColour( L"-", ubNumLine, 1, ITEMDESC_FONTPOSITIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 3, ITEMDESC_FONTPOSITIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 1, ITEMDESC_FONTPOSITIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 2, ITEMDESC_FONTPOSITIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 3, ITEMDESC_FONTPOSITIVE );
 			}
 		}
 		else if( fComparisonMode && ( Item[ gpComparedItemDescObject->usItem ].usItemClass & (IC_GUN|IC_LAUNCHER) && !ItemIsSingleShotRocketLauncher(gpComparedItemDescObject->usItem) 
@@ -8681,9 +8681,9 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				}
 				else
 				{
-					DrawPropertyTextInColour( L"-", ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
-					DrawPropertyTextInColour( L"-", ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
-					DrawPropertyTextInColour( L"-", ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
+					DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
+					DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
+					DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
 				}
 				
 				/*
@@ -8699,7 +8699,7 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				SetFontForeground( 5 );
 				sLeft = gItemDescGenRegions[ubNumLine][1].sLeft;
 				sWidth = gItemDescGenRegions[ubNumLine][1].sRight - sLeft;
-				swprintf( pStr, L"%d", iRecoilY );
+				swprintf( pStr, JA2_TEXT("%d"), iRecoilY );
 				FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				mprintf( usX, usY, pStr );
 
@@ -8716,15 +8716,15 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				// Add positive/negative sign
 				if ( iRecoilYModifier > 0 )
 				{
-					swprintf( pStr, L"+%d", iRecoilYModifier );
+					swprintf( pStr, JA2_TEXT("+%d"), iRecoilYModifier );
 				}
 				else if ( iRecoilYModifier < 0 )
 				{
-					swprintf( pStr, L"%d", iRecoilYModifier );
+					swprintf( pStr, JA2_TEXT("%d"), iRecoilYModifier );
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 				}
 				sLeft = gItemDescGenRegions[ubNumLine][2].sLeft;
 				sWidth = gItemDescGenRegions[ubNumLine][2].sRight - sLeft;
@@ -8735,7 +8735,7 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				SetFontForeground( FONT_MCOLOR_WHITE );
 				sLeft = gItemDescGenRegions[ubNumLine][3].sLeft;
 				sWidth = gItemDescGenRegions[ubNumLine][3].sRight - sLeft;
-				swprintf( pStr, L"%d", iFinalRecoilY );
+				swprintf( pStr, JA2_TEXT("%d"), iFinalRecoilY );
 				FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				mprintf( usX, usY, pStr );
 
@@ -8946,7 +8946,7 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iB5AP, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalB5AP, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -8960,15 +8960,15 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedB5AP - iB5AP, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalB5AP - iFinalB5AP, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
 			else
 			{
-				DrawPropertyTextInColour( L"-", ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
 			}
 		}
 		else if( fComparisonMode && ( Item[ gpComparedItemDescObject->usItem ].usItemClass == IC_GUN && !ItemIsRocketLauncher(gpComparedItemDescObject->usItem)
@@ -8982,7 +8982,7 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			// Print base value
 			DrawPropertyValueInColour( iB5AP, ubNumLine, 1, fComparisonMode, FALSE, TRUE, ITEMDESC_FONTPOSITIVE );
 			// Print modifier
-			DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+			DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			// Print final value
 			DrawPropertyValueInColour( iFinalB5AP, ubNumLine, 3, fComparisonMode, FALSE, TRUE, ITEMDESC_FONTPOSITIVE );		
 		}
@@ -9051,9 +9051,9 @@ void DrawWeaponValues( OBJECTTYPE * gpItemDescObject )
 			}
 			else
 			{
-				DrawPropertyTextInColour( L"-", ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
-				DrawPropertyTextInColour( L"-", ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 1, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 2, ITEMDESC_FONTNEGATIVE );
+				DrawPropertyTextInColour( JA2_TEXT("-"), ubNumLine, 3, ITEMDESC_FONTNEGATIVE );
 			}
 
 		}
@@ -9112,7 +9112,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 		mprintf( gItemDescTextRegions[1].sLeft, gItemDescTextRegions[1].sTop, pStr );
 
 		SetFontForeground( 5 );
-		swprintf( pStr, L"%d/%d", (*gpItemDescObject)[ gubItemDescStatusIndex ]->data.ubShotsLeft, Magazine[ Item[ gpItemDescObject->usItem ].ubClassIndex ].ubMagSize );
+		swprintf( pStr, JA2_TEXT("%d/%d"), (*gpItemDescObject)[ gubItemDescStatusIndex ]->data.ubShotsLeft, Magazine[ Item[ gpItemDescObject->usItem ].ubClassIndex ].ubMagSize );
 		FindFontRightCoordinates( gItemDescTextRegions[1].sLeft, gItemDescTextRegions[1].sTop, gItemDescTextRegions[1].sRight - gItemDescTextRegions[1].sLeft, gItemDescTextRegions[1].sBottom - gItemDescTextRegions[1].sTop, pStr, BLOCKFONT2, &usX, &usY);
 		mprintf( usX, usY, pStr );
 	}
@@ -9137,12 +9137,12 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 		SetFontForeground( FONT_MCOLOR_WHITE );
 
 		// "PRIMARY" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 0 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 0 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sTop, gItemDescGenHeaderRegions[0].sRight - gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sBottom - gItemDescGenHeaderRegions[0].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
 		// "SECONDARY" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 1 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 1 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sTop, gItemDescGenHeaderRegions[1].sRight - gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sBottom - gItemDescGenHeaderRegions[1].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
@@ -9155,7 +9155,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 		for (UINT8 cnt = 0; cnt < 4; cnt++)
 		{
 			// Select "PROPERTY", "0", "+" or "=" as appropriate.
-			swprintf(pStr, L"%s", gzItemDescGenIndexes[ cnt ]);
+			swprintf(pStr, JA2_TEXT("%s"), gzItemDescGenIndexes[ cnt ]);
 
 			FindFontCenterCoordinates( gItemDescGenIndexRegions[0][cnt].sLeft, gItemDescGenIndexRegions[0][cnt].sTop, gItemDescGenIndexRegions[0][cnt].sRight - gItemDescGenIndexRegions[0][cnt].sLeft, gItemDescGenIndexRegions[0][cnt].sBottom - gItemDescGenIndexRegions[0][cnt].sTop, pStr, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY, pStr );
@@ -9179,7 +9179,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print base value
 				DrawPropertyValueInColourFloat( fArmourImpactReduction, ubNumLine, 1, fComparisonMode, FALSE, FALSE, 0, 1.0f, 2 );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColourFloat( fFinalArmourImpactReduction, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE, 1.0f, 2 );
 			}
@@ -9192,7 +9192,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print difference in base value
 				DrawPropertyValueInColourFloat( fComparedArmourImpactReduction - fArmourImpactReduction, ubNumLine, 1, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2 );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColourFloat( fComparedFinalArmourImpactReduction - fFinalArmourImpactReduction, ubNumLine, 3, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2 );
 			}
@@ -9214,7 +9214,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print base value
 				DrawPropertyValueInColourFloat( fAfterArmourImpactReduction, ubNumLine, 1, fComparisonMode, FALSE, TRUE, 0, 1.0f, 2 );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColourFloat( fFinalAfterArmourImpactReduction, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE, 1.0f, 2 );
 			}
@@ -9227,7 +9227,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print difference in base value
 				DrawPropertyValueInColourFloat( fComparedAfterArmourImpactReduction - fAfterArmourImpactReduction, ubNumLine, 1, fComparisonMode, FALSE, TRUE, 0, 0.0f, 2 );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColourFloat( fComparedFinalAfterArmourImpactReduction - fFinalAfterArmourImpactReduction, ubNumLine, 3, fComparisonMode, FALSE, TRUE, 0, 0.0f, 2 );
 			}
@@ -9249,7 +9249,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print base value
 				DrawPropertyValueInColourFloat( fPreArmourImpactReduction, ubNumLine, 1, fComparisonMode, FALSE, TRUE, 0, 1.0f, 2 );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColourFloat( fFinalPreArmourImpactReduction, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE, 1.0f, 2 );
 			}
@@ -9262,7 +9262,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print difference in base value
 				DrawPropertyValueInColourFloat( fComparedPreArmourImpactReduction - fPreArmourImpactReduction, ubNumLine, 1, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2 );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColourFloat( fComparedFinalPreArmourImpactReduction - fFinalPreArmourImpactReduction, ubNumLine, 3, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2 );
 			}
@@ -9288,7 +9288,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print base value
 				DrawPropertyValueInColourFloat( basevalue, ubNumLine, 1, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2 );
 				// Print modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColourFloat( finalvalue, ubNumLine, 3, fComparisonMode, FALSE, FALSE, FONT_MCOLOR_WHITE, 0.0f, 2 );
 			}
@@ -9301,7 +9301,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print difference in base value
 				DrawPropertyValueInColourFloat( Comparedbasevalue - basevalue, ubNumLine, 1, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2 );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColourFloat( Comparedfinalvalue - finalvalue, ubNumLine, 3, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2  );
 			}
@@ -9325,7 +9325,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print base value
 				DrawPropertyValueInColourFloat( basevalue, ubNumLine, 1, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2 );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColourFloat( finalvalue, ubNumLine, 3, fComparisonMode, FALSE, FALSE, FONT_MCOLOR_WHITE, 0.0f, 2 );
 			}
@@ -9338,7 +9338,7 @@ void DrawAmmoValues( OBJECTTYPE * gpItemDescObject, int shotsLeft )
 				// Print difference in base value
 				DrawPropertyValueInColourFloat( Comparedbasevalue - basevalue, ubNumLine, 1, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2 );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColourFloat( Comparedfinalvalue - finalvalue, ubNumLine, 3, fComparisonMode, FALSE, FALSE, 0, 0.0f, 2  );
 			}
@@ -9385,12 +9385,12 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 		SetFontForeground( FONT_MCOLOR_WHITE );
 
 		// "PRIMARY" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 0 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 0 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sTop, gItemDescGenHeaderRegions[0].sRight - gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sBottom - gItemDescGenHeaderRegions[0].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
 		// "SECONDARY" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 1 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 1 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sTop, gItemDescGenHeaderRegions[1].sRight - gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sBottom - gItemDescGenHeaderRegions[1].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
@@ -9403,7 +9403,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 		for (UINT8 cnt = 0; cnt < 4; cnt++)
 		{
 			// Select "PROPERTY", "0", "+" or "=" as appropriate.
-			swprintf(pStr, L"%s", gzItemDescGenIndexes[ cnt ]);
+			swprintf(pStr, JA2_TEXT("%s"), gzItemDescGenIndexes[ cnt ]);
 
 			FindFontCenterCoordinates( gItemDescGenIndexRegions[0][cnt].sLeft, gItemDescGenIndexRegions[0][cnt].sTop, gItemDescGenIndexRegions[0][cnt].sRight - gItemDescGenIndexRegions[0][cnt].sLeft, gItemDescGenIndexRegions[0][cnt].sBottom - gItemDescGenIndexRegions[0][cnt].sTop, pStr, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY, pStr );
@@ -9428,7 +9428,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iDamage, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalDamage, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9441,7 +9441,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedDamage - iDamage, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalDamage - iFinalDamage, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -9457,7 +9457,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 			// Print base value
 			DrawPropertyValueInColour( iDamage, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 			// Print modifier
-			DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+			DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			// Print final value
 			DrawPropertyValueInColour( iFinalDamage, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 		}
@@ -9479,7 +9479,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iStunDamage, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalStunDamage, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9492,7 +9492,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedStunDamage - iStunDamage, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalStunDamage - iFinalStunDamage, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -9508,7 +9508,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 			// Print base value
 			DrawPropertyValueInColour( iStunDamage, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 			// Print modifier
-			DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+			DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			// Print final value
 			DrawPropertyValueInColour( iFinalStunDamage, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 		}
@@ -9532,7 +9532,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iBlastRadius, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalBlastRadius, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9545,7 +9545,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedBlastRadius - iBlastRadius, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalBlastRadius - iFinalBlastRadius, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -9576,7 +9576,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iEffectStartRadius, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalEffectStartRadius, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9593,7 +9593,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedEffectStartRadius - iEffectStartRadius, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalEffectStartRadius - iFinalEffectStartRadius, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -9624,7 +9624,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iEffectEndRadius, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalEffectEndRadius, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9641,7 +9641,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedEffectEndRadius - iEffectEndRadius, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalEffectEndRadius - iFinalEffectEndRadius, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -9657,7 +9657,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 			// Print base value
 			DrawPropertyValueInColour( iEffectEndRadius, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 			// Print modifier
-			DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+			DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			// Print final value
 			DrawPropertyValueInColour( iFinalEffectEndRadius, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 		}
@@ -9679,7 +9679,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iEffectDuration, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalEffectDuration, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9692,7 +9692,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedEffectDuration - iEffectDuration, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalEffectDuration - iFinalEffectDuration, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -9707,7 +9707,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 			// Print base value
 			DrawPropertyValueInColour( iEffectDuration, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 			// Print modifier
-			DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+			DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			// Print final value
 			DrawPropertyValueInColour( iFinalEffectDuration, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 		}
@@ -9730,7 +9730,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iNumFragments, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalNumFragments, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9743,7 +9743,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedNumFragments - iNumFragments, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalNumFragments - iFinalNumFragments, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -9759,7 +9759,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 			// Print base value
 			DrawPropertyValueInColour( iNumFragments, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 			// Print modifier
-			DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+			DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			// Print final value
 			DrawPropertyValueInColour( iFinalNumFragments, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 		}
@@ -9781,7 +9781,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iFragDamage, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalFragDamage, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9794,7 +9794,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedFragDamage - iFragDamage, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalFragDamage - iFinalFragDamage, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -9809,7 +9809,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 			// Print base value
 			DrawPropertyValueInColour( iFragDamage, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 			// Print modifier
-			DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+			DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			// Print final value
 			DrawPropertyValueInColour( iFinalFragDamage, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 		}
@@ -9831,7 +9831,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iFragRange, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalFragRange, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9844,7 +9844,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedFragRange - iFragRange, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalFragRange - iFinalFragRange, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -9859,7 +9859,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 			// Print base value
 			DrawPropertyValueInColour( iFragRange, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 			// Print modifier
-			DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+			DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			// Print final value
 			DrawPropertyValueInColour( iFinalFragRange, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 		}
@@ -9880,7 +9880,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iLoudness, ubNumLine, 1, fComparisonMode, FALSE, FALSE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalLoudness, ubNumLine, 3, fComparisonMode, FALSE, FALSE, FONT_MCOLOR_WHITE );
 			}
@@ -9893,7 +9893,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedLoudness - iLoudness, ubNumLine, 1, fComparisonMode, FALSE, FALSE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalLoudness - iFinalLoudness, ubNumLine, 3, fComparisonMode, FALSE, FALSE );
 			}
@@ -9916,7 +9916,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iVolatility, ubNumLine, 1, fComparisonMode, FALSE, FALSE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalVolatility, ubNumLine, 3, fComparisonMode, FALSE, FALSE, FONT_MCOLOR_WHITE );
 			}
@@ -9929,7 +9929,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedVolatility - iVolatility, ubNumLine, 1, fComparisonMode, FALSE, FALSE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalVolatility - iFinalVolatility, ubNumLine, 3, fComparisonMode, FALSE, FALSE );
 			}
@@ -9945,7 +9945,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 			// Print base value
 			DrawPropertyValueInColour( iVolatility, ubNumLine, 1, fComparisonMode, FALSE, FALSE );
 			// Print modifier
-			DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+			DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 			// Print final value
 			DrawPropertyValueInColour( iFinalVolatility, ubNumLine, 3, fComparisonMode, FALSE, FALSE );
 			
@@ -9970,7 +9970,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iRepairEaseValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalRepairEaseValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -9983,7 +9983,7 @@ void DrawExplosiveValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedRepairEaseValue - iRepairEaseValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalRepairEaseValue - iFinalRepairEaseValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -10034,12 +10034,12 @@ void DrawArmorValues( OBJECTTYPE * gpItemDescObject )
 		SetFontForeground( FONT_MCOLOR_WHITE );
 
 		// "PRIMARY" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 0 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 0 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sTop, gItemDescGenHeaderRegions[0].sRight - gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sBottom - gItemDescGenHeaderRegions[0].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
 		// "SECONDARY" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 1 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 1 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sTop, gItemDescGenHeaderRegions[1].sRight - gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sBottom - gItemDescGenHeaderRegions[1].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
@@ -10052,7 +10052,7 @@ void DrawArmorValues( OBJECTTYPE * gpItemDescObject )
 		for (UINT8 cnt = 0; cnt < 4; cnt++)
 		{
 			// Select "PROPERTY", "0", "+" or "=" as appropriate.
-			swprintf(pStr, L"%s", gzItemDescGenIndexes[ cnt ]);
+			swprintf(pStr, JA2_TEXT("%s"), gzItemDescGenIndexes[ cnt ]);
 
 			FindFontCenterCoordinates( gItemDescGenIndexRegions[0][cnt].sLeft, gItemDescGenIndexRegions[0][cnt].sTop, gItemDescGenIndexRegions[0][cnt].sRight - gItemDescGenIndexRegions[0][cnt].sLeft, gItemDescGenIndexRegions[0][cnt].sBottom - gItemDescGenIndexRegions[0][cnt].sTop, pStr, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY, pStr );
@@ -10130,7 +10130,7 @@ void DrawArmorValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iCoverageValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE, 0, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalCoverageValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE, TRUE );
 			}
@@ -10143,7 +10143,7 @@ void DrawArmorValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedCoverageValue - iCoverageValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE, 0, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalCoverageValue - iFinalCoverageValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE, 0, TRUE );
 			}
@@ -10165,7 +10165,7 @@ void DrawArmorValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iDegradeValue, ubNumLine, 1, fComparisonMode, FALSE, FALSE, 0, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalDegradeValue, ubNumLine, 3, fComparisonMode, FALSE, FALSE, FONT_MCOLOR_WHITE, TRUE );
 			}
@@ -10178,7 +10178,7 @@ void DrawArmorValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedDegradeValue - iDegradeValue, ubNumLine, 1, fComparisonMode, FALSE, FALSE, 0, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalDegradeValue - iFinalDegradeValue, ubNumLine, 3, fComparisonMode, FALSE, FALSE, 0, TRUE );
 			}
@@ -10200,7 +10200,7 @@ void DrawArmorValues( OBJECTTYPE * gpItemDescObject )
 				// Print base value
 				DrawPropertyValueInColour( iRepairEaseValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print modifier
-				DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 				// Print final value
 				DrawPropertyValueInColour( iFinalRepairEaseValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE, FONT_MCOLOR_WHITE );
 			}
@@ -10213,7 +10213,7 @@ void DrawArmorValues( OBJECTTYPE * gpItemDescObject )
 				// Print difference in base value
 				DrawPropertyValueInColour( iComparedRepairEaseValue - iRepairEaseValue, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 				// Print difference in modifier
-				DrawPropertyTextInColour( L"=", ubNumLine, 2 );
+				DrawPropertyTextInColour( JA2_TEXT("="), ubNumLine, 2 );
 				// Print difference in final value
 				DrawPropertyValueInColour( iComparedFinalRepairEaseValue - iFinalRepairEaseValue, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 			}
@@ -10322,35 +10322,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -10392,23 +10392,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -10450,35 +10450,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -10520,23 +10520,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -10578,35 +10578,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -10652,20 +10652,20 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 					if (iModifier[cnt2] > 0)
 					{
 						SetFontForeground( ITEMDESC_FONTNEGATIVE );
-						swprintf( pStr, L"+%d", iModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					}
 					else if (iModifier[cnt2] < 0)
 					{
 						SetFontForeground( ITEMDESC_FONTPOSITIVE );
-						swprintf( pStr, L"%d", iModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 					}
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					mprintf( usX, usY, pStr );
@@ -10711,35 +10711,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 					if (iModifier[cnt2] > 0)
 					{
 						SetFontForeground( ITEMDESC_FONTPOSITIVE );
-						swprintf( pStr, L"+%d", iModifier[cnt2] );
-						wcscat( pStr, L"%" );
+						swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+						wcscat( pStr, JA2_TEXT("%") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iModifier[cnt2] < 0)
 					{
 						SetFontForeground( ITEMDESC_FONTNEGATIVE );
-						swprintf( pStr, L"%d", iModifier[cnt2] );
-						wcscat( pStr, L"%" );
+						swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+						wcscat( pStr, JA2_TEXT("%") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -10782,36 +10782,36 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 					if (iModifier[cnt2] > 0)
 					{
 						SetFontForeground( ITEMDESC_FONTPOSITIVE );
-						swprintf( pStr, L"+%d", iModifier[cnt2] );
-						wcscat( pStr, L"%" );
+						swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+						wcscat( pStr, JA2_TEXT("%") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iModifier[cnt2] < 0)
 					{
 						SetFontForeground( ITEMDESC_FONTNEGATIVE );
-						swprintf( pStr, L"%d", iModifier[cnt2] );
-						wcscat( pStr, L"%" );
+						swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+						wcscat( pStr, JA2_TEXT("%") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode && cnt2 != 1 )
 					{
 						SetFontForeground( 5 );
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						//swprintf( pStr, L"--" );
+						//swprintf( pStr, JA2_TEXT("--") );
 						//FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -10854,35 +10854,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -10924,35 +10924,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -10993,35 +10993,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11062,35 +11062,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11150,23 +11150,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11208,23 +11208,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11267,23 +11267,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11322,29 +11322,29 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 					if (iFloatModifier[cnt2] > 0.0)
 					{
 						SetFontForeground( ITEMDESC_FONTPOSITIVE );
-						swprintf( pStr, L"+%3.1fx", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("+%3.1fx"), iFloatModifier[cnt2] );
 					}
 					else if (iFloatModifier[cnt2] < 0.0)
 					{
 						SetFontForeground( ITEMDESC_FONTNEGATIVE );
-						swprintf( pStr, L"%3.1fx", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%3.1fx"), iFloatModifier[cnt2] );
 					}
 					else
 					{
 						SetFontForeground( 5 );
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 					}
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iFloatModifier[cnt2] > 1.0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"%3.1fx", iFloatModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%3.1fx"), iFloatModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"1.0x" );
+					swprintf( pStr, JA2_TEXT("1.0x") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11400,17 +11400,17 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 					if (iFloatModifier[cnt2] > 0.0)
 					{
 						SetFontForeground( ITEMDESC_FONTPOSITIVE );
-						swprintf( pStr, L"+%3.1f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("+%3.1f"), iFloatModifier[cnt2] );
 					}
 					else if (iFloatModifier[cnt2] < 0.0)
 					{
 						SetFontForeground( ITEMDESC_FONTNEGATIVE );
-						swprintf( pStr, L"%3.1f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%3.1f"), iFloatModifier[cnt2] );
 					}
 					else
 					{
 						SetFontForeground( 5 );
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 					}
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
@@ -11421,17 +11421,17 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 					if (iFloatModifier[cnt2] > 0.0)
 					{
 						SetFontForeground( ITEMDESC_FONTPOSITIVE );
-						swprintf( pStr, L"+%3.1fx", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("+%3.1fx"), iFloatModifier[cnt2] );
 					}
 					else if (iFloatModifier[cnt2] < 0.0)
 					{
 						SetFontForeground( ITEMDESC_FONTNEGATIVE );
-						swprintf( pStr, L"%3.1fx", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%3.1fx"), iFloatModifier[cnt2] );
 					}
 					else
 					{
 						SetFontForeground( 5 );
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 					}
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
@@ -11439,14 +11439,14 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
 					if ( bNewCode )
-						swprintf( pStr, L"%3.0f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%3.0f"), iFloatModifier[cnt2] );
 					else
-						swprintf( pStr, L"%3.1fx", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%3.1fx"), iFloatModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"1.0x" );
+					swprintf( pStr, JA2_TEXT("1.0x") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11486,35 +11486,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11559,23 +11559,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iFloatModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%3.1f", iFloatModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%3.1f"), iFloatModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iFloatModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"%3.1f", iFloatModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%3.1f"), iFloatModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11615,23 +11615,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iFloatModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%3.1f", iFloatModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%3.1f"), iFloatModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iFloatModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"%3.1f", iFloatModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%3.1f"), iFloatModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11673,23 +11673,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iFloatModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"%3.1f", iFloatModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%3.1f"), iFloatModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iFloatModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%3.1f", iFloatModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%3.1f"), iFloatModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11730,35 +11730,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11799,35 +11799,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11869,23 +11869,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11927,35 +11927,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"-%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("-%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", abs(iModifier[cnt2]) );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), abs(iModifier[cnt2]) );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -11997,35 +11997,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"-%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("-%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", abs(iModifier[cnt2]) );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), abs(iModifier[cnt2]) );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12067,35 +12067,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"-%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("-%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", abs(iModifier[cnt2]) );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), abs(iModifier[cnt2]) );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12137,35 +12137,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"-%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("-%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", abs(iModifier[cnt2]) );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), abs(iModifier[cnt2]) );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12207,35 +12207,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"-%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("-%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", abs(iModifier[cnt2]) );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), abs(iModifier[cnt2]) );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12277,23 +12277,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12335,23 +12335,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12391,30 +12391,30 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 					if (iModifier[cnt2])
 					{
 						SetFontForeground( 5 );
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 					}
 					else
 					{
 						SetFontForeground( ITEMDESC_FONTPOSITIVE );
-						swprintf( pStr, L"Y" );
+						swprintf( pStr, JA2_TEXT("Y") );
 					}
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if ( fComparisonMode && !iComparedModifier[0] )
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"N" );
+					swprintf( pStr, JA2_TEXT("N") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2])
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"Y" );
+					swprintf( pStr, JA2_TEXT("Y") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12456,35 +12456,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", abs(iModifier[cnt2]) );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), abs(iModifier[cnt2]) );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12526,23 +12526,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12587,23 +12587,23 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12645,35 +12645,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12715,35 +12715,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12785,35 +12785,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12855,35 +12855,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12925,35 +12925,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -12995,35 +12995,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );			
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -13065,35 +13065,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -13135,35 +13135,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -13205,35 +13205,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -13275,35 +13275,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -13345,35 +13345,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -13415,35 +13415,35 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 				if (iModifier[cnt2] > 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"+%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if (iModifier[cnt2] < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"%d", iModifier[cnt2] );
-					wcscat( pStr, L"%" );
+					swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
+					wcscat( pStr, JA2_TEXT("%") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					if( g_lang == i18n::Lang::zh ) {
 						wcscat( pStr, ChineseSpecString1 );
 					} else {
-						wcscat( pStr, L"%" );
+						wcscat( pStr, JA2_TEXT("%") );
 					}
 				}
 				else if( fComparisonMode )
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				else
 				{
-					swprintf( pStr, L"--" );
+					swprintf( pStr, JA2_TEXT("--") );
 					FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 				}
 				mprintf( usX, usY, pStr );
@@ -13505,12 +13505,12 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -13518,22 +13518,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -13582,12 +13582,12 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -13595,22 +13595,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -13659,12 +13659,12 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.0f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.0f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -13672,22 +13672,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
-						swprintf( pStr, L"%4.0f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.0f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -13736,12 +13736,12 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.0f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.0f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -13749,22 +13749,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
-						swprintf( pStr, L"%4.0f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.0f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -13810,12 +13810,12 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -13823,22 +13823,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -13884,12 +13884,12 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -13897,22 +13897,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -13955,12 +13955,12 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -13968,22 +13968,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -14026,12 +14026,12 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -14039,22 +14039,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -14097,12 +14097,12 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -14110,22 +14110,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 )
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -14175,15 +14175,15 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
 
 						if ( !fComparisonMode && cnt2 != 1 )
-							swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						else
-							swprintf( pStr, L"+%4.2f", iFloatModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("+%4.2f"), iFloatModifier[cnt2] );
 
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if (iFloatModifier[cnt2] < 0)
@@ -14191,22 +14191,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( cnt2 == 1 || fComparisonMode)
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
 
-						swprintf( pStr, L"%4.2f", iFloatModifier[cnt2] );
+						swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[cnt2] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 						if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 						} else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 						}
 					}
 					else if( fComparisonMode )
 					{
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					else
 					{
-						swprintf( pStr, L"--" );
+						swprintf( pStr, JA2_TEXT("--") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 					}
 					mprintf( usX, usY, pStr );
@@ -14229,8 +14229,8 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 			sTop = gItemDescAdvRegions[cnt - sFirstLine][1].sTop;
 			sHeight = gItemDescAdvRegions[cnt - sFirstLine][1].sBottom - sTop;
 
-			BOOL a = Weapon[gpItemDescObject->usItem].fBurstOnlyByFanTheHammer;
-			BOOL b = ( fComparisonMode && Weapon[gpComparedItemDescObject->usItem].fBurstOnlyByFanTheHammer);
+			BOOLEAN a = Weapon[gpItemDescObject->usItem].fBurstOnlyByFanTheHammer;
+			BOOLEAN b = ( fComparisonMode && Weapon[gpComparedItemDescObject->usItem].fBurstOnlyByFanTheHammer);
 			
 			SetFontForeground( 5 );
 			sLeft = gItemDescAdvRegions[cnt - sFirstLine][1].sLeft;
@@ -14240,13 +14240,13 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 			{
 				SetFontForeground( a ? ITEMDESC_FONTPOSITIVE : ITEMDESC_FONTNEGATIVE );
 
-				swprintf( pStr, L"%s/%s", a ? L"Y" : L"N", b ? L"Y" : L"N" );
+				swprintf( pStr, JA2_TEXT("%s/%s"), a ? JA2_TEXT("Y") : JA2_TEXT("N"), b ? JA2_TEXT("Y") : JA2_TEXT("N") );
 			}
 			else
 			{
 				SetFontForeground( 5 );
 
-				swprintf( pStr, L"%s", a ? L"Y" : L"N" );
+				swprintf( pStr, JA2_TEXT("%s"), a ? JA2_TEXT("Y") : JA2_TEXT("N") );
 			}
 
 			FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY );
@@ -14269,28 +14269,28 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 			sHeight = gItemDescAdvRegions[cnt - sFirstLine][1].sBottom - sTop;
 
 			// list all modes
-			swprintf( pStr, L"" );
-			swprintf( pStr2, L"" );
+			swprintf( pStr, JA2_TEXT("") );
+			swprintf( pStr2, JA2_TEXT("") );
 
 			std::vector<UINT8> tmp = Weapon[Item[gpItemDescObject->usItem].ubClassIndex].barrelconfigurations;
 
 			for ( std::vector<UINT8>::iterator it = tmp.begin(); it != tmp.end(); ++it )
 			{
 				UINT8 bla = ( *it );
-				swprintf( pStr2, L"%s x%d", pStr, bla );
-				swprintf( pStr, L"%s", pStr2 );
+				swprintf( pStr2, JA2_TEXT("%s x%d"), pStr, bla );
+				swprintf( pStr, JA2_TEXT("%s"), pStr2 );
 			}
 
 			if ( ( fComparisonMode && Item[gpComparedItemDescObject->usItem].usItemClass & ( IC_GUN | IC_LAUNCHER ) ) )
 			{
-				wcscat( pStr, L" / " );
+				wcscat( pStr, JA2_TEXT(" / ") );
 
 				std::vector<UINT8> tmp2 = Weapon[Item[gpComparedItemDescObject->usItem].ubClassIndex].barrelconfigurations;
 
 				for ( std::vector<UINT8>::iterator it = tmp2.begin(); it != tmp2.end(); ++it )
 				{
-					swprintf( pStr2, L"%s x%d", pStr, ( *it ) );
-					swprintf( pStr, L"%s", pStr2 );
+					swprintf( pStr2, JA2_TEXT("%s x%d"), pStr, ( *it ) );
+					swprintf( pStr, JA2_TEXT("%s"), pStr2 );
 				}
 			}
 			
@@ -14360,27 +14360,27 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( fComparisonMode && iModifier[cnt2] > 0 )
 						{
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
-							swprintf( pStr, L"+%d", iModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("+%d"), iModifier[cnt2] );
 						}
 						else if ( iModifier[cnt2] > 0 )
 						{
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
-							swprintf( pStr, L"%d", iModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 						}
 						else if ( iModifier[cnt2] < 0 )
 						{
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
-							swprintf( pStr, L"%d", iModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("%d"), iModifier[cnt2] );
 						}
 						else if( fComparisonMode )
 						{
 							SetFontForeground( 5 );
-							swprintf( pStr, L"=" );
+							swprintf( pStr, JA2_TEXT("=") );
 						}
 						else
 						{
 							SetFontForeground( 5 );
-							swprintf( pStr, L"--" );
+							swprintf( pStr, JA2_TEXT("--") );
 						}
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY );
 						mprintf( usX, usY, pStr );
@@ -14399,7 +14399,7 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						sLeft = gItemDescAdvRegions[cnt-sFirstLine][cnt2+1].sLeft;
 						sWidth = gItemDescAdvRegions[cnt-sFirstLine][cnt2+1].sRight - sLeft;
 						SetFontForeground( 5 );
-						swprintf( pStr, L"=" );
+						swprintf( pStr, JA2_TEXT("=") );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY );
 						mprintf( usX, usY, pStr );
 					}
@@ -14435,27 +14435,27 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( fComparisonMode && iFloatModifier[cnt2] > 0 )
 						{
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
-							swprintf( pStr, L"+%4.3f", iFloatModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("+%4.3f"), iFloatModifier[cnt2] );
 						}
 						else if ( iFloatModifier[cnt2] > 0 )
 						{
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
-							swprintf( pStr, L"%4.3f", iFloatModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("%4.3f"), iFloatModifier[cnt2] );
 						}
 						else if ( iFloatModifier[cnt2] < 0 )
 						{
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
-							swprintf( pStr, L"%4.3f", iFloatModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("%4.3f"), iFloatModifier[cnt2] );
 						}
 						else if( fComparisonMode )
 						{
 							SetFontForeground( 5 );
-							swprintf( pStr, L"=" );
+							swprintf( pStr, JA2_TEXT("=") );
 						}
 						else
 						{
 							SetFontForeground( 5 );
-							swprintf( pStr, L"--" );
+							swprintf( pStr, JA2_TEXT("--") );
 						}
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY );
 						mprintf( usX, usY, pStr );
@@ -14492,27 +14492,27 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						if ( fComparisonMode && iFloatModifier[cnt2] > 0 )
 						{
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
-							swprintf( pStr, L"+%3.2f", iFloatModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("+%3.2f"), iFloatModifier[cnt2] );
 						}
 						else if ( iFloatModifier[cnt2] > 0 )
 						{
 							SetFontForeground( ITEMDESC_FONTPOSITIVE );
-							swprintf( pStr, L"%3.2f", iFloatModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("%3.2f"), iFloatModifier[cnt2] );
 						}
 						else if ( iFloatModifier[cnt2] < 0 )
 						{
 							SetFontForeground( ITEMDESC_FONTNEGATIVE );
-							swprintf( pStr, L"%3.2f", iFloatModifier[cnt2] );
+							swprintf( pStr, JA2_TEXT("%3.2f"), iFloatModifier[cnt2] );
 						}
 						else if( fComparisonMode )
 						{
 							SetFontForeground( 5 );
-							swprintf( pStr, L"=" );
+							swprintf( pStr, JA2_TEXT("=") );
 						}
 						else
 						{
 							SetFontForeground( 5 );
-							swprintf( pStr, L"--" );
+							swprintf( pStr, JA2_TEXT("--") );
 						}
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY );
 						mprintf( usX, usY, pStr );
@@ -14551,22 +14551,22 @@ void DrawAdvancedValues( OBJECTTYPE *gpItemDescObject )
 						sLeft = gItemDescAdvRegions[cnt-sFirstLine][cnt2+1].sLeft;
 						sWidth = gItemDescAdvRegions[cnt-sFirstLine][cnt2+1].sRight - sLeft;
 						if ( fComparisonMode && iModifier[0] > 0 )
-							swprintf( pStr, L"+%d", iModifier[0] );
+							swprintf( pStr, JA2_TEXT("+%d"), iModifier[0] );
 						else if ( fComparisonMode && iModifier[0] < 0 )
-							swprintf( pStr, L"%d", iModifier[0] );
+							swprintf( pStr, JA2_TEXT("%d"), iModifier[0] );
 						else if ( fComparisonMode )
-							swprintf( pStr, L"=" );	
+							swprintf( pStr, JA2_TEXT("=") );	
 						else
-							swprintf( pStr, L"%d", iModifier[0] );
+							swprintf( pStr, JA2_TEXT("%d"), iModifier[0] );
 
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY );
 						if( !( fComparisonMode && iModifier[0] == 0 ) )
 						{
-							wcscat( pStr, L"%" );							
+							wcscat( pStr, JA2_TEXT("%") );							
 if( g_lang == i18n::Lang::zh ) {
 							wcscat( pStr, ChineseSpecString1 );
 } else {
-							wcscat( pStr, L"%" );
+							wcscat( pStr, JA2_TEXT("%") );
 }
 						}
 						mprintf( usX, usY, pStr );
@@ -14604,13 +14604,13 @@ if( g_lang == i18n::Lang::zh ) {
 						sLeft = gItemDescAdvRegions[cnt-sFirstLine][cnt2+1].sLeft;
 						sWidth = gItemDescAdvRegions[cnt-sFirstLine][cnt2+1].sRight - sLeft;
 						if ( fComparisonMode && iModifier[0] > 0 )
-							swprintf( pStr, L"+%d", iModifier[0] );
+							swprintf( pStr, JA2_TEXT("+%d"), iModifier[0] );
 						else if ( fComparisonMode && iModifier[0] < 0 )
-							swprintf( pStr, L"%d", iModifier[0] );
+							swprintf( pStr, JA2_TEXT("%d"), iModifier[0] );
 						else if ( fComparisonMode )
-							swprintf( pStr, L"=" );	
+							swprintf( pStr, JA2_TEXT("=") );	
 						else
-							swprintf( pStr, L"%d", iModifier[0] );
+							swprintf( pStr, JA2_TEXT("%d"), iModifier[0] );
 
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY );
 						mprintf( usX, usY, pStr );
@@ -14650,9 +14650,9 @@ if( g_lang == i18n::Lang::zh ) {
 						sLeft = gItemDescAdvRegions[cnt-sFirstLine][cnt2+1].sLeft;
 						sWidth = gItemDescAdvRegions[cnt-sFirstLine][cnt2+1].sRight - sLeft;
 						if( fComparisonMode && iFloatModifier[0] > 0.0f )
-							swprintf( pStr, L"+%4.2f", iFloatModifier[0] );
+							swprintf( pStr, JA2_TEXT("+%4.2f"), iFloatModifier[0] );
 						else
-							swprintf( pStr, L"%4.2f", iFloatModifier[0] );
+							swprintf( pStr, JA2_TEXT("%4.2f"), iFloatModifier[0] );
 						FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY );
 						mprintf( usX, usY, pStr );
 					}
@@ -14678,7 +14678,7 @@ if( g_lang == i18n::Lang::zh ) {
 			for (UINT8 i = 0; i < 4; i++)
 			{
 				// Select "PROPERTY", "0", "+" or "=" as appropriate.
-				swprintf(pStr, L"%s", gzItemDescGenIndexes[ i ]);
+				swprintf(pStr, JA2_TEXT("%s"), gzItemDescGenIndexes[ i ]);
 
 				sLeft = gItemDescAdvRegions[fDrawGenIndexes-sFirstLine-1][i].sLeft;
 				sWidth = gItemDescAdvRegions[fDrawGenIndexes-sFirstLine-1][i].sRight - sLeft;			
@@ -14726,12 +14726,12 @@ void DrawMiscValues( OBJECTTYPE * gpItemDescObject )
 		SetFontForeground( FONT_MCOLOR_WHITE );
 
 		// "PRIMARY" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 0 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 0 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sTop, gItemDescGenHeaderRegions[0].sRight - gItemDescGenHeaderRegions[0].sLeft, gItemDescGenHeaderRegions[0].sBottom - gItemDescGenHeaderRegions[0].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
 		// "SECONDARY" header
-		swprintf( pStr, L"%s", gzItemDescGenHeaders[ 1 ] );
+		swprintf( pStr, JA2_TEXT("%s"), gzItemDescGenHeaders[ 1 ] );
 		FindFontCenterCoordinates( gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sTop, gItemDescGenHeaderRegions[1].sRight - gItemDescGenHeaderRegions[1].sLeft, gItemDescGenHeaderRegions[1].sBottom - gItemDescGenHeaderRegions[1].sTop, pStr, BLOCKFONT2, &usX, &usY );
 		mprintf( usX, usY, pStr );
 
@@ -14744,7 +14744,7 @@ void DrawMiscValues( OBJECTTYPE * gpItemDescObject )
 		for (UINT8 cnt = 0; cnt < 4; cnt++)
 		{
 			// Select "PROPERTY", "0", "+" or "=" as appropriate.
-			swprintf(pStr, L"%s", gzItemDescGenIndexes[ cnt ]);
+			swprintf(pStr, JA2_TEXT("%s"), gzItemDescGenIndexes[ cnt ]);
 
 			FindFontCenterCoordinates( gItemDescGenIndexRegions[0][cnt].sLeft, gItemDescGenIndexRegions[0][cnt].sTop, gItemDescGenIndexRegions[0][cnt].sRight - gItemDescGenIndexRegions[0][cnt].sLeft, gItemDescGenIndexRegions[0][cnt].sBottom - gItemDescGenIndexRegions[0][cnt].sTop, pStr, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY, pStr );
@@ -14779,38 +14779,38 @@ void DrawMiscValues( OBJECTTYPE * gpItemDescObject )
 				if (iComparedRepairEaseDifference < 0)
 				{
 					SetFontForeground( ITEMDESC_FONTNEGATIVE );
-					swprintf( pStr, L"%d", iComparedRepairEaseDifference );
+					swprintf( pStr, JA2_TEXT("%d"), iComparedRepairEaseDifference );
 				}
 				else if ( iComparedRepairEaseDifference > 0 )
 				{
 					SetFontForeground( ITEMDESC_FONTPOSITIVE );
-					swprintf( pStr, L"+%d", iComparedRepairEaseDifference );
+					swprintf( pStr, JA2_TEXT("+%d"), iComparedRepairEaseDifference );
 				}
 				else
 				{
-					swprintf( pStr, L"=" );
+					swprintf( pStr, JA2_TEXT("=") );
 				}
 			}
 			else if (iRepairEaseValue < 0)
 			{
 				SetFontForeground( ITEMDESC_FONTNEGATIVE );
-				swprintf( pStr, L"%d", iRepairEaseValue );
+				swprintf( pStr, JA2_TEXT("%d"), iRepairEaseValue );
 			}
 			else if ( iRepairEaseValue > 0 )
 			{
 				SetFontForeground( ITEMDESC_FONTPOSITIVE );
-				swprintf( pStr, L"+%d", iRepairEaseValue );
+				swprintf( pStr, JA2_TEXT("+%d"), iRepairEaseValue );
 			}
 			else
 			{
-				swprintf( pStr, L"--" );
+				swprintf( pStr, JA2_TEXT("--") );
 			}
 			FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY, pStr );
 
 			// Print modifier
 			SetFontForeground( 5 );
-			swprintf( pStr, L"--" );
+			swprintf( pStr, JA2_TEXT("--") );
 			sLeft = gItemDescGenRegions[ubNumLine][2].sLeft;
 			sWidth = gItemDescGenRegions[ubNumLine][2].sRight - sLeft;
 			FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
@@ -14820,7 +14820,7 @@ void DrawMiscValues( OBJECTTYPE * gpItemDescObject )
 			SetFontForeground( FONT_MCOLOR_WHITE );
 			sLeft = gItemDescGenRegions[ubNumLine][3].sLeft;
 			sWidth = gItemDescGenRegions[ubNumLine][3].sRight - sLeft;
-			swprintf( pStr, L"%d", iFinalRepairEaseValue );
+			swprintf( pStr, JA2_TEXT("%d"), iFinalRepairEaseValue );
 			FindFontCenterCoordinates( sLeft, sTop, sWidth, sHeight, pStr, BLOCKFONT2, &usX, &usY);
 			mprintf( usX, usY, pStr );
 		}
@@ -14863,7 +14863,7 @@ void DrawMiscValues( OBJECTTYPE * gpItemDescObject )
 					// Print difference in base value
 					DrawPropertyValueInColour( iComparedAvailableVolume - iAvailableVolume, ubNumLine, 1, fComparisonMode, FALSE, TRUE );
 					// Print difference in modifier
-					DrawPropertyTextInColour( L"--", ubNumLine, 2 ); 
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 ); 
 					// Print difference in final value
 					DrawPropertyValueInColour( iComparedFinalAvailableVolume - iFinalAvailableVolume, ubNumLine, 3, fComparisonMode, FALSE, TRUE );
 				}
@@ -14906,7 +14906,7 @@ void DrawMiscValues( OBJECTTYPE * gpItemDescObject )
 					// Print base value
 					DrawPropertyValueInColour( iPocketVolume, ubNumLine, 1, fComparisonMode, FALSE, FALSE );
 					// Print modifier
-					DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 					// Print final value
 					DrawPropertyValueInColour( iFinalPocketVolume, ubNumLine, 3, fComparisonMode, FALSE, FALSE, FONT_MCOLOR_WHITE );
 				}
@@ -14924,7 +14924,7 @@ void DrawMiscValues( OBJECTTYPE * gpItemDescObject )
 					// Print difference in base value
 					DrawPropertyValueInColour( iComparedPocketVolume - iPocketVolume, ubNumLine, 1, fComparisonMode, FALSE, FALSE );
 					// Print difference in modifier
-					DrawPropertyTextInColour( L"--", ubNumLine, 2 ); 
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 ); 
 					// Print difference in final value
 					DrawPropertyValueInColour( iComparedFinalPocketVolume - iFinalPocketVolume, ubNumLine, 3, fComparisonMode, FALSE, FALSE );
 				}
@@ -14944,7 +14944,7 @@ void DrawMiscValues( OBJECTTYPE * gpItemDescObject )
 					// Print base value
 					DrawPropertyValueInColour( iPocketVolume, ubNumLine, 1, FALSE, FALSE, FALSE, ITEMDESC_FONTPOSITIVE );
 					// Print modifier
-					DrawPropertyTextInColour( L"--", ubNumLine, 2 );
+					DrawPropertyTextInColour( JA2_TEXT("--"), ubNumLine, 2 );
 					// Print final value
 					DrawPropertyValueInColour( iFinalPocketVolume, ubNumLine, 3, FALSE, FALSE, FALSE, ITEMDESC_FONTPOSITIVE );
 				}

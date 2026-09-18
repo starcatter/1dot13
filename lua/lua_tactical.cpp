@@ -159,7 +159,7 @@ static int LuaSoldierChangeStance( lua_State *L )
 	return 0;
 }
 
-static LuaAttrib Soldier[] = {
+LuaAttrib Soldier[] = {
 	{ "name", LuaGetSoldierName, },
 	{ "fullname", LuaGetSoldierFullName, },
 	{ "grid", LuaGetSoldierGrid, LuaSetSoldierGrid },

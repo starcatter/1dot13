@@ -26,6 +26,7 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/input.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/line.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/LegacyStringConversion.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/LegacyUtf16.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/MemMan.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/mousesystem.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/PCX.cpp"
@@ -74,7 +75,12 @@ elseif(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/NativeFonts.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Process.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Sleep.cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Window.cpp")
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Window.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/sdl/Sdl3ApplicationPlatform.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/sdl/Sdl3ApplicationHost.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/sdl/Sdl3InputTranslator.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/platform/sdl/Sdl3LegacyInputSink.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/presentation/sdl/Sdl3Presenter.cpp")
 endif()
 
 set(sgpSrc ${sgpSrc} PARENT_SCOPE)

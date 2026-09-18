@@ -2,25 +2,25 @@
 	#include "FileMan.h"
 	#include "GameSettings.h"
 	// sevenfm
-	#include <codecvt>
 	#include <string>
 
-auto FormatMoney(INT32 iNumber) -> std::wstring
+auto FormatMoney(INT32 iNumber) -> ja2::text::Utf16String
 {
-    static std::wstringstream wss([] {
-        std::wstringstream ss;
+    static std::stringstream stream([] {
+        std::stringstream value;
         try {
-            ss.imbue(std::locale("en_US.UTF-8"));
+            value.imbue(std::locale("en_US.UTF-8"));
         }
         catch (const std::exception&) {
-            ss.imbue(std::locale::classic());
+            value.imbue(std::locale::classic());
         }
-        return ss;
+        return value;
         }());
-    wss.str(L"");
-    wss << iNumber;
+    stream.str("");
+    stream.clear();
+    stream << iNumber;
 
-    return L"$" + wss.str();
+    return ja2::text::utf8ToUtf16("$" + stream.str());
 }
 
 BOOLEAN LoadItemInfo(UINT16 ubIndex, STR16 pNameString, STR16 pInfoString )
@@ -156,15 +156,13 @@ int StringToEnum(const STR8 value, const Str16EnumLookupType *table)
 		return 0;
 
 	int result = 0;
-	int len = strlen(value)+1;
-	STR16 wval = (STR16)malloc( len*sizeof(CHAR16) );
-	mbstowcs(wval, value, len);
+	const ja2::text::Utf16String wval =
+		ja2::text::utf8ToUtf16ReplacingInvalid(value);
 	for (const Str16EnumLookupType *itr = table; itr->name != NULL; ++itr) {
-		if (0 == _wcsicmp(wval, itr->name)) {
+		if (0 == _wcsicmp(wval.c_str(), itr->name)) {
 			result = itr->value;
 		}
 	}
-	free(wval);
 	return (result) ? result : (int)strtol(value, NULL, 0);
 }
 
@@ -174,16 +172,13 @@ int StringToEnum(const STR16 value, const Str8EnumLookupType *table)
 		return 0;
 
 	int result = 0;
-	int len = wcslen(value)+1;
-	STR8 mval = (STR8)malloc( len*sizeof(CHAR8) );
-	wcstombs(mval, value, len);
+	const std::string mval = ja2::text::utf16ToUtf8ReplacingInvalid(value);
 	for (const Str8EnumLookupType *itr = table; itr->name != NULL; ++itr) {
-		if (0 == _stricmp(mval, itr->name)) {
+		if (0 == _stricmp(mval.c_str(), itr->name)) {
 			result = itr->value;
 		}
 	}
-	free(mval);
-	return (result) ? result : (int)wcstol(value, NULL, 0);
+	return (result) ? result : (int)strtol(mval.c_str(), NULL, 0);
 }
 
 int StringToEnum(const STR16 value, const Str16EnumLookupType *table) {
@@ -194,7 +189,8 @@ int StringToEnum(const STR16 value, const Str16EnumLookupType *table) {
 		if (0 == _wcsicmp(value, itr->name)) 
 			return itr->value;
 	}
-	return (int)wcstol(value, NULL, 0);
+	const std::string utf8 = ja2::text::utf16ToUtf8ReplacingInvalid(value);
+	return (int)strtol(utf8.c_str(), NULL, 0);
 }
 
 
@@ -409,13 +405,11 @@ void ParseCommandLine (
 // convert UTF-8 string to wstring
 std::wstring utf8_to_wstring(const std::string& str)
 {
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
-	return myconv.from_bytes(str);
+	return vfs::String(str).c_wcs();
 }
 
 // convert wstring to UTF-8 string
 std::string wstring_to_utf8(const std::wstring& str)
 {
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
-	return myconv.to_bytes(str);
+	return vfs::String::as_utf8(str);
 }

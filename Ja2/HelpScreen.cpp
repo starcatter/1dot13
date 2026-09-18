@@ -568,7 +568,7 @@ BOOLEAN EnterHelpScreen()
 	//Create the exit buttons
 	giExitBtnImage = LoadButtonImage("INTERFACE\\HelpScreen.sti", -1,0,4,2,6 );
 
-	guiHelpScreenExitBtn = CreateIconAndTextButton( giExitBtnImage, L"", HELP_SCREEN_BTN_FONT,
+	guiHelpScreenExitBtn = CreateIconAndTextButton( giExitBtnImage, JA2_TEXT(""), HELP_SCREEN_BTN_FONT,
 														HELP_SCREEN_BTN_FONT_ON_COLOR, DEFAULT_SHADOW,
 														HELP_SCREEN_BTN_FONT_OFF_COLOR, DEFAULT_SHADOW,
 														TEXT_CJUSTIFIED,

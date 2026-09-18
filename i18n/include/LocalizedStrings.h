@@ -1,6 +1,8 @@
 #ifndef _LOCALIZEDSTRINGS_H_
 #define _LOCALIZEDSTRINGS_H_
 
+#include "types.h"
+
 #include <vfs/Core/vfs_path.h>
 
 //#define USE_LOCALIZATION
@@ -27,6 +29,13 @@ namespace Loc
 	
 	vfs::String const& GetString(Topic t, vfs::String const& section, vfs::String const& key);
 	vfs::String const& GetString(Topic t, vfs::String const& section, int key);
+
+#ifndef _WIN32
+	// Boundary overloads for JA2's fixed-width engine text. bfVFS retains its
+	// host-wide string API, which is 32-bit wchar_t on Unix.
+	bool GetString(Topic t, const CHAR16* section, int key, CHAR16* value, vfs::UInt32 len);
+	vfs::String const& GetString(Topic t, const CHAR16* section, int key);
+#endif
 };
 
 extern bool g_bUseXML_Strings;

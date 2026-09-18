@@ -84,7 +84,7 @@ BOOLEAN SetCurrentPopUpBox( UINT32 uiId )
 	//make sure the box id is valid
 	if( uiId == (UINT32) -1 )
 	{
-		//ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, L"Error: Trying to set Current Popup Box using -1 as an ID" );
+		//ScreenMsg( FONT_MCOLOR_WHITE, MSG_BETAVERSION, JA2_TEXT("Error: Trying to set Current Popup Box using -1 as an ID") );
 		return( FALSE );
 	}
 

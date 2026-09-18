@@ -1561,7 +1561,7 @@ void VaporizeCorpse( INT32 sGridNo, INT8 asLevel, UINT16 usStructureID )
 	if ( pCorpse == NULL )
 	{
 #ifdef JA2TESTVERSION
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, L"Vaporize corpse but corpse cannot be found at: %d", sBaseGridNo );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_TESTVERSION, JA2_TEXT("Vaporize corpse but corpse cannot be found at: %d"), sBaseGridNo );
 #endif
 		return;
 	}
@@ -2780,7 +2780,7 @@ void RaiseZombies( void )
 				SetRenderFlags( RENDER_FLAG_FULL );
 
 #ifdef JA2TESTVERSION
-				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, L"A wave of zombies is created");
+				ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_BETAVERSION, JA2_TEXT("A wave of zombies is created"));
 #endif
 				CHAR8	zFilename[512];
 				// prepare zombie raise sound

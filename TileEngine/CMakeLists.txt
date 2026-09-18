@@ -19,6 +19,7 @@ set(TileEngineSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/Render Fun.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Render Z.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/renderworld.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/renderworld_blitters_portable.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/SaveLoadMap.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Shade Table Util.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Simple Render Utils.cpp"

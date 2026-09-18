@@ -1,5 +1,6 @@
 
 	#include "Ambient Control.h"
+	#include "UtfConversion.h"
 	#include "Sound Control.h"
 	#include "Game Events.h"
 	#include "lighting.h"
@@ -450,7 +451,7 @@ void SetSSA(void)
 	//MINE_STATUS_TYPE *pMineStatus;
 
 	memset(TownName, 0, 1024 * sizeof(char));
-	memset(name16, 0, 1024 * sizeof(wchar_t));
+	memset(name16, 0, sizeof(name16));
 
 	// Stop all ambients...
 	if (guiCurrentSteadyStateSoundHandle != NO_SAMPLE)
@@ -494,8 +495,8 @@ void SetSSA(void)
 	if (ubTownID != BLANK_SECTOR && gbWorldSectorZ == 0)
 	{
 		//wcstombs(TownName, pTownNames[ubTownID], wcslen(pTownNames[ubTownID])+1);
-		wcstombs(TownName, pTownNames[ubTownID], 1024 - 1);
-		//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, L"%s", pTownNames[ubTownID]);
+		ja2::text::copyUtf16ToUtf8(pTownNames[ubTownID], TownName);
+		//ScreenMsg(FONT_ORANGE, MSG_INTERFACE, JA2_TEXT("%s"), pTownNames[ubTownID]);
 	}
 
 	// check sector file

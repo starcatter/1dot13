@@ -465,7 +465,7 @@ STR16 Profilenamegetter( UINT32 aNum )
 			return militia.GetName( );
 	}
 
-	return L"No entry found in database";
+	return JA2_TEXT("No entry found in database");
 }
 
 // a militia's name is written in a different colour, depending on their rank and whether they are dead
@@ -504,7 +504,7 @@ STR16 Sectornamegetter( UINT32 aNum )
 			return militia.GetSector( );
 	}
 
-	return L"No entry found in database";
+	return JA2_TEXT("No entry found in database");
 }
 
 UINT32 gusCurrentMilitia = 0;
@@ -555,7 +555,7 @@ STR16 OperationText( UINT32 aNum )
 		return gMilitiaOperationText;
 	}
 
-	return L"No entry found in database";
+	return JA2_TEXT("No entry found in database");
 }
 
 CHAR16	gItemLongNamegetterText[800];
@@ -563,12 +563,12 @@ STR16 ItemLongNamegetter( UINT32 aNum )
 {
 	if ( aNum < gIndividualMilitiaVector.size( ) )
 	{
-		swprintf( gItemLongNamegetterText, L"%s", Item[aNum].szLongItemName );
+		swprintf( gItemLongNamegetterText, JA2_TEXT("%s"), Item[aNum].szLongItemName );
 
 		return gItemLongNamegetterText;
 	}
 
-	return L"unarmed";
+	return JA2_TEXT("unarmed");
 }
 
 void GetFaceData( UINT32 aMilitiaId, UINT32& arImageLib, UINT16& arImage )
@@ -725,7 +725,7 @@ template<>  void	TestTableTemplate<1>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 {
 	ClearColumnDataProvider( );
 
-	ColumnDataProvider imagecol( L"" );
+	ColumnDataProvider imagecol( JA2_TEXT("") );
 	imagecol.SetRequiredHeigth( 27 );
 	imagecol.SetRequiredLength( 40 );
 	imagecol.SetMethodImage( AutoResolveFaces );
@@ -763,7 +763,7 @@ template<>  void	TestTableTemplate<3>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 
 	if ( gGameExternalOptions.fIndividualMilitia_ManageHealth )
 	{
-		ColumnDataProvider healthbarcol( L"" );
+		ColumnDataProvider healthbarcol( JA2_TEXT("") );
 		healthbarcol.SetMethodStatusBar( MilitiaHealthBar );
 		healthbarcol.SetNumberOfEntries( gIndividualMilitiaFilteredIdsVector.size( ) );
 		//healthbarcol.SetRequiredHeigth( 29 );
@@ -773,7 +773,7 @@ template<>  void	TestTableTemplate<3>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 	}
 
 	/*// face
-	ColumnDataProvider imagecol( L"" );
+	ColumnDataProvider imagecol( JA2_TEXT("") );
 	imagecol.SetMethodImage( AutoResolveFaces );
 	imagecol.SetNumberOfEntries( gIndividualMilitiaFilteredIdsVector.size( ) );
 	imagecol.SetRequiredHeigth( 27 );
@@ -800,7 +800,7 @@ template<>  void	TestTableTemplate<3>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 	AddColumnDataProvider( sectorcol );
 
 	/*// trait 1,2,3
-	ColumnDataProvider traitcol1( L"" );
+	ColumnDataProvider traitcol1( JA2_TEXT("") );
 	traitcol1.SetMethodImage( TraitImage1 );
 	traitcol1.SetNumberOfEntries( gIndividualMilitiaFilteredIdsVector.size( ) );
 	traitcol1.SetRequiredHeigth( 20 );
@@ -809,7 +809,7 @@ template<>  void	TestTableTemplate<3>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 
 	AddColumnDataProvider( traitcol1 );
 
-	ColumnDataProvider traitcol2( L"" );
+	ColumnDataProvider traitcol2( JA2_TEXT("") );
 	traitcol2.SetMethodImage( TraitImage2 );
 	traitcol2.SetNumberOfEntries( gIndividualMilitiaFilteredIdsVector.size( ) );
 	traitcol2.SetRequiredHeigth( 20 );
@@ -818,7 +818,7 @@ template<>  void	TestTableTemplate<3>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 
 	AddColumnDataProvider( traitcol2 );
 
-	ColumnDataProvider traitcol3( L"" );
+	ColumnDataProvider traitcol3( JA2_TEXT("") );
 	traitcol3.SetMethodImage( TraitImage3 );
 	traitcol3.SetNumberOfEntries( gIndividualMilitiaFilteredIdsVector.size( ) );
 	traitcol3.SetRequiredHeigth( 20 );
@@ -837,7 +837,7 @@ template<>  void	TestTableTemplate<3>::Init( UINT16 sX, UINT16 sY, UINT16 sX_End
 	AddColumnDataProvider( itemimagecol );*/
 
 	// name of weapon
-	/*ColumnDataProvider itemnamecol( L"" );
+	/*ColumnDataProvider itemnamecol( JA2_TEXT("") );
 	itemnamecol.SetMethodString( ItemLongNamegetter );
 	itemnamecol.SetNumberOfEntries( gIndividualMilitiaFilteredIdsVector.size() );
 	itemnamecol.SetCallBackType( ColumnDataProvider::CDP_MILITIA_LIST );

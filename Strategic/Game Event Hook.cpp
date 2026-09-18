@@ -101,7 +101,7 @@ BOOLEAN ExecuteStrategicEvent( STRATEGICEVENT *pEvent )
 
 	if( gGameExternalOptions.gfEnableEmergencyButton_SkipStrategicEvents && _KeyDown( NUM_LOCK ) )
 	{
-		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Strategic event skipped!" );
+		ScreenMsg( FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, JA2_TEXT("Strategic event skipped!") );
 		return TRUE;
 	}
 
@@ -278,7 +278,7 @@ BOOLEAN ExecuteStrategicEvent( STRATEGICEVENT *pEvent )
 			break;
 		case EVENT_HANDLE_MINE_INCOME:
 			HandleIncomeFromMines( );
-			//ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, L"Income From Mines at %d", GetWorldTotalMin( ) );
+			//ScreenMsg( FONT_MCOLOR_DKRED, MSG_INTERFACE, JA2_TEXT("Income From Mines at %d"), GetWorldTotalMin( ) );
 			break;
 		case EVENT_SETUP_MINE_INCOME:
 			PostEventsForMineProduction();
@@ -685,11 +685,11 @@ void CrippledVersionEndGameCheck()
 
 	if( guiDay >= 8 )
 	{
-		swprintf( zString, L"Game Over.	We hope you have enjoyed playing the limited version of Jagged Alliance 2 v1.13." );
+		swprintf( zString, JA2_TEXT("Game Over.	We hope you have enjoyed playing the limited version of Jagged Alliance 2 v1.13.") );
 	}
 	else
 	{
-		swprintf( zString, L"You have %d game days left in this limited version of Jagged Alliance 2 v1.13.",	( 8 - guiDay ) );
+		swprintf( zString, JA2_TEXT("You have %d game days left in this limited version of Jagged Alliance 2 v1.13."),	( 8 - guiDay ) );
 	}
 
 	DoScreenIndependantMessageBox( zString, MSG_BOX_FLAG_OK, CrippledVersionEndGameCheckCallBack );

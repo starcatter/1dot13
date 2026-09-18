@@ -75,7 +75,7 @@ MilitiaServiceRecordTable::Display( )
 	SetFontShadow( NO_SHADOW );
 	
 	CHAR16	sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16 usPosX = GetX( ) + 10;
 	UINT16 usPosY = GetY( ) + 10;
 	
@@ -201,7 +201,7 @@ MilitiaPersonalDataTable::Display( )
 	if ( GetMilitia( mMilitiaId, &militia ) )
 	{
 		CHAR16	sText[800];
-		swprintf( sText, L"" );
+		swprintf( sText, JA2_TEXT("") );
 		UINT16 usPosX = GetX( ) + 10;
 		UINT16 usPosY = GetY( ) + 10;
 
@@ -410,7 +410,7 @@ MilitiaPersonalInventoryTable::Display( )
 	SetFontShadow( NO_SHADOW );
 
 	CHAR16	sText[800];
-	swprintf( sText, L"" );
+	swprintf( sText, JA2_TEXT("") );
 	UINT16 usPosX = GetX( ) + 10;
 	UINT16 usPosY = GetY( ) + 10;
 
@@ -564,7 +564,7 @@ MilitiaInidividualMainWidget::Display( )
 	if ( GetMilitia( mMilitiaId, &militia ) )
 	{
 		CHAR16	sText[800];
-		swprintf( sText, L"" );
+		swprintf( sText, JA2_TEXT("") );
 		UINT16 usPosX = GetX( );
 		UINT16 usPosY = GetY( );
 
@@ -579,7 +579,7 @@ MilitiaInidividualMainWidget::Display( )
 		usPosY += 8;
 
 		// name
-		swprintf( sText, L"%s - %s", militia.GetName( ), militia.GetSector( ) );
+		swprintf( sText, JA2_TEXT("%s - %s"), militia.GetName( ), militia.GetSector( ) );
 		DrawTextToScreen( sText, usPosX, usPosY + 5, GetWidth( ), FONT12ARIAL, 2, FONT_MCOLOR_BLACK, FALSE, 0 );
 
 		usPosX += 7 * wcslen( sText );
