@@ -623,3 +623,11 @@ Then proceed through these independently verifiable seams:
 6. Introduce the SDL window, input translation, and framebuffer presenter after that coherent surface conversion; SDL should not enter engine-facing headers or the existing software blitters.
 
 Deferring SDL preserves a runnable Windows compatibility oracle while the current `WndProc` responsibilities--lifecycle, timers, input, focus, and rendering--are separated and DirectDraw types are removed from shared interfaces.
+
+## Native x64 Save Compatibility Checkpoint (2026-09-18)
+
+The native Linux x64 build now serializes pointer-bearing and ABI-sensitive save records through fixed Win32-compatible disk layouts instead of dumping host-native structures. This includes soldier data and paths, strategic groups and events, schedules, underground sectors, campaign incidents, laptop state, militia paths, the item cursor, and related records. Keyring reconstruction was also corrected to use the saved soldier ID and to allocate or release storage according to the serialized presence flag.
+
+Compatibility was exercised against three controlled Win32 saves (game start, one recruited mercenary, and tactical entry) plus 29 older Wine/Win32 saves. All loaded in native x64. A feature-rich tactical save was then round-tripped native x64 -> current Win32/Wine -> native x64, and the same native save loaded in native i686. The save stream was consumed to its expected final byte in these tests.
+
+Remaining validation is behavioral rather than a known format failure: play for an extended period after loading representative older saves, save again from both platforms, and confirm strategic/tactical transitions and mod-specific state. Keep the legacy Win32 save layout as the single supported on-disk format; host pointer width and compiler ABI must never define new save data.
