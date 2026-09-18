@@ -86,6 +86,10 @@ target_link_libraries(ja2_native_input_manager PRIVATE ja2_shared_core)
 target_compile_options(ja2_native_input_manager PRIVATE
   -Wall -Wextra -Wpedantic -Werror)
 
+# The native characterization tests use assert() as their test primitive. Keep
+# those checks active in RelWithDebInfo/Release configurations as well.
+get_property(_ja2_native_non_test_compile_options DIRECTORY PROPERTY COMPILE_OPTIONS)
+add_compile_options(-UNDEBUG)
 enable_testing()
 add_executable(ja2_shared_core_smoke tests/native/shared_core_smoke.cpp)
 target_link_libraries(ja2_shared_core_smoke PRIVATE ja2_shared_core)
@@ -231,3 +235,8 @@ set_tests_properties(ja2_sdl3_input_pipeline_tests PROPERTIES
 # making the complete native checkpoint available through one root CTest run.
 add_subdirectory(tests/timing)
 add_subdirectory(tests/fileio)
+
+# NativeGame.cmake is included after this file; do not impose test-only flags
+# on the production game targets.
+set_property(DIRECTORY PROPERTY COMPILE_OPTIONS "${_ja2_native_non_test_compile_options}")
+unset(_ja2_native_non_test_compile_options)

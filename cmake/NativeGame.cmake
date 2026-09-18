@@ -10,7 +10,7 @@ include(cmake/dependencies/Lua.cmake)
 include_directories("${lua_SOURCE_DIR}/src")
 include_directories("${bfvfs_SOURCE_DIR}/include")
 
-add_compile_definitions(
+set(native_game_definitions
   ENABLE_BRIEFINGROOM
   ROBOT_ALWAYS_READY
   FORCE_ASSERTS_ON
@@ -21,10 +21,12 @@ add_compile_definitions(
 )
 
 add_subdirectory(lua)
+target_compile_definitions(Lua PRIVATE ${native_game_definitions})
 target_compile_options(Lua PRIVATE
   -fpermissive
   -include "${CMAKE_SOURCE_DIR}/sgp/platform/portable/LegacyCompilerCompatibility.h")
 add_subdirectory(Multiplayer)
+target_compile_definitions(Multiplayer PRIVATE ${native_game_definitions})
 target_compile_options(Multiplayer PRIVATE
   -fpermissive
   -include "${CMAKE_SOURCE_DIR}/sgp/platform/portable/LegacyCompilerCompatibility.h")
@@ -98,7 +100,8 @@ set(debugFlags $<IF:$<CONFIG:Debug>,JA2BETAVERSION;JA2TESTVERSION;DEBUG_ATTACKBU
 foreach(lib IN LISTS Ja2_Libs)
   set(game_library JA2_native_${lib})
   add_library(${game_library} STATIC ${${lib}Src})
-  target_compile_definitions(${game_library} PRIVATE ${debugFlags})
+  target_compile_definitions(${game_library} PRIVATE
+    ${native_game_definitions} ${debugFlags})
   target_compile_options(${game_library} PRIVATE
     -fpermissive
     -include "${CMAKE_SOURCE_DIR}/sgp/platform/portable/LegacyCompilerCompatibility.h")
@@ -114,13 +117,15 @@ endforeach()
 
 add_library(JA2_native_i18n STATIC ${i18nSrc})
 target_include_directories(JA2_native_i18n PRIVATE "${CMAKE_SOURCE_DIR}/i18n")
-target_compile_definitions(JA2_native_i18n PRIVATE ${debugFlags})
+target_compile_definitions(JA2_native_i18n PRIVATE
+  ${native_game_definitions} ${debugFlags})
 target_compile_options(JA2_native_i18n PRIVATE
   -fpermissive
   -include "${CMAKE_SOURCE_DIR}/sgp/platform/portable/LegacyCompilerCompatibility.h")
 
 add_executable(JA2-native sgp/sgp.cpp)
-target_compile_definitions(JA2-native PRIVATE ${debugFlags})
+target_compile_definitions(JA2-native PRIVATE
+  ${native_game_definitions} ${debugFlags})
 target_compile_options(JA2-native PRIVATE
   -fpermissive
   -include "${CMAKE_SOURCE_DIR}/sgp/platform/portable/LegacyCompilerCompatibility.h")
@@ -149,4 +154,6 @@ target_include_directories(ja2_native_blitter_tests PRIVATE
 target_compile_options(ja2_native_blitter_tests PRIVATE
   -Wall -Wextra -Wpedantic -Werror
   -include "${CMAKE_SOURCE_DIR}/sgp/platform/portable/LegacyCompilerCompatibility.h")
+target_compile_definitions(ja2_native_blitter_tests PRIVATE
+  ${native_game_definitions})
 add_test(NAME ja2_native_blitter_tests COMMAND ja2_native_blitter_tests)
