@@ -4991,7 +4991,7 @@ BOOLEAN OBJECTTYPE::AttachObjectNAS( SOLDIERTYPE * pSoldier, OBJECTTYPE * pAttac
 
 		//WarmSteel - Attachment swapping prevents multiple objects that are the same to be attached.
 		//This takes away freedom, which is bad. This is why I turned it off in NAS (If you want to turn it back on, it also doesn't work properly because it needs to swap xml slot indexes aswell).
-		if (pAttachmentPosition->exists()) {
+		if (pAttachmentPosition != nullptr && pAttachmentPosition->exists()) {
 			//we are swapping the attachments, and we know we do NOT need to worry about attachment stack size
 			//CHRISL: Actually, we do need to worry about attachment stack size since we might have a stack in our cursor.
 			//	Rather then doing a simple swap, try moving the existing attachment to our cursor stack, then attach one item
