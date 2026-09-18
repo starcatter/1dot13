@@ -1431,12 +1431,12 @@ void RefreshScreen(void *DummyVariable)
 
 	if (!IsPresentationDue())
 	{
-		// Composition is already retained in the canonical back buffer. Consume
-		// this engine frame's bookkeeping even when its host submission is
-		// coalesced with a later frame.
+		// Composition is retained in the canonical back buffer, but the host
+		// texture has not consumed it yet.  Keep the accumulated damage until a
+		// presentation succeeds; otherwise a screen transition skipped by the
+		// frame cap is followed by partial updates over the previous screen.
 		gfRenderScroll = FALSE;
 		gfScrollStart = FALSE;
-		gDirtyRegionTracker.clearAfterPresent();
 		goto ENDOFLOOP;
 	}
 
