@@ -482,8 +482,10 @@ void Get16BitStringFromField( UINT8 ubField, STR16 szString, UINT32 uiBufferSize
 	{
 		if( curr->ubID == ubField )
 		{
-			size_t len = __min(uiBufferSize, wcslen(curr->szString)+1);
-			swprintf( szString, len, curr->szString );
+			if (uiBufferSize == 0)
+				return;
+			wcsncpy(szString, curr->szString, uiBufferSize - 1);
+			szString[uiBufferSize - 1] = 0;
 			return;
 		}
 		curr = curr->next;

@@ -281,10 +281,8 @@ void appendString(std::u16string& output, std::u16string value, int width,
 	}
 }
 
-}
-
-int vswprintf(
-	CHAR16* destination, const CHAR16* format, std::va_list arguments)
+std::u16string formatUtf16(
+	const CHAR16* format, std::va_list arguments)
 {
 	std::u16string output;
 	for (const CHAR16* cursor = format; *cursor != 0; ++cursor)
@@ -455,10 +453,37 @@ int vswprintf(
 				break;
 		}
 	}
-	std::copy(output.begin(), output.end(), destination);
-	destination[output.size()] = 0;
+	return output;
+}
+
+int formattedLength(const std::u16string& output) noexcept
+{
 	return output.size() > static_cast<std::size_t>(std::numeric_limits<int>::max())
 		? -1 : static_cast<int>(output.size());
+}
+}
+
+int vswprintf(
+	CHAR16* destination, const CHAR16* format, std::va_list arguments)
+{
+	const std::u16string output = formatUtf16(format, arguments);
+	std::copy(output.begin(), output.end(), destination);
+	destination[output.size()] = 0;
+	return formattedLength(output);
+}
+
+int vswprintf(CHAR16* destination, std::size_t capacity,
+	const CHAR16* format, std::va_list arguments)
+{
+	const std::u16string output = formatUtf16(format, arguments);
+	if (capacity == 0)
+	{
+		return output.empty() ? 0 : -1;
+	}
+	const std::size_t copied = std::min(output.size(), capacity - 1);
+	std::copy_n(output.begin(), copied, destination);
+	destination[copied] = 0;
+	return copied == output.size() ? formattedLength(output) : -1;
 }
 
 int swprintf(CHAR16* destination, const CHAR16* format, ...)
@@ -466,6 +491,16 @@ int swprintf(CHAR16* destination, const CHAR16* format, ...)
 	std::va_list arguments;
 	va_start(arguments, format);
 	const int result = vswprintf(destination, format, arguments);
+	va_end(arguments);
+	return result;
+}
+
+int swprintf(CHAR16* destination, std::size_t capacity,
+	const CHAR16* format, ...)
+{
+	std::va_list arguments;
+	va_start(arguments, format);
+	const int result = vswprintf(destination, capacity, format, arguments);
 	va_end(arguments);
 	return result;
 }

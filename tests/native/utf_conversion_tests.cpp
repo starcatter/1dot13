@@ -1,4 +1,5 @@
 #include "UtfConversion.h"
+#include "LegacyUtf16.h"
 
 #include <iostream>
 #include <string>
@@ -165,6 +166,14 @@ int main()
 	catch ( const std::invalid_argument& )
 	{
 	}
+
+	CHAR16 formatted[16]{};
+	expect( swprintf( formatted, 16, JA2_TEXT("%s %d"), JA2_TEXT("Day"), 7 ) == 5 &&
+		utf16ToUtf8( formatted ) == "Day 7", "bounded UTF-16 formatting produced the wrong text" );
+	CHAR16 truncated[4]{ static_cast<CHAR16>( 'X' ), static_cast<CHAR16>( 'X' ),
+		static_cast<CHAR16>( 'X' ), static_cast<CHAR16>( 'X' ) };
+	expect( swprintf( truncated, 4, JA2_TEXT("ABCDE") ) == -1 &&
+		utf16ToUtf8( truncated ) == "ABC", "bounded UTF-16 formatting did not truncate safely" );
 
 	return failures == 0 ? 0 : 1;
 }

@@ -30,7 +30,11 @@ CHAR16* wcstok(CHAR16* string, const CHAR16* delimiters) noexcept;
 
 int vswprintf(CHAR16* destination, const CHAR16* format,
 	std::va_list arguments);
+int vswprintf(CHAR16* destination, std::size_t capacity,
+	const CHAR16* format, std::va_list arguments);
 int swprintf(CHAR16* destination, const CHAR16* format, ...);
+int swprintf(CHAR16* destination, std::size_t capacity,
+	const CHAR16* format, ...);
 int swscanf(const CHAR16* input, const CHAR16* format, ...);
 int _wtoi(const CHAR16* input) noexcept;
 CHAR16* _itow(int value, CHAR16* output, int radix) noexcept;

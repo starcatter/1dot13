@@ -8801,11 +8801,12 @@ void LoadSectorFortificationPlan( INT16 sSectorX, INT16 sSectorY, INT8 sSectorZ 
 	// get sector name for filename
 	CHAR16 wSectorName[64];
 	GetShortSectorString( sSectorX, sSectorY, wSectorName );
-	
+	const std::string sectorName = WideNameToUtf8( wSectorName );
+
 	if ( sSectorZ )
-		sprintf( filename, "%s%S_%d.txt", FORTIFICATIONPLAN_DIRECTORY, wSectorName, sSectorZ );
+		snprintf( filename, sizeof(filename), "%s%s_%d.txt", FORTIFICATIONPLAN_DIRECTORY, sectorName.c_str(), sSectorZ );
 	else
-		sprintf( filename, "%s%S.txt", FORTIFICATIONPLAN_DIRECTORY, wSectorName );
+		snprintf( filename, sizeof(filename), "%s%s.txt", FORTIFICATIONPLAN_DIRECTORY, sectorName.c_str() );
 	
 	std::vector<FORTIFICATION_NODE> vec;
 	std::string bytes;
@@ -8839,11 +8840,12 @@ void SaveSectorFortificationPlan( INT16 sSectorX, INT16 sSectorY, INT8 sSectorZ 
 			// get sector name for filename
 			CHAR16 wSectorName[64];
 			GetShortSectorString( sSectorX, sSectorY, wSectorName );
+			const std::string sectorName = WideNameToUtf8( wSectorName );
 
 			if ( sSectorZ )
-				sprintf( filename, "%s%S_%d.txt", FORTIFICATIONPLAN_DIRECTORY, wSectorName, sSectorZ );
+				snprintf( filename, sizeof(filename), "%s%s_%d.txt", FORTIFICATIONPLAN_DIRECTORY, sectorName.c_str(), sSectorZ );
 			else
-				sprintf( filename, "%s%S.txt", FORTIFICATIONPLAN_DIRECTORY, wSectorName );
+				snprintf( filename, sizeof(filename), "%s%s.txt", FORTIFICATIONPLAN_DIRECTORY, sectorName.c_str() );
 			
 			std::ostringstream output;
 			SectorFortificationVector::iterator nodeitend = vec.end( );
