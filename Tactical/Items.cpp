@@ -5778,7 +5778,11 @@ std::vector<UINT16> GetItemSlots(OBJECTTYPE* pObj, UINT8 subObject, BOOLEAN fAtt
 	UINT64				fItemLayout = 0;
 	BOOLEAN				fIsLBE = FALSE;
 
-	if( !UsingNewAttachmentSystem() || !pObj->exists() )
+	// A missing description object is normal while screens are transitioning.
+	// Calling OBJECTTYPE::exists() through a null pointer happened to work in
+	// the old 32-bit MSVC build, but is undefined behaviour and crashes in an
+	// optimized native build.
+	if( !UsingNewAttachmentSystem() || pObj == nullptr || !pObj->exists() || subObject >= pObj->ubNumberOfObjects )
 		return tempItemSlots;
 
 	//CHRISL: We no longer need the ItemSlotAssign.xml file but we do still need to figure out which slots an item can have
