@@ -420,7 +420,7 @@ inline UINT8 GetBrightness(const UINT8& ubLightLevel)
 * @param pSoldier
 * @return stealth percentage, capped to 100.
 */
-inline INT8 GetStealth( SOLDIERTYPE* pSoldier )
+INT8 GetStealth( SOLDIERTYPE* pSoldier )
 {
 	INT16 stealth = GetWornStealth( pSoldier );
 	// SANDRO - this only counts with old traits
