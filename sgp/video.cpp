@@ -149,6 +149,10 @@ void							(*gpFrameBufferRefreshOverride)(void);
 // resolution selection. Avoid reading the zero-initialized screen globals
 // during static initialization.
 static ja2::presentation::DirtyRegionTracker gDirtyRegionTracker(1, 1);
+// Engine damage is consumed when FRAME_BUFFER has been composed into
+// BACKBUFFER. Presentation damage survives throttled or failed host presents
+// until the SDL/DirectDraw texture has actually consumed it.
+static ja2::presentation::DirtyRegionTracker gPresentationDamageTracker(1, 1);
 
 //
 // Screen output stuff
@@ -236,6 +240,9 @@ BOOLEAN InitializeVideoManagerWithPresenter(
 	gDirtyRegionTracker = ja2::presentation::DirtyRegionTracker(
 		SCREEN_WIDTH, SCREEN_HEIGHT);
 	gDirtyRegionTracker.invalidateScreen();
+	gPresentationDamageTracker = ja2::presentation::DirtyRegionTracker(
+		SCREEN_WIDTH, SCREEN_HEIGHT);
+	gPresentationDamageTracker.invalidateScreen();
 	gNextPresentationMicroseconds = 0;
 	gpFrameBufferRefreshOverride = NULL;
 	gpCursorStore				= NULL;
@@ -336,6 +343,7 @@ BOOLEAN RestoreVideoManager(void)
 		guiFrameBufferState = BUFFER_DIRTY;
 		guiMouseBufferState = BUFFER_DIRTY;
 		gDirtyRegionTracker.invalidateScreen();
+		gPresentationDamageTracker.invalidateScreen();
 		guiVideoManagerState = VIDEO_ON;
 		return TRUE;
 	}
@@ -948,9 +956,9 @@ static BOOLEAN PresentBackBuffer(void)
 
 	ja2::presentation::PresentFrame frame;
 	frame.buffer = pixels->pixels();
-	frame.dirtyRegions = gDirtyRegionTracker.regions().data();
-	frame.dirtyRegionCount = gDirtyRegionTracker.regions().size();
-	frame.fullRefresh = gDirtyRegionTracker.fullRefresh();
+	frame.dirtyRegions = gPresentationDamageTracker.regions().data();
+	frame.dirtyRegionCount = gPresentationDamageTracker.regions().size();
+	frame.fullRefresh = gPresentationDamageTracker.fullRefresh();
 	frame.verticalSync = gVerticalSyncEnabled != FALSE;
 	return gPresenter->present(frame) ? TRUE : FALSE;
 }
@@ -1053,6 +1061,11 @@ void RefreshScreen(void *DummyVariable)
 		{
 			goto ENDOFLOOP;
 		}
+		gPresentationDamageTracker.invalidate(
+			gMouseCursorBackground[CURRENT_MOUSE_DATA].Region.left,
+			gMouseCursorBackground[CURRENT_MOUSE_DATA].Region.top,
+			gMouseCursorBackground[CURRENT_MOUSE_DATA].Region.right,
+			gMouseCursorBackground[CURRENT_MOUSE_DATA].Region.bottom);
 
 		// Save position into other background region
 		memcpy( &(gMouseCursorBackground[PREVIOUS_MOUSE_DATA] ), &(gMouseCursorBackground[CURRENT_MOUSE_DATA] ), sizeof( MouseCursorBackground ) );
@@ -1086,6 +1099,7 @@ void RefreshScreen(void *DummyVariable)
 		if ( gfFadeInitialized && gfFadeInVideo )
 		{
 			gFadeFunction( );
+			gPresentationDamageTracker.invalidateScreen();
 		}
 		else
 			//
@@ -1107,6 +1121,7 @@ void RefreshScreen(void *DummyVariable)
 				{
 					goto ENDOFLOOP;
 				}
+				gPresentationDamageTracker.invalidateScreen();
 
 			}
 			else
@@ -1125,6 +1140,8 @@ void RefreshScreen(void *DummyVariable)
 					{
 						goto ENDOFLOOP;
 					}
+					gPresentationDamageTracker.invalidate(
+						Region.left, Region.top, Region.right, Region.bottom);
 
 				}
 
@@ -1155,6 +1172,8 @@ void RefreshScreen(void *DummyVariable)
 					{
 						goto ENDOFLOOP;
 					}
+					gPresentationDamageTracker.invalidate(
+						Region.left, Region.top, Region.right, Region.bottom);
 				}
 			}
 
@@ -1163,6 +1182,9 @@ void RefreshScreen(void *DummyVariable)
 		{
 			ScrollJA2Background(guiScrollDirection, gsScrollXIncrement,
 				gsScrollYIncrement, TRUE, PREVIOUS_MOUSE_DATA);
+			gPresentationDamageTracker.invalidate(
+				gsVIEWPORT_START_X, gsVIEWPORT_WINDOW_START_Y,
+				gsVIEWPORT_END_X, gsVIEWPORT_WINDOW_END_Y);
 		}
 
 		gfIgnoreScrollDueToCenterAdjust = FALSE;
@@ -1175,6 +1197,10 @@ void RefreshScreen(void *DummyVariable)
 		//
 
 		guiFrameBufferState = BUFFER_READY;
+		// FRAME_BUFFER changes have now been consumed by BACKBUFFER. Keeping
+		// these regions beyond this point causes old game damage to be recomposed
+		// on later frames; host upload damage has its own lifetime above.
+		gDirtyRegionTracker.clearAfterPresent();
 	}
 
 	//
@@ -1386,6 +1412,11 @@ void RefreshScreen(void *DummyVariable)
 				{
 					goto ENDOFLOOP;
 				}
+				gPresentationDamageTracker.invalidate(
+					gMouseCursorBackground[CURRENT_MOUSE_DATA].Region.left,
+					gMouseCursorBackground[CURRENT_MOUSE_DATA].Region.top,
+					gMouseCursorBackground[CURRENT_MOUSE_DATA].Region.right,
+					gMouseCursorBackground[CURRENT_MOUSE_DATA].Region.bottom);
 			}
 			else
 			{
@@ -1426,15 +1457,14 @@ void RefreshScreen(void *DummyVariable)
 	if( IsItAllowedToRenderRain() && gfProgramIsRunning )
 	{
 		BltVideoSurface( BACKBUFFER, guiRainRenderSurface, 0, 0, 0, VS_BLT_FAST | VS_BLT_USECOLORKEY, NULL );
+		gPresentationDamageTracker.invalidateScreen();
 		gfNextRefreshFullScreen = TRUE;
 	}
 
 	if (!IsPresentationDue())
 	{
-		// Composition is retained in the canonical back buffer, but the host
-		// texture has not consumed it yet.  Keep the accumulated damage until a
-		// presentation succeeds; otherwise a screen transition skipped by the
-		// frame cap is followed by partial updates over the previous screen.
+		// BACKBUFFER composition is complete. Keep only host presentation damage
+		// until a later submission actually succeeds.
 		gfRenderScroll = FALSE;
 		gfScrollStart = FALSE;
 		goto ENDOFLOOP;
@@ -1449,7 +1479,7 @@ void RefreshScreen(void *DummyVariable)
 	}
 	gfRenderScroll = FALSE;
 	gfScrollStart = FALSE;
-	gDirtyRegionTracker.clearAfterPresent();
+	gPresentationDamageTracker.clearAfterPresent();
 
 
 ENDOFLOOP:
