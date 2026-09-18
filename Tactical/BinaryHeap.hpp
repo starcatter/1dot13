@@ -75,7 +75,7 @@ public:
 
 	~CBinaryHeap()
 	{
-		delete BinaryHeap;
+		delete[] BinaryHeap;
 	}
 
 	CBinaryHeap_t removeElement(const T data)

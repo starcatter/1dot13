@@ -75,7 +75,7 @@ bool PaletteTable::CreateSGPPaletteFromActFile(SGPPaletteEntry *pPalette, std::s
 bool PaletteTable::Load(std::string fileName) {
 	INT32 iWhich;
 	INT32 cnt;
-	SGPPaletteEntry	Temp8BPPPalette[256];
+	SGPPaletteEntry	Temp8BPPPalette[256]{};
 
 	if (this->p8BPPPalette != NULL) {
 		MemFree(this->p8BPPPalette);
@@ -84,7 +84,7 @@ bool PaletteTable::Load(std::string fileName) {
 	this->p8BPPPalette = (SGPPaletteEntry*)MemAlloc(sizeof(SGPPaletteEntry) * 256);
 	memset(this->p8BPPPalette, 0, sizeof(SGPPaletteEntry) * 256);
 	if (CreateSGPPaletteFromActFile(Temp8BPPPalette, (CHAR8*)fileName.c_str())) {
-		memcpy(this->p8BPPPalette, Temp8BPPPalette, sizeof(this->p8BPPPalette) * 256);
+		memcpy(this->p8BPPPalette, Temp8BPPPalette, sizeof(Temp8BPPPalette));
 	} else {
 		return false;
 	}

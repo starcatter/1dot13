@@ -34,6 +34,7 @@ protected:
 	class ParseData {
 	public:
 		ParseData(XML_Parser* parser = NULL);
+		virtual ~ParseData() = default;
 		XML_Parser* pParser;
 		int state; // we sacrifice type safety for the enumerators so subclasses can define their own states
 		UINT32 level;

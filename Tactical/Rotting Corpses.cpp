@@ -764,7 +764,7 @@ BOOLEAN CreateCorpsePalette( ROTTING_CORPSE *pCorpse )
 	if ( bBodyTypePalette == -1	)
 	{
 		// Use palette from HVOBJECT, then use substitution for pants, etc
-		memcpy( pCorpse->p8BPPPalette, gpTileCache[ pCorpse->iCachedTileID ].pImagery->vo->pPaletteEntry, sizeof( pCorpse->p8BPPPalette ) * 256 );
+		memcpy( pCorpse->p8BPPPalette, gpTileCache[ pCorpse->iCachedTileID ].pImagery->vo->pPaletteEntry, sizeof(*pCorpse->p8BPPPalette) * 256 );
 
 		// Substitute based on head, etc
 		SetPaletteReplacement( pCorpse->p8BPPPalette, pCorpse->def.HeadPal );
@@ -775,7 +775,7 @@ BOOLEAN CreateCorpsePalette( ROTTING_CORPSE *pCorpse )
 	else if ( bBodyTypePalette == 0 )
 	{
 		// Use palette from hvobject
-		memcpy( pCorpse->p8BPPPalette, gpTileCache[ pCorpse->iCachedTileID ].pImagery->vo->pPaletteEntry, sizeof( pCorpse->p8BPPPalette ) * 256 );
+		memcpy( pCorpse->p8BPPPalette, gpTileCache[ pCorpse->iCachedTileID ].pImagery->vo->pPaletteEntry, sizeof(*pCorpse->p8BPPPalette) * 256 );
 	}
 	else
 	{
@@ -783,12 +783,12 @@ BOOLEAN CreateCorpsePalette( ROTTING_CORPSE *pCorpse )
 		if ( CreateSGPPaletteFromCOLFile( Temp8BPPPalette, zColFilename ) )
 		{
 			// Copy into palette
-			memcpy( pCorpse->p8BPPPalette,		Temp8BPPPalette, sizeof( pCorpse->p8BPPPalette ) * 256 );
+			memcpy( pCorpse->p8BPPPalette,		Temp8BPPPalette, sizeof(Temp8BPPPalette) );
 		}
 		else
 		{
 			// Use palette from hvobject
-			memcpy( pCorpse->p8BPPPalette, gpTileCache[ pCorpse->iCachedTileID ].pImagery->vo->pPaletteEntry, sizeof( pCorpse->p8BPPPalette ) * 256 );
+			memcpy( pCorpse->p8BPPPalette, gpTileCache[ pCorpse->iCachedTileID ].pImagery->vo->pPaletteEntry, sizeof(*pCorpse->p8BPPPalette) * 256 );
 		}
 	}
 
@@ -3023,7 +3023,7 @@ void CreateZombiefromCorpse( ROTTING_CORPSE *	pCorpse, UINT16 usAnimState )
 		// If this corpse has camo, use palette from hvobject
 		if ( pCorpse->def.ubType == ROTTING_STAGE2 )
 		{
-			memcpy( pNewSoldier->p8BPPPalette, gpTileCache[ pCorpse->iCachedTileID ].pImagery->vo->pPaletteEntry, sizeof( pCorpse->p8BPPPalette ) * 256 );
+			memcpy( pNewSoldier->p8BPPPalette, gpTileCache[ pCorpse->iCachedTileID ].pImagery->vo->pPaletteEntry, sizeof(*pNewSoldier->p8BPPPalette) * 256 );
 		}
 		else if ( pCorpse->def.usFlags & ROTTING_CORPSE_USE_CAMO_PALETTE )
 		{

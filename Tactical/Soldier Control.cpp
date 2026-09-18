@@ -8638,7 +8638,7 @@ BOOLEAN SOLDIERTYPE::CreateSoldierPalettes( void )
 		if ( usPaletteAnimSurface != INVALID_ANIMATION_SURFACE )
 		{
 			// Use palette from HVOBJECT, then use substitution for pants, etc
-			memcpy( this->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof(this->p8BPPPalette) * 256 );
+			memcpy( this->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof(*this->p8BPPPalette) * 256 );
 
 			// Substitute based on head, etc
 			SetPaletteReplacement( this->p8BPPPalette, this->HeadPal );
@@ -8650,7 +8650,7 @@ BOOLEAN SOLDIERTYPE::CreateSoldierPalettes( void )
 	else if ( bBodyTypePalette == 0 )
 	{
 		// Use palette from hvobject
-		memcpy( this->p8BPPPalette, gAnimSurfaceDatabase[usAnimSurface].hVideoObject->pPaletteEntry, sizeof(this->p8BPPPalette) * 256 );
+		memcpy( this->p8BPPPalette, gAnimSurfaceDatabase[usAnimSurface].hVideoObject->pPaletteEntry, sizeof(*this->p8BPPPalette) * 256 );
 	}
 	else
 	{
@@ -8658,12 +8658,12 @@ BOOLEAN SOLDIERTYPE::CreateSoldierPalettes( void )
 		if ( CreateSGPPaletteFromCOLFile( Temp8BPPPalette, zColFilename ) )
 		{
 			// Copy into palette
-			memcpy( this->p8BPPPalette, Temp8BPPPalette, sizeof(this->p8BPPPalette) * 256 );
+			memcpy( this->p8BPPPalette, Temp8BPPPalette, sizeof(Temp8BPPPalette) );
 		}
 		else
 		{
 			// Use palette from hvobject
-			memcpy( this->p8BPPPalette, gAnimSurfaceDatabase[usAnimSurface].hVideoObject->pPaletteEntry, sizeof(this->p8BPPPalette) * 256 );
+			memcpy( this->p8BPPPalette, gAnimSurfaceDatabase[usAnimSurface].hVideoObject->pPaletteEntry, sizeof(*this->p8BPPPalette) * 256 );
 		}
 	}
 
@@ -16357,7 +16357,7 @@ void	SOLDIERTYPE::Strip()
 			}
 
 			// Use palette from HVOBJECT, then use substitution for pants, etc
-			memcpy( this->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof(this->p8BPPPalette) * 256 );
+			memcpy( this->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof(*this->p8BPPPalette) * 256 );
 
 			SetPaletteReplacement( this->p8BPPPalette, this->HeadPal );
 			SetPaletteReplacement( this->p8BPPPalette, this->VestPal );

@@ -52,7 +52,7 @@ protected:
 class popupDefContent{
 public:
 	popupDefContent();
-	~popupDefContent();
+	virtual ~popupDefContent();
 	
 	virtual BOOLEAN addToBox(POPUP * popup) = 0;
 
@@ -98,7 +98,7 @@ public:
 	popupDefContentGenerator() : generatorId(0){};
 	popupDefContentGenerator( UINT16 generatorId ) : generatorId( generatorId ){};
 
-	~popupDefContentGenerator();
+	~popupDefContentGenerator() override = default;
 
 	BOOLEAN addToBox(POPUP * popup);
 

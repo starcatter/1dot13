@@ -113,7 +113,7 @@ UINT32		gubMPJExitScreen = MP_JOIN_SCREEN;	// The screen that is in control next
 UINT32		guiMPJMainBackGroundImage;
 
 // Wide-char strings that will hold the variables until they are transferred to the CHAR8 ascii fields
-CHAR16		gzPlayerHandleField[ 10+1 ] = {0} ;
+CHAR16		gzPlayerHandleField[ 11+1 ] = {0} ;
 CHAR16		gzServerIPField[ 15+1 ] = {0} ;
 CHAR16		gzServerPortField[ 5+1 ] = {0} ;
 
@@ -223,9 +223,9 @@ UINT32	MPJoinScreenInit( void )
 	MpIniExists();
 	vfs::PropertyContainer props;
 	props.initFromIniFile( JA2MP_INI_FILENAME);
-	ja2::text::copyUtf8ToUtf16(props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_IP, L"127.0.0.1").utf8(), gzServerIPField, 16);
-	ja2::text::copyUtf8ToUtf16(props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_PORT, L"60005").utf8(), gzServerPortField, 6);
-	ja2::text::copyUtf8ToUtf16(props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_CLIENT_NAME, L"Player Name").utf8(), gzPlayerHandleField, 12);
+	ja2::text::copyUtf8ToUtf16(props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_IP, L"127.0.0.1").utf8(), gzServerIPField);
+	ja2::text::copyUtf8ToUtf16(props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_SERVER_PORT, L"60005").utf8(), gzServerPortField);
+	ja2::text::copyUtf8ToUtf16(props.getStringProperty(JA2MP_INI_INITIAL_SECTION, JA2MP_CLIENT_NAME, L"Player Name").utf8(), gzPlayerHandleField);
 	return( 1 );
 }
 

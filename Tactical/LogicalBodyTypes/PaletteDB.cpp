@@ -91,7 +91,7 @@ BOOLEAN SOLDIERTYPE::CreateSoldierPalettes( void )
 	// Use col file
 	if (CreateSGPPaletteFromCOLFile(Temp8BPPPalette, zColFilename)) {
 		// Copy into palette
-		memcpy(this->p8BPPPalette, Temp8BPPPalette, sizeof( this->p8BPPPalette ) * 256);
+		memcpy(this->p8BPPPalette, Temp8BPPPalette, sizeof(Temp8BPPPalette));
 	} else {
 	}
 

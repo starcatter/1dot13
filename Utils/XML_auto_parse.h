@@ -33,7 +33,7 @@ namespace xml_auto
 		virtual bool handleText() {return false;};
 	protected:
 		ITransition() : _ref_count(0) {};
-		~ITransition() {};
+		virtual ~ITransition() = default;
 	private:
 		int _ref_count;
 	};

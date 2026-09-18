@@ -3574,7 +3574,7 @@ SOLDIERTYPE* TacticalCreateCivilian( INT32 sGridNo, UINT8 usCivilianGroup, INT8 
 				SetClothes( pSoldier, aVest, aPants, aHair, aSkin );
 
 				// Use palette from HVOBJECT, then use substitution for pants, etc
-				memcpy( pSoldier->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof( pSoldier->p8BPPPalette ) * 256 );
+				memcpy( pSoldier->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof(*pSoldier->p8BPPPalette) * 256 );
 
 				SetPaletteReplacement( pSoldier->p8BPPPalette, pSoldier->HeadPal );
 				SetPaletteReplacement( pSoldier->p8BPPPalette, pSoldier->VestPal );
@@ -3702,7 +3702,7 @@ SOLDIERTYPE* TacticalCreateBandit()
 				SetClothes( pSoldier, Random( NUMSHIRTS ), Random( NUMPANTS ) );
 
 				// Use palette from HVOBJECT, then use substitution for pants, etc
-				memcpy( pSoldier->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof( pSoldier->p8BPPPalette ) * 256 );
+				memcpy( pSoldier->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof(*pSoldier->p8BPPPalette) * 256 );
 
 				SetPaletteReplacement( pSoldier->p8BPPPalette, pSoldier->HeadPal );
 				SetPaletteReplacement( pSoldier->p8BPPPalette, pSoldier->VestPal );
@@ -3898,7 +3898,7 @@ void CreatePrisonerOfWar()
 				SET_PALETTEREP_ID( pSoldier->PantsPal, "BLACKPANTS" );
 
 				// Use palette from HVOBJECT, then use substitution for pants, etc
-				memcpy( pSoldier->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof( pSoldier->p8BPPPalette ) * 256 );
+				memcpy( pSoldier->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof(*pSoldier->p8BPPPalette) * 256 );
 
 				SetPaletteReplacement( pSoldier->p8BPPPalette, pSoldier->HeadPal );
 				SetPaletteReplacement( pSoldier->p8BPPPalette, pSoldier->VestPal );
@@ -3971,7 +3971,7 @@ void CreateDownedPilot( )
 			SET_PALETTEREP_ID( pSoldier->PantsPal, gUniformColors[UNIFORM_ENEMY_ADMIN].pants );
 
 			// Use palette from HVOBJECT, then use substitution for pants, etc
-			memcpy( pSoldier->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof(pSoldier->p8BPPPalette) * 256 );
+			memcpy( pSoldier->p8BPPPalette, gAnimSurfaceDatabase[usPaletteAnimSurface].hVideoObject->pPaletteEntry, sizeof(*pSoldier->p8BPPPalette) * 256 );
 
 			SetPaletteReplacement( pSoldier->p8BPPPalette, pSoldier->HeadPal );
 			SetPaletteReplacement( pSoldier->p8BPPPalette, pSoldier->VestPal );
