@@ -1896,7 +1896,8 @@ UINT32 uiSample;
 				if(pSoundList[uiChannel].EOSCallback!=NULL)
 					pSoundList[uiChannel].EOSCallback(pSoundList[uiChannel].pCallbackData);
 
-				if(!pSoundList[uiChannel].fLooping && !SoundSampleIsInUse(uiChannel))
+				if(uiSample != NO_SAMPLE && !pSoundList[uiChannel].fLooping &&
+					!SoundSampleIsInUse(uiSample))
 					SoundRemoveSampleFlags(uiSample, SAMPLE_LOCKED);
 
 				pSoundList[uiChannel] = {};
@@ -1913,7 +1914,7 @@ UINT32 uiSample;
 void SoundSetSampleFlags( UINT32 uiSample, UINT32 uiFlags )
 {
 	// CHECK FOR VALUE SAMPLE
-	if((pSampleList[ uiSample ].uiFlags&SAMPLE_ALLOCATED) )
+	if(uiSample < SOUND_MAX_CACHED && (pSampleList[uiSample].uiFlags&SAMPLE_ALLOCATED))
 	{
 		// SET
 		pSampleList[uiSample].uiFlags |= uiFlags;
@@ -1923,7 +1924,7 @@ void SoundSetSampleFlags( UINT32 uiSample, UINT32 uiFlags )
 void SoundRemoveSampleFlags( UINT32 uiSample, UINT32 uiFlags )
 {
 	// CHECK FOR VALID SAMPLE
-	if((pSampleList[ uiSample ].uiFlags&SAMPLE_ALLOCATED) )
+	if(uiSample < SOUND_MAX_CACHED && (pSampleList[uiSample].uiFlags&SAMPLE_ALLOCATED))
 	{
 		//REMOVE
 		pSampleList[uiSample].uiFlags &= (~uiFlags);
@@ -1942,7 +1943,7 @@ UINT32 uiCount;
 
 	for(uiCount=0; uiCount < SOUND_MAX_CHANNELS; uiCount++)
 	{
-		if((pSoundList[uiCount].uiSample==uiSample) && SoundIsPlaying(uiCount))
+		if((pSoundList[uiCount].uiSample==uiSample) && SoundIndexIsPlaying(uiCount))
 			return(TRUE);
 	}
 

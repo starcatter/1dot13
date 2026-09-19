@@ -49,6 +49,10 @@ int main()
 	assert(SoundGetDriverHandle() == nullptr);
 	assert(!SoundIsPlaying(0));
 	assert(SoundPlayFromBuffer("silent", nullptr, 0, nullptr) == SOUND_ERROR);
+	// Streamed sounds use NO_SAMPLE in their channel metadata. Completion must
+	// never interpret that sentinel as an index into the cached-sample array.
+	SoundSetSampleFlags(NO_SAMPLE, SAMPLE_LOCKED);
+	SoundRemoveSampleFlags(NO_SAMPLE, SAMPLE_LOCKED);
 	SoundSetDefaultVolume(1000);
 	assert(SoundGetDefaultVolume() == 127);
 	assert(SoundStopAll());
