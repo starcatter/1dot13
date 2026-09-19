@@ -17,6 +17,7 @@
 	#include <memory>
 	#include <string>
 	#include "audio/AudioBackend.h"
+	#include "audio/LegacySoundParameters.h"
 	#include "soundman.h"
 	#include "FileMan.h"
 	#include "GameRandom.h"
@@ -1615,7 +1616,7 @@ UINT32 uiSoundID;
 		pSoundList[uiChannel].uiPriority=PRIORITY_MAX;
 
 	// Callback at end of playback
-	if((pParms!=NULL) && (reinterpret_cast<std::uintptr_t>(pParms->EOSCallback) != SOUND_PARMS_DEFAULT))
+	if((pParms!=NULL) && Audio::IsSpecifiedEndOfStreamCallback(pParms->EOSCallback))
 	{
 		pSoundList[uiChannel].EOSCallback=pParms->EOSCallback;
 		pSoundList[uiChannel].pCallbackData=pParms->pCallbackData;
@@ -1751,8 +1752,7 @@ UINT32 uiSoundID;
 		pSoundList[uiChannel].uiPriority=SOUND_PARMS_DEFAULT;
 
 	// Callback at end of playback
-	if((pParms!=NULL) &&
-		reinterpret_cast<std::uintptr_t>(pParms->EOSCallback) != SOUND_PARMS_DEFAULT)
+	if((pParms!=NULL) && Audio::IsSpecifiedEndOfStreamCallback(pParms->EOSCallback))
 	{
 		pSoundList[uiChannel].EOSCallback=pParms->EOSCallback;
 		pSoundList[uiChannel].pCallbackData=pParms->pCallbackData;
