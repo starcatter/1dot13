@@ -19,6 +19,7 @@ public:
 	virtual bool updateClock() = 0;
 	virtual std::uint32_t nextWakeMilliseconds() const = 0;
 	virtual void runFrame() = 0;
+	virtual void runBackgroundFrame() = 0;
 };
 
 enum class ApplicationLoopExitReason

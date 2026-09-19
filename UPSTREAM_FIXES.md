@@ -161,3 +161,52 @@ availability tables, and rebuilds the displayed array/count together. If
 upstream does not intend all mercs to be selectable in multiplayer, the
 alternative valid fix is to advertise only the unlocked count; the count and
 availability set must not disagree.
+
+## Stock magazine rows are mistaken for item IDs
+
+Status: fixed locally on 2026-09-20; reproduced in multiplayer with a revolver
+loaded with a 5.56 belt and a shotgun loaded with tank shells. This affects
+stock-data single player too and is suitable for a focused compatibility PR.
+
+`MagazineClassIndexToItemType` assumed that `Magazine[].uiIndex` always stores
+an item ID. Newer `Magazines.xml` files may do that, but stock 1.13 data stores
+the magazine-table row there. Returning the row as an item ID selects arbitrary
+items. Guns can consequently spawn with impossible ammunition, and unloading
+one reinterprets the remaining-round count as that item's condition.
+
+The local fix accepts the direct mapping only when it names an `IC_AMMO` item
+whose `ubClassIndex` points back to the requested magazine. Otherwise it resolves
+the old format through the item table. It also prevents reload-all from merging
+an ejected magazine into a stack of a different magazine type.
+
+Upstream PR checklist:
+
+- Test both stock and new-style `Magazines.xml` data.
+- Create the default equipment for multiple revolvers, shotguns, rifles, and
+  belt-fed weapons and validate item type, calibre, capacity, and ammo type.
+- Reload a weapon from a mixed magazine stack and verify the ejected magazine
+  is autoplaced or dropped rather than merged into an incompatible stack.
+
+## Multiplayer movement passively trains physical stats
+
+Status: fixed locally on 2026-09-20; reproduced by gaining health and strength
+after ordinary tactical movement. Suitable for a focused multiplayer rules PR.
+
+The normal exertion trainer in `DeductPoints` awards health and strength chances
+for breath spent while moving. Multiplayer maps make that repeatable inside a
+short match, and other passive/strategic stat sources can run while networked as
+well. The local fix disables exertion training in multiplayer and centrally
+rejects non-combat passive stat changes while retaining deliberate in-combat
+skill gains such as shooting, first aid, and lock work.
+
+## Unfocused multiplayer clients stop pumping the transport
+
+Status: fixed locally on 2026-09-20; portable-host integration issue, not a
+legacy 1.13 upstream candidate in its current form.
+
+The SDL application loop suppresses full game frames while its window is
+inactive. Network polling was attached to the full game frame, so an unfocused
+client sent no heartbeat and the server correctly timed it out after 120
+seconds. The local loop now runs a narrow background callback which pumps only
+the multiplayer client/server transports; gameplay, presentation, and clocks
+remain subject to the existing inactive-window behavior.

@@ -31,6 +31,7 @@
 	#include "DynamicDialogue.h"
 #include "email.h"
 #include "mercs.h"
+#include "connect.h"
 
 #ifdef JA2UB
 #include "Ja25 Strategic Ai.h"
@@ -93,6 +94,12 @@ void StatChange(SOLDIERTYPE *pSoldier, UINT8 ubStat, UINT16 usNumChances, UINT8 
 
 	// ignore non-player soldiers
 	if (!PTR_OURTEAM)
+		return;
+
+	// Multiplayer matches have no strategic progression phase.  Do not let
+	// realtime movement, lobby assignments, travel, or other passive systems
+	// train mercs between combat actions.
+	if ( is_networked && !( gTacticalStatus.uiFlags & INCOMBAT ) )
 		return;
 
 	// ignore anything without a profile

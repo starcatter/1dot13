@@ -45,6 +45,11 @@ public:
 		}
 	}
 
+	void runBackgroundFrame() override
+	{
+		calls.push_back("run-background-frame");
+	}
+
 	mutable std::vector<std::string> calls;
 	bool running = true;
 	bool active = true;
@@ -100,7 +105,7 @@ void TestFrameOrderingAndQuitCode()
 	assert((host.timeouts == std::vector<std::uint32_t>{17}));
 }
 
-void TestInactiveClientSkipsFrameButAdvancesClock()
+void TestInactiveClientRunsBackgroundFrameAndAdvancesClock()
 {
 	FakeClient client;
 	client.active = false;
@@ -109,7 +114,8 @@ void TestInactiveClientSkipsFrameButAdvancesClock()
 	ja2::application::RunApplicationLoop(client, host);
 
 	assert((client.calls == std::vector<std::string>{
-		"is-running", "update-clock", "is-active", "next-wake"}));
+		"is-running", "update-clock", "is-active", "run-background-frame",
+		"next-wake"}));
 }
 
 void TestNonDueClockDoesNotQueryActivity()
@@ -197,7 +203,7 @@ void TestShutdownGateRejectsDuplicateAndReentrantAttempts()
 int main()
 {
 	TestFrameOrderingAndQuitCode();
-	TestInactiveClientSkipsFrameButAdvancesClock();
+	TestInactiveClientRunsBackgroundFrameAndAdvancesClock();
 	TestNonDueClockDoesNotQueryActivity();
 	TestOneEventPerIterationAndStoppedResult();
 	TestFrameStopStillPerformsCurrentIterationWait();

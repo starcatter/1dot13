@@ -3560,9 +3560,16 @@ BOOLEAN ReloadGun( SOLDIERTYPE * pSoldier, OBJECTTYPE * pGun, OBJECTTYPE * pAmmo
 				(*pGun)[subObject]->data.gun.usGunAmmoItem = usNewAmmoItem;
 				if (fReloadingWithStack)
 				{
-					// add to end of stack
+					// Only merge the ejected magazine into a compatible stack.
+					// Reload-all can otherwise try to append a different magazine
+					// type, corrupting the stack in release builds.
 					if ( gTempObject.exists( ) )
-						pAmmo->AddObjectsToStack( gTempObject, 1 );
+					{
+						if ( !pAmmo->exists() || gTempObject.usItem == pAmmo->usItem )
+							pAmmo->AddObjectsToStack( gTempObject, 1 );
+						else if ( !AutoPlaceObject( pSoldier, &gTempObject, FALSE ) )
+							AddItemToPool( pSoldier->sGridNo, &gTempObject, 1, pSoldier->pathing.bLevel, 0, -1 );
+					}
 				}
 				else
 				{
@@ -7996,8 +8003,30 @@ UINT16 UseKitPoints( OBJECTTYPE * pObj, UINT16 usPoints, SOLDIERTYPE *pSoldier )
 
 UINT16 MagazineClassIndexToItemType(UINT16 usMagIndex)
 {
-	// sun_alf: uiIndex is according itemId now 
-	return Magazine[usMagIndex].uiIndex;
+	// New-style Magazines.xml stores the item id in uiIndex, while stock
+	// 1.13 data stores the magazine-table row.  Trust the fast mapping only
+	// when it actually points back to this magazine; otherwise resolve the
+	// old format through the item table.
+	const UINT16 usItem = (UINT16)Magazine[usMagIndex].uiIndex;
+	if ( usItem < gMAXITEMS_READ &&
+		 ( Item[usItem].usItemClass & IC_AMMO ) &&
+		 Item[usItem].ubClassIndex == usMagIndex )
+	{
+		return usItem;
+	}
+
+	for ( UINT32 i = 1; i < gMAXITEMS_READ; ++i )
+	{
+		if ( ( Item[i].usItemClass & IC_AMMO ) &&
+			 Item[i].ubClassIndex == usMagIndex )
+		{
+			return (UINT16)i;
+		}
+	}
+
+	// Preserve the historical result for malformed data so callers retain
+	// their established failure behavior instead of silently selecting ammo.
+	return usItem;
 }
 
 

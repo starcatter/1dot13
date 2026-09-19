@@ -243,6 +243,18 @@ public:
 #endif
 		CallGameLoop();
 	}
+
+	void runBackgroundFrame() override
+	{
+		// Multiplayer transport is main-thread pumped.  Keep liveness and
+		// incoming packets moving while SDL has marked the window inactive,
+		// without advancing gameplay or rendering a frame.
+		if (is_networked)
+		{
+			client_packet();
+			server_packet();
+		}
+	}
 };
 }
 

@@ -9,9 +9,16 @@ ApplicationLoopResult RunApplicationLoop(
 {
 	while (client.isRunning())
 	{
-		if (client.updateClock() && client.isActive())
+		if (client.updateClock())
 		{
-			client.runFrame();
+			if (client.isActive())
+			{
+				client.runFrame();
+			}
+			else
+			{
+				client.runBackgroundFrame();
+			}
 		}
 
 		const Platform::HostPumpResult pumpResult =
