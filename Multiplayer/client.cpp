@@ -2281,10 +2281,10 @@ void allowDownloadCallback( UINT8 ubResult )
 		// begin downloading of files
 		setID = fltClient.SetupReceive(&transferCBClient, false, serverAddr);
 
-		char buffer[3];
-		sprintf(buffer, "%i", setID);
+		char buffer[6];
+		snprintf(buffer, sizeof(buffer), "%u", static_cast<unsigned int>(setID));
 
-		client->RPC("receiveSETID", (const char*) buffer, (int)sizeof(char*), HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, UNASSIGNED_NETWORK_ID,0);
+		client->RPC("receiveSETID", (const char*) buffer, (int)((strlen(buffer) + 1) * 8), HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, UNASSIGNED_NETWORK_ID,0);
 	}
 	else
 	{

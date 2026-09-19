@@ -6,6 +6,7 @@ find_package(Threads REQUIRED)
 find_package(SDL3 3.4 REQUIRED CONFIG)
 
 include(cmake/dependencies/Sdl3Mixer.cmake)
+include(cmake/dependencies/Sdl3Net.cmake)
 include(cmake/dependencies/LzmaSdk.cmake)
 include(cmake/dependencies/Utf8cpp.cmake)
 include(cmake/dependencies/BfVfs.cmake)
@@ -92,6 +93,18 @@ target_compile_options(ja2_native_input_manager PRIVATE
 get_property(_ja2_native_non_test_compile_options DIRECTORY PROPERTY COMPILE_OPTIONS)
 add_compile_options(-UNDEBUG)
 enable_testing()
+add_executable(ja2_multiplayer_transport_tests
+  tests/native/mp_netshim_tests.cpp
+  Multiplayer/netshim/netshim.cpp)
+target_include_directories(ja2_multiplayer_transport_tests PRIVATE
+  "${CMAKE_SOURCE_DIR}/Multiplayer/netshim")
+target_link_libraries(ja2_multiplayer_transport_tests PRIVATE
+  SDL3_net::SDL3_net SDL3::SDL3)
+target_compile_options(ja2_multiplayer_transport_tests PRIVATE
+  -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_multiplayer_transport_tests
+  COMMAND ja2_multiplayer_transport_tests)
+
 add_executable(ja2_shared_core_smoke tests/native/shared_core_smoke.cpp)
 target_link_libraries(ja2_shared_core_smoke PRIVATE ja2_shared_core)
 target_compile_options(ja2_shared_core_smoke PRIVATE -Wall -Wextra -Wpedantic -Werror)

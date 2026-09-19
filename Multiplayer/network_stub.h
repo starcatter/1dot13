@@ -1,5 +1,18 @@
 #pragma once
 
+#if defined(JA2_USE_SDL3_NET)
+
+#include "netshim/BitStream.h"
+#include "netshim/FileListTransfer.h"
+#include "netshim/FileListTransferCBInterface.h"
+#include "netshim/IncrementalReadInterface.h"
+#include "netshim/MessageIdentifiers.h"
+#include "netshim/RakNetTypes.h"
+#include "netshim/RakNetworkFactory.h"
+#include "netshim/RakPeerInterface.h"
+
+#else
+
 typedef unsigned int BitSize_t;
 typedef unsigned int RakNetTime;
 typedef unsigned short SystemIndex;
@@ -191,3 +204,5 @@ public:
 
 #define REGISTER_STATIC_RPC(networkObject, functionName) \
 	(networkObject)->RegisterAsRemoteProcedureCall((#functionName), (functionName))
+
+#endif
