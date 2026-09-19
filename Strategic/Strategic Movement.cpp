@@ -1010,16 +1010,19 @@ GROUP* GetGroup( UINT8 ubGroupID )
 
 void HandleImportantPBIQuote( SOLDIERTYPE *pSoldier, GROUP *pInitiatingBattleGroup )
 {
+	const UINT32 initiatingGroupID = pInitiatingBattleGroup
+		? pInitiatingBattleGroup->ubGroupID : 0;
+
 	// wake merc up for THIS quote
 	if( pSoldier->flags.fMercAsleep )
 	{
 		TacticalCharacterDialogueWithSpecialEvent( pSoldier, QUOTE_ENEMY_PRESENCE, DIALOGUE_SPECIAL_EVENT_SLEEP, 0,0 );
-		TacticalCharacterDialogueWithSpecialEvent( pSoldier, QUOTE_ENEMY_PRESENCE, DIALOGUE_SPECIAL_EVENT_BEGINPREBATTLEINTERFACE, (UINT32)pInitiatingBattleGroup, 0 );
+		TacticalCharacterDialogueWithSpecialEvent( pSoldier, QUOTE_ENEMY_PRESENCE, DIALOGUE_SPECIAL_EVENT_BEGINPREBATTLEINTERFACE, initiatingGroupID, 0 );
 		TacticalCharacterDialogueWithSpecialEvent( pSoldier, QUOTE_ENEMY_PRESENCE, DIALOGUE_SPECIAL_EVENT_SLEEP, 1,0 );
 	}
 	else
 	{
-		TacticalCharacterDialogueWithSpecialEvent( pSoldier, QUOTE_ENEMY_PRESENCE, DIALOGUE_SPECIAL_EVENT_BEGINPREBATTLEINTERFACE, (UINT32)pInitiatingBattleGroup, 0 );
+		TacticalCharacterDialogueWithSpecialEvent( pSoldier, QUOTE_ENEMY_PRESENCE, DIALOGUE_SPECIAL_EVENT_BEGINPREBATTLEINTERFACE, initiatingGroupID, 0 );
 	}
 }
 
@@ -1418,7 +1421,9 @@ BOOLEAN CheckConditionsForBattle( GROUP *pGroup )
 void TriggerPrebattleInterface( UINT8 ubResult )
 {
 	StopTimeCompression();
-	SpecialCharacterDialogueEvent( DIALOGUE_SPECIAL_EVENT_TRIGGERPREBATTLEINTERFACE, (UINT32)gpInitPrebattleGroup, 0, 0, 0, 0 );
+	const UINT32 initiatingGroupID = gpInitPrebattleGroup
+		? gpInitPrebattleGroup->ubGroupID : 0;
+	SpecialCharacterDialogueEvent( DIALOGUE_SPECIAL_EVENT_TRIGGERPREBATTLEINTERFACE, initiatingGroupID, 0, 0, 0, 0 );
 	gpInitPrebattleGroup = NULL;
 }
 

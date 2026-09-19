@@ -646,7 +646,10 @@ void HandleDialogue( )
 			if ( gpCurrentTalkingFace->uiFlags & FACE_TRIGGER_PREBATTLE_INT )
 			{
 				UnLockPauseState();
-				InitPreBattleInterface( (GROUP*)gpCurrentTalkingFace->uiUserData1, TRUE );
+				GROUP* pBattleGroup = GetGroup(
+					static_cast<UINT8>(gpCurrentTalkingFace->uiUserData1));
+				if ( pBattleGroup )
+					InitPreBattleInterface( pBattleGroup, TRUE );
 				//Reset flag!
 				gpCurrentTalkingFace->uiFlags &= (~FACE_TRIGGER_PREBATTLE_INT );
 			}
@@ -1017,13 +1020,9 @@ void HandleDialogue( )
 		{
 			UnLockPauseState();
 
-			// Flugente: what hideous idiocy is this? We cast a UINT32 as GROUP*? This is likely to return garbage.
-			// Why the hell not use the id instead?
-			InitPreBattleInterface( (GROUP*)QItem.uiSpecialEventData, TRUE );
-
-			/*GROUP* pGroup = GetGroup( (UINT8)QItem.uiSpecialEventData );
+			GROUP* pGroup = GetGroup( static_cast<UINT8>(QItem.uiSpecialEventData) );
 			if ( pGroup )
-				InitPreBattleInterface( pGroup, TRUE );*/
+				InitPreBattleInterface( pGroup, TRUE );
 		}
 		if( QItem.uiSpecialEventFlag & DIALOGUE_ADD_EVENT_FOR_SOLDIER_UPDATE_BOX )
 		{
