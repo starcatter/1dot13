@@ -110,7 +110,7 @@ foreach(lib IN LISTS Ja2_Libs)
   endif()
   if(lib STREQUAL "sgp")
     target_link_libraries(${game_library} PRIVATE
-      JA2::utf8cpp PNG::PNG ZLIB::ZLIB SDL3::SDL3)
+      JA2::utf8cpp PNG::PNG ZLIB::ZLIB SDL3::SDL3 SDL3_mixer::SDL3_mixer)
     target_compile_definitions(${game_library} PRIVATE NO_ZLIB_COMPRESSION)
   endif()
 endforeach()

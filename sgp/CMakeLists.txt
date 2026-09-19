@@ -68,7 +68,7 @@ if(JA2_PLATFORM_BACKEND STREQUAL "WINDOWS")
 		"${CMAKE_CURRENT_SOURCE_DIR}/presentation/windows/WindowsPresenterFactory.cpp")
 elseif(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
 	list(APPEND sgpSrc
-		"${CMAKE_CURRENT_SOURCE_DIR}/audio/portable/NullAudioBackend.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/audio/portable/SdlMixerAudioBackend.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/fileio/PosixDurableFileOperations.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Dialog.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/platform/portable/Input.cpp"

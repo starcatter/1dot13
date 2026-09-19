@@ -3,8 +3,9 @@
 # production audio backend; grow it as those boundaries become portable.
 
 find_package(Threads REQUIRED)
-find_package(SDL3 3.2 REQUIRED CONFIG)
+find_package(SDL3 3.4 REQUIRED CONFIG)
 
+include(cmake/dependencies/Sdl3Mixer.cmake)
 include(cmake/dependencies/LzmaSdk.cmake)
 include(cmake/dependencies/Utf8cpp.cmake)
 include(cmake/dependencies/BfVfs.cmake)
@@ -149,6 +150,20 @@ add_executable(ja2_audio_backend_tests tests/native/audio_backend_tests.cpp)
 target_link_libraries(ja2_audio_backend_tests PRIVATE ja2_shared_core)
 target_compile_options(ja2_audio_backend_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
 add_test(NAME ja2_audio_backend_tests COMMAND ja2_audio_backend_tests)
+
+add_executable(ja2_sdl3_mixer_audio_backend_tests
+  tests/native/sdl3_mixer_audio_backend_tests.cpp
+  sgp/audio/portable/SdlMixerAudioBackend.cpp)
+target_include_directories(ja2_sdl3_mixer_audio_backend_tests PRIVATE
+  "${CMAKE_SOURCE_DIR}/sgp")
+target_link_libraries(ja2_sdl3_mixer_audio_backend_tests PRIVATE
+  SDL3::SDL3 SDL3_mixer::SDL3_mixer)
+target_compile_options(ja2_sdl3_mixer_audio_backend_tests PRIVATE
+  -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_sdl3_mixer_audio_backend_tests
+  COMMAND ja2_sdl3_mixer_audio_backend_tests)
+set_tests_properties(ja2_sdl3_mixer_audio_backend_tests PROPERTIES
+  ENVIRONMENT "SDL_AUDIODRIVER=dummy")
 
 add_executable(ja2_video_interface_tests tests/native/video_interface_tests.cpp)
 target_link_libraries(ja2_video_interface_tests PRIVATE ja2_shared_core)

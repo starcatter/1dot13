@@ -24,6 +24,7 @@ struct FileCallbacks
 	int (*read)(void* buffer, int size, void* handle) = nullptr;
 	int (*seek)(void* handle, int position, int mode) = nullptr;
 	int (*tell)(void* handle) = nullptr;
+	std::int64_t (*size)(void* handle) = nullptr;
 };
 
 struct Capabilities

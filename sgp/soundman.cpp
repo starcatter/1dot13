@@ -139,6 +139,7 @@ static void SoundFileClose(void *uiHandle);
 static int SoundFileRead(void *pBuffer, int iSize, void *uiHandle);
 static int SoundFileSeek(void *uiHandle, int iPos, int iMode);
 static int SoundFileTell(void *uiHandle);
+static std::int64_t SoundFileSize(void *uiHandle);
 
 // Global variables
 UINT32		guiSoundDefaultVolume = 127;
@@ -266,7 +267,8 @@ BOOLEAN InitializeSoundManager(void)
 	}
 
 	gAudioBackend = Audio::CreatePlatformBackend();
-	gAudioBackend->setFileCallbacks({SoundFileOpen, SoundFileClose, SoundFileRead, SoundFileSeek, SoundFileTell});
+	gAudioBackend->setFileCallbacks({SoundFileOpen, SoundFileClose, SoundFileRead,
+		SoundFileSeek, SoundFileTell, SoundFileSize});
 
 #ifndef SOUND_DISABLE
 	if(gfEnableStartup && SoundInitHardware())
@@ -1812,6 +1814,11 @@ static int SoundFileSeek(void *uiHandle, int iPos, int iMode)
 static int SoundFileTell(void *uiHandle)
 {
 	return(FileGetPos(static_cast<HWFILE>(reinterpret_cast<uintptr_t>(uiHandle))));
+}
+
+static std::int64_t SoundFileSize(void *uiHandle)
+{
+	return FileGetSize(static_cast<HWFILE>(reinterpret_cast<uintptr_t>(uiHandle)));
 }
 
 //*******************************************************************************
