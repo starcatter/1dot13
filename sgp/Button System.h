@@ -105,7 +105,7 @@ typedef struct _GUI_BUTTON {
 	UINT32				uiOldFlags;				// Old flags from previous render loop
 	INT16					XLoc;							// Coordinates where button is on the screen
 	INT16					YLoc;
-	INT32					UserData[4];			// Place holder for user data etc.
+	RUNTIME_PAYLOAD	UserData[4];			// Transient values and callback context; never serialized.
 	INT16					Group;						// Group this button belongs to (see DOCs)
 	INT8					bDefaultStatus;
 	//Button disabled style
@@ -327,8 +327,8 @@ void QuickButtonCallbackMMove(MOUSE_REGION *reg,INT32 reason);
 void QuickButtonCallbackMButn(MOUSE_REGION *reg,INT32 reason);
 
 BOOLEAN SetButtonCursor(INT32 iBtnId, UINT16 crsr); 
-void MSYS_SetBtnUserData(INT32 iButtonNum,INT32 index,INT32 userdata);
-INT32 MSYS_GetBtnUserData(GUI_BUTTON *b,INT32 index);
+void MSYS_SetBtnUserData(INT32 iButtonNum, INT32 index, RUNTIME_PAYLOAD userdata);
+RUNTIME_PAYLOAD MSYS_GetBtnUserData(GUI_BUTTON *b, INT32 index);
 void MarkAButtonDirty( INT32 iButtonNum ); // will mark only selected button dirty
 void MarkButtonsDirty(void);// Function to mark buttons dirty ( all will redraw at next RenderButtons )
 void PausedMarkButtonsDirty( void ); // mark buttons dirty for button render the frame after the next

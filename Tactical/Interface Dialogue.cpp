@@ -162,7 +162,7 @@ void DoneTalkingButtonClickCallback(GUI_BUTTON *btn, INT32 reason );
 void CalculatePopupTextPosition( INT16 sWidth, INT16 sHeight );
 void CalculatePopupTextOrientation( INT16 sWidth, INT16 sHeight );
 void HandleNPCTrigger( );
-BOOLEAN InternalInitiateConversation( SOLDIERTYPE *pDestSoldier, SOLDIERTYPE *pSrcSoldier, INT8 bApproach, UINT32 uiApproachData );
+BOOLEAN InternalInitiateConversation( SOLDIERTYPE *pDestSoldier, SOLDIERTYPE *pSrcSoldier, INT8 bApproach, RUNTIME_PAYLOAD uiApproachData );
 
 
 extern void EndGameMessageBoxCallBack( UINT8 ubExitValue );
@@ -231,7 +231,7 @@ BOOLEAN							gfConversationPending = FALSE;
 SOLDIERTYPE					*gpPendingDestSoldier;
 SOLDIERTYPE					*gpPendingSrcSoldier;
 INT8								gbPendingApproach;
-UINT32							guiPendingApproachData;
+RUNTIME_PAYLOAD				guiPendingApproachData;
 extern BOOLEAN			fMapPanelDirty;
 
 INT32 giHospitalTempBalance; // stores amount of money for current doctoring
@@ -254,9 +254,9 @@ enum
 	HOSPITAL_RANDOM_FREEBIE,
 };
 
-BOOLEAN InitiateConversation( SOLDIERTYPE *pDestSoldier, SOLDIERTYPE *pSrcSoldier, INT8 bApproach, UINT32 uiApproachData )
+BOOLEAN InitiateConversation( SOLDIERTYPE *pDestSoldier, SOLDIERTYPE *pSrcSoldier, INT8 bApproach, RUNTIME_PAYLOAD uiApproachData )
 {
-	DebugQuestInfo(String("InitiateConversation: from [%d] to [%d] %d data %d", pSrcSoldier->ubID, pDestSoldier->ubID, bApproach, uiApproachData));
+	DebugQuestInfo(String("InitiateConversation: from [%d] to [%d] %d data %llu", pSrcSoldier->ubID, pDestSoldier->ubID, bApproach, static_cast<unsigned long long>(uiApproachData)));
 
 	// ATE: OK, let's check the status of the Q
 	// If it has something in it....delay this until after....
@@ -302,7 +302,7 @@ void HandlePendingInitConv( )
 }
 
 
-BOOLEAN InternalInitiateConversation( SOLDIERTYPE *pDestSoldier, SOLDIERTYPE *pSrcSoldier, INT8 bApproach, UINT32 uiApproachData )
+BOOLEAN InternalInitiateConversation( SOLDIERTYPE *pDestSoldier, SOLDIERTYPE *pSrcSoldier, INT8 bApproach, RUNTIME_PAYLOAD uiApproachData )
 {
 	// OK, init talking menu
 	BOOLEAN	fFromPending;
@@ -1378,7 +1378,7 @@ void CalculatePopupTextPosition( INT16 sWidth, INT16 sHeight )
 
 BOOLEAN	TalkingMenuGiveItem( UINT8 ubNPC, OBJECTTYPE *pObject, INT8 bInvPos )
 {
-	CHECKF( SpecialCharacterDialogueEvent( DIALOGUE_SPECIAL_EVENT_GIVE_ITEM, (UINT32) ubNPC, (UINT32)pObject, (UINT32) bInvPos, gTalkPanel.iFaceIndex, DIALOGUE_NPC_UI ) != FALSE );
+	CHECKF( SpecialCharacterDialogueEvent( DIALOGUE_SPECIAL_EVENT_GIVE_ITEM, (UINT32) ubNPC, reinterpret_cast<RUNTIME_PAYLOAD>(pObject), (UINT32) bInvPos, gTalkPanel.iFaceIndex, DIALOGUE_NPC_UI ) != FALSE );
 
 	return( TRUE );
 }

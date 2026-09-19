@@ -400,10 +400,10 @@ BOOLEAN SnitchCharacterDialogue( UINT8 ubCharacterNum, UINT16 usQuoteNum, INT32 
 	UINT8 bUIHandlerID, BOOLEAN fFromSoldier, BOOLEAN fDelayed );
 
 // A special event can be setup which can be queued with other speech
-BOOLEAN SpecialCharacterDialogueEvent( UINT32 uiSpecialEventFlag, UINT32 uiSpecialEventData1, UINT32 uiSpecialEventData2, UINT32 uiSpecialEventData3, INT32 iFaceIndex, UINT8 bUIHandlerID );
+BOOLEAN SpecialCharacterDialogueEvent( UINT32 uiSpecialEventFlag, RUNTIME_PAYLOAD uiSpecialEventData1, RUNTIME_PAYLOAD uiSpecialEventData2, RUNTIME_PAYLOAD uiSpecialEventData3, INT32 iFaceIndex, UINT8 bUIHandlerID );
 
 // Same as above, for triggers, with extra param to hold approach value
-BOOLEAN SpecialCharacterDialogueEventWithExtraParam( UINT32 uiSpecialEventFlag, UINT32 uiSpecialEventData1, UINT32 uiSpecialEventData2, UINT32 uiSpecialEventData3, UINT32 uiSpecialEventData4, INT32 iFaceIndex, UINT8 bUIHandlerID );
+BOOLEAN SpecialCharacterDialogueEventWithExtraParam( UINT32 uiSpecialEventFlag, RUNTIME_PAYLOAD uiSpecialEventData1, RUNTIME_PAYLOAD uiSpecialEventData2, RUNTIME_PAYLOAD uiSpecialEventData3, RUNTIME_PAYLOAD uiSpecialEventData4, INT32 iFaceIndex, UINT8 bUIHandlerID );
 
 // execute specific character dialogue
 BOOLEAN ExecuteCharacterDialogue( UINT8 ubCharacterNum, UINT16 usQuoteNum, INT32 iFaceIndex, UINT8 bUIHandlerID, BOOLEAN fSoldier );

@@ -34,6 +34,9 @@ typedef std::uint32_t		UINT32;
 typedef std::int64_t		INT64;		// WANNE - BMP: Used for Big Maps
 typedef std::int32_t		INT32;
 typedef std::uint64_t		UINT64;
+// Pointer-width storage for transient callback/event payloads.  This type is
+// never a save-game or network format: durable data must use a fixed-width ID.
+typedef std::uintptr_t		RUNTIME_PAYLOAD;
 //typedef unsigned long long	UINT128;  //Madd:  Doing away with this redundant type
 
 // integers
@@ -81,6 +84,7 @@ static_assert(sizeof(INT8) == 1 && sizeof(UINT8) == 1, "8-bit engine types chang
 static_assert(sizeof(INT16) == 2 && sizeof(UINT16) == 2, "16-bit engine types changed width");
 static_assert(sizeof(INT32) == 4 && sizeof(UINT32) == 4, "32-bit engine types changed width");
 static_assert(sizeof(INT64) == 8 && sizeof(UINT64) == 8, "64-bit engine types changed width");
+static_assert(sizeof(RUNTIME_PAYLOAD) >= sizeof(void*), "runtime payload cannot hold a pointer");
 static_assert(sizeof(FLAGS32) == 4, "FLAGS32 must remain serialized as 32 bits");
 static_assert(sizeof(BOOLEAN) == 1, "BOOLEAN must remain an 8-bit engine value");
 static_assert(sizeof(CHAR16) == 2, "CHAR16 must remain a UTF-16 code unit");

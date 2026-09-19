@@ -4034,7 +4034,7 @@ INT32 CreateCheckBoxButton( INT16 x, INT16 y, const STR8 filename, INT16 Priorit
 }
 
 // Added Oct17, 97 Carter - kind of mindless, but might as well have it
-void MSYS_SetBtnUserData(INT32 iButtonNum,INT32 index,INT32 userdata)
+void MSYS_SetBtnUserData(INT32 iButtonNum, INT32 index, RUNTIME_PAYLOAD userdata)
 {
 	GUI_BUTTON *b;
 	b=ButtonList[iButtonNum];
@@ -4043,7 +4043,7 @@ void MSYS_SetBtnUserData(INT32 iButtonNum,INT32 index,INT32 userdata)
 	if(b != NULL) b->UserData[index]=userdata;
 }
 
-INT32 MSYS_GetBtnUserData(GUI_BUTTON *b,INT32 index)
+RUNTIME_PAYLOAD MSYS_GetBtnUserData(GUI_BUTTON *b, INT32 index)
 {
 	if(index < 0 || index > 3)
 		return(0);

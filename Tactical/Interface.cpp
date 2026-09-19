@@ -842,7 +842,7 @@ void PopupMovementMenu( UI_EVENT *pUIEvent )
 	}
 	SetButtonFastHelpText( iActionIcons[ RUN_ICON ], pTacticalPopupButtonStrings[ RUN_ICON ] );
 	//SetButtonSavedRect( iActionIcons[ RUN_ICON ] );
-	ButtonList[ iActionIcons[ RUN_ICON ] ]->UserData[0] = (UINT32)pUIEvent;
+	ButtonList[ iActionIcons[ RUN_ICON ] ]->UserData[0] = reinterpret_cast<RUNTIME_PAYLOAD>(pUIEvent);
 
 	if ( pSoldier->MercInWater( ) || ( pSoldier->flags.uiStatusFlags & SOLDIER_ROBOT ) )
 	{
@@ -868,7 +868,7 @@ void PopupMovementMenu( UI_EVENT *pUIEvent )
 		SetButtonFastHelpText( iActionIcons[ WALK_ICON ], pTacticalPopupButtonStrings[ WALK_ICON ] );
 	}
 
-	ButtonList[ iActionIcons[ WALK_ICON ] ]->UserData[0] = (UINT32)pUIEvent;
+	ButtonList[ iActionIcons[ WALK_ICON ] ]->UserData[0] = reinterpret_cast<RUNTIME_PAYLOAD>(pUIEvent);
 
 	if ( pSoldier->flags.uiStatusFlags & SOLDIER_ROBOT )
 	{
@@ -889,7 +889,7 @@ void PopupMovementMenu( UI_EVENT *pUIEvent )
 	}
 	SetButtonFastHelpText( iActionIcons[ SNEAK_ICON ], pTacticalPopupButtonStrings[ SNEAK_ICON ] );
 	//SetButtonSavedRect( iActionIcons[ SNEAK_ICON ] );
-	ButtonList[ iActionIcons[ SNEAK_ICON ] ]->UserData[0] = (UINT32)pUIEvent;
+	ButtonList[ iActionIcons[ SNEAK_ICON ] ]->UserData[0] = reinterpret_cast<RUNTIME_PAYLOAD>(pUIEvent);
 
 	// Check if this is a valid stance, diable if not!
 	if ( !IsValidStance( pSoldier, ANIM_CROUCH ) )
@@ -907,7 +907,7 @@ void PopupMovementMenu( UI_EVENT *pUIEvent )
 	}
 	SetButtonFastHelpText( iActionIcons[ CRAWL_ICON ], pTacticalPopupButtonStrings[ CRAWL_ICON ] );
 	//SetButtonSavedRect( iActionIcons[ CRAWL_ICON ] );
-	ButtonList[ iActionIcons[ CRAWL_ICON ] ]->UserData[0] = (UINT32)pUIEvent;
+	ButtonList[ iActionIcons[ CRAWL_ICON ] ]->UserData[0] = reinterpret_cast<RUNTIME_PAYLOAD>(pUIEvent);
 
 	// Check if this is a valid stance, diable if not!
 	if ( !IsValidStance( pSoldier, ANIM_PRONE ) )
@@ -926,7 +926,7 @@ void PopupMovementMenu( UI_EVENT *pUIEvent )
 	}
 	SetButtonFastHelpText( iActionIcons[ LOOK_ICON ], TacticalStr[ LOOK_CURSOR_POPUPTEXT ] );
 	//SetButtonSavedRect( iActionIcons[ LOOK_ICON ] );
-	ButtonList[ iActionIcons[ LOOK_ICON ] ]->UserData[0] = (UINT32)pUIEvent;
+	ButtonList[ iActionIcons[ LOOK_ICON ] ]->UserData[0] = reinterpret_cast<RUNTIME_PAYLOAD>(pUIEvent);
 
 	if ( pSoldier->flags.uiStatusFlags & SOLDIER_VEHICLE )
 	{
@@ -1032,7 +1032,7 @@ void PopupMovementMenu( UI_EVENT *pUIEvent )
 	}
 	//SetButtonSavedRect( iActionIcons[ ACTIONC_ICON ] );
 	SetButtonFastHelpText( iActionIcons[ ACTIONC_ICON ], zActionString );
-	ButtonList[ iActionIcons[ ACTIONC_ICON ] ]->UserData[0] = (UINT32)pUIEvent;
+	ButtonList[ iActionIcons[ ACTIONC_ICON ] ]->UserData[0] = reinterpret_cast<RUNTIME_PAYLOAD>(pUIEvent);
 
 	if ( fDisableAction )
 	{
@@ -1050,7 +1050,7 @@ void PopupMovementMenu( UI_EVENT *pUIEvent )
 	}
 	//SetButtonSavedRect( iActionIcons[ TALK_ICON ] );
 	SetButtonFastHelpText( iActionIcons[ TALK_ICON ], pTacticalPopupButtonStrings[ TALK_ICON ] );
-	ButtonList[ iActionIcons[ TALK_ICON ] ]->UserData[0] = (UINT32)pUIEvent;
+	ButtonList[ iActionIcons[ TALK_ICON ] ]->UserData[0] = reinterpret_cast<RUNTIME_PAYLOAD>(pUIEvent);
 
 	if ( AM_AN_EPC( pSoldier ) || ( pSoldier->flags.uiStatusFlags & SOLDIER_VEHICLE ) )
 	{
@@ -1068,7 +1068,7 @@ void PopupMovementMenu( UI_EVENT *pUIEvent )
 	}
 	//SetButtonSavedRect( iActionIcons[ HAND_ICON ] );
 	SetButtonFastHelpText( iActionIcons[ HAND_ICON ], pTacticalPopupButtonStrings[ HAND_ICON ] );
-	ButtonList[ iActionIcons[ HAND_ICON ] ]->UserData[0] = (UINT32)pUIEvent;
+	ButtonList[ iActionIcons[ HAND_ICON ] ]->UserData[0] = reinterpret_cast<RUNTIME_PAYLOAD>(pUIEvent);
 
 	if ( AM_AN_EPC( pSoldier ) || ( pSoldier->flags.uiStatusFlags & SOLDIER_VEHICLE ) )
 	{
@@ -1085,7 +1085,7 @@ void PopupMovementMenu( UI_EVENT *pUIEvent )
 	}
 	//SetButtonSavedRect( iActionIcons[ CANCEL_ICON ] );
 	SetButtonFastHelpText( iActionIcons[ CANCEL_ICON ], pTacticalPopupButtonStrings[ CANCEL_ICON ] );
-	ButtonList[ iActionIcons[ CANCEL_ICON ] ]->UserData[0] = (UINT32)pUIEvent;
+	ButtonList[ iActionIcons[ CANCEL_ICON ] ]->UserData[0] = reinterpret_cast<RUNTIME_PAYLOAD>(pUIEvent);
 
 	//LockTacticalInterface( );
 
@@ -1167,7 +1167,7 @@ void BtnMovementCallback(GUI_BUTTON *btn,INT32 reason)
 
 		uiBtnID = btn->IDNum;
 
-		pUIEvent = (UI_EVENT*)( btn->UserData[0] );
+		pUIEvent = reinterpret_cast<UI_EVENT*>(btn->UserData[0]);
 
 		if ( uiBtnID == iActionIcons[ WALK_ICON	] )
 		{

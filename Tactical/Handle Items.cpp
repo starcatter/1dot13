@@ -5115,7 +5115,7 @@ void SoldierGiveItemFromAnimation( SOLDIERTYPE *pSoldier )
 //			}
 
 			// Now intiate conv
-			InitiateConversation( pTSoldier, pSoldier, APPROACH_GIVINGITEM, (INT32)&gTempObject );
+			InitiateConversation( pTSoldier, pSoldier, APPROACH_GIVINGITEM, reinterpret_cast<RUNTIME_PAYLOAD>(&gTempObject) );
 		}
 	}
 

@@ -57,7 +57,6 @@ if(MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     -Wno-constant-conversion                       #     12 constant does not fit the target type
     -Wno-varargs                                   #      8 questionable argument to a variadic function
     -Wno-reserved-user-defined-literal             #      8 string literal followed by a reserved suffix
-    -Wno-pointer-to-int-cast                       #      8 pointer cast to a smaller integer
     -Wno-invalid-source-encoding                   #      8 source byte is not valid UTF-8 (windows-1252 files)
     -Wno-invalid-pp-token                          #      8 malformed preprocessing token
     -Wno-implicit-conversion-floating-point-to-bool#      8 float implicitly converted to bool
@@ -67,7 +66,6 @@ if(MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     -Wno-return-type                               #      4 non-void function without a return
     -Wno-missing-exception-spec                    #      4 exception specification does not match
     -Wno-missing-declarations                      #      4 declaration does not declare anything
-    -Wno-int-to-pointer-cast                       #      4 smaller integer cast to a pointer
     -Wno-ignored-pragmas                           #      4 unrecognised pragma ignored
     -Wno-extra-tokens                              #      4 extra tokens at the end of a directive
     -Wno-delete-incomplete                         #      4 delete of a pointer to an incomplete type
@@ -103,7 +101,6 @@ elseif(MSVC)
     /wd5205  #    16 delete of an abstract class with a non-virtual dtor
     /wd4457  #    16 declaration hides function parameter
     /wd4310  #    16 cast truncates constant value
-    /wd4302  #     8 'type cast': pointer truncated to a smaller integer
     /wd5043  #     4 exception specification does not match previous declaration
     /wd4918  #     4 invalid character in pragma optimization list
     /wd4805  #     4 unsafe mix of BOOLEAN and bool

@@ -242,10 +242,13 @@ void CreateRainDrops()
 
 		if( pCurr->fAlive )continue;
 
-		uiIndRand	= (((UINT32)pCurr) / sizeof(TRainDrop) ) % 20;
+		// The legacy code derived these variations from the allocation address.
+		// The array index supplies the same per-drop variation without making
+		// presentation depend on pointer width or allocator/ASLR placement.
+		uiIndRand = uiIndex % 20;
 
-		fpDropLength = fpCurrDropLength + ( (((UINT32)pCurr) / sizeof(TRainDrop) ) % 7 ) * DROP_LENGTH_RAND / 6;
-		fpDropSpeed = fpCurrDropSpeed + ( ( ((UINT32)pCurr) / sizeof(TRainDrop) + 43 ) % 13 ) * DROP_SPEED_RAND / 12;
+		fpDropLength = fpCurrDropLength + (uiIndex % 7) * DROP_LENGTH_RAND / 6;
+		fpDropSpeed = fpCurrDropSpeed + ((uiIndex + 43) % 13) * DROP_SPEED_RAND / 12;
 
 		pCurr->fAlive = TRUE;
 

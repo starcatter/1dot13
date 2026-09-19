@@ -35,6 +35,131 @@
 #include "Points.h"
 #include "Init.h"
 
+namespace
+{
+// VEHICLETYPE and PathSt contain native pointers. Existing saves contain the
+// Win32/x86 layouts, so never write either runtime structure directly.
+struct SavedVehicleRecord
+{
+	UINT32 legacyMercPath;
+	UINT8 ubMovementGroup;
+	UINT8 ubVehicleType;
+	INT16 sSectorX;
+	INT16 sSectorY;
+	INT16 sSectorZ;
+	BOOLEAN fBetweenSectors;
+	UINT8 paddingAfterBetweenSectors[3];
+	INT32 sGridNo;
+	UINT32 passengerProfiles[MAXPASSENGERS];
+	UINT16 ubDriver;
+	INT16 sInternalHitLocations[NUMBER_OF_EXTERNAL_HIT_LOCATIONS_ON_VEHICLE];
+	INT16 sArmourType;
+	INT16 sExternalArmorLocationsStatus[NUMBER_OF_EXTERNAL_HIT_LOCATIONS_ON_VEHICLE];
+	INT16 sCriticalHits[NUMBER_OF_INTERNAL_HIT_LOCATIONS_IN_VEHICLE];
+	UINT8 paddingBeforeSounds[2];
+	INT32 iOnSound;
+	INT32 iOffSound;
+	INT32 iMoveSound;
+	INT32 iOutOfSound;
+	BOOLEAN fFunctional;
+	BOOLEAN fDestroyed;
+	UINT8 paddingBeforeMovementSound[2];
+	INT32 iMovementSoundID;
+	UINT8 ubProfileID;
+	BOOLEAN fValid;
+	UINT8 trailingPadding[2];
+};
+
+struct SavedVehiclePathNode
+{
+	UINT32 uiSectorId;
+	UINT32 uiEta;
+	UINT8 fSpeed;
+	UINT8 padding[3];
+	UINT32 legacyNext;
+	UINT32 legacyPrev;
+};
+
+static_assert(sizeof(SavedVehicleRecord) == 132, "Unexpected Win32 vehicle save layout");
+static_assert(offsetof(SavedVehicleRecord, sGridNo) == 16, "Unexpected Win32 vehicle grid offset");
+static_assert(offsetof(SavedVehicleRecord, passengerProfiles) == 20, "Unexpected Win32 passenger offset");
+static_assert(offsetof(SavedVehicleRecord, ubDriver) == 60, "Unexpected Win32 vehicle driver offset");
+static_assert(offsetof(SavedVehicleRecord, iOnSound) == 104, "Unexpected Win32 vehicle sound offset");
+static_assert(offsetof(SavedVehicleRecord, iMovementSoundID) == 124, "Unexpected Win32 vehicle movement sound offset");
+static_assert(sizeof(SavedVehiclePathNode) == 20, "Unexpected Win32 vehicle path save layout");
+#ifdef _WIN32
+static_assert(sizeof(SavedVehicleRecord) == sizeof(VEHICLETYPE), "Vehicle disk record differs from the Win32 compatibility layout");
+static_assert(offsetof(SavedVehicleRecord, passengerProfiles) == offsetof(VEHICLETYPE, pPassengers), "Passenger disk offset differs from Win32");
+static_assert(offsetof(SavedVehicleRecord, ubDriver) == offsetof(VEHICLETYPE, ubDriver), "Driver disk offset differs from Win32");
+static_assert(offsetof(SavedVehicleRecord, iOnSound) == offsetof(VEHICLETYPE, iOnSound), "Sound disk offset differs from Win32");
+static_assert(sizeof(SavedVehiclePathNode) == sizeof(PathSt), "Vehicle path record differs from Win32");
+#endif
+
+SavedVehicleRecord EncodeVehicleRecord(const VEHICLETYPE& vehicle)
+{
+	SavedVehicleRecord saved = {};
+	saved.ubMovementGroup = vehicle.ubMovementGroup;
+	saved.ubVehicleType = vehicle.ubVehicleType;
+	saved.sSectorX = vehicle.sSectorX;
+	saved.sSectorY = vehicle.sSectorY;
+	saved.sSectorZ = vehicle.sSectorZ;
+	saved.fBetweenSectors = vehicle.fBetweenSectors;
+	saved.sGridNo = vehicle.sGridNo;
+	for (UINT8 index = 0; index < MAXPASSENGERS; ++index)
+	{
+		saved.passengerProfiles[index] = vehicle.pPassengers[index]
+			? vehicle.pPassengers[index]->ubProfile : NO_PROFILE;
+	}
+	saved.ubDriver = vehicle.ubDriver;
+	memcpy(saved.sInternalHitLocations, vehicle.sInternalHitLocations, sizeof(saved.sInternalHitLocations));
+	saved.sArmourType = vehicle.sArmourType;
+	memcpy(saved.sExternalArmorLocationsStatus, vehicle.sExternalArmorLocationsStatus, sizeof(saved.sExternalArmorLocationsStatus));
+	memcpy(saved.sCriticalHits, vehicle.sCriticalHits, sizeof(saved.sCriticalHits));
+	saved.iOnSound = vehicle.iOnSound;
+	saved.iOffSound = vehicle.iOffSound;
+	saved.iMoveSound = vehicle.iMoveSound;
+	saved.iOutOfSound = vehicle.iOutOfSound;
+	saved.fFunctional = vehicle.fFunctional;
+	saved.fDestroyed = vehicle.fDestroyed;
+	saved.iMovementSoundID = vehicle.iMovementSoundID;
+	saved.ubProfileID = vehicle.ubProfileID;
+	saved.fValid = vehicle.fValid;
+	return saved;
+}
+
+void DecodeVehicleRecord(const SavedVehicleRecord& saved, UINT32 saveVersion, VEHICLETYPE& vehicle)
+{
+	vehicle.pMercPath = NULL;
+	vehicle.ubMovementGroup = saved.ubMovementGroup;
+	vehicle.ubVehicleType = saved.ubVehicleType;
+	vehicle.sSectorX = saved.sSectorX;
+	vehicle.sSectorY = saved.sSectorY;
+	vehicle.sSectorZ = saved.sSectorZ;
+	vehicle.fBetweenSectors = saved.fBetweenSectors;
+	vehicle.sGridNo = saved.sGridNo;
+	for (UINT8 index = 0; index < MAXPASSENGERS; ++index)
+	{
+		const UINT8 profile = static_cast<UINT8>(saved.passengerProfiles[index]);
+		const BOOLEAN hasPassenger = saveVersion < 86 ? saved.passengerProfiles[index] != 0 : profile != NO_PROFILE;
+		vehicle.pPassengers[index] = hasPassenger ? FindSoldierByProfileID(profile, FALSE) : NULL;
+	}
+	vehicle.ubDriver = SoldierID(saved.ubDriver);
+	memcpy(vehicle.sInternalHitLocations, saved.sInternalHitLocations, sizeof(vehicle.sInternalHitLocations));
+	vehicle.sArmourType = saved.sArmourType;
+	memcpy(vehicle.sExternalArmorLocationsStatus, saved.sExternalArmorLocationsStatus, sizeof(vehicle.sExternalArmorLocationsStatus));
+	memcpy(vehicle.sCriticalHits, saved.sCriticalHits, sizeof(vehicle.sCriticalHits));
+	vehicle.iOnSound = saved.iOnSound;
+	vehicle.iOffSound = saved.iOffSound;
+	vehicle.iMoveSound = saved.iMoveSound;
+	vehicle.iOutOfSound = saved.iOutOfSound;
+	vehicle.fFunctional = saved.fFunctional;
+	vehicle.fDestroyed = saved.fDestroyed;
+	vehicle.iMovementSoundID = saved.iMovementSoundID;
+	vehicle.ubProfileID = saved.ubProfileID;
+	vehicle.fValid = saved.fValid;
+}
+}
+
 //INT8 gubVehicleMovementGroups[ MAX_VEHICLES ];
 std::vector<INT8>	gubVehicleMovementGroups (MAX_VEHICLES, 0);
 
@@ -2271,8 +2396,6 @@ BOOLEAN SaveVehicleInformationToSaveGameFile( HWFILE hFile )
 	PathStPtr	pTempPathPtr;
 	UINT32		uiNodeCount=0;
 	UINT8		cnt;
-	VEHICLETYPE	TempVehicle;
-	UINT8			ubPassengerCnt=0;
 
 	//Save the number of elements
 	FileWrite( hFile, &ubNumberOfVehicles, sizeof( UINT8 ), &uiNumBytesWritten );
@@ -2293,30 +2416,9 @@ BOOLEAN SaveVehicleInformationToSaveGameFile( HWFILE hFile )
 
 		if( pVehicleList[cnt].fValid )
 		{
-			// copy the node into the temp vehicle buffer ( need to do this because we cant save the pointers
-			// to the soldier, therefore save the soldier ubProfile
-			memcpy( &TempVehicle, &pVehicleList[cnt], sizeof( VEHICLETYPE ) );
-
-			//loop through the passengers
-			for( ubPassengerCnt=0; ubPassengerCnt<10; ubPassengerCnt++)
-			{
-				TempVehicle.pPassengers[ ubPassengerCnt ] = ( SOLDIERTYPE * )NO_PROFILE;
-
-				//if there is a passenger here
-				if( pVehicleList[cnt].pPassengers[ ubPassengerCnt ] )
-				{
-					//assign the passengers profile to the struct
-					// ! The pointer to the passenger is converted to a byte so that the Id of the soldier can be saved.
-					// ! This means that the pointer contains a bogus pointer, but a real ID for the soldier.
-					// ! When reloading, this bogus pointer is converted to a byte to contain the id of the soldier so
-					// ! we can get the REAL pointer to the soldier
-					TempVehicle.pPassengers[ ubPassengerCnt ] = ( SOLDIERTYPE * ) pVehicleList[cnt].pPassengers[ ubPassengerCnt ]->ubProfile;
-				}
-			}
-
-			//save the vehicle info
-			FileWrite( hFile, &TempVehicle, sizeof( VEHICLETYPE ), &uiNumBytesWritten );
-			if( uiNumBytesWritten != sizeof( VEHICLETYPE ) )
+			const SavedVehicleRecord savedVehicle = EncodeVehicleRecord(pVehicleList[cnt]);
+			FileWrite( hFile, &savedVehicle, sizeof(savedVehicle), &uiNumBytesWritten );
+			if( uiNumBytesWritten != sizeof(savedVehicle) )
 			{
 				return( FALSE );
 			}
@@ -2340,9 +2442,12 @@ BOOLEAN SaveVehicleInformationToSaveGameFile( HWFILE hFile )
 			pTempPathPtr = pVehicleList[cnt].pMercPath;
 			while( pTempPathPtr )
 			{
-				//Save the node
-				FileWrite( hFile, pTempPathPtr, sizeof( PathSt ), &uiNumBytesWritten );
-				if( uiNumBytesWritten != sizeof( PathSt ) )
+				SavedVehiclePathNode savedPath = {};
+				savedPath.uiSectorId = pTempPathPtr->uiSectorId;
+				savedPath.uiEta = pTempPathPtr->uiEta;
+				savedPath.fSpeed = pTempPathPtr->fSpeed;
+				FileWrite( hFile, &savedPath, sizeof(savedPath), &uiNumBytesWritten );
+				if( uiNumBytesWritten != sizeof(savedPath) )
 				{
 					return( FALSE );
 				}
@@ -2363,7 +2468,6 @@ BOOLEAN LoadVehicleInformationFromSavedGameFile( HWFILE hFile, UINT32 uiSavedGam
 	UINT8			cnt;
 	UINT32		uiNodeCount=0;
 	PathSt		*pPath=NULL;
-	UINT8			ubPassengerCnt=0;
 	PathSt		*pTempPath;
 
 	//Clear out th vehicle list
@@ -2389,52 +2493,23 @@ BOOLEAN LoadVehicleInformationFromSavedGameFile( HWFILE hFile, UINT32 uiSavedGam
 		for( cnt=0; cnt< ubNumberOfVehicles; cnt++ )
 		{
 			//Load if the vehicle spot is valid
-			FileRead( hFile, &pVehicleList[cnt].fValid, sizeof( BOOLEAN ), &uiNumBytesRead );
+			BOOLEAN vehicleValid = FALSE;
+			FileRead( hFile, &vehicleValid, sizeof( BOOLEAN ), &uiNumBytesRead );
 			if( uiNumBytesRead != sizeof( BOOLEAN ) )
 			{
 				return( FALSE );
 			}
+			pVehicleList[cnt].fValid = vehicleValid;
 
-			if( pVehicleList[cnt].fValid )
+			if( vehicleValid )
 			{
-				//load the vehicle info
-				FileRead( hFile, &pVehicleList[cnt], sizeof( VEHICLETYPE ), &uiNumBytesRead );
-				if( uiNumBytesRead != sizeof( VEHICLETYPE ) )
+				SavedVehicleRecord savedVehicle = {};
+				FileRead( hFile, &savedVehicle, sizeof(savedVehicle), &uiNumBytesRead );
+				if( uiNumBytesRead != sizeof(savedVehicle) )
 				{
 					return( FALSE );
 				}
-
-				//
-				// Build the passenger list
-				//
-
-				//loop through all the passengers
-				for(ubPassengerCnt=0; ubPassengerCnt<10; ubPassengerCnt++)
-				{
-					if ( uiSavedGameVersion < 86 )
-					{
-						if( pVehicleList[cnt].pPassengers[ubPassengerCnt] != 0 )
-						{
-							// ! The id of the soldier was saved in the passenger pointer.	The passenger pointer is converted back
-							// ! to a UINT8 so we can get the REAL pointer to the soldier.
-							pVehicleList[cnt].pPassengers[ubPassengerCnt] = FindSoldierByProfileID( (UINT8)(pVehicleList[cnt].pPassengers[ ubPassengerCnt ]), FALSE );
-						}
-					}
-					else
-					{
-						if( pVehicleList[cnt].pPassengers[ubPassengerCnt] != ( SOLDIERTYPE * )NO_PROFILE )
-						{
-							// ! The id of the soldier was saved in the passenger pointer.	The passenger pointer is converted back
-							// ! to a UINT8 so we can get the REAL pointer to the soldier.
-							pVehicleList[cnt].pPassengers[ubPassengerCnt] = FindSoldierByProfileID( (UINT8)(pVehicleList[cnt].pPassengers[ ubPassengerCnt ]), FALSE );
-						}
-						else
-						{
-							pVehicleList[cnt].pPassengers[ubPassengerCnt] = NULL;
-						}
-					}
-				}
-
+				DecodeVehicleRecord(savedVehicle, uiSavedGameVersion, pVehicleList[cnt]);
 
 				//Load the number of nodes
 				FileRead( hFile, &uiTotalNodeCount, sizeof( UINT32 ), &uiNumBytesRead );
@@ -2458,12 +2533,16 @@ BOOLEAN LoadVehicleInformationFromSavedGameFile( HWFILE hFile, UINT32 uiSavedGam
 							return( FALSE );
 						memset( pTempPath, 0, sizeof( PathSt ) );
 
-						//Load all the nodes
-						FileRead( hFile, pTempPath, sizeof( PathSt ), &uiNumBytesRead );
-						if( uiNumBytesRead != sizeof( PathSt ) )
+						SavedVehiclePathNode savedPath = {};
+						FileRead( hFile, &savedPath, sizeof(savedPath), &uiNumBytesRead );
+						if( uiNumBytesRead != sizeof(savedPath) )
 						{
+							MemFree(pTempPath);
 							return( FALSE );
 						}
+						pTempPath->uiSectorId = savedPath.uiSectorId;
+						pTempPath->uiEta = savedPath.uiEta;
+						pTempPath->fSpeed = savedPath.fSpeed;
 
 
 						//

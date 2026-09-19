@@ -99,10 +99,10 @@ typedef struct
 	INT32		iFaceIndex;
 	INT32		iTimeStamp;
 	UINT32	uiSpecialEventFlag;
-	UINT32	uiSpecialEventData;
-	UINT32	uiSpecialEventData2;
-	UINT32	uiSpecialEventData3;
-	UINT32	uiSpecialEventData4;
+	RUNTIME_PAYLOAD uiSpecialEventData;
+	RUNTIME_PAYLOAD uiSpecialEventData2;
+	RUNTIME_PAYLOAD uiSpecialEventData3;
+	RUNTIME_PAYLOAD uiSpecialEventData4;
 	BOOLEAN	fFromSoldier;
 	BOOLEAN	fDelayed;
 	BOOLEAN fPauseTime;
@@ -1209,7 +1209,7 @@ void HandleDialogue( )
 		{
 			if ( QItem.bUIHandlerID == DIALOGUE_NPC_UI )
 			{
-				HandleNPCItemGiven( (UINT8)QItem.uiSpecialEventData, (OBJECTTYPE*)QItem.uiSpecialEventData2, (INT8)QItem.uiSpecialEventData3 );
+				HandleNPCItemGiven( (UINT8)QItem.uiSpecialEventData, reinterpret_cast<OBJECTTYPE*>(QItem.uiSpecialEventData2), (INT8)QItem.uiSpecialEventData3 );
 			}
 		}
 		else if ( QItem.uiSpecialEventFlag & DIALOGUE_SPECIAL_EVENT_TRIGGER_NPC )
@@ -1952,7 +1952,7 @@ BOOLEAN SnitchCharacterDialogue( UINT8 ubCharacterNum, UINT16 usQuoteNum, INT32 
 }
 
 
-BOOLEAN SpecialCharacterDialogueEvent( UINT32 uiSpecialEventFlag, UINT32 uiSpecialEventData1, UINT32 uiSpecialEventData2, UINT32 uiSpecialEventData3, INT32 iFaceIndex, UINT8 bUIHandlerID )
+BOOLEAN SpecialCharacterDialogueEvent( UINT32 uiSpecialEventFlag, RUNTIME_PAYLOAD uiSpecialEventData1, RUNTIME_PAYLOAD uiSpecialEventData2, RUNTIME_PAYLOAD uiSpecialEventData3, INT32 iFaceIndex, UINT8 bUIHandlerID )
 {
 	DIALOGUE_Q_STRUCT QItem{};
 	QItem.uiSpecialEventFlag	= uiSpecialEventFlag;
@@ -1977,7 +1977,7 @@ BOOLEAN SpecialCharacterDialogueEvent( UINT32 uiSpecialEventFlag, UINT32 uiSpeci
 	return( TRUE );
 }
 
-BOOLEAN SpecialCharacterDialogueEventWithExtraParam( UINT32 uiSpecialEventFlag, UINT32 uiSpecialEventData1, UINT32 uiSpecialEventData2, UINT32 uiSpecialEventData3, UINT32 uiSpecialEventData4, INT32 iFaceIndex, UINT8 bUIHandlerID )
+BOOLEAN SpecialCharacterDialogueEventWithExtraParam( UINT32 uiSpecialEventFlag, RUNTIME_PAYLOAD uiSpecialEventData1, RUNTIME_PAYLOAD uiSpecialEventData2, RUNTIME_PAYLOAD uiSpecialEventData3, RUNTIME_PAYLOAD uiSpecialEventData4, INT32 iFaceIndex, UINT8 bUIHandlerID )
 {
 	DIALOGUE_Q_STRUCT QItem{};
 	QItem.uiSpecialEventFlag	= uiSpecialEventFlag;

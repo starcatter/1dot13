@@ -1895,7 +1895,7 @@ void ResetOncePerConvoRecordsForAllNPCsInLoadedSector( void )
 }
 
 
-void ReturnItemToPlayerIfNecessary( UINT8 ubMerc, INT8 bApproach, UINT32 uiApproachData, NPCQuoteInfo * pQuotePtr )
+void ReturnItemToPlayerIfNecessary( UINT8 ubMerc, INT8 bApproach, RUNTIME_PAYLOAD uiApproachData, NPCQuoteInfo * pQuotePtr )
 {
 	OBJECTTYPE  *		pObj;
 	SOLDIERTYPE *		pSoldier;
@@ -1904,7 +1904,7 @@ void ReturnItemToPlayerIfNecessary( UINT8 ubMerc, INT8 bApproach, UINT32 uiAppro
 	// otherwise check to see if the record in question specified refusal
 	if ( bApproach != APPROACH_GIVINGITEM || (pQuotePtr == NULL ) || (pQuotePtr->sActionData == NPC_ACTION_DONT_ACCEPT_ITEM ) )
 	{
-		pObj = (OBJECTTYPE *) uiApproachData;
+		pObj = reinterpret_cast<OBJECTTYPE*>(uiApproachData);
 
 		// Find the merc
 		pSoldier = FindSoldierByProfileID( ubMerc, FALSE );
@@ -1918,7 +1918,7 @@ void ReturnItemToPlayerIfNecessary( UINT8 ubMerc, INT8 bApproach, UINT32 uiAppro
 	}
 }
 
-void Converse( UINT8 ubNPC, UINT8 ubMerc, INT8 bApproach, UINT32 uiApproachData )
+void Converse( UINT8 ubNPC, UINT8 ubMerc, INT8 bApproach, RUNTIME_PAYLOAD uiApproachData )
 {
 	NPCQuoteInfo					QuoteInfo;
 	NPCQuoteInfo *				pQuotePtr = &(QuoteInfo);
@@ -1931,7 +1931,7 @@ void Converse( UINT8 ubNPC, UINT8 ubMerc, INT8 bApproach, UINT32 uiApproachData 
 	SOLDIERTYPE *					pNPC;
 	BOOLEAN								fAttemptingToGiveItem;
 
-	DebugQuestInfo(String("Converse: merc <%d> to NPC <%d> approach %d data %d", ubMerc, ubNPC, bApproach, uiApproachData));
+	DebugQuestInfo(String("Converse: merc <%d> to NPC <%d> approach %d data %llu", ubMerc, ubNPC, bApproach, static_cast<unsigned long long>(uiApproachData)));
 
 	// we have to record whether an item is being given in order to determine whether,
 	// in the case where the approach is overridden, we need to return the item to the
@@ -2130,7 +2130,7 @@ void Converse( UINT8 ubNPC, UINT8 ubMerc, INT8 bApproach, UINT32 uiApproachData 
 					}
 
 					// If we are approaching because we want to give an item, do something different
-					pObj = (OBJECTTYPE *) uiApproachData;
+					pObj = reinterpret_cast<OBJECTTYPE*>(uiApproachData);
 					NPCConsiderReceivingItemFromMerc( ubNPC, ubMerc, pObj, pNPCQuoteInfoArray, &pQuotePtr, &ubRecordNum );
 					break;
 				case TRIGGER_NPC:

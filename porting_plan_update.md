@@ -420,16 +420,14 @@ The audit found about 104 textual assembly sites across ten files, concentrated 
 
 #### 2. Live pointer truncation
 
-The file-handle pointer truncation is fixed, but other pointer-as-`UINT32` channels remain active:
+The known active pointer-as-`UINT32` channels have now been removed. The common rule is based on lifetime rather than globally widening legacy integers:
 
-- Dialogue item pointers: `Tactical/Interface Dialogue.cpp:1379-1382` and `Tactical/Dialogue Control.cpp:1208-1214`.
-- Tactical UI pointers in button userdata: `sgp/Button System.h:97-108` and representative uses in `Tactical/Interface.cpp:845-1088`.
-- Soldier pointers passed through positional sound data: `Tactical/Soldier Control.cpp:2442-2445` and `Utils/Sound Control.cpp:1081-1085`.
-- Strategic group pointers passed through dialogue data: `Strategic/Strategic Movement.cpp:1016-1021` and `Tactical/Dialogue Control.cpp:1016-1026`.
-- Opaque FMOD/callback values: `sgp/soundman.cpp:1625-1825`.
-- Address-derived rain randomness: `Tactical/Rain.cpp:239-248`.
+- Transient callback context uses the explicitly non-serialized, pointer-width `RUNTIME_PAYLOAD` type. This currently covers GUI button userdata and the legacy dialogue queue while their public interfaces remain intact.
+- Deferred references use stable engine IDs and lookup. Strategic dialogue resolves a group ID and positional sound resolves a `SoldierID`; neither retains an object address.
+- Disk and network records remain fixed-width and convert at their boundaries. They must never contain `RUNTIME_PAYLOAD`, `uintptr_t`, or a host-native pointer layout.
+- Values that merely used an address as entropy are made address-independent; rain variation now uses the stable drop index.
 
-These paths can corrupt live state on x64 even if the program compiles. They require typed payloads, object IDs, or `uintptr_t` according to ownership and lifetime semantics.
+The MSVC pointer-truncation suppression and the equivalent clang-cl pointer/integer suppressions have been removed so new instances fail the strict compatibility build. A native type test checks that the explicitly transient payload can round-trip a pointer without changing the serialized engine integer widths.
 
 #### 3. Raw native-structure serialization
 
@@ -438,7 +436,7 @@ The save system writes many in-memory structures directly. Pointer-bearing examp
 - `STRATEGICEVENT::next` in `Strategic/Game Events.h:10-20`, serialized in `Strategic/Game Events.cpp:719-782`.
 - `UNDERGROUND_SECTORINFO::next` in `Strategic/Campaign Types.h:597-608`, serialized in `Strategic/Queen Command.cpp:2633-2689`.
 - Laptop save pointers in `Laptop/LaptopSave.h:108-117`, serialized in `Laptop/laptop.cpp:7144-7232`.
-- Vehicle path/passenger pointers in `Tactical/Vehicles.h:281-308`, serialized in `Tactical/Vehicles.cpp:2294-2345`.
+- Vehicle path/passenger pointers in `Tactical/Vehicles.h:281-308`; these now convert through explicit 132-byte vehicle and 20-byte path records in `Tactical/Vehicles.cpp` rather than writing `VEHICLETYPE` or `PathSt` directly.
 
 On x64, pointer width and padding change record sizes and shift subsequent bytes even when pointer fields are later repaired. The safe migration is to capture the x86 on-disk layout, define fixed-width disk DTOs, and convert to/from native runtime structures. Changing typedefs globally without this layer would break existing saves.
 
