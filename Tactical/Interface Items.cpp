@@ -651,7 +651,7 @@ void popupCallbackItem(INT16 itemId){
 				DoAttachment((UINT8)gubPopupStatusIndex, guiPopupItemPos);	// try to attach it
 
 				// If attaching failed, change mouse cursor to item as we're still holding it
-				if ( gpItemPointer->exists() ) {
+				if ( gpItemPointer != NULL && gpItemPointer->exists() ) {
 					// Set mouse
 					guiExternVo = GetInterfaceGraphicForItem(&(Item[gpItemPointer->usItem]));
 					gusExternVoSubIndex = Item[gpItemPointer->usItem].ubGraphicNum;
@@ -6345,7 +6345,7 @@ void ItemDescAttachmentsCallback( MOUSE_REGION * pRegion, INT32 iReason )
 
 				DoAttachment((UINT8)ubStatusIndex, uiItemPos);
 
-				if(gpItemPointer->exists()){
+				if(gpItemPointer != NULL && gpItemPointer->exists()){
 					if( guiCurrentItemDescriptionScreen == MAP_SCREEN )
 					{
 						// Set mouse
