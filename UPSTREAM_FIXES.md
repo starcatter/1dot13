@@ -91,3 +91,73 @@ Upstream PR checklist:
 - Feed a binding with five or more valid names and verify it truncates safely.
 - Keep this separate from the SDK-header extraction; the bounds bug exists in
   the old implementation too.
+
+## Multiplayer placement transmits an encoded direction as a live facing
+
+Status: fixed locally on 2026-09-20; confirmed by a native client core dump and
+the captured RPC payload. Verify whether current upstream still contains the
+sender bug before preparing a focused PR.
+
+`PutDownMercPiece` sets the soldier's real facing, adds `100` to that value for
+the legacy `ubInsertionDirection` encoding, and then passed the encoded value to
+`send_gui_dir`. The receiving client consequently called
+`EVENT_SetSoldierDirection` with values such as `102`, although world directions
+are limited to `0..NUM_WORLD_DIRECTIONS-1`. The observed failure corrupted
+tactical structure state and crashed in `InternalAddStructureToWorld` while a
+client placed its mercs.
+
+The local fix preserves the real facing before applying the insertion encoding
+and transmits that value. This is independent of SDL3_net; the old RakNet path
+sent the same malformed payload.
+
+Upstream PR checklist:
+
+- Host a match with at least one remote client and place/reposition every merc.
+- Capture or assert that every `gui_dir` payload contains a direction in `0..7`.
+- Preserve the `+100` insertion-direction encoding locally; only the network
+  facing must remain unencoded.
+
+## Multiplayer placement RPCs trust stale soldiers and malformed payloads
+
+Status: fixed locally on 2026-09-20; overlaps later upstream hardening changes,
+so compare against current trunk before submitting.
+
+`recieveguiPOS` and `recieveguiDIR` previously cast the incoming buffer without
+checking its size, converted a wire soldier ID directly to a pointer, and
+mutated that soldier without checking whether it was active and in-sector. The
+direction handler also accepted arbitrary signed values. Placement and sector
+loading create a normal race window in which those assumptions are false.
+
+The local fix validates frame sizes, copies packed wire data into aligned local
+objects, bounds the soldier ID and direction, rejects non-finite/off-map
+positions, and requires an active in-sector soldier before applying either
+event.
+
+## Multiplayer lobby column widths include their screen offset
+
+Status: fixed locally on 2026-09-20; suitable for a small UI correctness PR.
+
+`InitializeMPCoordinates` correctly adds `UI_CHARLIST.Region.x` to each column's
+X coordinate, but also added it to `MP_PLAYER_W`, `MP_TEAM_W`, `MP_COMPASS_W`,
+and `MP_GAMEINFO_W`. At resolutions where the panel origin is nonzero, centered
+player/team/edge text drifts into later columns and dirty rectangles become much
+wider than the panel. The local fix keeps the widths at their intended constants
+while offsetting only positions.
+
+## Multiplayer M.E.R.C. pages advertise locked entries
+
+Status: fixed locally on 2026-09-20; needs multiplayer laptop playtesting before
+an upstream PR.
+
+Multiplayer assigned `LaptopSaveInfo.gubLastMercIndex = LAST_MERC_ID`, exposing
+the full M.E.R.C. page count, but did not set the corresponding
+`StartMercsAvailable` flags. `GetAvailableMercIndex` then searched beyond the
+small unlocked subset, producing repeated starting mercs and potentially
+walking beyond meaningful availability data.
+
+The local fix explicitly unlocks every otherwise-valid M.E.R.C. profile for the
+non-progressing multiplayer hiring phase, updates both persistent and temporary
+availability tables, and rebuilds the displayed array/count together. If
+upstream does not intend all mercs to be selectable in multiplayer, the
+alternative valid fix is to advertise only the unlocked count; the count and
+availability set must not disagree.

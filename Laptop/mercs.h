@@ -110,6 +110,7 @@ enum
 
 
 BOOLEAN CanMercBeAvailableDuringInit( UINT8 ubMercToCheck );// anv: for all mercs available
+void UnlockAllMercsForMultiplayer();
 void GameInitMercs();
 BOOLEAN EnterMercs();
 void ExitMercs();

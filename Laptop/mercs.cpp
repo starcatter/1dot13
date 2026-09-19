@@ -453,6 +453,26 @@ void RevaluateMercArray()
 	}
 }
 
+void UnlockAllMercsForMultiplayer()
+{
+	// Multiplayer has no campaign-time progression during the hiring phase.  The
+	// old code only raised the displayed page count, leaving most entries locked;
+	// navigating those phantom pages then wrapped through the starting mercs.
+	for (UINT16 i = 0; i < NUM_PROFILES; ++i)
+	{
+		if (gConditionsForMercAvailability[i].ProfilId == 0)
+			continue;
+
+		const BOOLEAN available = CanMercBeAvailableDuringInit(static_cast<UINT8>(i));
+		gConditionsForMercAvailability[i].StartMercsAvailable = available;
+		gConditionsForMercAvailability[i].NewMercsAvailable = FALSE;
+		gConditionsForMercAvailabilityTemp[i].StartMercsAvailable = available;
+		gConditionsForMercAvailabilityTemp[i].NewMercsAvailable = FALSE;
+	}
+
+	RevaluateMercArray();
+}
+
 BOOLEAN CanMercBeAvailableDuringInit( UINT8 ubMercToCheck )// anv: for all mercs available
 {
 	if( gConditionsForMercAvailability[ubMercToCheck].Drunk == TRUE )

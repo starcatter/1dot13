@@ -2216,6 +2216,7 @@ void PutDownMercPiece( INT32 iPlacement )
 		{
 			ubDirection = (UINT8)GetDirectionToGridNoFromGridNo( gMapInformation.sCenterGridNo, sGridNo );
 		}
+		const UINT8 ubFacingDirection = ubDirection;
 		pSoldier->EVENT_SetSoldierDirection( ubDirection );
 		ubDirection += 100;
 		pSoldier->ubInsertionDirection = ubDirection;
@@ -2224,7 +2225,7 @@ void PutDownMercPiece( INT32 iPlacement )
 		gMercPlacement[ iPlacement ].pSoldier->bInSector = TRUE;
 //hayden
 		if(is_client)send_gui_pos(pSoldier, scX, scY);
-		if(is_client)send_gui_dir(pSoldier, ubDirection);
+		if(is_client)send_gui_dir(pSoldier, ubFacingDirection);
 	}
 }
 

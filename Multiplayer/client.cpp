@@ -5,6 +5,7 @@
 	#include "stdlib.h"
 	#include "DEBUG.H"
 	#include "math.h"
+	#include <cmath>
 	#include "UtfConversion.h"
 	#include "worlddef.h"
 	#include "worldman.h"
@@ -1193,6 +1194,9 @@ void recieveHIRE(RPCParameters *rpcParameters)
 
 void send_gui_pos(SOLDIERTYPE *pSoldier,  FLOAT dNewXPos, FLOAT dNewYPos)
 {
+	if (pSoldier == NULL || !std::isfinite(dNewXPos) || !std::isfinite(dNewYPos))
+		return;
+
 	gui_pos gnPOS;
 
 	gnPOS.usSoldierID = pSoldier->ubID + ubID_prefix;
@@ -1205,22 +1209,38 @@ void send_gui_pos(SOLDIERTYPE *pSoldier,  FLOAT dNewXPos, FLOAT dNewYPos)
 
 void recieveguiPOS(RPCParameters *rpcParameters)
 {
-	gui_pos* gnPOS = (gui_pos*)rpcParameters->input;
+	RPC_REQUIRE_BYTES(rpcParameters, gui_pos);
+	gui_pos gnPOS;
+	memcpy(&gnPOS, rpcParameters->input, sizeof(gnPOS));
 
-	SOLDIERTYPE *pSoldier = gnPOS->usSoldierID;
+	const UINT16 soldierId = gnPOS.usSoldierID;
+	if (soldierId >= TOTAL_SOLDIERS || !std::isfinite(gnPOS.dNewXPos) ||
+		!std::isfinite(gnPOS.dNewYPos))
+	{
+		return;
+	}
+
+	SOLDIERTYPE *pSoldier = MercPtrs[soldierId];
+	if (pSoldier == NULL || !pSoldier->bActive || !pSoldier->bInSector)
+		return;
 
 	INT32 sNewGridNo;
 
-	sNewGridNo = GETWORLDINDEXFROMWORLDCOORDS(gnPOS->dNewXPos, gnPOS->dNewYPos );
+	sNewGridNo = GETWORLDINDEXFROMWORLDCOORDS(gnPOS.dNewXPos, gnPOS.dNewYPos );
+	if (sNewGridNo < 0 || sNewGridNo >= WORLD_MAX)
+		return;
 	pSoldier->usStrategicInsertionData=sNewGridNo;
 	pSoldier->ubStrategicInsertionCode=INSERTION_CODE_GRIDNO;
 	pSoldier->sInsertionGridNo = pSoldier->usStrategicInsertionData;
 
-	pSoldier->EVENT_SetSoldierPosition( gnPOS->dNewXPos, gnPOS->dNewYPos );
+	pSoldier->EVENT_SetSoldierPosition( gnPOS.dNewXPos, gnPOS.dNewYPos );
 }
 
 void send_gui_dir(SOLDIERTYPE *pSoldier, UINT16	usNewDirection)
-{	
+{
+	if (pSoldier == NULL || usNewDirection >= NUM_WORLD_DIRECTIONS)
+		return;
+
 	gui_dir gnDIR;
 
 	gnDIR.usSoldierID = (pSoldier->ubID)+ubID_prefix;
@@ -1231,11 +1251,22 @@ void send_gui_dir(SOLDIERTYPE *pSoldier, UINT16	usNewDirection)
 
 void recieveguiDIR(RPCParameters *rpcParameters)
 {
-	gui_dir* gnDIR = (gui_dir*)rpcParameters->input;
+	RPC_REQUIRE_BYTES(rpcParameters, gui_dir);
+	gui_dir gnDIR;
+	memcpy(&gnDIR, rpcParameters->input, sizeof(gnDIR));
 
-	SOLDIERTYPE *pSoldier = gnDIR->usSoldierID;
-	
-	pSoldier->EVENT_SetSoldierDirection( gnDIR->usNewDirection );
+	const UINT16 soldierId = gnDIR.usSoldierID;
+	if (soldierId >= TOTAL_SOLDIERS || gnDIR.usNewDirection < 0 ||
+		gnDIR.usNewDirection >= NUM_WORLD_DIRECTIONS)
+	{
+		return;
+	}
+
+	SOLDIERTYPE *pSoldier = MercPtrs[soldierId];
+	if (pSoldier == NULL || !pSoldier->bActive || !pSoldier->bInSector)
+		return;
+
+	pSoldier->EVENT_SetSoldierDirection( gnDIR.usNewDirection );
 }
 
 
@@ -2756,7 +2787,7 @@ void reapplySETTINGS()
 	//**********************
 	//here some nifty little tweaks
 	LaptopSaveInfo.guiNumberOfMercPaymentsInDays += 20;
-	LaptopSaveInfo.gubLastMercIndex = LAST_MERC_ID;
+	UnlockAllMercsForMultiplayer();
 	
 	LaptopSaveInfo.ubLastMercAvailableId = 7;
 	gGameExternalOptions.fEnableSlayForever	=1;
@@ -5064,7 +5095,7 @@ void connect_client ( void )
 		//here some nifty little tweaks
 
 		LaptopSaveInfo.guiNumberOfMercPaymentsInDays += 20;
-		LaptopSaveInfo.gubLastMercIndex = LAST_MERC_ID;
+		UnlockAllMercsForMultiplayer();
 		LaptopSaveInfo.ubLastMercAvailableId = 7;
 		gGameExternalOptions.fEnableSlayForever	= 1;
 		LaptopSaveInfo.gubPlayersMercAccountStatus = 4;

@@ -1749,13 +1749,13 @@ void InitializeMPCoordinates()
 	
 	MP_ROWSTART_Y = MP_BTN_Y + 21;
 	MP_PLAYER_X = 5 + x;
-	MP_PLAYER_W = 75 + x;
+	MP_PLAYER_W = 75;
 	MP_TEAM_X = 84 + x;
-	MP_TEAM_W = 40 + x;
+	MP_TEAM_W = 40;
 	MP_COMPASS_X = 130 + x;
-	MP_COMPASS_W = 19 + x;
+	MP_COMPASS_W = 19;
 	MP_GAMEINFO_X = 154 + x;
-	MP_GAMEINFO_W = 81 + x;
+	MP_GAMEINFO_W = 81;
 	// End of MP interface changes
 }
 
