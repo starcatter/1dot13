@@ -168,21 +168,33 @@ BOOLEAN POPUP_OPTION::setName( const ja2::text::Utf16String& newName )
 
 BOOLEAN POPUP_OPTION::setAction( popupCallback *fun )
 {
-	this->action = fun;
+	if (this->action != fun)
+	{
+		delete this->action;
+		this->action = fun;
+	}
 
 	return TRUE;
 }
 
 BOOLEAN POPUP_OPTION::setAvail( popupCallback *fun )
 {
-	this->avail = fun;
+	if (this->avail != fun)
+	{
+		delete this->avail;
+		this->avail = fun;
+	}
 
 	return TRUE;
 }
 
 BOOLEAN POPUP_OPTION::setHover( popupCallback *fun )
 {
-	this->hover = fun;
+	if (this->hover != fun)
+	{
+		delete this->hover;
+		this->hover = fun;
+	}
 
 	return TRUE;
 }
@@ -256,7 +268,8 @@ POPUP_SUB_POPUP_OPTION::POPUP_SUB_POPUP_OPTION(const ja2::text::Utf16String& new
 // destructor
 POPUP_SUB_POPUP_OPTION::~POPUP_SUB_POPUP_OPTION(void)
 {
-
+	delete this->subPopup;
+	this->subPopup = NULL;
 }
 
 void POPUP_SUB_POPUP_OPTION::showPopup()
@@ -362,7 +375,8 @@ void POPUP_SUB_POPUP_OPTION::initSubPopup()
 
 void POPUP_SUB_POPUP_OPTION::destroySubPopup()
 {
-	this->subPopup->~POPUP();
+	delete this->subPopup;
+	this->subPopup = NULL;
 }
 
   //////////////////////////////////////////////////////////////////
@@ -404,14 +418,15 @@ POPUP::~POPUP(void)
 
 	for (UINT16 i = 0; i<this->options.size(); i++)
 	{
-		this->options[i]->~POPUP_OPTION();
+		delete this->options[i];
 	}
+	this->options.clear();
 
 	for (UINT16 i = 0; i<this->subPopupOptions.size(); i++)
 	{
-		this->subPopupOptions[i]->subPopup->hide();
-		this->subPopupOptions[i]->~POPUP_SUB_POPUP_OPTION();
+		delete this->subPopupOptions[i];
 	}
+	this->subPopupOptions.clear();
 
 	#ifdef JA2TESTVERSION
 		CHAR8 debugStr[120];
@@ -421,13 +436,13 @@ POPUP::~POPUP(void)
 
 	this->removeFromIndex();
 
-	if (this->initCallback) this->initCallback->~popupCallback();
-	if (this->ShowCallback) this->ShowCallback->~popupCallback();
-	if (this->HideCallback) this->HideCallback->~popupCallback();
+	delete this->initCallback;
+	delete this->ShowCallback;
+	delete this->HideCallback;
 
 	if (this->EndCallback) {
 		this->EndCallback->call();
-		this->EndCallback->~popupCallback();
+		delete this->EndCallback;
 	}
 }
 
@@ -437,21 +452,29 @@ BOOLEAN POPUP::setCallback(UINT8 type, popupCallback * callback){
 	if(callback == NULL) return FALSE;
 
 	switch(type){
-		case POPUP_CALLBACK_INIT: 
-			if (this->initCallback) this->initCallback->~popupCallback();
-			this->initCallback = callback;
+		case POPUP_CALLBACK_INIT:
+			if (this->initCallback != callback) {
+				delete this->initCallback;
+				this->initCallback = callback;
+			}
 			break;
-		case POPUP_CALLBACK_END:  
-			if (this->EndCallback) this->EndCallback->~popupCallback();
-			this->EndCallback = callback;
+		case POPUP_CALLBACK_END:
+			if (this->EndCallback != callback) {
+				delete this->EndCallback;
+				this->EndCallback = callback;
+			}
 			break;
-		case POPUP_CALLBACK_SHOW: 
-			if (this->ShowCallback) this->ShowCallback->~popupCallback();
-			this->ShowCallback = callback;
+		case POPUP_CALLBACK_SHOW:
+			if (this->ShowCallback != callback) {
+				delete this->ShowCallback;
+				this->ShowCallback = callback;
+			}
 			break;
-		case POPUP_CALLBACK_HIDE: 
-			if (this->HideCallback) this->HideCallback->~popupCallback();
-			this->HideCallback = callback;
+		case POPUP_CALLBACK_HIDE:
+			if (this->HideCallback != callback) {
+				delete this->HideCallback;
+				this->HideCallback = callback;
+			}
 			break;
 
 		default: return false;
@@ -1425,7 +1448,7 @@ void POPUP::MenuBtnCallBack( MOUSE_REGION * pRegion, INT32 iReason )
 	UINT8 ubVolume = 10;
 
 	// sanity check #1
-	if (!this || this->boxId < 0 || this->id > POPUP::nextid){
+	if (this->boxId < 0 || this->id > POPUP::nextid){
 		#ifdef JA2TESTVERSION
 			 __debugbreak();
 		#else
@@ -1449,24 +1472,17 @@ void POPUP::MenuBtnCallBack( MOUSE_REGION * pRegion, INT32 iReason )
 			&&	iValue >= 0
 			&&	this->options[iValue] != NULL)
 			{
-				this->options[iValue]->run();	// run the option's callback
+					const UINT32 popupId = this->id;
+					this->options[iValue]->run();	// run the option's callback
 
-				// sanity check #2
-				// if this popup was fine in check #1 but is broken now, chances are 
-				// we got deleted (or just plain broken) by the callback. 
-				if (!this || this->id > POPUP::nextid){
-					#ifdef JA2TESTVERSION
-						 __debugbreak();
-					#else
-						Assert(false);
-					#endif
-				}
+					// Option callbacks may delete their popup. Re-resolve its stable ID before
+					// touching the object again instead of inspecting a potentially dead `this`.
+					POPUP* livePopup = findPopupInIndex(popupId);
+					if (livePopup != this) return;
+					livePopup->RebuildBox();
 
-
-				this->RebuildBox();				// rebuild the box so that the changes can take effect
-
-				if( GetBoxShadeFlag( this->boxId, iTotal ) == FALSE )	// highlight the line again, if appropriate
-					HighLightBoxLine( this->boxId, iTotal );
+					if( GetBoxShadeFlag( livePopup->boxId, iTotal ) == FALSE )	// highlight the line again, if appropriate
+						HighLightBoxLine( livePopup->boxId, iTotal );
 			}
 		}
 		break;
@@ -1496,7 +1512,7 @@ void POPUP::MenuMvtCallBack(MOUSE_REGION * pRegion, INT32 iReason )
 	INT32 iType = 0;
 	INT32 iValue = 0;
 
-	if (!this || this->boxId < 0){
+	if (this->boxId < 0){
 		__debugbreak();
 	}
 	

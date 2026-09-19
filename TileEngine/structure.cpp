@@ -2318,7 +2318,7 @@ BOOLEAN AddZStripInfoToVObject( HVOBJECT hVObject, STRUCTURE_FILE_REF * pStructu
 						{
 							if (hVObject->ppZStripInfo[ubLoop2] != NULL)
 							{
-								MemFree(hVObject->ppZStripInfo[uiLoop]);
+								MemFree(hVObject->ppZStripInfo[ubLoop2]);
 							}
 						}
 						MemFree(hVObject->ppZStripInfo);
@@ -2470,7 +2470,7 @@ BOOLEAN AddZStripInfoToVObject( HVOBJECT hVObject, STRUCTURE_FILE_REF * pStructu
 								{
 									if (hVObject->ppZStripInfo[ubLoop2] != NULL)
 									{
-										MemFree(hVObject->ppZStripInfo[uiLoop]);
+										MemFree(hVObject->ppZStripInfo[ubLoop2]);
 									}
 								}
 								MemFree(hVObject->ppZStripInfo);
@@ -2514,7 +2514,7 @@ BOOLEAN AddZStripInfoToVObject( HVOBJECT hVObject, STRUCTURE_FILE_REF * pStructu
 								{
 									if (hVObject->ppZStripInfo[ubLoop2] != NULL)
 									{
-										MemFree(hVObject->ppZStripInfo[uiLoop]);
+										MemFree(hVObject->ppZStripInfo[ubLoop2]);
 									}
 								}
 								MemFree(hVObject->ppZStripInfo);

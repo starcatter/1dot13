@@ -442,6 +442,11 @@ void InitPreBattleInterface( GROUP *pBattleGroup, BOOLEAN fPersistantPBI )
 		{
 			UNDERGROUND_SECTORINFO *pUnderGroundSector = FindUnderGroundSector( gWorldSectorX, gWorldSectorY, gbWorldSectorZ );
 			Assert( pUnderGroundSector );
+			if ( pUnderGroundSector == NULL )
+			{
+				gfBlitBattleSectorLocator = FALSE;
+				return;
+			}
 
 			//We are underground, so no autoresolve allowed
 			if( pUnderGroundSector->ubCreaturesInBattle )
@@ -2114,6 +2119,11 @@ void CalculateNonPersistantPBIInfo()
 		{
 			UNDERGROUND_SECTORINFO *pSector = FindUnderGroundSector( gWorldSectorX, gWorldSectorY, gbWorldSectorZ );
 			Assert( pSector );
+			if ( pSector == NULL )
+			{
+				gfBlitBattleSectorLocator = FALSE;
+				return;
+			}
 
 			if( pSector->ubCreaturesInBattle )
 			{

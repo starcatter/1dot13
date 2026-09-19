@@ -652,15 +652,20 @@ BOOLEAN FileRead( HWFILE hFile, PTR pDest, UINT32 uiBytesToRead, UINT32 *puiByte
 		{
 			uiBytesRead = static_cast<UINT32>(entry->file()->read(pDest, uiBytesToRead));
 		}
-		catch (...)
-		{
+			catch (...)
+			{
+				if (pDest && uiBytesRead < uiBytesToRead)
+					memset(static_cast<UINT8*>(pDest) + uiBytesRead, 0, uiBytesToRead - uiBytesRead);
+				if (puiBytesRead) *puiBytesRead = uiBytesRead;
+				return FALSE;
+			}
 			if (puiBytesRead) *puiBytesRead = uiBytesRead;
-			return FALSE;
+			if (pDest && uiBytesRead < uiBytesToRead)
+				memset(static_cast<UINT8*>(pDest) + uiBytesRead, 0, uiBytesToRead - uiBytesRead);
+			return uiBytesRead == uiBytesToRead ? TRUE : FALSE;
 		}
-		if (puiBytesRead) *puiBytesRead = uiBytesRead;
-		return uiBytesRead == uiBytesToRead ? TRUE : FALSE;
-	}
-	if (puiBytesRead) *puiBytesRead = 0;
+		if (pDest) memset(pDest, 0, uiBytesToRead);
+		if (puiBytesRead) *puiBytesRead = 0;
 	return FALSE;
 }
 

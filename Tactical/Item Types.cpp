@@ -591,7 +591,7 @@ LBENODE* OBJECTTYPE::GetLBEPointer(unsigned int index)
 
 bool OBJECTTYPE::exists() const
 {
-	return(this && ubNumberOfObjects && usItem);
+	return(ubNumberOfObjects && usItem);
 }
 
 void OBJECTTYPE::SpliceData(OBJECTTYPE& sourceObject, unsigned int numToSplice, StackedObjects::iterator beginIter)

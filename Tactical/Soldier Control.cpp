@@ -1143,13 +1143,6 @@ void SOLDIERTYPE::initialize( )
 }
 
 
-bool SOLDIERTYPE::exists( )
-{
-	if ( this == NULL )
-		return(FALSE);
-	return (TRUE);
-}
-
 // Ugly temporary solution
 //
 // These two functions map the "old" style inventory (fixed array of ) to the new (a flexibly sized vector).

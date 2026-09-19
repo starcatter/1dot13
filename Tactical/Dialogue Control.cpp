@@ -1209,7 +1209,7 @@ void HandleDialogue( )
 		{
 			if ( QItem.bUIHandlerID == DIALOGUE_NPC_UI )
 			{
-				HandleNPCItemGiven( (UINT8)QItem.uiSpecialEventData, reinterpret_cast<OBJECTTYPE*>(QItem.uiSpecialEventData2), (INT8)QItem.uiSpecialEventData3 );
+				HandleNPCItemGiven( (UINT8)QItem.uiSpecialEventData, (INT8)QItem.uiSpecialEventData3 );
 			}
 		}
 		else if ( QItem.uiSpecialEventFlag & DIALOGUE_SPECIAL_EVENT_TRIGGER_NPC )

@@ -2386,7 +2386,7 @@ POPUP * createPopupForPocket( SOLDIERTYPE *pSoldier, INT16 sPocket ){
 			sPocketPopup->setCallback(POPUP_CALLBACK_HIDE, new popupCallbackFunction<void,SOLDIERTYPE*>( createMagPopupAfter,pSoldier ) );
 			sPocketPopupInitialized = true;
 		} else {
-			sPocketPopup->~POPUP();
+				delete sPocketPopup;
 			sPocketPopup = new POPUP("Pocket popup");
 			sPocketPopup->setCallback(POPUP_CALLBACK_HIDE, new popupCallbackFunction<void,SOLDIERTYPE*>( createMagPopupAfter,pSoldier ) );
 		}
@@ -4378,7 +4378,7 @@ void INVRenderItem( UINT32 uiBuffer, SOLDIERTYPE * pSoldier, OBJECTTYPE  *pObjec
 			else
 			{
 				OBJECTTYPE* pAttachment = (*pObject)[iter]->GetAttachmentAtIndex(ubStatusIndex - RENDER_ITEM_ATTACHMENT1);
-				if (pAttachment->exists()) {
+				if (pAttachment && pAttachment->exists()) {
 					swprintf( pStr, JA2_TEXT("%s"), ShortItemNames[ pAttachment->usItem ] );
 				}
 			}
@@ -5660,7 +5660,7 @@ void UpdateAttachmentTooltips(OBJECTTYPE *pObject, UINT8 ubStatusIndex)
 	for ( UINT8 x = 0; x < size; ++x )// attached item list rather create here then inside loop to gain performance
 	{
 		OBJECTTYPE* pAttachment2 = (*pObject)[ubStatusIndex]->GetAttachmentAtIndex(x);
-		if(pAttachment2->exists())
+		if(pAttachment2 && pAttachment2->exists())
 			attachedList.push_back(pAttachment2->usItem);
 	}
 
@@ -5726,7 +5726,7 @@ void UpdateAttachmentTooltips(OBJECTTYPE *pObject, UINT8 ubStatusIndex)
 
 			// CHRISL: Instead of looking at object 0, let's look at the object we actually right clicked on using ubStatusIndex
 			OBJECTTYPE* pAttachment = (*pObject)[ubStatusIndex]->GetAttachmentAtIndex(slotCount);
-			if (pAttachment->exists()) 
+			if (pAttachment && pAttachment->exists())
 			{
 				SetRegionFastHelpText( &(gItemDescAttachmentRegions[ slotCount ]), ItemNames[ pAttachment->usItem ] );
 			} 
@@ -6144,7 +6144,7 @@ void ItemDescAmmoCallback(GUI_BUTTON *btn,INT32 reason)
 			RenderBulletIcon(gpItemDescObject, ubStatusIndex);
 
 			// Set mouse
-			if(gpItemPointer->exists() == true)
+				if(gpItemPointer != NULL && gpItemPointer->exists() == true)
 			{
 				guiExternVo = GetInterfaceGraphicForItem( &(Item[ gpItemPointer->usItem ]) );
 				gusExternVoSubIndex = g_bUsePngItemImages ? 0 : Item[ gpItemPointer->usItem ].ubGraphicNum;
@@ -6286,7 +6286,7 @@ void ItemDescAttachmentsCallback( MOUSE_REGION * pRegion, INT32 iReason )
 	UINT32					uiItemPos, ubStatusIndex;
 	static BOOLEAN	fRightDown = FALSE;
 
-	if ( gfItemDescObjectIsAttachment || !gpItemDescObject->exists() )
+	if ( gfItemDescObjectIsAttachment || !gpItemDescObject || !gpItemDescObject->exists() )
 	{
 		// screen out completely
 		return;
@@ -6295,6 +6295,10 @@ void ItemDescAttachmentsCallback( MOUSE_REGION * pRegion, INT32 iReason )
 	uiItemPos = MSYS_GetRegionUserData( pRegion, 0 );
 	ubStatusIndex = MSYS_GetRegionUserData( pRegion, 1 );
 	OBJECTTYPE* pAttachment = (*gpItemDescObject)[ubStatusIndex]->GetAttachmentAtIndex(uiItemPos);
+	if ( pAttachment == NULL )
+	{
+		return;
+	}
 
 	if (iReason & MSYS_CALLBACK_REASON_LBUTTON_UP)
 	{
@@ -8790,7 +8794,7 @@ void DrawItemTileCursor( )
 	{
 		/*CHRISL: For some reason it's possible that gpItemPointerSoldier is not correctly set when we come into this function, but we require it to be set for 
 			this function to work.  So for now, let's set it using gusUIFullTargetID.*/
-		if(gpItemPointerSoldier->exists() == false)
+			if(gpItemPointerSoldier == NULL)
 			gpItemPointerSoldier = gusUIFullTargetID;
 		if ( gfUIFullTargetFound )
 		{
@@ -12076,7 +12080,7 @@ void RemoveMoney()
 		}
 		else
 		{
-			if(gpItemPointer->exists() == true)
+				if(gpItemPointer != NULL && gpItemPointer->exists() == true)
 			{
 				CreateMoney( gRemoveMoney.uiMoneyRemoving, &gTempObject );
 				gItemPointer.AddObjectsToStack(gTempObject, -1, 0, NUM_INV_SLOTS, MAX_OBJECTS_PER_SLOT);

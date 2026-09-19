@@ -2616,7 +2616,7 @@ BOOLEAN EnoughAmmo( SOLDIERTYPE *pSoldier, BOOLEAN fDisplay, INT8 bInvPos )
 		{
 			UINT16 glItem = GetAttachedGrenadeLauncher( &(pSoldier->inv[bInvPos]));
 			OBJECTTYPE* pAttachment = FindLaunchableAttachment( &(pSoldier->inv[bInvPos]), glItem);
-			if ( pAttachment->exists() )
+				if ( pAttachment && pAttachment->exists() )
 				return TRUE;
 			else
 				return FALSE;
@@ -2748,14 +2748,14 @@ void DeductAmmo( SOLDIERTYPE *pSoldier, OBJECTTYPE* pObj )
 		else if ( Item[ pObj->usItem ].usItemClass == IC_LAUNCHER || ItemIsCannon(pObj->usItem) || pSoldier->bWeaponMode == WM_ATTACHED_GL || pSoldier->bWeaponMode == WM_ATTACHED_GL_BURST || pSoldier->bWeaponMode == WM_ATTACHED_GL_AUTO )
 		{
 			OBJECTTYPE* pAttachment = FindAttachmentByClass( pObj, IC_GRENADE );
-			if ( !pAttachment->exists() )
+				if ( !pAttachment || !pAttachment->exists() )
 			{
 				pAttachment = FindAttachmentByClass( pObj, IC_BOMB );
 			}
 
 			//CHRISL: Added a magsize value to Explosives.xml which is checked by GetExpMagSize.  This will allow OAS to load individual grenades into
 			//	multi-launch grenades and fire correctly
-			if (pAttachment->exists())
+				if (pAttachment && pAttachment->exists())
 			{
 				DebugMsg(TOPIC_JA2,DBG_LEVEL_3,String("DeductAmmo: deducting for GL: found attachment, about to decide whether to remove it"));
 				if ( Item[ pObj->usItem ].usItemClass == IC_LAUNCHER && GetExpMagSize(pAttachment) > 1 )

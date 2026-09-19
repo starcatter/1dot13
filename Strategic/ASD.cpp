@@ -1182,10 +1182,10 @@ void EnemyHeliMANPADSCheck( INT16 id )
 					if (ItemIsRocketLauncher(pObj->usItem) && !ItemIsSingleShotRocketLauncher(pObj->usItem))
 					{
 						OBJECTTYPE* pAttachment = FindAttachmentByClass( pObj, IC_GRENADE );
-						if ( !pAttachment->exists( ) )
+							if ( !pAttachment || !pAttachment->exists( ) )
 							pAttachment = FindAttachmentByClass( pObj, IC_BOMB );
 
-						if ( !pAttachment->exists( ) )
+							if ( !pAttachment || !pAttachment->exists( ) )
 							continue;
 					}
 

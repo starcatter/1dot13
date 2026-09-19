@@ -2477,17 +2477,19 @@ void HandleOtherGroupsArrivingSimultaneously( UINT8 ubSectorX, UINT8 ubSectorY, 
 	while( pEvent && pEvent->uiTimeStamp <= uiCurrTimeStamp )
 	{
 		if( pEvent->ubCallbackID == EVENT_GROUP_ARRIVAL && !(pEvent->ubFlags & SEF_DELETION_PENDING) )
-		{
-			pGroup = GetGroup( (UINT8)pEvent->uiParam );
-			Assert( pGroup );
-			if( pGroup->ubNextX == ubSectorX && pGroup->ubNextY == ubSectorY && pGroup->ubSectorZ == ubSectorZ )
 			{
-				if( pGroup->fBetweenSectors )
+				pGroup = GetGroup( (UINT8)pEvent->uiParam );
+				if( pGroup && pGroup->ubNextX == ubSectorX && pGroup->ubNextY == ubSectorY && pGroup->ubSectorZ == ubSectorZ )
 				{
-					GroupArrivedAtSector( (UINT8)pEvent->uiParam, FALSE, FALSE );
-					pGroup->uiFlags |= GROUPFLAG_GROUP_ARRIVED_SIMULTANEOUSLY;
-					++gubNumGroupsArrivedSimultaneously;
-					DeleteStrategicEvent( EVENT_GROUP_ARRIVAL, pGroup->ubGroupID );
+					if( pGroup->fBetweenSectors )
+					{
+						GroupArrivedAtSector( (UINT8)pEvent->uiParam, FALSE, FALSE );
+						// Arrival can dissolve the group, so resolve it again before touching it.
+						pGroup = GetGroup( (UINT8)pEvent->uiParam );
+						if( pGroup )
+							pGroup->uiFlags |= GROUPFLAG_GROUP_ARRIVED_SIMULTANEOUSLY;
+						++gubNumGroupsArrivedSimultaneously;
+						DeleteStrategicEvent( EVENT_GROUP_ARRIVAL, (UINT8)pEvent->uiParam );
 					pEvent = gpEventList;
 					continue;
 				}

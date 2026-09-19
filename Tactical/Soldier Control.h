@@ -1096,7 +1096,6 @@ public:
 	//	Use this instead of the old method of calling memset.
 	//	Note that the constructor does this automatically.
 	void initialize();
-	bool	exists();
 
 	// Note: Place all non-POD items at the end (after endOfPOD)
 	// The format of this structure affects what is written into and read from various

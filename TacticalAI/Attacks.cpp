@@ -928,7 +928,7 @@ void CalcBestThrow(SOLDIERTYPE *pSoldier, ATTACKTYPE *pBestThrow)
 		bPayloadPocket = HANDPOS;
 		pObjGL = FindAttachment_GrenadeLauncher(&pSoldier->inv[bPayloadPocket]);
 		OBJECTTYPE *pAttachment = FindLaunchableAttachment(&pSoldier->inv[bPayloadPocket], usInHand);
-		if(pAttachment->exists())
+		if(pAttachment && pAttachment->exists())
 		{
 			usGrenade = pAttachment->usItem;
 			ubSafetyMargin = (UINT8)(1 + max(Explosive[Item[usGrenade].ubClassIndex].ubRadius, min((UINT8)TACTICAL_RANGE / 2, Explosive[Item[usGrenade].ubClassIndex].ubFragRange / CELL_X_SIZE)));
@@ -2312,7 +2312,7 @@ INT32 EstimateThrowDamage( SOLDIERTYPE *pSoldier, UINT8 ubItemPos, SOLDIERTYPE *
 	else if (ItemIsRocketLauncher(usItem) || ItemIsGrenadeLauncher(usItem) || ItemIsMortar(usItem) )
 	{
 		OBJECTTYPE* pAttachment = FindLaunchableAttachment(&pSoldier->inv[ ubItemPos ],usItem ) ;
-		if ( pAttachment->exists() )
+		if ( pAttachment && pAttachment->exists() )
 			ubExplosiveIndex = Item[pAttachment->usItem].ubClassIndex;
 		else
 			return 0;
@@ -2320,7 +2320,7 @@ INT32 EstimateThrowDamage( SOLDIERTYPE *pSoldier, UINT8 ubItemPos, SOLDIERTYPE *
 	else if(IsGrenadeLauncherAttached(&pSoldier->inv[ubItemPos]))//dnl ch63 240813 situation when grenade is already in launcher
 	{
 		OBJECTTYPE *pAttachment = FindLaunchableAttachment(&pSoldier->inv[ubItemPos], GetAttachedGrenadeLauncher(&pSoldier->inv[ubItemPos]));
-		if(pAttachment->exists())
+		if(pAttachment && pAttachment->exists())
 			ubExplosiveIndex = Item[pAttachment->usItem].ubClassIndex;
 		else
 			return(0);

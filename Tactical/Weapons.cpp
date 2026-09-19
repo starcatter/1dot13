@@ -3395,7 +3395,7 @@ BOOLEAN UseGun( SOLDIERTYPE *pSoldier , INT32 sTargetGridNo )
 		//OBJECTTYPE* pAttachment = FindAttachment( pObjUsed, GUN_BARREL_EXTENDER );
 		OBJECTTYPE* pAttachment = FindAttachmentByAttachmentClass( pObjUsed, AC_EXTENDER );
 
-		if ( pAttachment->exists() )
+		if ( pAttachment && pAttachment->exists() )
 		{
 			// reduce status and see if it falls off
 			INT8 reduction = (INT8) Random( 2 );

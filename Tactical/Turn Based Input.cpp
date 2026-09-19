@@ -9062,7 +9062,7 @@ void HandleTacticalTakeItem( void )
 	pSoldier->HandleFlashLights();
 
 	// Set mouse
-	if( gpItemPointer->exists() )
+	if( gpItemPointer != NULL && gpItemPointer->exists() )
 	{
 		guiExternVo = GetInterfaceGraphicForItem( &(Item[ gpItemPointer->usItem ]) );
 		gusExternVoSubIndex = g_bUsePngItemImages ? 0 : Item[ gpItemPointer->usItem ].ubGraphicNum;

@@ -1689,6 +1689,8 @@ void CalculateWeapondata()
 		if ( pSoldier->bWeaponMode == WM_ATTACHED_GL || pSoldier->bWeaponMode == WM_ATTACHED_GL_BURST || pSoldier->bWeaponMode == WM_ATTACHED_GL_AUTO )
 		{
 			pObjUsed = FindAttachment_GrenadeLauncher(&pSoldier->inv[HANDPOS]);
+			if ( !pObjUsed )
+				pObjUsed = pObjPlatform;
 		}
 		else
 		{

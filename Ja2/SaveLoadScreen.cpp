@@ -1591,7 +1591,7 @@ BOOLEAN DisplaySaveGameEntry( INT32 bEntryID )
 			swprintf( zDifString, JA2_TEXT("%s %s"), gzGIOScreenText[ GIO_EASY_TEXT + SaveGameHeader.sInitialGameOptions.ubDifficultyLevel - 1 ], zSaveLoadText[ SLG_DIFF ] );
 
 			//make a string containing the extended options
-			swprintf( zMouseHelpTextString, JA2_TEXT("%s   %d   %d   %22ls %22ls %22ld"), zDifString,
+			swprintf( zMouseHelpTextString, JA2_TEXT("%s   %d   %d   %22ls %22ls %22u"), zDifString,
 				SaveGameHeader.sInitialGameOptions.ubBobbyRayQuality, 
 				SaveGameHeader.sInitialGameOptions.ubBobbyRayQuantity, 
 				SaveGameHeader.sInitialGameOptions.fGunNut ? zSaveLoadText[ SLG_ADDITIONAL_GUNS ] : zSaveLoadText[ SLG_NORMAL_GUNS ],

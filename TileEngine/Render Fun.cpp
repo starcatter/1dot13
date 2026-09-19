@@ -200,16 +200,26 @@ void ExamineGridNoForSlantRoofExtraGraphic( INT32 sCheckGridNo )
 	{
 		// We have a slanted roof here ... find base and remove...
 		pBase = FindBaseStructure( pStructure );
+		if ( pBase == NULL )
+		{
+			Assert( 0 );
+			return;
+		}
 
 		// Get LEVELNODE for struct and remove!
 		pNode = FindLevelNodeBasedOnStructure( pBase->sGridNo, pBase );
+		if ( pNode == NULL )
+		{
+			Assert( 0 );
+			return;
+		}
 
 		// Loop through each gridno and see if revealed....
 		for ( ubLoop = 0; ubLoop < pBase->pDBStructureRef->pDBStructure->ubNumberOfTiles; ubLoop++ )
 		{
 			ppTile = pBase->pDBStructureRef->ppTile;
 			sGridNo = AddPosRelToBase(pBase->sGridNo, ppTile[ubLoop]);
-			if (sGridNo < 0 || sGridNo > WORLD_MAX)
+			if (sGridNo < 0 || sGridNo >= WORLD_MAX)
 			{
 				continue;
 			}

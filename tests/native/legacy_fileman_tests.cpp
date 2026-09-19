@@ -1,6 +1,7 @@
 #include "FileMan.h"
 #include "fileio/PhysicalWritableStore.h"
 
+#include <algorithm>
 #include <array>
 #include <chrono>
 #include <filesystem>
@@ -64,6 +65,30 @@ int main()
 			read != actual.size() || actual != expected || !FileCheckEndOfFile(handle))
 		{
 			return 2;
+		}
+	}
+
+	{
+		std::unique_ptr<ja2::fileio::File> file = store.openRead("legacy.bin");
+		BorrowedFileHandle handle(*file, FILE_ACCESS_READ);
+		std::array<unsigned char, 8> actual;
+		actual.fill(0xA5);
+		UINT32 read = 0;
+		if (FileRead(handle, actual.data(), actual.size(), &read) || read != expected.size() ||
+			!std::equal(expected.begin(), expected.end(), actual.begin()) || actual[6] != 0 || actual[7] != 0)
+		{
+			return 3;
+		}
+	}
+
+	{
+		std::array<unsigned char, 4> actual;
+		actual.fill(0xA5);
+		UINT32 read = 99;
+		if (FileRead(0, actual.data(), actual.size(), &read) || read != 0 ||
+			actual != std::array<unsigned char, 4>{})
+		{
+			return 4;
 		}
 	}
 

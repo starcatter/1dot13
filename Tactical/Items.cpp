@@ -1979,7 +1979,7 @@ UINT8 CountThrowableGrenades(SOLDIERTYPE * pSoldier, UINT8 ubGrenadeType, UINT8 
 
 INT16 FindAttachmentSlot( OBJECTTYPE* pObj, UINT16 usItem, UINT8 subObject)
 {
-	if(UsingNewAttachmentSystem()==false || pObj->exists() == false)
+	if(UsingNewAttachmentSystem()==false || pObj == NULL || pObj->exists() == false)
 		return -1;
 
 	UINT8 loop = 0;
@@ -2072,7 +2072,7 @@ INT8 FindNonSmokeLaunchable( SOLDIERTYPE * pSoldier, UINT16 usWeapon )
 
 OBJECTTYPE* FindLaunchableAttachment( OBJECTTYPE * pObj, UINT16 usWeapon )
 {
-	if (pObj->exists() == true)
+	if (pObj != NULL && pObj->exists() == true)
 	{
 		for (attachmentList::iterator iter = (*pObj)[0]->attachments.begin(); iter != (*pObj)[0]->attachments.end(); ++iter)
 		{
@@ -3802,6 +3802,8 @@ INT8 FindAmmoToReload( SOLDIERTYPE * pSoldier, INT8 bWeaponIn, INT8 bExcludeSlot
 	{
 		pObj = FindAttachment_GrenadeLauncher(&pSoldier->inv[bWeaponIn]);
 		AssertMsg(pObj, "FindAmmoToReload: could not find attached grenade launcher.");
+		if ( pObj == NULL )
+			return( NO_SLOT );
 	}
 	else
 	{
@@ -4144,7 +4146,7 @@ INT8 GetAttachmentComboMerge( OBJECTTYPE * pObj, UINT8 subObject )
 			 * the Gun Barel Extender, since it would never been tested.
 			 */
 				pAttachment = FindAttachment( pObj, AttachmentComboMerge[ bIndex ].usAttachment[ bAttachLoop ], subObject );
-				if ( pAttachment->exists() == false )
+				if ( pAttachment == NULL || pAttachment->exists() == false )
 				{
 					// didn't find something required
 					break;
@@ -4153,7 +4155,7 @@ INT8 GetAttachmentComboMerge( OBJECTTYPE * pObj, UINT8 subObject )
 				// found everything required?
 		  /* 2007-05-27, Sgt_Kolja: Not-found-condition moved from above, otherwise we can only have ONE attachmentCombo per basic item */
 			//WarmSteel - Added check to see if the resulting item is valid.
-			if ( pAttachment->exists() && ItemIsLegal(AttachmentComboMerge[bIndex].usResult, TRUE) )
+			if ( pAttachment != NULL && pAttachment->exists() && ItemIsLegal(AttachmentComboMerge[bIndex].usResult, TRUE) )
 			{
 				return( bIndex );
 			}
@@ -4188,6 +4190,10 @@ void PerformAttachmentComboMerge( OBJECTTYPE * pObj, INT8 bAttachmentComboMerge 
 
 		OBJECTTYPE* pAttachment = FindAttachment( pObj, AttachmentComboMerge[ bAttachmentComboMerge ].usAttachment[ bAttachLoop ] );
 		AssertMsg( pAttachment != 0, String( "Attachment combo merge couldn't find a necessary attachment" ) );
+		if ( pAttachment == NULL )
+		{
+			return;
+		}
 
 		uiStatusTotal += (*pAttachment)[0]->data.objectStatus;
 		bNumStatusContributors++;
@@ -5132,12 +5138,13 @@ BOOLEAN OBJECTTYPE::AttachObjectNAS( SOLDIERTYPE * pSoldier, OBJECTTYPE * pAttac
 		//CHRISL: This section of code is also needed it we add any attachment that changes the valid attachments our item can use, so we should run it whenever we
 		//	add an attachment in NAS
 		//if (FindAttachment_GrenadeLauncher(this)->exists() && attachmentObject.exists())
-		if (attachmentObject.exists() && attachmentObject[0]->attachments.size() > 0 && FindAttachment(this, attachmentObject.usItem, subObject)->exists())
+		OBJECTTYPE* pFoundAttachment = FindAttachment(this, attachmentObject.usItem, subObject);
+		if (attachmentObject.exists() && attachmentObject[0]->attachments.size() > 0 && pFoundAttachment && pFoundAttachment->exists())
 		{
 			//Make sure it's actually on that gun..
 			//if(FindAttachment_GrenadeLauncher(this)->usItem == attachmentObject.usItem){
 			// Flugente: if we attach a gun to another gun, do not transfer attachments
-			if( Item[attachmentObject.usItem].usItemClass != IC_GUN  && FindAttachment(this, attachmentObject.usItem, subObject)->usItem == attachmentObject.usItem)
+			if( Item[attachmentObject.usItem].usItemClass != IC_GUN  && pFoundAttachment->usItem == attachmentObject.usItem)
 			{
 				// transfer the grenade from the grenade launcher to the gun
 
@@ -8843,12 +8850,12 @@ BOOLEAN OBJECTTYPE::RemoveAttachment( OBJECTTYPE * pAttachment, OBJECTTYPE * pNe
 		*pNewObj = removedAttachment;
 	}
 
-	if (pNewObj->exists() && ItemIsGrenadeLauncher(pNewObj->usItem))//UNDER_GLAUNCHER)
+		if (pNewObj && pNewObj->exists() && ItemIsGrenadeLauncher(pNewObj->usItem))//UNDER_GLAUNCHER)
 	{
 		// look for any grenade; if it exists, we must make it an
 		// attachment of the grenade launcher
 		OBJECTTYPE* pGrenade = FindAttachmentByClass( this, IC_GRENADE );
-		if (pGrenade->exists())
+			if (pGrenade && pGrenade->exists())
 		{
 			// we might have to do it in this order, because if we attach first,
 			// the object is pretty much gone and RemoveAttachment won't work (returns right away)

@@ -11,7 +11,7 @@
 	class popupCallback{
 	public:
 		popupCallback(void){}
-		~popupCallback(void){}
+		virtual ~popupCallback(void){}
 
 		virtual void bind(void* newFun) = 0;
 		virtual bool call(void) = 0;

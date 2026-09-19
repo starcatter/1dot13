@@ -1378,7 +1378,8 @@ void CalculatePopupTextPosition( INT16 sWidth, INT16 sHeight )
 
 BOOLEAN	TalkingMenuGiveItem( UINT8 ubNPC, OBJECTTYPE *pObject, INT8 bInvPos )
 {
-	CHECKF( SpecialCharacterDialogueEvent( DIALOGUE_SPECIAL_EVENT_GIVE_ITEM, (UINT32) ubNPC, reinterpret_cast<RUNTIME_PAYLOAD>(pObject), (UINT32) bInvPos, gTalkPanel.iFaceIndex, DIALOGUE_NPC_UI ) != FALSE );
+	(void)pObject;
+	CHECKF( SpecialCharacterDialogueEvent( DIALOGUE_SPECIAL_EVENT_GIVE_ITEM, (UINT32) ubNPC, 0, (UINT32) bInvPos, gTalkPanel.iFaceIndex, DIALOGUE_NPC_UI ) != FALSE );
 
 	return( TRUE );
 }
@@ -1456,8 +1457,15 @@ BOOLEAN SourceSoldierPointerIsValidAndReachableForGive( SOLDIERTYPE * pGiver )
 }
 
 
-void HandleNPCItemGiven( UINT8 ubNPC, OBJECTTYPE *pObject, INT8 bInvPos )
+void HandleNPCItemGiven( UINT8 ubNPC, INT8 bInvPos )
 {
+	SOLDIERTYPE *pNPC = FindSoldierByProfileID( ubNPC, FALSE );
+	if ( pNPC == NULL || bInvPos < 0 || bInvPos >= NUM_INV_SLOTS )
+	{
+		return;
+	}
+	OBJECTTYPE *pObject = &(pNPC->inv[bInvPos]);
+
 	DebugQuestInfo(String("HandleNPCItemGiven: <%d> item %d inv %d", ubNPC, pObject->usItem, bInvPos));
 	// Give it to the NPC soldier
 //	AutoPlaceObject( gpDestSoldier, pObject, FALSE );
@@ -1469,14 +1477,8 @@ void HandleNPCItemGiven( UINT8 ubNPC, OBJECTTYPE *pObject, INT8 bInvPos )
 
 		// have to walk up to the merc closest to ubNPC
 
-		SOLDIERTYPE *		pNPC;
-
-		pNPC = FindSoldierByProfileID( ubNPC, FALSE );
-		if ( pNPC )
-		{
-			AddItemToPool( pNPC->sGridNo, &(pNPC->inv[bInvPos]), TRUE, 0, 0, 0 );
-			TriggerNPCWithGivenApproach( ubNPC, APPROACH_DONE_GIVING_ITEM, TRUE );
-		}
+		AddItemToPool( pNPC->sGridNo, &(pNPC->inv[bInvPos]), TRUE, 0, 0, 0 );
+		TriggerNPCWithGivenApproach( ubNPC, APPROACH_DONE_GIVING_ITEM, TRUE );
 	}
 	else
 	{
@@ -4197,6 +4199,10 @@ void HandleNPCDoAction( UINT8 ubTargetNPC, UINT16 usActionCode, UINT8 ubQuoteNum
 					pSoldier = ChangeSoldierTeam( pSoldier, CIV_TEAM );
 				}
                 Assert(pSoldier);
+				if ( pSoldier == NULL )
+				{
+					break;
+				}
 				// remove profile from map
 				gMercProfiles[ pSoldier->ubProfile ].sSectorX = 0;
 				gMercProfiles[ pSoldier->ubProfile ].sSectorY = 0;

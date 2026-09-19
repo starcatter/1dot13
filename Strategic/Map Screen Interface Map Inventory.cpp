@@ -2477,10 +2477,16 @@ void BeginInventoryPoolPtr( OBJECTTYPE *pInventorySlot )
 
 		if ( _KeyDown ( CTRL ))//MM: Pass item to selected merc.  Delete if none selected.
 		{
-			SOLDIERTYPE *pSoldier = gCharactersList[ bSelectedInfoChar ].usSolID;
-			bool placedAllObjects = false;
+				SOLDIERTYPE *pSoldier = NULL;
+				if ( bSelectedInfoChar >= 0 && bSelectedInfoChar < giMAXIMUM_NUMBER_OF_PLAYER_SLOTS &&
+					gCharactersList[bSelectedInfoChar].fValid &&
+					gCharactersList[bSelectedInfoChar].usSolID < TOTAL_SOLDIERS )
+				{
+					pSoldier = MercPtrs[gCharactersList[bSelectedInfoChar].usSolID];
+				}
+				bool placedAllObjects = false;
 
-			if(pSoldier->exists() == true)
+				if(pSoldier != NULL)
 			{
 				UINT8 ubInitialNumberOfObjects = gpItemPointer->ubNumberOfObjects;
 

@@ -352,7 +352,7 @@ void DrawItemUIBarEx( OBJECTTYPE *pObject, UINT8 ubStatus, INT16 sXPos, INT16 sY
 	{
 		sValue = 0;	
 		OBJECTTYPE* pAttachment = (*pObject)[iter]->GetAttachmentAtIndex( ubStatus - DRAW_ITEM_STATUS_ATTACHMENT1 );
-		if (pAttachment->exists())
+		if (pAttachment && pAttachment->exists())
 		{
 			sValue = (*pAttachment)[iter]->data.objectStatus;
 
