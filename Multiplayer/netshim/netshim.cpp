@@ -439,8 +439,8 @@ void NetShimPeerState::DispatchRPC( Conn* c, const unsigned char* body, unsigned
 	if ( it == rpcs.end() )
 		return;   // unknown RPC name: drop silently (matches RakNet behavior for unregistered IDs)
 
-	// Zero-padded copy: the wrapper atoi()s / wcscpy()s wire data and relies on
-	// termination it never sends (e.g. receiveSETID's 1-byte payload).
+	// Zero-pad callback storage as a defensive convenience. Wrapper handlers must
+	// still validate numberOfBitsOfData before reading typed payloads or strings.
 	std::vector<unsigned char> buf( payloadLen + 4, 0 );
 	if ( payloadLen )
 		memcpy( buf.data(), payload, payloadLen );

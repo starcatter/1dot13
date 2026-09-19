@@ -139,6 +139,61 @@ RakPeerInterface *client = RakNetworkFactory::GetRakPeerInterface();
 // WANNE: FILE TRANSFER
 FileListTransfer fltClient;	// flt2
 
+namespace
+{
+	size_t RPCPayloadBytes(const RPCParameters* rpcParameters)
+	{
+		if (rpcParameters == NULL)
+			return 0;
+		return rpcParameters->numberOfBitsOfData / 8u +
+			((rpcParameters->numberOfBitsOfData % 8u) != 0u ? 1u : 0u);
+	}
+
+	template <typename T>
+	bool RPCContains(const RPCParameters* rpcParameters)
+	{
+		return rpcParameters != NULL && rpcParameters->input != NULL &&
+			RPCPayloadBytes(rpcParameters) >= sizeof(T);
+	}
+
+	template <size_t DestinationSize, size_t SourceSize>
+	void CopyFixedString(char (&destination)[DestinationSize], const char (&source)[SourceSize])
+	{
+		size_t length = 0;
+		while (length < SourceSize && source[length] != '\0')
+			++length;
+		if (length >= DestinationSize)
+			length = DestinationSize - 1;
+		memcpy(destination, source, length);
+		destination[length] = '\0';
+	}
+
+	bool IsSafeRelativeTransferPath(const char* path)
+	{
+		if (path == NULL || path[0] == '\0' || path[0] == '/' || path[0] == '\\' ||
+			strchr(path, ':') != NULL)
+		{
+			return false;
+		}
+
+		const char* component = path;
+		for (const char* cursor = path;; ++cursor)
+		{
+			if (*cursor == '/' || *cursor == '\\' || *cursor == '\0')
+			{
+				if (cursor - component == 2 && component[0] == '.' && component[1] == '.')
+					return false;
+				if (*cursor == '\0')
+					break;
+				component = cursor + 1;
+			}
+		}
+		return true;
+	}
+}
+
+#define RPC_REQUIRE_BYTES(parameters, type) do { if (!RPCContains<type>(parameters)) return; } while (0)
+
 char *ReplaceCharactersInString_Client(char *str, char *orig, char *rep)
 {
 	static char buffer[4096];
@@ -162,6 +217,11 @@ class ClientTransferCB : public FileListTransferCBInterface
 		// Now the file will be saved on the client
 		bool OnFile(OnFileStruct *onFileStruct)
 		{
+			if (onFileStruct == NULL || !IsSafeRelativeTransferPath(onFileStruct->fileName) ||
+				(onFileStruct->finalDataLength != 0 && onFileStruct->fileData == NULL))
+			{
+				return false;
+			}
 
 			if(!transferRules)
 			{
@@ -195,7 +255,7 @@ class ClientTransferCB : public FileListTransferCBInterface
 				return false;
 			}
 
-			strcpy(gCurrentTransferFilename,onFileStruct->fileName);
+			snprintf(gCurrentTransferFilename, sizeof(gCurrentTransferFilename), "%s", onFileStruct->fileName);
 			
 			try
 			{
@@ -231,13 +291,15 @@ class ClientTransferCB : public FileListTransferCBInterface
 		virtual void OnFileProgress(OnFileStruct *onFileStruct,unsigned int partCount,unsigned int partTotal,unsigned int partLength, char *firstDataChunk)
 		{
 			static UINT32 iNextTransferProgressUpdateTime;
+			if (onFileStruct == NULL || partTotal == 0 || !IsSafeRelativeTransferPath(onFileStruct->fileName))
+				return;
 
 			gCurrentTransferBytes += (INT32)(onFileStruct->finalDataLength * (float)(1.0f/(float)partTotal));
 
 			if (guiBaseJA2NoPauseClock >= iNextTransferProgressUpdateTime)
 			{
 				char *relativeFname = ReplaceCharactersInString_Client(onFileStruct->fileName, server_fileTransferDirectoryPath,"");
-				strcpy(gCurrentTransferFilename,relativeFname);
+				snprintf(gCurrentTransferFilename, sizeof(gCurrentTransferFilename), "%s", relativeFname);
 
 				iNextTransferProgressUpdateTime = guiBaseJA2NoPauseClock + 100;
 				// update all clients of our file transfer progress
@@ -419,13 +481,6 @@ typedef struct
 
 typedef struct
 {
-	UINT8 client_num;
-	bool status;
-	UINT8 ready_stage;
-} ready_struct;
-
-typedef struct
-{
 	INT32 remote_id;
 	INT32 local_id;
 
@@ -435,13 +490,6 @@ typedef struct
 	{
 		UINT8 ubResult;
 	}kickR;
-
-typedef struct
-{
-	UINT8 client_num;
-	BOOLEAN bToAll;
-	CHAR16 msg[512];
-} chat_msg;
 
 // OJW - 20091002 - explosions
 typedef struct
@@ -1403,7 +1451,15 @@ void send_ready ( void )
 
 void recieveREADY (RPCParameters *rpcParameters)
 {
-	ready_struct* info = (ready_struct*)rpcParameters->input;
+	RPC_REQUIRE_BYTES(rpcParameters, ready_struct);
+	ready_struct ready;
+	memcpy(&ready, rpcParameters->input, sizeof(ready));
+	if (ready.client_num < 1 || ready.client_num > 4 ||
+		(ready.ready_stage != 0 && ready.ready_stage != 1 && ready.ready_stage != 36))
+	{
+		return;
+	}
+	ready_struct* info = &ready;
 
 	if(info->ready_stage==1)//recived ok for go ahead from server for level load
 	{
@@ -2317,33 +2373,37 @@ void requestSETID(RPCParameters *rpcParameters)
 
 void requestSETTINGS(void)
 {
-	client_info cl_name;
-	strcpy(cl_name.client_name , cClientName);
+	client_info cl_name = {};
+	CopyFixedString(cl_name.client_name, cClientName);
 	cl_name.team = TEAM;
 	cl_name.cl_edge = cStartingSectorEdge;
 
 	// OJW - 20090507
 	// send client version to server
-	strcpy(cl_name.client_version,MPVERSION);
+	snprintf(cl_name.client_version, sizeof(cl_name.client_version), "%s", MPVERSION);
 	client->RPC("requestSETTINGS",(const char*)&cl_name, (int)sizeof(client_info)*8, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, UNASSIGNED_NETWORK_ID,0);
 }
 
 // OJW: FILE TRANSFER: Clients get notified of other clients transfer progress
 void recieveDOWNLOADSTATUS(RPCParameters *rpcParameters)
 {
-	progress_struct* prog = (progress_struct*)rpcParameters->input;
-	int i = prog->client_num - 1;
+	RPC_REQUIRE_BYTES(rpcParameters, progress_struct);
+	progress_struct prog;
+	memcpy(&prog, rpcParameters->input, sizeof(prog));
+	if (prog.client_num < 1 || prog.client_num > 4 || prog.progress > 100 || prog.downloading > 1)
+		return;
+	int i = prog.client_num - 1;
 
-	if (client_downloading[i] != prog->downloading)
+	if (client_downloading[i] != prog.downloading)
 	{
-		if (prog->downloading == 0)
+		if (prog.downloading == 0)
 			ScreenMsg( FONT_RED, MSG_MPSYSTEM, (is_server? MPServerMessage[11] : MPClientMessage[61]), client_names[i]); // message client has recieved all files
 		else
 			ScreenMsg( FONT_RED, MSG_MPSYSTEM, (is_server? MPServerMessage[12] : MPClientMessage[62]), client_names[i]);// send message client has started downloading files
 	}
 
-	client_downloading[i] = prog->downloading;
-	client_progress[i] = prog->progress;
+	client_downloading[i] = prog.downloading;
+	client_progress[i] = prog.progress;
 	
 	fDrawCharacterList = true;
 }
@@ -2352,14 +2412,25 @@ void recieveDOWNLOADSTATUS(RPCParameters *rpcParameters)
 void recieveFILE_TRANSFER_SETTINGS (RPCParameters *rpcParameters)
 {
 	if (!is_server && recieved_transfer_settings == 0)
-	{		
-		filetransfersettings_struct* fts = (filetransfersettings_struct*)rpcParameters->input;
+	{
+		RPC_REQUIRE_BYTES(rpcParameters, filetransfersettings_struct);
+		filetransfersettings_struct settings;
+		memcpy(&settings, rpcParameters->input, sizeof(settings));
+		settings.fileTransferDirectory[sizeof(settings.fileTransferDirectory) - 1] = '\0';
+		settings.serverName[sizeof(settings.serverName) - 1] = '\0';
+		if (settings.totalTransferBytes < 0 || settings.syncClientsDirectory < 0 ||
+			settings.syncClientsDirectory > 1 || !IsSafeRelativeTransferPath(settings.fileTransferDirectory))
+		{
+			return;
+		}
 
 		gCurrentTransferBytes = 0;
-		gTotalTransferBytes = fts->totalTransferBytes;
+		if (settings.totalTransferBytes > 0x7fffffffL)
+			return;
+		gTotalTransferBytes = static_cast<INT32>(settings.totalTransferBytes);
 
 		// Now get directory
-		strcpy( server_fileTransferDirectoryPath, fts->fileTransferDirectory );
+		CopyFixedString(server_fileTransferDirectoryPath, settings.fileTransferDirectory);
 		vfs::Path profileRoot = vfs::Path(
 			ja2::text::utf16ToUtf8ReplacingInvalid(gzFileTransferDirectory)) +
 			vfs::Path(server_fileTransferDirectoryPath);
@@ -2369,10 +2440,10 @@ void recieveFILE_TRANSFER_SETTINGS (RPCParameters *rpcParameters)
 		/////////////////////////////////////////////////////////////////////
 
 		recieved_transfer_settings = 1;
-		serverSyncClientsDirectory = fts->syncClientsDirectory;
+		serverSyncClientsDirectory = settings.syncClientsDirectory;
 
 		// We sync our MP game dir from the server
-		if (fts->syncClientsDirectory == 1)
+		if (settings.syncClientsDirectory == 1)
 		{
 			// profile is setup, nothing to do here
 		}
@@ -2381,19 +2452,30 @@ void recieveFILE_TRANSFER_SETTINGS (RPCParameters *rpcParameters)
 
 void recieveSETTINGS (RPCParameters *rpcParameters) //recive settings from server
 {
+	RPC_REQUIRE_BYTES(rpcParameters, settings_struct);
 	int startingEdge = MP_EDGE_NORTH;
 
-	settings_struct* cl_lan = (settings_struct*)rpcParameters->input;
+	settings_struct settings;
+	memcpy(&settings, rpcParameters->input, sizeof(settings));
+	settings.client_name[sizeof(settings.client_name) - 1] = '\0';
+	settings.server_name[sizeof(settings.server_name) - 1] = '\0';
+	settings.server_version[sizeof(settings.server_version) - 1] = '\0';
+	settings.kitBag[sizeof(settings.kitBag) - 1] = '\0';
+	for (size_t i = 0; i < 4; ++i)
+		settings.client_names[i][sizeof(settings.client_names[i]) - 1] = '\0';
+	if (settings.client_num < 1 || settings.client_num > 4)
+		return;
+	settings_struct* cl_lan = &settings;
 
 	char szDefault[30];
-	sprintf(szDefault, "%s",cl_lan->client_name);
+	CopyFixedString(szDefault, cl_lan->client_name);
 
 	// OJW - 20081204
 	// get complete client data from the server
 	memcpy( client_edges, cl_lan->client_edges , sizeof(int) * 5);
 	memcpy( client_teams, cl_lan->client_teams , sizeof(int) * 4);
 
-	if(!recieved_settings && strcmp(cl_lan->client_name, cClientName)==0)
+	if(!recieved_settings)
 	{
 		// This settings packet contains information and settings specifically for us
 		recieved_settings=1;
@@ -2407,11 +2489,13 @@ void recieveSETTINGS (RPCParameters *rpcParameters) //recive settings from serve
 		ubID_prefix = gTacticalStatus.Team[ netbTeam ].bFirstID;//over here now
 
 		memcpy( client_names , cl_lan->client_names, sizeof( char ) * 4 * 30 );
-		
-		strcpy(client_names[cl_lan->client_num-1],szDefault);
+		for (size_t i = 0; i < 4; ++i)
+			client_names[i][sizeof(client_names[i]) - 1] = '\0';
+
+		CopyFixedString(client_names[cl_lan->client_num-1], szDefault);
 
 		// OJW - 20081204
-		strcpy(cServerName,cl_lan->server_name);
+		CopyFixedString(cServerName, cl_lan->server_name);
 		gRandomMercs = cl_lan->randomMercs;
 		gRandomStartingEdge = cl_lan->randomStartingEdge;
 
@@ -2432,7 +2516,7 @@ void recieveSETTINGS (RPCParameters *rpcParameters) //recive settings from serve
 		int cnt;
 		int numnum = 0;
 		int kitnum = 0;
-		char tempstring[4];
+		char tempstring[8] = {};
 		memset( &kit, 0, sizeof( int )*20 );
 	
 		if (strcmp(cKitBag, "") != 0)
@@ -2451,9 +2535,11 @@ void recieveSETTINGS (RPCParameters *rpcParameters) //recive settings from serve
 				{
 					numnum=0;
 
+					if (kitnum >= static_cast<int>(sizeof(kit) / sizeof(kit[0])))
+						break;
 					kit[kitnum]=atoi(tempstring);
 
-					memset( &tempstring, 0, sizeof( char )*4 );
+					memset(tempstring, 0, sizeof(tempstring));
 
 					kitnum++;
 					continue;
@@ -2461,13 +2547,14 @@ void recieveSETTINGS (RPCParameters *rpcParameters) //recive settings from serve
 			
 				else if( _strnicmp(&tempc, "]",1) == 0)
 				{
-					kit[kitnum]=atoi(tempstring);
+					if (kitnum < static_cast<int>(sizeof(kit) / sizeof(kit[0])))
+						kit[kitnum]=atoi(tempstring);
 					break;
 				}
 				else
 				{
-				strncpy(&tempstring[numnum],&tempc,1);
-				numnum++;
+					if (numnum < (int)sizeof(tempstring) - 1)
+						tempstring[numnum++] = tempc;
 				}
 			}
 		}
@@ -2639,7 +2726,7 @@ void recieveSETTINGS (RPCParameters *rpcParameters) //recive settings from serve
 			
 			fDrawCharacterList = true; // set the character list to be redrawn
 	
-			strcpy(client_names[cl_lan->client_num-1],szDefault);
+			CopyFixedString(client_names[cl_lan->client_num-1], szDefault);
 
 			// OJW - 20091024 - extract random table
 			if (!is_server)
@@ -2656,7 +2743,7 @@ void recieveSETTINGS (RPCParameters *rpcParameters) //recive settings from serve
 
 		ScreenMsg( FONT_LTGREEN, MSG_MPSYSTEM, MPClientMessage[26],cl_lan->client_num,szDefault );
 			
-		strcpy(client_names[cl_lan->client_num-1],szDefault);				
+		CopyFixedString(client_names[cl_lan->client_num-1], szDefault);
 	}
 }
 
@@ -2838,7 +2925,12 @@ void reapplySETTINGS()
 
 void recieveTEAMCHANGE( RPCParameters *rpcParameters )
 {
-	teamchange_struct* cl_lan = (teamchange_struct*)rpcParameters->input;
+	RPC_REQUIRE_BYTES(rpcParameters, teamchange_struct);
+	teamchange_struct change;
+	memcpy(&change, rpcParameters->input, sizeof(change));
+	if (change.client_num < 1 || change.client_num > 4 || change.newteam >= MAX_MP_TEAMS)
+		return;
+	teamchange_struct* cl_lan = &change;
 
 	if (!can_teamchange())
 	{
@@ -2860,7 +2952,12 @@ void recieveTEAMCHANGE( RPCParameters *rpcParameters )
 
 void recieveEDGECHANGE( RPCParameters *rpcParameters )
 {
-	edgechange_struct* cl_lan = (edgechange_struct*)rpcParameters->input;
+	RPC_REQUIRE_BYTES(rpcParameters, edgechange_struct);
+	edgechange_struct change;
+	memcpy(&change, rpcParameters->input, sizeof(change));
+	if (change.client_num < 1 || change.client_num > 4 || change.newedge >= MAX_EDGES)
+		return;
+	edgechange_struct* cl_lan = &change;
 
 	if (!can_edgechange())
 	{
@@ -4453,7 +4550,13 @@ void recieve_door (RPCParameters *rpcParameters)
 
 void recieveCHATMSG(RPCParameters* rpcParameters)
 {
-	chat_msg* cmsg = (chat_msg*)rpcParameters->input;
+	RPC_REQUIRE_BYTES(rpcParameters, chat_msg);
+	chat_msg message;
+	memcpy(&message, rpcParameters->input, sizeof(message));
+	message.msg[sizeof(message.msg) / sizeof(message.msg[0]) - 1] = 0;
+	if (message.client_num < 1 || message.client_num > 4)
+		return;
+	chat_msg* cmsg = &message;
 
 	if (cGameType==MP_TYPE_TEAMDEATMATCH && cmsg->bToAll == false)
 	{
@@ -4476,7 +4579,11 @@ void recieveCHATMSG(RPCParameters* rpcParameters)
 void recieveDISCONNECT(RPCParameters* rpcParameters)
 {
 	// for starters - we shouldnt get a message for ourselves :)
-	int cl_num = (int) *rpcParameters->input; // cl_num starts at 1
+	RPC_REQUIRE_BYTES(rpcParameters, int);
+	int cl_num = 0;
+	memcpy(&cl_num, rpcParameters->input, sizeof(cl_num));
+	if (cl_num < 1 || cl_num > 4)
+		return;
 
 	wchar_t szPlayerName[30];
 	memset(szPlayerName,0,30*sizeof(wchar_t));
@@ -4532,8 +4639,11 @@ void recieveDISCONNECT(RPCParameters* rpcParameters)
 // this function stores a reason from the server that we were disconnected
 void recieveDISCONNECTREASON(RPCParameters *rpcParameters )
 {
-	CHAR16* reason = (CHAR16*)rpcParameters->input;
-	wcscpy(gszDisconnectReason,reason);
+	const size_t availableCharacters = RPCPayloadBytes(rpcParameters) / sizeof(CHAR16);
+	const size_t copyCharacters = availableCharacters < 254 ? availableCharacters : 254;
+	if (copyCharacters != 0 && rpcParameters != NULL && rpcParameters->input != NULL)
+		memcpy(gszDisconnectReason, rpcParameters->input, copyCharacters * sizeof(CHAR16));
+	gszDisconnectReason[copyCharacters] = 0;
 
 	is_connected=false;
 	auto_retry = false;
@@ -4793,6 +4903,11 @@ void send_gameover()
 
 void recieveGAMEOVER(RPCParameters *rpcParameters)
 {
+	if (rpcParameters == NULL || rpcParameters->input == NULL ||
+		RPCPayloadBytes(rpcParameters) < sizeof(player_stats) * 5)
+	{
+		return;
+	}
 	player_stats* data= (player_stats*)rpcParameters->input;
 	memcpy(gMPPlayerStats,data,sizeof(player_stats)*5);
 
@@ -4893,7 +5008,7 @@ void connect_client ( void )
 
 		memset( &readyteamreg , 0 , sizeof (int) * 10);
 		//OJW - 20081204
-		memset ( &client_names,NULL,sizeof(int)*4);
+		memset(client_names, 0, sizeof(client_names));
 		memset ( &client_ready,0,sizeof(int)*4);
 		memset ( &client_teams,0,sizeof(int)*4);
 

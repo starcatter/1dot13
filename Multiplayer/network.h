@@ -137,6 +137,20 @@ typedef struct
 
 typedef struct
 {
+	UINT8 client_num;
+	bool status;
+	UINT8 ready_stage;
+} ready_struct;
+
+typedef struct
+{
+	UINT8 client_num;
+	BOOLEAN bToAll;
+	CHAR16 msg[512];
+} chat_msg;
+
+typedef struct
+{
 	BOOLEAN fMarkInterruptOccurred;
 	INT8 bteam;
 	UINT8 ubid;

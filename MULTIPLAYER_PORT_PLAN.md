@@ -28,11 +28,12 @@ a worker thread.
 
 ## Implementation sequence
 
-1. **Portable transport foundation (active):** replace the native no-op facade
-   with the hardened SDL3_net adapter and real loopback tests. Keep the Wine
-   oracle on its no-op fallback until its host is switched to SDL.
-2. **Legacy wrapper hardening:** fix known frame-length, string, index, sender,
-   disconnect, and ownership bugs before exposing the menu for playtesting.
+1. **Portable transport foundation (complete):** the native build uses the
+   hardened SDL3_net adapter and real loopback tests. The Wine oracle retains
+   its no-op fallback.
+2. **Legacy wrapper hardening (active):** fix known frame-length, string, index,
+   sender, disconnect, and ownership bugs before exposing the menu for
+   playtesting.
 3. **Two-instance smoke:** host and join on loopback, complete settings/file
    negotiation, enter one tactical sector, exchange chat and basic actions.
 4. **Refinement passes:** test turns, interrupts, projectiles, explosions,
@@ -44,6 +45,13 @@ a worker thread.
    no longer depends on it.
 
 ## 1v13 lessons carried forward
+
+Multiplayer was imported wholesale in upstream commit `3e22dce31` (SVN r2144,
+2008-05-12), primarily from Hayden's independent dedicated-server work. The
+original design is a central relay whose host also connects a normal client to
+localhost; it is not an authoritative game server. File synchronization was a
+later addition made alongside the RakNet 3.401 update, not part of the original
+gameplay transport contract.
 
 The reference implementation first landed in `a43bcd686`, but later fixes are
 part of the minimum baseline: empty-set completion (`1f5cba35f`), nonblocking

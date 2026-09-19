@@ -20,6 +20,7 @@
 #include <vfs/Core/vfs_path.h>
 #include <limits>
 #include <memory>
+#include <string>
 #include "transfer_rules.h"
 #include "MPJoinScreen.h"
 #include "Game Init.h"
@@ -105,6 +106,38 @@ IncrementalReadInterface incrementalReadInterface;
 FileList fileList;
 // OJW - 20090405
 long fileListTotalBytes=0;
+
+namespace
+{
+	size_t RPCPayloadBytes(const RPCParameters* rpcParameters)
+	{
+		if (rpcParameters == NULL)
+			return 0;
+		return rpcParameters->numberOfBitsOfData / 8u +
+			((rpcParameters->numberOfBitsOfData % 8u) != 0u ? 1u : 0u);
+	}
+
+	template <typename T>
+	bool RPCContains(const RPCParameters* rpcParameters)
+	{
+		return rpcParameters != NULL && rpcParameters->input != NULL &&
+			RPCPayloadBytes(rpcParameters) >= sizeof(T);
+	}
+
+	template <size_t DestinationSize, size_t SourceSize>
+	void CopyFixedString(char (&destination)[DestinationSize], const char (&source)[SourceSize])
+	{
+		size_t length = 0;
+		while (length < SourceSize && source[length] != '\0')
+			++length;
+		if (length >= DestinationSize)
+			length = DestinationSize - 1;
+		memcpy(destination, source, length);
+		destination[length] = '\0';
+	}
+}
+
+#define RPC_REQUIRE_BYTES(parameters, type) do { if (!RPCContains<type>(parameters)) return; } while (0)
 
 int numreadyteams;
 int readyteamreg[10];
@@ -200,6 +233,15 @@ void sendPATH(RPCParameters *rpcParameters)
 // OJW - 20090405
 void sendDOWNLOADSTATUS(RPCParameters *rpcParameters)
 {
+	RPC_REQUIRE_BYTES(rpcParameters, progress_struct);
+	progress_struct progress;
+	memcpy(&progress, rpcParameters->input, sizeof(progress));
+	const int senderSlot = f_rec_num(3, rpcParameters->sender);
+	if (senderSlot < 0 || senderSlot >= 4 || progress.client_num != senderSlot + 1 ||
+		progress.progress > 100 || progress.downloading > 1)
+	{
+		return;
+	}
 	server->RPC("recieveDOWNLOADSTATUS",(const char*)rpcParameters->input, (*rpcParameters).numberOfBitsOfData, HIGH_PRIORITY, RELIABLE, 0, rpcParameters->sender, true, 0, UNASSIGNED_NETWORK_ID,0);
 }
 
@@ -279,6 +321,15 @@ void sendINTERRUPT(RPCParameters *rpcParameters)
 }
 void sendREADY(RPCParameters *rpcParameters)
 {
+	RPC_REQUIRE_BYTES(rpcParameters, ready_struct);
+	ready_struct ready;
+	memcpy(&ready, rpcParameters->input, sizeof(ready));
+	const int senderSlot = f_rec_num(3, rpcParameters->sender);
+	if (senderSlot < 0 || senderSlot >= 4 || ready.client_num != senderSlot + 1 ||
+		(ready.ready_stage != 0 && ready.ready_stage != 1 && ready.ready_stage != 36))
+	{
+		return;
+	}
 	server->RPC("recieveREADY",(const char*)rpcParameters->input, (*rpcParameters).numberOfBitsOfData, HIGH_PRIORITY, RELIABLE, 0, rpcParameters->sender, true, 0, UNASSIGNED_NETWORK_ID,0);
 }
 
@@ -472,11 +523,29 @@ void sendHEAL(RPCParameters *rpcParameters)
 // OJW - edge and team changes
 void sendEDGECHANGE(RPCParameters *rpcParameters)
 {
+	RPC_REQUIRE_BYTES(rpcParameters, edgechange_struct);
+	edgechange_struct change;
+	memcpy(&change, rpcParameters->input, sizeof(change));
+	const int senderSlot = f_rec_num(3, rpcParameters->sender);
+	if (senderSlot < 0 || senderSlot >= 4 || change.client_num != senderSlot + 1 ||
+		change.newedge >= MAX_EDGES)
+	{
+		return;
+	}
 	server->RPC("recieveEDGECHANGE",(const char*)rpcParameters->input, (*rpcParameters).numberOfBitsOfData, HIGH_PRIORITY, RELIABLE, 0, rpcParameters->sender, true, 0, UNASSIGNED_NETWORK_ID,0);
 }
 
 void sendTEAMCHANGE(RPCParameters *rpcParameters)
 {
+	RPC_REQUIRE_BYTES(rpcParameters, teamchange_struct);
+	teamchange_struct change;
+	memcpy(&change, rpcParameters->input, sizeof(change));
+	const int senderSlot = f_rec_num(3, rpcParameters->sender);
+	if (senderSlot < 0 || senderSlot >= 4 || change.client_num != senderSlot + 1 ||
+		change.newteam >= MAX_MP_TEAMS)
+	{
+		return;
+	}
 	server->RPC("recieveTEAMCHANGE",(const char*)rpcParameters->input, (*rpcParameters).numberOfBitsOfData, HIGH_PRIORITY, RELIABLE, 0, rpcParameters->sender, true, 0, UNASSIGNED_NETWORK_ID,0);
 }
 
@@ -487,7 +556,26 @@ void requestSETID(SystemAddress addr)
 
 void receiveSETID(RPCParameters *rpcParameters)
 {
-	setID = atoi((const char *)rpcParameters->input);
+	const size_t payloadBytes = RPCPayloadBytes(rpcParameters);
+	if (rpcParameters == NULL || rpcParameters->input == NULL || payloadBytes == 0 || payloadBytes > 6)
+		return;
+	unsigned int parsedSetID = 0;
+	bool sawDigit = false;
+	for (size_t i = 0; i < payloadBytes; ++i)
+	{
+		const unsigned char character = rpcParameters->input[i];
+		if (character == '\0')
+			break;
+		if (character < '0' || character > '9')
+			return;
+		sawDigit = true;
+		parsedSetID = parsedSetID * 10u + static_cast<unsigned int>(character - '0');
+		if (parsedSetID > 65535u)
+			return;
+	}
+	if (!sawDigit)
+		return;
+	setID = parsedSetID;
 
 	// WANNE: FILE TRANSFER: Send the files to the client
 	fltServer.Send(&fileList,server,rpcParameters->sender,setID,MEDIUM_PRIORITY,0,false, &incrementalReadInterface, 5000);
@@ -495,13 +583,15 @@ void receiveSETID(RPCParameters *rpcParameters)
 
 void startCOMBAT(RPCParameters *rpcParameters)
 {
+	RPC_REQUIRE_BYTES(rpcParameters, sc_struct);
 	if(!( gTacticalStatus.uiFlags & INCOMBAT ))
-	
+
 	{
+		sc_struct* data = (sc_struct*)rpcParameters->input;
+		if (data->ubStartingTeam >= MAXTEAMS)
+			return;
 
 		gTacticalStatus.uiFlags |= INCOMBAT;
-
-		sc_struct* data = (sc_struct*)rpcParameters->input;
 		EndTurn( data->ubStartingTeam );
 	}
 
@@ -509,7 +599,10 @@ void startCOMBAT(RPCParameters *rpcParameters)
 
 void sendREAL(RPCParameters *rpcParameters)
 {
+	RPC_REQUIRE_BYTES(rpcParameters, real_struct);
 	real_struct* rData = (real_struct*)rpcParameters->input;
+	if (rData->bteam < 0 || rData->bteam >= static_cast<INT8>(sizeof(readyteamreg) / sizeof(readyteamreg[0])))
+		return;
 
 	if(readyteamreg[rData->bteam]==0)
 	{
@@ -551,6 +644,12 @@ void sendGAMEOVER(RPCParameters *rpcParameters)
 
 void sendCHATMSG(RPCParameters *rpcParameters)
 {
+	RPC_REQUIRE_BYTES(rpcParameters, chat_msg);
+	chat_msg message;
+	memcpy(&message, rpcParameters->input, sizeof(message));
+	const int senderSlot = f_rec_num(3, rpcParameters->sender);
+	if (senderSlot < 0 || senderSlot >= 4 || message.client_num != senderSlot + 1)
+		return;
 	// ignore the RPCParams and send the server side scoreboard
 	server->RPC("recieveCHATMSG",(const char*)rpcParameters->input, (*rpcParameters).numberOfBitsOfData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, UNASSIGNED_NETWORK_ID,0);
 }
@@ -613,13 +712,13 @@ void requestFILE_TRANSFER_SETTINGS(RPCParameters *rpcParameters)
 {
 	SystemAddress sender = rpcParameters->sender;//get senders address
 
-	filetransfersettings_struct fts;
+	filetransfersettings_struct fts = {};
 
 	fts.syncClientsDirectory = gSyncGameDirectory;
-	strcpy(fts.fileTransferDirectory,
-		s_ServerId.getServerId(vfs::Path(
-			ja2::text::utf16ToUtf8ReplacingInvalid(gzFileTransferDirectory))).utf8().c_str());
-	strcpy(fts.serverName, cServerName);
+	const std::string transferDirectory = s_ServerId.getServerId(vfs::Path(
+		ja2::text::utf16ToUtf8ReplacingInvalid(gzFileTransferDirectory))).utf8();
+	snprintf(fts.fileTransferDirectory, sizeof(fts.fileTransferDirectory), "%s", transferDirectory.c_str());
+	CopyFixedString(fts.serverName, cServerName);
 	fts.totalTransferBytes = fileListTotalBytes;
 
 	// OJW - 200907819 - Only send to the client that asked for it
@@ -632,11 +731,22 @@ void requestFILE_TRANSFER_SETTINGS(RPCParameters *rpcParameters)
 //void send_settings (void)//send server settings to client
 void requestSETTINGS(RPCParameters *rpcParameters )
 {
+	RPC_REQUIRE_BYTES(rpcParameters, client_info);
 	// dont generate or send settings to a new user if they are about to be disconnected
 	// because no more players can join the the game
 	if (can_joingame())
 	{
-		client_info* clinf = (client_info*)rpcParameters->input;
+		client_info clientInfo;
+		memcpy(&clientInfo, rpcParameters->input, sizeof(clientInfo));
+		clientInfo.client_name[sizeof(clientInfo.client_name) - 1] = '\0';
+		clientInfo.client_version[sizeof(clientInfo.client_version) - 1] = '\0';
+		client_info* clinf = &clientInfo;
+		if (clinf->team < 0 || clinf->team >= MAX_MP_TEAMS ||
+			clinf->cl_edge < 0 || clinf->cl_edge >= MAX_EDGES)
+		{
+			server->CloseConnection(rpcParameters->sender, true);
+			return;
+		}
 
 		// OJW - 20090507
 		// Disconnect if version is wrong
@@ -656,15 +766,22 @@ void requestSETTINGS(RPCParameters *rpcParameters )
 		
 		//server assigned client numbers - hayden.
 		SystemAddress sender = rpcParameters->sender;//get senders address
-		int bslot = f_rec_num(0,blank);//get empty record slot
+		int bslot = f_rec_num(3, sender);
+		if (bslot < 0 || bslot >= 4)
+			bslot = f_rec_num(0,blank);//get empty record slot
+		if (bslot < 0 || bslot >= 4)
+		{
+			server->CloseConnection(rpcParameters->sender, true);
+			return;
+		}
 		client_d[bslot].address=sender; //record clients address
 		int new_cl_num = bslot+1;//client number to assign
 		client_d[bslot].cl_number=new_cl_num; //record clients number
 
-		settings_struct lan;
-		
+		settings_struct lan = {};
+
 		lan.client_num = new_cl_num; //new server assigned number
-		strcpy(lan.client_name , clinf->client_name);
+		CopyFixedString(lan.client_name, clinf->client_name);
 
 		lan.randomStartingEdge = gRandomStartingEdge;
 		lan.randomMercs = gRandomMercs;
@@ -764,7 +881,7 @@ void requestSETTINGS(RPCParameters *rpcParameters )
 		lan.disableSpectatorMode = gDisableSpectatorMode;
 
 		// OJW - 20081204
-		strcpy(lan.server_name , cServerName);
+		CopyFixedString(lan.server_name, cServerName);
 		memcpy(lan.client_edges,client_edges,sizeof(int)*5);
 		memcpy(lan.client_teams,client_teams,sizeof(int)*4);
 
@@ -773,9 +890,13 @@ void requestSETTINGS(RPCParameters *rpcParameters )
 
 		// OJW - 20090507
 		// send server version to client
-		strcpy(lan.server_version,MPVERSION);
+		snprintf(lan.server_version, sizeof(lan.server_version), "%s", MPVERSION);
 
-		server->RPC("recieveSETTINGS",(const char*)&lan, (int)sizeof(settings_struct)*8, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, UNASSIGNED_NETWORK_ID,0);
+		// Assign the joining client directly. Then notify every existing client of
+		// the roster entry without echoing a second copy to the joiner. The legacy
+		// broadcast made clients guess ownership by comparing player names.
+		server->RPC("recieveSETTINGS",(const char*)&lan, (int)sizeof(settings_struct)*8, HIGH_PRIORITY, RELIABLE, 0, sender, false, 0, UNASSIGNED_NETWORK_ID,0);
+		server->RPC("recieveSETTINGS",(const char*)&lan, (int)sizeof(settings_struct)*8, HIGH_PRIORITY, RELIABLE, 0, sender, true, 0, UNASSIGNED_NETWORK_ID,0);
 
 		// WANNE: FILE TRANSFER: A client connected -> start the file transfer!
 		if (gSyncGameDirectory)
