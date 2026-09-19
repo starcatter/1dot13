@@ -64,6 +64,12 @@ prepare_role() {
 prepare_role host
 prepare_role client
 
+# The legacy host screen requires its synchronization root to exist even when
+# SYNC_GAME_DIRECTORY is disabled, because it becomes the host's writable MP
+# overlay after the lobby starts. Empty directories are not shipped in the
+# baseline game archive, so create the default explicitly for smoke testing.
+mkdir -p "$game_dir/MULTIPLAYER/Servers/My Server"
+
 if [[ "$role" == prepare ]]; then
 	printf 'Prepared isolated host and client profiles in %s\n' "$test_root"
 	printf 'Run in two terminals:\n'
