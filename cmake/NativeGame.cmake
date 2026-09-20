@@ -146,6 +146,7 @@ target_link_libraries(JA2_native_Utils PRIVATE libsmacker::libsmacker)
 
 add_executable(ja2_native_blitter_tests
   tests/native/vobject_blitters_tests.cpp
+  sgp/ClipRectangle.cpp
   sgp/vobject_blitters_portable.cpp
   "TileEngine/renderworld_blitters_portable.cpp")
 target_include_directories(ja2_native_blitter_tests PRIVATE

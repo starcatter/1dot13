@@ -3,6 +3,7 @@ set(sgpSrc
 "${CMAKE_CURRENT_SOURCE_DIR}/application/ShutdownOnce.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Button Sound Control.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Button System.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/ClipRectangle.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Compression.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/crash_telemetry.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Cursor Control.cpp"

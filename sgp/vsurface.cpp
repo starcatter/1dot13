@@ -166,7 +166,7 @@ namespace SurfaceData
 		std::map<tID,tSurface>::iterator sit = SurfaceData::_surfaceID.begin();
 		for(;sit != SurfaceData::_surfaceID.end(); ++sit)
 		{
-			if(sit->second = surface)
+			if(sit->second == surface)
 			{
 				SurfaceData::_surfaceData[sit->second] = data;
 				SurfaceData::_surfaceOfData[data] = sit->first;
@@ -242,71 +242,6 @@ namespace SurfaceData
 		return 0;
 	}
 };
-
-ClipRectangle::ClipRectangle()
-{
-	cr.iLeft = 0;
-	cr.iTop = 0;
-	cr.iRight = 0;
-	cr.iBottom = 0;
-};
-
-void ClipRectangle::SetRect(SGPRect const& rect)
-{
-	Set(rect.iLeft, rect.iTop, rect.iRight, rect.iBottom);
-}
-void ClipRectangle::SetRect(unsigned int w, unsigned int h, int x, int y)
-{
-	Set(x,y,x+w,y+h);
-}
-void ClipRectangle::Set(int x1, int y1, int x2, int y2)
-{
-	cr.iLeft = x1;
-	cr.iRight = x2;
-	cr.iTop = y1;
-	cr.iBottom = y2;
-}
-
-/**
- * @returns: 
- *   NoClip      : value references are not modified
- *   FullClip    : value references are not modified, as the values lie completely outside. Why bother doing the extra work.
- *   PartialClip : value references are modified 
- */
-ClipRectangle::ClipType ClipRectangle::Clip(int& x, int& y, unsigned int& w, unsigned int& h)
-{
-	int right = x + w - 1;
-	int bottom = y + h - 1;
-	ClipType ct;
-	if( (ct = Clip(x,y,right,bottom)) == PartialClip)
-	{
-		w = right - x + 1;
-		h = bottom - y + 1;
-	}
-	return ct;
-}
-ClipRectangle::ClipType ClipRectangle::Clip(int& x1, int& y1, int& x2, int& y2)
-{
-	if( (x1 >= cr.iLeft)	&&
-		(x2 <= cr.iRight)	&&
-		(y1 >= cr.iTop)		&&
-		(y2 <= cr.iBottom) )
-	{
-		return NoClip;
-	}
-	if( (x1 > cr.iRight)	||	// right of rectangle
-		(x2 < cr.iLeft)		||	// left of rectangle
-		(y1 > cr.iBottom)	||	// below rectangle
-		(y2 < cr.iTop) )		// above rectangle
-	{
-		return FullClip;
-	}
-	if( x1 < cr.iLeft)		x1 = cr.iLeft;
-	if( x2 > cr.iRight)		x2 = cr.iRight;
-	if( y1 < cr.iTop)		y1 = cr.iTop;
-	if( y2 > cr.iBottom)	y2 = cr.iBottom;
-	return PartialClip;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //

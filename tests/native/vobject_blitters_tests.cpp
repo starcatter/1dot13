@@ -5,6 +5,7 @@
 #include <array>
 #include <cstddef>
 #include <initializer_list>
+#include <map>
 #include <numeric>
 
 BOOLEAN IsTileRedundent(UINT32 uiDestPitchBYTES, UINT16* pZBuffer,
@@ -15,6 +16,37 @@ UINT16 SCREEN_HEIGHT = 6;
 UINT16 IntensityTable[65536];
 UINT16 ShadeTable[65536];
 UINT16 White16BPPPalette[256];
+
+extern std::map<UINT32, ClipRectangle> g_SurfaceRectangle;
+
+namespace SurfaceData
+{
+namespace
+{
+std::map<BYTE*, tID> testSurfaceIds;
+}
+
+BYTE* SetApplicationData(BYTE* data)
+{
+	if (data != nullptr)
+		testSurfaceIds[data] = reinterpret_cast<tID>(data);
+	return data;
+}
+
+void ReleaseApplicationData(BYTE* data)
+{
+	const auto entry = testSurfaceIds.find(data);
+	if (entry == testSurfaceIds.end()) return;
+	g_SurfaceRectangle.erase(static_cast<UINT32>(entry->second));
+	testSurfaceIds.erase(entry);
+}
+
+tID GetSurfaceID(BYTE* data)
+{
+	const auto entry = testSurfaceIds.find(data);
+	return entry == testSurfaceIds.end() ? 0 : entry->second;
+}
+}
 
 namespace
 {
@@ -245,6 +277,53 @@ bool worldRenderUtilityPolicies()
 	depth.fill(50);
 	return IsTileRedundent(kPitchBytes, depth.data(), 50, &sprite.object, 2, 1, 0);
 }
+
+bool rawCopyClipsToRegisteredBuffers()
+{
+	constexpr std::size_t guardPixels = kWidth;
+	std::array<UINT16, kWidth * kHeight + guardPixels * 2> guardedDestination{};
+	Buffer source{};
+	std::iota(source.begin(), source.end(), static_cast<UINT16>(1));
+	guardedDestination.fill(0x7777);
+	UINT16* destination = guardedDestination.data() + guardPixels;
+
+	SurfaceData::SetApplicationData(reinterpret_cast<BYTE*>(destination));
+	g_SurfaceRectangle[static_cast<UINT32>(SurfaceData::GetSurfaceID(
+		reinterpret_cast<BYTE*>(destination)))].SetRect(kWidth, kHeight);
+	SurfaceData::SetApplicationData(reinterpret_cast<BYTE*>(source.data()));
+	g_SurfaceRectangle[static_cast<UINT32>(SurfaceData::GetSurfaceID(
+		reinterpret_cast<BYTE*>(source.data())))].SetRect(kWidth, kHeight);
+
+	const bool leftClipped = Blt16BPPTo16BPP(destination, kPitchBytes,
+		source.data(), kPitchBytes, -2, 0, 0, 0, 4, 1) &&
+		std::all_of(guardedDestination.begin(), guardedDestination.begin() + guardPixels,
+			[](UINT16 pixel) { return pixel == 0x7777; }) &&
+		destination[0] == source[2] && destination[1] == source[3];
+
+	std::fill_n(destination, kWidth * kHeight, static_cast<UINT16>(0x7777));
+	const bool topClipped = Blt16BPPTo16BPP(destination, kPitchBytes,
+		source.data(), kPitchBytes, 0, -1, 0, 0, 2, 2) &&
+		std::all_of(guardedDestination.begin(), guardedDestination.begin() + guardPixels,
+			[](UINT16 pixel) { return pixel == 0x7777; }) &&
+		destination[0] == source[kWidth] && destination[1] == source[kWidth + 1];
+
+	std::fill_n(destination, kWidth * kHeight, static_cast<UINT16>(0x7777));
+	const bool rightClipped = Blt16BPPTo16BPP(destination, kPitchBytes,
+		source.data(), kPitchBytes, static_cast<INT32>(kWidth - 1), 0,
+		0, 0, 4, 1) && destination[kWidth - 1] == source[0] &&
+		std::all_of(guardedDestination.end() - guardPixels, guardedDestination.end(),
+			[](UINT16 pixel) { return pixel == 0x7777; });
+
+	std::fill_n(destination, kWidth * kHeight, static_cast<UINT16>(0x7777));
+	const bool sourceClipped = Blt16BPPTo16BPP(destination, kPitchBytes,
+		source.data(), kPitchBytes, 0, 0, -2, 0, 4, 1) &&
+		destination[0] == 0x7777 && destination[1] == 0x7777 &&
+		destination[2] == source[0] && destination[3] == source[1];
+
+	SurfaceData::ReleaseApplicationData(reinterpret_cast<BYTE*>(source.data()));
+	SurfaceData::ReleaseApplicationData(reinterpret_cast<BYTE*>(destination));
+	return leftClipped && topClipped && rightClipped && sourceClipped;
+}
 }
 
 int main()
@@ -261,5 +340,6 @@ int main()
 	if (!obscuredPixelationDoesNotLeakShadow()) return 8;
 	if (!zStripDepthAndBurnThrough()) return 9;
 	if (!worldRenderUtilityPolicies()) return 10;
+	if (!rawCopyClipsToRegisteredBuffers()) return 11;
 	return 0;
 }

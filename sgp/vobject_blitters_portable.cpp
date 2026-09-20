@@ -24,6 +24,37 @@ std::map<UINT32, ClipRectangle> g_SurfaceRectangle;
 
 namespace ja2::blitter
 {
+bool clipKnownBuffer(BYTE* data, INT32& x, INT32& y, UINT32& width,
+	UINT32& height, INT32& pairedX, INT32& pairedY)
+{
+	const SurfaceData::tID id = SurfaceData::GetSurfaceID(data);
+	if (id == 0) return true;
+	const auto bounds = g_SurfaceRectangle.find(static_cast<UINT32>(id));
+	if (bounds == g_SurfaceRectangle.end()) return true;
+
+	const INT32 oldX = x;
+	const INT32 oldY = y;
+	const ClipRectangle::ClipType result =
+		bounds->second.Clip(x, y, width, height);
+	if (result == ClipRectangle::FullClip) return false;
+	if (result == ClipRectangle::PartialClip)
+	{
+		pairedX += x - oldX;
+		pairedY += y - oldY;
+	}
+	return width != 0 && height != 0;
+}
+
+bool clipCopyRect(UINT16* destination, UINT16* source,
+	INT32& destinationX, INT32& destinationY, INT32& sourceX,
+	INT32& sourceY, UINT32& width, UINT32& height)
+{
+	if (!clipKnownBuffer(reinterpret_cast<BYTE*>(destination), destinationX,
+		destinationY, width, height, sourceX, sourceY)) return false;
+	return clipKnownBuffer(reinterpret_cast<BYTE*>(source), sourceX, sourceY,
+		width, height, destinationX, destinationY);
+}
+
 struct PaintedPixel
 {
 	UINT16 color;
@@ -356,12 +387,20 @@ UINT16* InitZBuffer(UINT32 pitch, UINT32 height)
 	ClippingRect.iRight = SCREEN_WIDTH;
 	ClippingRect.iBottom = SCREEN_HEIGHT;
 	UINT16* buffer = static_cast<UINT16*>(MemAlloc(static_cast<std::size_t>(pitch) * height));
-	if (buffer) std::memset(buffer, 0, static_cast<std::size_t>(pitch) * height);
+	if (buffer)
+	{
+		std::memset(buffer, 0, static_cast<std::size_t>(pitch) * height);
+		BYTE* data = reinterpret_cast<BYTE*>(buffer);
+		SurfaceData::SetApplicationData(data);
+		g_SurfaceRectangle[static_cast<UINT32>(SurfaceData::GetSurfaceID(data))]
+			.SetRect(pitch / sizeof(UINT16), height);
+	}
 	return buffer;
 }
 
 BOOLEAN ShutdownZBuffer(UINT16* buffer)
 {
+	SurfaceData::ReleaseApplicationData(reinterpret_cast<BYTE*>(buffer));
 	MemFree(buffer);
 	return TRUE;
 }
@@ -570,9 +609,20 @@ BOOLEAN Blt16BPPTo16BPP(UINT16* destination, UINT32 destinationPitch, UINT16* so
 	INT32 destinationX, INT32 destinationY, INT32 sourceX, INT32 sourceY, UINT32 width, UINT32 height)
 {
 	if (!destination || !source) return FALSE;
-	for (UINT32 row=0; row<height; ++row)
-		std::memmove(reinterpret_cast<UINT8*>(destination) + static_cast<std::size_t>(destinationY+row)*destinationPitch + destinationX*2,
-			reinterpret_cast<UINT8*>(source) + static_cast<std::size_t>(sourceY+row)*sourcePitch + sourceX*2, width*2);
+	if (!clipCopyRect(destination, source, destinationX, destinationY, sourceX,
+		sourceY, width, height)) return TRUE;
+	const bool copyBottomUp = destination == source && destinationY > sourceY;
+	for (UINT32 step = 0; step < height; ++step)
+	{
+		const UINT32 row = copyBottomUp ? height - 1 - step : step;
+		std::memmove(reinterpret_cast<UINT8*>(destination) +
+			static_cast<std::size_t>(destinationY + row) * destinationPitch +
+			static_cast<std::size_t>(destinationX) * sizeof(UINT16),
+			reinterpret_cast<UINT8*>(source) +
+			static_cast<std::size_t>(sourceY + row) * sourcePitch +
+			static_cast<std::size_t>(sourceX) * sizeof(UINT16),
+			static_cast<std::size_t>(width) * sizeof(UINT16));
+	}
 	return TRUE;
 }
 
@@ -580,6 +630,8 @@ BOOLEAN Blt16BPPTo16BPPTrans(UINT16* destination, UINT32 destinationPitch, UINT1
 	INT32 destinationX, INT32 destinationY, INT32 sourceX, INT32 sourceY, UINT32 width, UINT32 height, UINT16 transparent)
 {
 	if (!destination || !source) return FALSE;
+	if (!clipCopyRect(destination, source, destinationX, destinationY, sourceX,
+		sourceY, width, height)) return TRUE;
 	for (UINT32 row=0; row<height; ++row)
 	{
 		UINT16* d = reinterpret_cast<UINT16*>(reinterpret_cast<UINT8*>(destination) + static_cast<std::size_t>(destinationY+row)*destinationPitch) + destinationX;
@@ -593,6 +645,8 @@ BOOLEAN Blt16BPPTo16BPPTransShadow(UINT16* destination, UINT32 destinationPitch,
 	INT32 destinationX, INT32 destinationY, INT32 sourceX, INT32 sourceY, UINT32 width, UINT32 height, UINT16 transparent)
 {
 	if (!destination || !source) return FALSE;
+	if (!clipCopyRect(destination, source, destinationX, destinationY, sourceX,
+		sourceY, width, height)) return TRUE;
 	for (UINT32 row=0; row<height; ++row)
 	{
 		UINT16* d = reinterpret_cast<UINT16*>(reinterpret_cast<UINT8*>(destination) + static_cast<std::size_t>(destinationY+row)*destinationPitch) + destinationX;
