@@ -209,6 +209,109 @@ Upstream PR checklist:
 - Exercise combat hit, damage, item wear, and progression rolls in multiplayer;
   all use the synchronized stream.
 
+## Explosion queue save field overruns its runtime counter
+
+Status: fixed locally on 2026-09-20 in commit `f6d395a54`; confirmed by
+AddressSanitizer while loading a tactical save. This is a pre-existing 1.13 bug
+and the fix preserves the established Windows save format.
+
+`gubElementsOnExplosionQueue` is a one-byte `UINT8`, but
+`SaveExplosionTableToSaveGameFile` passed its address to `FileWrite` with a
+four-byte `UINT32` size. Saving therefore read three bytes beyond the counter.
+Loading performed the inverse four-byte write into the one-byte global and
+overwrote the next three bytes of global storage. The local fix transfers the
+on-disk value through a `UINT32` temporary, validates it against
+`MAX_BOMB_QUEUE`, and converts it to `UINT8` only after validation.
+
+Upstream PR checklist:
+
+- Extract the `TileEngine/Explosion Control.cpp` hunk from `f6d395a54`; the
+  other hunk in that commit fixes an unrelated opponent-list bug.
+- Retain the four-byte field on disk so existing 32-bit Windows saves remain
+  compatible.
+- Round-trip saves with empty, partially populated, and maximum-sized explosion
+  queues and compare the serialized field with the old format.
+- Reject a corrupt queue count greater than `MAX_BOMB_QUEUE` before indexing
+  `gExplosionQueue`.
+
+## Public opponent memory decays beyond its lookup-table domain
+
+Status: fixed locally on 2026-09-20 in commit `f6d395a54`; confirmed by
+AddressSanitizer during a strategic update after loading a tactical save. This
+is pre-existing gameplay logic, independent of the native port.
+
+`DecayPublicOpplist` incremented `OLDEST_SEEN_VALUE` or decremented
+`OLDEST_HEARD_VALUE` before asking `UpdatePublic` to forget the entry. That
+temporarily creates an opponent-knowledge value outside the defined range.
+`UpdatePublic` uses the value to index the 10-by-10 `gubKnowledgeValue` table,
+causing an out-of-bounds read. The local fix forgets an entry while it still has
+the oldest valid value; only younger entries are advanced.
+
+Upstream PR checklist:
+
+- Extract the `Tactical/opplist.cpp` hunk from `f6d395a54` separately from the
+  explosion-save fix.
+- Exercise both the oldest-seen and oldest-heard decay paths.
+- Assert or exhaustively test that every value passed to `UpdatePublic` lies in
+  `OLDEST_HEARD_VALUE..OLDEST_SEEN_VALUE` or equals `NOT_HEARD_OR_SEEN`.
+- Advance strategic time after tactical combat and verify public knowledge is
+  forgotten at the same turn as before.
+
+## Surface-data lookup assigns instead of comparing
+
+Status: fixed locally on 2026-09-20 as one line inside port commit `d016d012d`;
+pre-existing source defect, but no dedicated legacy-runtime reproducer yet.
+Submit only the minimal comparison fix, not that commit's portable-blitter work.
+
+`SurfaceData::SetSurfaceData(HVSURFACE, BYTE*)` used
+`if (sit->second = surface)`. For any non-null surface this mutates the first
+registry entry and treats it as a match instead of searching for the requested
+surface. The local code uses `==`. The overload appears uncommon, which likely
+explains why this remained latent.
+
+Upstream PR checklist:
+
+- Apply only the `=` to `==` change in `sgp/vsurface.cpp`.
+- Register at least two surfaces, lock the second by handle, and verify the
+  returned buffer is associated with the second surface ID without modifying
+  the first registry entry.
+- Do not include `ClipRectangle.cpp` or portable raw-blitter changes from
+  `d016d012d`.
+
+## ClipRectangle width and height admit one pixel past the surface
+
+Status: fixed locally on 2026-09-20 as part of `d016d012d`; pre-existing
+inclusive-boundary inconsistency exposed while hardening the portable blitters.
+Extract as a focused legacy bounds fix rather than cherry-picking the port
+commit.
+
+`ClipRectangle::Clip(x, y, width, height)` constructs an inclusive last pixel as
+`x + width - 1`, but `SetRect(width, height, x, y)` formerly stored its inclusive
+right and bottom boundaries as `x + width` and `y + height`. A rectangle ending
+one pixel beyond the allocation could consequently be classified as in bounds.
+The local implementation stores `x + width - 1` and `y + height - 1`, and treats
+zero-sized rectangles as fully clipped.
+
+Upstream PR checklist:
+
+- Port the small `SetRect` and zero-size changes back to the location of
+  `ClipRectangle` in current upstream; its move to `sgp/ClipRectangle.cpp` is
+  organizational and not required.
+- Test all four edges, one-pixel surfaces, and zero width/height.
+- Audit callers that construct an `SGPRect` directly, since those retain their
+  existing coordinate convention.
+
+## Portable raw surface copies lost legacy bounds checks
+
+Status: fixed locally on 2026-09-20 in `d016d012d`; port regression, explicitly
+not a legacy 1.13 upstream candidate.
+
+The portable replacement for `Blt16BPPTo16BPP` omitted the surface registry and
+clipping performed by the old implementation. A shifted-overlay restoration
+could therefore write before `BACKBUFFER`; glibc detected the damaged allocator
+header only later while freeing the buffer during shutdown. This belongs with
+the portable blitter rewrite. Do not include it in a base-1.13 bug-fix PR.
+
 ## Unfocused multiplayer clients stop pumping the transport
 
 Status: fixed locally on 2026-09-20; portable-host integration issue, not a
