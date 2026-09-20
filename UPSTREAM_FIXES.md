@@ -187,17 +187,27 @@ Upstream PR checklist:
 - Reload a weapon from a mixed magazine stack and verify the ejected magazine
   is autoplaced or dropped rather than merged into an incompatible stack.
 
-## Multiplayer movement passively trains physical stats
+## Multiplayer synchronized RNG collapses on non-MSVC runtimes
 
-Status: fixed locally on 2026-09-20; reproduced by gaining health and strength
-after ordinary tactical movement. Suitable for a focused multiplayer rules PR.
+Status: fixed locally on 2026-09-20; reproduced as several health and strength
+increases while crossing roughly half a tactical map. Suitable for a focused
+base-engine portability PR.
 
-The normal exertion trainer in `DeductPoints` awards health and strength chances
-for breath spent while moving. Multiplayer maps make that repeatable inside a
-short match, and other passive/strategic stat sources can run while networked as
-well. The local fix disables exertion training in multiplayer and centrally
-rejects non-combat passive stat changes while retaining deliberate in-combat
-skill gains such as shooting, first aid, and lock work.
+`MPPreRandom` scales full-width `UINT32` table entries with `RAND_MAX`. That
+constant is only 32767 in MSVC but commonly 2147483647 in glibc. After the
+32-bit multiplication wraps, the glibc calculation returns almost exclusively
+zero or one for ordinary ranges. Low-probability checks consequently succeed
+almost every time, affecting much more than stat progression. The local fix
+uses the high half of a 32-by-32-bit product, producing the same deterministic,
+well-distributed result on Windows and Linux without depending on the C runtime.
+
+Upstream PR checklist:
+
+- Add fixed-vector tests for zero, midpoint, and maximum `UINT32` inputs.
+- Verify a synchronized table produces identical results in 32-bit Windows and
+  64-bit Linux builds.
+- Exercise combat hit, damage, item wear, and progression rolls in multiplayer;
+  all use the synchronized stream.
 
 ## Unfocused multiplayer clients stop pumping the transport
 

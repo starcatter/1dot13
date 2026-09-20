@@ -1,4 +1,5 @@
 #include "random.h"
+#include "RandomScaling.h"
 #include "GameRandom.h"
 #include "Debug Control.h"
 #include "input.h"
@@ -23,7 +24,11 @@ UINT32 MPPreRandom( UINT32 uiRange )
 	if( uiRange == 0 )
 		return 0;
 	//Extract the current pregenerated number
-	uiNum = guiPreRandomNums[ guiPreRandomIndex ] * uiRange / RAND_MAX % uiRange;
+	// The synchronized table contains full-width UINT32 values.  Scaling by
+	// RAND_MAX made multiplayer randomness depend on the C runtime: MSVC uses
+	// 32767, while glibc commonly uses 2147483647.  The latter reduced most
+	// practical ranges to almost exclusively 0 and 1 after UINT32 overflow.
+	uiNum = ja2::random::ScaleUint32ToRange(guiPreRandomNums[guiPreRandomIndex], uiRange);
 
 	if (gfMPDebugOutputRandoms)
 	{
