@@ -5035,6 +5035,7 @@ BOOLEAN SaveExplosionTableToSaveGameFile( HWFILE hFile )
 	UINT32 uiNumBytesWritten;
 	UINT32 uiExplosionCount=0;
 	UINT32 uiCnt;
+	const UINT32 uiElementsOnExplosionQueue = gubElementsOnExplosionQueue;
 
 
 	//
@@ -5043,7 +5044,9 @@ BOOLEAN SaveExplosionTableToSaveGameFile( HWFILE hFile )
 
 
 	//Write the number of explosion queues
-	FileWrite( hFile, &gubElementsOnExplosionQueue, sizeof( UINT32 ), &uiNumBytesWritten );
+	// The on-disk field has always been a UINT32 even though the runtime
+	// counter is a UINT8.  Do not read beyond the one-byte runtime object.
+	FileWrite( hFile, &uiElementsOnExplosionQueue, sizeof( uiElementsOnExplosionQueue ), &uiNumBytesWritten );
 	if( uiNumBytesWritten != sizeof( UINT32 ) )
 	{
 		FileClose( hFile );
@@ -5113,6 +5116,7 @@ BOOLEAN LoadExplosionTableFromSavedGameFile( HWFILE hFile )
 {
 	UINT32 uiNumBytesRead;
 	UINT32 uiCnt;
+	UINT32 uiElementsOnExplosionQueue;
 
 
 	//
@@ -5123,11 +5127,16 @@ BOOLEAN LoadExplosionTableFromSavedGameFile( HWFILE hFile )
 	memset( gExplosionQueue, 0, sizeof( ExplosionQueueElement ) * MAX_BOMB_QUEUE );
 
 	//Read the number of explosions queue's
-	FileRead( hFile, &gubElementsOnExplosionQueue, sizeof( UINT32 ), &uiNumBytesRead );
+	FileRead( hFile, &uiElementsOnExplosionQueue, sizeof( uiElementsOnExplosionQueue ), &uiNumBytesRead );
 	if( uiNumBytesRead != sizeof( UINT32 ) )
 	{
 		return( FALSE );
 	}
+	if( uiElementsOnExplosionQueue > MAX_BOMB_QUEUE )
+	{
+		return( FALSE );
+	}
+	gubElementsOnExplosionQueue = static_cast<UINT8>(uiElementsOnExplosionQueue);
 
 
 	//loop through read all the active explosions fro the file

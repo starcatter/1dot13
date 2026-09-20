@@ -7157,22 +7157,11 @@ void DecayPublicOpplist(INT8 bTeam)
 			// well, that make this a "publicly known opponent", so nuke that flag
 			bNoPubliclyKnownOpponents = FALSE;
 
-			// if this person has been SEEN recently, but is not currently visible
-			if (*pbPublOL >= SEEN_THIS_TURN)
-			{
-				(*pbPublOL)++;		// increment how long it's been
-			}
-			else
-			{
-				// if this person has been only HEARD recently
-				if (*pbPublOL <= HEARD_THIS_TURN)
-				{
-					(*pbPublOL)--;	// increment how long it's been
-				}
-			}
-
-			// if it's been longer than the maximum we care to remember
-			if ((*pbPublOL > OLDEST_SEEN_VALUE) || (*pbPublOL < OLDEST_HEARD_VALUE))
+			// Forget an oldest entry before advancing it beyond the range used
+			// to index gubKnowledgeValue.  The old code first produced 6 or -5,
+			// then UpdatePublic indexed the 10x10 table with that invalid value.
+			if ((*pbPublOL == OLDEST_SEEN_VALUE) ||
+				(*pbPublOL == OLDEST_HEARD_VALUE))
 			{
 #ifdef RECORDOPPLIST
 				fprintf(OpplistFile,"UpdatePublic (DecayPublicOpplist) for team %d about %d\n",team,pSoldier->guynum);
@@ -7182,6 +7171,14 @@ void DecayPublicOpplist(INT8 bTeam)
 				// and also forget where he was last seen (it's been too long)
 				// this is mainly so POINT_PATROL guys don't SEEK_OPPONENTs forever
 				UpdatePublic(bTeam,pSoldier->ubID,NOT_HEARD_OR_SEEN,NOWHERE,0);
+			}
+			else if (*pbPublOL >= SEEN_THIS_TURN)
+			{
+				(*pbPublOL)++;		// increment how long it's been
+			}
+			else if (*pbPublOL <= HEARD_THIS_TURN)
+			{
+				(*pbPublOL)--;	// increment how long it's been
 			}
 		}
 	}
