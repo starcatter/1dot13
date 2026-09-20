@@ -72,6 +72,8 @@ bool Sdl3ApplicationHost::initialize(
 		setSdlError(error, "SDL_GetWindowID failed");
 		return false;
 	}
+	setFocusedMouseOwnership(
+		(SDL_GetWindowFlags(window_) & SDL_WINDOW_INPUT_FOCUS) != 0);
 	error.clear();
 	return true;
 }
@@ -80,6 +82,7 @@ Sdl3ApplicationHost::~Sdl3ApplicationHost()
 {
 	if (window_ != nullptr)
 	{
+		setFocusedMouseOwnership(false);
 		SDL_DestroyWindow(window_);
 		window_ = nullptr;
 	}
@@ -121,6 +124,12 @@ HostPumpResult Sdl3ApplicationHost::waitAndDispatchOne(
 	{
 		return {HostPumpStatus::quitRequested, 0};
 	}
+	if ((event.type == SDL_EVENT_WINDOW_FOCUS_GAINED ||
+		event.type == SDL_EVENT_WINDOW_FOCUS_LOST) &&
+		event.window.windowID == windowId_)
+	{
+		setFocusedMouseOwnership(event.type == SDL_EVENT_WINDOW_FOCUS_GAINED);
+	}
 
 	eventSink_.dispatch(event);
 	return {HostPumpStatus::eventDispatched, 0};
@@ -136,6 +145,29 @@ void Sdl3ApplicationHost::minimize() noexcept
 	if (window_ != nullptr)
 	{
 		SDL_MinimizeWindow(window_);
+	}
+}
+
+void Sdl3ApplicationHost::setFocusedMouseOwnership(bool focused) noexcept
+{
+	if (window_ == nullptr)
+	{
+		return;
+	}
+
+	// JA2 draws its own cursor and consumes absolute mouse coordinates. A
+	// window grab confines those coordinates without enabling relative mode.
+	// Release and reveal the host cursor whenever focus leaves the game so the
+	// desktop remains usable.
+	if (focused)
+	{
+		SDL_SetWindowMouseGrab(window_, true);
+		SDL_HideCursor();
+	}
+	else
+	{
+		SDL_SetWindowMouseGrab(window_, false);
+		SDL_ShowCursor();
 	}
 }
 

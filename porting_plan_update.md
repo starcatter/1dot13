@@ -629,3 +629,43 @@ The native Linux x64 build now serializes pointer-bearing and ABI-sensitive save
 Compatibility was exercised against three controlled Win32 saves (game start, one recruited mercenary, and tactical entry) plus 29 older Wine/Win32 saves. All loaded in native x64. A feature-rich tactical save was then round-tripped native x64 -> current Win32/Wine -> native x64, and the same native save loaded in native i686. The save stream was consumed to its expected final byte in these tests.
 
 Remaining validation is behavioral rather than a known format failure: play for an extended period after loading representative older saves, save again from both platforms, and confirm strategic/tactical transitions and mod-specific state. Keep the legacy Win32 save layout as the single supported on-disk format; host pointer width and compiler ABI must never define new save data.
+
+## Native Playtest and Release Gates (2026-09-20)
+
+The native Linux executable is now broadly playable, including single-player save compatibility and initial portable multiplayer. Before calling it a release candidate, close the remaining host-integration and renderer-confidence gaps in this order.
+
+### 1. Window and cursor behavior
+
+- While the SDL game window has input focus, confine the absolute pointer to the window and hide the system cursor; keep JA2's software cursor and logical-coordinate mapping unchanged.
+- On focus loss or shutdown, release the grab, reveal the system cursor, and synthesize the existing input releases so no key or mouse button remains stuck.
+- Playtest windowed/fullscreen focus changes, Alt-Tab, edge scrolling, sliders, tactical targeting, and clean shutdown.
+
+### 2. Native crash reports
+
+- Replace `sgp/crash_report_portable.cpp`'s placeholder implementation with a native crash boundary that records build identity, signal/exception, fault address, thread, and a symbolizable backtrace.
+- Keep the fatal-handler path minimal and async-signal-safe. Prefer a small raw report plus the platform core dump over attempting ordinary engine allocation, logging, UI, or network activity after corruption.
+- Preserve the current Windows reporter behind the same interface. Do not enable telemetry implicitly; local artifacts must be useful without upload.
+- Add a deliberate crash test executable and document symbolization for packaged builds.
+
+### 3. Portable blitter fidelity
+
+Treat the existing x86 assembly blitters as a frozen behavior oracle until equivalence is demonstrated. Build a deterministic corpus that covers every exported blitter entry point and its relevant combinations of clipping, source offsets, pitch, transparency, shadows, intensity, translucency, outlines, pixelate/obscured behavior, Z comparisons, and Z-buffer writes.
+
+Run identical corpus inputs through the Win32 x86 implementation and `vobject_blitters_portable.cpp`, then compare the complete destination and Z buffers byte-for-byte. Supplement generated edge cases with captured real-game calls or framebuffer checkpoints from menus, laptop, strategic view, tactical terrain, roofs, lighting, smoke/explosions, items, and cursors. Any intentional difference must be named and approved; visual inspection alone is not the exit gate.
+
+### 4. Blitter cleanup
+
+Only after the differential suite is green, reshape the portable 738-line generic implementation into readable policy and mechanism: decoded source iteration, clipping, pixel/Z policy, and thin legacy wrappers. Keep flag combinations explicit enough to audit and avoid recreating the 14,885-line copy/paste structure of `vobject_blitters.cpp`.
+
+The assembly file remains available as the x86 oracle until the fidelity and performance gates are complete. Cleanup must not combine behavior changes with structural rewrites.
+
+### 5. Profiler-backed blitter optimization
+
+- Establish optimized-build microbenchmarks for the characterized corpus and full-game traces for stationary tactical rendering, scrolling, roofs/lighting, weather, smoke, and explosion-heavy scenes.
+- Measure the portable implementation and original x86 assembly on the same machine and resolution, recording frame time as well as per-blitter call counts and cost distributions.
+- Set the acceptable regression budget from those baseline measurements before tuning. Optimize only demonstrated hot paths, retaining the portable reference path and byte-equivalence tests.
+- Re-run fidelity, representative playtests, and long-session stability after each optimized path is introduced.
+
+### Cinematic scope
+
+The shipped JA2 cinematic assets are Smacker `.SMK` files. This port already decodes them with pinned `libsmacker`; proprietary Bink support is not a release requirement. 1vibe13 made the same product decision: it replaced the old `binkw32`/Smacker path with `libsmacker` and left the unused `.BIK` entry points as stubs because its supported data set contains no Bink movies.

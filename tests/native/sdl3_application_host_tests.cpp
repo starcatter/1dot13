@@ -44,6 +44,7 @@ int main()
 	assert(host != nullptr);
 	assert(host->window() != nullptr);
 	assert(error.empty());
+	assert(SDL_ShowCursor());
 
 	auto presenter = ja2::presentation::Sdl3Presenter::create(
 		host->window(), 4, 3, error);
@@ -65,12 +66,30 @@ int main()
 	assert(sink.events.size() == 1);
 	assert(sink.events[0] == SDL_EVENT_USER);
 
+	SDL_Event focusGained{};
+	focusGained.type = SDL_EVENT_WINDOW_FOCUS_GAINED;
+	focusGained.window.windowID = SDL_GetWindowID(host->window());
+	assert(SDL_PushEvent(&focusGained));
+	const Platform::HostPumpResult focused = host->waitAndDispatchOne(100);
+	assert(focused.status == Platform::HostPumpStatus::eventDispatched);
+	assert(!SDL_CursorVisible());
+	assert(sink.events.back() == SDL_EVENT_WINDOW_FOCUS_GAINED);
+
+	SDL_Event focusLost{};
+	focusLost.type = SDL_EVENT_WINDOW_FOCUS_LOST;
+	focusLost.window.windowID = SDL_GetWindowID(host->window());
+	assert(SDL_PushEvent(&focusLost));
+	const Platform::HostPumpResult unfocused = host->waitAndDispatchOne(100);
+	assert(unfocused.status == Platform::HostPumpStatus::eventDispatched);
+	assert(SDL_CursorVisible());
+	assert(sink.events.back() == SDL_EVENT_WINDOW_FOCUS_LOST);
+
 	SDL_Event quitEvent{};
 	quitEvent.type = SDL_EVENT_QUIT;
 	assert(SDL_PushEvent(&quitEvent));
 	const Platform::HostPumpResult quit = host->waitAndDispatchOne(100);
 	assert(quit.status == Platform::HostPumpStatus::quitRequested);
-	assert(sink.events.size() == 1);
+	assert(sink.events.size() == 3);
 
 	SDL_Event closeEvent{};
 	closeEvent.type = SDL_EVENT_WINDOW_CLOSE_REQUESTED;

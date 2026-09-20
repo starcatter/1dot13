@@ -46,6 +46,7 @@ public:
 private:
 	explicit Sdl3ApplicationHost(Sdl3EventSink& eventSink);
 	bool initialize(const Sdl3HostConfig& config, std::string& error);
+	void setFocusedMouseOwnership(bool focused) noexcept;
 
 	Sdl3EventSink& eventSink_;
 	SDL_Window* window_ = nullptr;
