@@ -60,7 +60,7 @@ int main()
 {
 	assert(SDL_Init(SDL_INIT_VIDEO));
 	SDL_Window* window = SDL_CreateWindow(
-		"JA2 SDL input translator test", 64, 48, SDL_WINDOW_HIDDEN);
+		"JA2 SDL input translator test", 80, 48, SDL_WINDOW_HIDDEN);
 	assert(window != nullptr);
 	std::string error;
 	auto presenter = ja2::presentation::Sdl3Presenter::create(
@@ -121,6 +121,19 @@ int main()
 	assert(sink.mouseEvents.back().event == MOUSE_POS);
 	assert(sink.mouseEvents.back().position.iX == 2);
 	assert(sink.mouseEvents.back().position.iY == 1);
+
+	// The 80:48 window pillarboxes the 4:3 logical surface. Coordinates in
+	// either black border must become the corresponding logical edge so JA2's
+	// exact x == 0 / x >= width - 1 scrolling checks remain reachable.
+	event.motion.x = 0.0F;
+	event.motion.y = 24.0F;
+	translator.dispatch(event);
+	assert(sink.mouseEvents.back().position.iX == 0);
+	assert(sink.mouseEvents.back().position.iY == 2);
+	event.motion.x = 79.0F;
+	translator.dispatch(event);
+	assert(sink.mouseEvents.back().position.iX == 3);
+	assert(sink.mouseEvents.back().position.iY == 2);
 
 	event = {};
 	event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;

@@ -28,6 +28,8 @@ public:
 	bool setPalette(const SGPPaletteEntry* entries) override;
 	void leaveDisplayMode() override;
 	void shutdown() override;
+	// Converts window coordinates and clamps letterbox borders to the nearest
+	// valid logical framebuffer edge.
 	bool convertEventToLogical(SDL_Event& event) const noexcept;
 
 private:

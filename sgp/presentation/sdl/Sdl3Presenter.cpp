@@ -16,6 +16,12 @@ void setSdlError(std::string& error, const char* operation)
 	error += SDL_GetError();
 }
 
+void clampLogicalPoint(float& x, float& y, UINT16 width, UINT16 height)
+{
+	x = std::clamp(x, 0.0F, static_cast<float>(width - 1U));
+	y = std::clamp(y, 0.0F, static_cast<float>(height - 1U));
+}
+
 }
 
 std::unique_ptr<Sdl3Presenter> Sdl3Presenter::create(
@@ -201,8 +207,35 @@ void Sdl3Presenter::leaveDisplayMode()
 
 bool Sdl3Presenter::convertEventToLogical(SDL_Event& event) const noexcept
 {
-	return renderer_ != nullptr &&
-		SDL_ConvertEventToRenderCoordinates(renderer_, &event);
+	if (renderer_ == nullptr ||
+		!SDL_ConvertEventToRenderCoordinates(renderer_, &event))
+	{
+		return false;
+	}
+
+	// Letterboxed window borders convert to coordinates outside the logical
+	// framebuffer. The legacy input path only recognizes exact in-bounds edge
+	// pixels for scrolling, and its cursor coordinates were never allowed to
+	// reach width/height. Preserve that contract after arbitrary window resizes.
+	switch (event.type)
+	{
+		case SDL_EVENT_MOUSE_MOTION:
+			clampLogicalPoint(
+				event.motion.x, event.motion.y, width_, height_);
+			break;
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		case SDL_EVENT_MOUSE_BUTTON_UP:
+			clampLogicalPoint(
+				event.button.x, event.button.y, width_, height_);
+			break;
+		case SDL_EVENT_MOUSE_WHEEL:
+			clampLogicalPoint(event.wheel.mouse_x, event.wheel.mouse_y,
+				width_, height_);
+			break;
+		default:
+			break;
+	}
+	return true;
 }
 
 }
