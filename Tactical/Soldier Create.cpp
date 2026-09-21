@@ -1252,6 +1252,10 @@ SOLDIERTYPE* TacticalCreateSoldier( SOLDIERCREATE_STRUCT *pCreateStruct, Soldier
 		if( !pSoldier )
 			return NULL;
 
+		// Autoresolve owns this clone, but not a tactical AI plan copied from
+		// the source soldier. Keep destruction of the clone independent.
+		pSoldier->ai_masterplan_ = NULL;
+
 		UINT8 ubSectorID = GetAutoResolveSectorID( );
 		pSoldier->ubID = NUM_PROFILES;
 		pSoldier->sSectorX = (INT16)SECTORX( ubSectorID );
@@ -2229,7 +2233,10 @@ BOOLEAN TacticalRemoveSoldierPointer( SOLDIERTYPE *pSoldier, BOOLEAN fRemoveVehi
 			pSoldier->DeleteSoldier( );
 		}
 
-		MemFree( pSoldier );
+		// Autoresolve soldiers are constructed with new SOLDIERTYPE above or
+		// in ReserveTactical*SoldierForAutoresolve(). Use delete so the
+		// allocator is paired correctly and non-POD members are destroyed.
+		delete pSoldier;
 	}
 
 	return( TRUE );
@@ -3057,6 +3064,9 @@ SOLDIERTYPE* ReserveTacticalSoldierForAutoresolve( UINT8 ubSoldierClass )
 				if( !pSoldier )
 					return NULL;
 
+				// The temporary clone must not own the live soldier's AI plan.
+				pSoldier->ai_masterplan_ = NULL;
+
 				//Assign a bogus ID, then return it
 				pSoldier->ubID = NUM_PROFILES;
 				return pSoldier;
@@ -3364,6 +3374,9 @@ SOLDIERTYPE* ReserveTacticalMilitiaSoldierForAutoresolve( UINT8 ubSoldierClass )
 				pSoldier = new SOLDIERTYPE(*MercPtrs[i]); //(SOLDIERTYPE*)MemAlloc( SIZEOF_SOLDIERTYPE );
 				if( !pSoldier )
 					return NULL;
+
+				// The temporary clone must not own the live soldier's AI plan.
+				pSoldier->ai_masterplan_ = NULL;
 
 				// the militia in autoresolve will drop their gear after combat. For this reason, there is no need for MercPtrs[i] to also drop it
 				MercPtrs[i]->usSoldierFlagMask |= SOLDIER_EQUIPMENT_DROPPED;
