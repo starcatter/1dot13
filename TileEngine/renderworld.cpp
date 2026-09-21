@@ -2183,6 +2183,7 @@ static void RenderTiles(UINT32 uiFlags, INT32 iStartPointX_M, INT32 iStartPointY
 								HVOBJECT hVObjectAlpha = NULL;
 								while ((bt == NULL) || (layerIter != layerEnd))
 								{
+									hVObjectAlpha = NULL;
 									bool fIgnoreShadows = false;
 									if (bt != NULL)
 									{
@@ -2220,6 +2221,20 @@ static void RenderTiles(UINT32 uiFlags, INT32 iStartPointX_M, INT32 iStartPointY
 											continue;
 										}
 									}
+
+								// Logical body-type overlays are selected with the base animation's
+								// frame index. Malformed or incomplete overlays must not let that
+								// index escape either object's subimage table.
+								if (hVObject->pETRLEObject == NULL || usImageIndex >= hVObject->usNumberOfObjects ||
+									(hVObjectAlpha != NULL && (hVObjectAlpha->pETRLEObject == NULL || usImageIndex >= hVObjectAlpha->usNumberOfObjects)))
+								{
+									if (bt == NULL)
+									{
+										break;
+									}
+									layerIter++;
+									continue;
+								}
 
 								// RENDER
 								if (fTileInvisible)

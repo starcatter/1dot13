@@ -65,7 +65,7 @@ struct BlitPolicy
 	bool solidWhenObscured = false;
 	bool updateZWhenObscured = false;
 	bool drawShadowWhenObscured = false;
-	bool suppressEqualObscuredShadow = true;
+	bool suppressEqualShadow = true;
 };
 
 BOOLEAN blitEtrle(UINT16* buffer, UINT32 pitchBytes, HVOBJECT object,

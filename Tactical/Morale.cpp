@@ -1105,11 +1105,11 @@ void HandleMoraleEvent( SOLDIERTYPE *pSoldier, INT8 bMoraleEvent, INT16 sMapX, I
 			break;
 		case MORALE_TEAMMATE_DIED:
 			// impact depends on that dude's level of experience
-			ModifyPlayerReputation((UINT8) (pSoldier->stats.bExpLevel * REPUTATION_SOLDIER_DIED));
+			ModifyPlayerReputation(REPUTATION_SOLDIER_DIED, pSoldier->stats.bExpLevel);
 			break;
 		case MORALE_MERC_CAPTURED:
 			// impact depends on that dude's level of experience
-			ModifyPlayerReputation((UINT8) (pSoldier->stats.bExpLevel * REPUTATION_SOLDIER_CAPTURED));
+			ModifyPlayerReputation(REPUTATION_SOLDIER_CAPTURED, pSoldier->stats.bExpLevel);
 			break;
 		case MORALE_KILLED_CIVILIAN:
 			ModifyPlayerReputation(REPUTATION_KILLED_CIVILIAN);

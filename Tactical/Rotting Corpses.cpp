@@ -709,13 +709,36 @@ void RemoveCorpse( INT32 iCorpseID )
 	// Remove!
 	gRottingCorpse[ iCorpseID ].fActivated = FALSE;
 
-	DeleteAniTile( gRottingCorpse[ iCorpseID ].pAniTile );
+	// DeleteAniTile normally removes both the corpse's level node and the
+	// structure owned by that node.  Remember the structure identity so we can
+	// clean up only that structure if the level-node removal fails.  Looking up
+	// an arbitrary corpse structure by grid after DeleteAniTile is unsafe: with
+	// stacked corpses it selects and deletes the next corpse's structure.
+	UINT16 usStructureID = INVALID_STRUCTURE_ID;
+	INT32 sStructureGridNo = NOWHERE;
+	ANITILE* pAniTile = gRottingCorpse[ iCorpseID ].pAniTile;
+	if ( pAniTile != NULL && pAniTile->pLevelNode != NULL && pAniTile->pLevelNode->pStructureData != NULL )
+	{
+		STRUCTURE* pBaseStructure = FindBaseStructure( pAniTile->pLevelNode->pStructureData );
+		if ( pBaseStructure != NULL )
+		{
+			usStructureID = pBaseStructure->usStructureID;
+			sStructureGridNo = pBaseStructure->sGridNo;
+		}
+	}
+
+	DeleteAniTile( pAniTile );
 
 	FreeCorpsePalettes( &( gRottingCorpse[ iCorpseID ] ) );
 
-	const auto sGridNo = gRottingCorpse[iCorpseID].def.sGridNo;
-	auto pStructure = FindLastStructure(sGridNo, STRUCTURE_CORPSE);
-	DeleteStructureFromWorld(pStructure);
+	if ( usStructureID != INVALID_STRUCTURE_ID && !TileIsOutOfBounds( sStructureGridNo ) )
+	{
+		STRUCTURE* pRemainingStructure = FindStructureByID( sStructureGridNo, usStructureID );
+		if ( pRemainingStructure != NULL )
+		{
+			DeleteStructureFromWorld( pRemainingStructure );
+		}
+	}
 }
 
 BOOLEAN CreateCorpsePalette( ROTTING_CORPSE *pCorpse )

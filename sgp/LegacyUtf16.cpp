@@ -293,6 +293,13 @@ std::u16string formatUtf16(
 			continue;
 		}
 		++cursor;
+		// A malformed format can end with a bare percent sign. Do not advance
+		// the outer loop beyond the terminator; preserve it literally instead.
+		if (*cursor == 0)
+		{
+			output.push_back(u'%');
+			break;
+		}
 		if (*cursor == u'%')
 		{
 			output.push_back(u'%');

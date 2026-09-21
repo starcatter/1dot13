@@ -81,18 +81,33 @@ UINT8 CalcDeathRate(void)
 }
 
 
-void ModifyPlayerReputation(INT8 bRepChange)
+static void ApplyPlayerReputationChange(INT32 iRepChange)
 {
 	INT32 iNewBadRep;
-	INT8 bRepChangeValue = gReputationSettings.bValues[bRepChange];
 	// subtract, so that a negative reputation change results in an increase in bad reputation
-	iNewBadRep = (INT32) gStrategicStatus.ubBadReputation - bRepChangeValue;
+	iNewBadRep = (INT32) gStrategicStatus.ubBadReputation - iRepChange;
 
 	// keep within a 0-100 range (0 = Saint, 100 = Satan)
 	iNewBadRep = __max(	0, iNewBadRep );
 	iNewBadRep = __min( 100, iNewBadRep );
 
 	gStrategicStatus.ubBadReputation = (UINT8) iNewBadRep;
+}
+
+void ModifyPlayerReputation(ReputationEventNames eRepEvent, UINT8 ubMultiplier)
+{
+	if (eRepEvent < REPUTATION_LOW_DEATHRATE || eRepEvent >= NUM_REPUTATION_EVENTS)
+	{
+		AssertMsg(FALSE, String("Invalid reputation event index %d", eRepEvent));
+		return;
+	}
+
+	ApplyPlayerReputationChange((INT32)gReputationSettings.bValues[eRepEvent] * ubMultiplier);
+}
+
+void ModifyPlayerReputationByValue(INT16 sRepChange)
+{
+	ApplyPlayerReputationChange(sRepChange);
 }
 
 

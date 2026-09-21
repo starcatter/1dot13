@@ -3110,11 +3110,14 @@ void HandleDialogueEnd( FACETYPE *pFace )
 						UINT16 ubSeenEnemiesCnt = 0;
 						switch( gTacticalStatus.ubLastQuoteSaid )
 						{					
-							case QUOTE_CLOSE_CALL:					
+							case QUOTE_CLOSE_CALL:
 							case QUOTE_UNDER_HEAVY_FIRE:
 							case QUOTE_TAKEN_A_BREATING:
-								if( pSoldier->ubPreviousAttackerID != NOBODY && !( pSoldier->ubPreviousAttackerID->bDeafenedCounter > 0 ) )
-									PossiblyStartEnemyTaunt( pSoldier->ubPreviousAttackerID, TAUNT_RIPOSTE, pSoldier->ubID );
+							{
+								SOLDIERTYPE *pPreviousAttacker = NULL;
+								if( GetSoldier( &pPreviousAttacker, pSoldier->ubPreviousAttackerID ) && !( pPreviousAttacker->bDeafenedCounter > 0 ) )
+									PossiblyStartEnemyTaunt( pPreviousAttacker, TAUNT_RIPOSTE, pSoldier->ubID );
+							}
 								break;
 							default:
 								// select random enemy, who we see, who sees us and isn't deaf

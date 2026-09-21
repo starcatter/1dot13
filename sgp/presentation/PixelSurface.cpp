@@ -1,6 +1,7 @@
 #include "presentation/PixelSurface.h"
 
 #include <algorithm>
+#include <cstdint>
 #include <cstring>
 #include <limits>
 #include <stdexcept>
@@ -158,12 +159,43 @@ void PixelSurface::fillRect(const SGPRect& rect, UINT16 pixel)
 	const INT32 top = clampToRange(rect.iTop, 0, height_);
 	const INT32 right = clampToRange(rect.iRight, 0, width_);
 	const INT32 bottom = clampToRange(rect.iBottom, 0, height_);
-	for (INT32 y = top; y < bottom; ++y)
+	if (left >= right || top >= bottom)
 	{
-		for (INT32 x = left; x < right; ++x)
+		return;
+	}
+
+	const std::size_t pixelBytes = bytesPerPixel();
+	const std::size_t rowBytes =
+		static_cast<std::size_t>(right - left) * pixelBytes;
+	BYTE* firstRow = pixels_.data() +
+		static_cast<std::size_t>(top) * pitchBytes_ +
+		static_cast<std::size_t>(left) * pixelBytes;
+	if (format_ == PixelFormat::indexed8)
+	{
+		std::memset(firstRow, static_cast<BYTE>(pixel), rowBytes);
+	}
+	else
+	{
+		// Seed one RGB565 pixel and duplicate the initialized prefix.  This
+		// avoids millions of tiny writePixel()/memcpy calls for full-screen
+		// clears while remaining safe for surfaces with unusual pitch alignment.
+		std::memcpy(firstRow, &pixel, sizeof(pixel));
+		std::size_t initialized = sizeof(pixel);
+		while (initialized < rowBytes)
 		{
-			writePixel(x, y, pixel);
+			const std::size_t amount =
+				std::min(initialized, rowBytes - initialized);
+			std::memcpy(firstRow + initialized, firstRow, amount);
+			initialized += amount;
 		}
+	}
+
+	for (INT32 y = top + 1; y < bottom; ++y)
+	{
+		BYTE* row = pixels_.data() +
+			static_cast<std::size_t>(y) * pitchBytes_ +
+			static_cast<std::size_t>(left) * pixelBytes;
+		std::memcpy(row, firstRow, rowBytes);
 	}
 }
 
@@ -226,7 +258,11 @@ bool PixelSurface::blitFrom(
 		return true;
 	}
 
-	if (!options.useSourceColorKey && !options.useDestinationColorKey)
+	const bool useSourceColorKey =
+		options.useSourceColorKey && source.hasColorKey_;
+	const bool useDestinationColorKey =
+		options.useDestinationColorKey && hasColorKey_;
+	if (!useSourceColorKey && !useDestinationColorKey)
 	{
 		const std::size_t pixelBytes = bytesPerPixel();
 		const std::size_t copyBytes =
@@ -273,17 +309,83 @@ bool PixelSurface::blitFrom(
 		snapshot = source.pixels_;
 		sourcePixels = &snapshot;
 	}
+	if (format_ == PixelFormat::indexed8)
+	{
+		for (INT32 y = 0; y < copyHeight; ++y)
+		{
+			const BYTE* sourceRow = sourcePixels->data() +
+				static_cast<std::size_t>(src.iTop + y) * source.pitchBytes_ +
+				static_cast<std::size_t>(src.iLeft);
+			BYTE* destinationRow = pixels_.data() +
+				static_cast<std::size_t>(destinationY + y) * pitchBytes_ +
+				static_cast<std::size_t>(destinationX);
+			for (INT32 x = 0; x < copyWidth; ++x)
+			{
+				const BYTE sourcePixel = sourceRow[x];
+				if ((!useSourceColorKey || sourcePixel != source.colorKey_) &&
+					(!useDestinationColorKey ||
+						destinationRow[x] == colorKey_))
+				{
+					destinationRow[x] = sourcePixel;
+				}
+			}
+		}
+		return true;
+	}
+
+	const bool alignedRgb565 =
+		(source.pitchBytes_ % alignof(UINT16)) == 0 &&
+		(pitchBytes_ % alignof(UINT16)) == 0 &&
+		(reinterpret_cast<std::uintptr_t>(sourcePixels->data()) %
+			alignof(UINT16)) == 0 &&
+		(reinterpret_cast<std::uintptr_t>(pixels_.data()) %
+			alignof(UINT16)) == 0;
 	for (INT32 y = 0; y < copyHeight; ++y)
 	{
+		const BYTE* sourceBytes = sourcePixels->data() +
+			static_cast<std::size_t>(src.iTop + y) * source.pitchBytes_ +
+			static_cast<std::size_t>(src.iLeft) * sizeof(UINT16);
+		BYTE* destinationBytes = pixels_.data() +
+			static_cast<std::size_t>(destinationY + y) * pitchBytes_ +
+			static_cast<std::size_t>(destinationX) * sizeof(UINT16);
+		if (alignedRgb565)
+		{
+			const auto* sourceRow =
+				reinterpret_cast<const UINT16*>(sourceBytes);
+			auto* destinationRow = reinterpret_cast<UINT16*>(destinationBytes);
+			for (INT32 x = 0; x < copyWidth; ++x)
+			{
+				const UINT16 sourcePixel = sourceRow[x];
+				if ((!useSourceColorKey || sourcePixel != source.colorKey_) &&
+					(!useDestinationColorKey ||
+						destinationRow[x] == colorKey_))
+				{
+					destinationRow[x] = sourcePixel;
+				}
+			}
+			continue;
+		}
+
 		for (INT32 x = 0; x < copyWidth; ++x)
 		{
-			const UINT16 sourcePixel = source.readPixel(
-				*sourcePixels, src.iLeft + x, src.iTop + y);
-			const UINT16 destinationPixel =
-				readPixel(pixels_, destinationX + x, destinationY + y);
-			if (shouldCopy(sourcePixel, destinationPixel, source, options))
+			UINT16 sourcePixel = 0;
+			UINT16 destinationPixel = 0;
+			std::memcpy(&sourcePixel,
+				sourceBytes + static_cast<std::size_t>(x) * sizeof(UINT16),
+				sizeof(sourcePixel));
+			if (useDestinationColorKey)
 			{
-				writePixel(destinationX + x, destinationY + y, sourcePixel);
+				std::memcpy(&destinationPixel,
+					destinationBytes +
+						static_cast<std::size_t>(x) * sizeof(UINT16),
+					sizeof(destinationPixel));
+			}
+			if ((!useSourceColorKey || sourcePixel != source.colorKey_) &&
+				(!useDestinationColorKey || destinationPixel == colorKey_))
+			{
+				std::memcpy(destinationBytes +
+						static_cast<std::size_t>(x) * sizeof(UINT16),
+					&sourcePixel, sizeof(sourcePixel));
 			}
 		}
 	}

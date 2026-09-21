@@ -259,6 +259,27 @@ void testBlits()
 	assert(pixelAt(vertical, 0, 1) == 1);
 	assert(pixelAt(vertical, 0, 2) == 2);
 	assert(pixelAt(vertical, 0, 3) == 3);
+
+	// An odd physical pitch exercises the unaligned RGB565 path.  Full and
+	// partial fills must not touch padding, and keyed blits retain their normal
+	// semantics without assuming naturally aligned rows.
+	PixelSurface oddPitchSource(4, 2, PixelFormat::rgb565, 3);
+	assert(oddPitchSource.pitchBytes() == 9);
+	oddPitchSource.setColorKey(0);
+	oddPitchSource.fill(0);
+	oddPitchSource.fillRect({1, 0, 3, 2}, 0x4567);
+	const MutablePixelBuffer oddPixels = oddPitchSource.lock();
+	assert(oddPixels.pixels[8] == 0);
+	assert(oddPixels.pixels[17] == 0);
+
+	PixelSurface oddPitchDestination(4, 2, PixelFormat::rgb565, 3);
+	oddPitchDestination.fill(0x1234);
+	assert(oddPitchDestination.blitFrom(
+		oddPitchSource, {0, 0, 4, 2}, 0, 0, {true, false}));
+	assert(pixelAt(oddPitchDestination, 0, 0) == 0x1234);
+	assert(pixelAt(oddPitchDestination, 1, 0) == 0x4567);
+	assert(pixelAt(oddPitchDestination, 2, 1) == 0x4567);
+	assert(pixelAt(oddPitchDestination, 3, 1) == 0x1234);
 }
 
 void testNearestStretch()

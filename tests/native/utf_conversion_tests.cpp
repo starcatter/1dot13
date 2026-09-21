@@ -174,6 +174,10 @@ int main()
 		static_cast<CHAR16>( 'X' ), static_cast<CHAR16>( 'X' ) };
 	expect( swprintf( truncated, 4, JA2_TEXT("ABCDE") ) == -1 &&
 		utf16ToUtf8( truncated ) == "ABC", "bounded UTF-16 formatting did not truncate safely" );
+	CHAR16 trailingPercent[16]{};
+	expect( swprintf( trailingPercent, 16, JA2_TEXT("Progress 75%") ) == 12 &&
+		utf16ToUtf8( trailingPercent ) == "Progress 75%",
+		"UTF-16 formatting did not handle a trailing percent safely" );
 
 	return failures == 0 ? 0 : 1;
 }

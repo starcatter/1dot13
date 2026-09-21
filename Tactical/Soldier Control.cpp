@@ -14528,20 +14528,21 @@ void GetActualSoldierAnimDims( SOLDIERTYPE *pSoldier, INT16 *psHeight, INT16 *ps
 	UINT16		usAnimSurface;
 	ETRLEObject *pTrav;
 
+	// Animation changes can re-enter combat setup after the new surface is
+	// installed but before usAniFrame is converted for that surface. Keep the
+	// locator usable during that short-lived mismatch.
+	*psHeight = (INT16)5;
+	*psWidth = (INT16)5;
+
 	usAnimSurface = GetSoldierAnimationSurface( pSoldier, pSoldier->usAnimState );
 
 	if ( usAnimSurface == INVALID_ANIMATION_SURFACE )
 	{
-		*psHeight = (INT16)5;
-		*psWidth = (INT16)5;
-
 		return;
 	}
 
 	if ( gAnimSurfaceDatabase[usAnimSurface].hVideoObject == NULL )
 	{
-		*psHeight = (INT16)5;
-		*psWidth = (INT16)5;
 		return;
 	}
 
@@ -14563,6 +14564,9 @@ void GetActualSoldierAnimDims( SOLDIERTYPE *pSoldier, INT16 *psHeight, INT16 *ps
 
 void GetActualSoldierAnimOffsets( SOLDIERTYPE *pSoldier, INT16 *sOffsetX, INT16 *sOffsetY )
 {
+	*sOffsetX = (INT16)0;
+	*sOffsetY = (INT16)0;
+
 	UINT16											 usAnimSurface;
 	ETRLEObject *pTrav;
 
@@ -14570,16 +14574,16 @@ void GetActualSoldierAnimOffsets( SOLDIERTYPE *pSoldier, INT16 *sOffsetX, INT16 
 
 	if ( usAnimSurface == INVALID_ANIMATION_SURFACE )
 	{
-		*sOffsetX = (INT16)0;
-		*sOffsetY = (INT16)0;
-
 		return;
 	}
 
 	if ( gAnimSurfaceDatabase[usAnimSurface].hVideoObject == NULL )
 	{
-		*sOffsetX = (INT16)0;
-		*sOffsetY = (INT16)0;
+		return;
+	}
+
+	if ( pSoldier->usAniFrame >= gAnimSurfaceDatabase[usAnimSurface].hVideoObject->usNumberOfObjects )
+	{
 		return;
 	}
 

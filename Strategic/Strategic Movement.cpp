@@ -115,7 +115,7 @@ UINT8 AddGroupToList( GROUP *pGroup );
 void HandleOtherGroupsArrivingSimultaneously( UINT8 ubSectorX, UINT8 ubSectorY, UINT8 ubSectorZ, GROUP* pArrivingGroup = NULL );
 BOOLEAN PossibleToCoordinateSimultaneousGroupArrivals( GROUP *pGroup );
 
-void HandleNonCombatGroupArrival( GROUP *pGroup, BOOLEAN fMainGroup, BOOLEAN fNeverLeft );
+BOOLEAN HandleNonCombatGroupArrival( GROUP *pGroup, BOOLEAN fMainGroup, BOOLEAN fNeverLeft );
 
 GROUP *gpInitPrebattleGroup = NULL;
 void TriggerPrebattleInterface( UINT8 ubResult );
@@ -2240,7 +2240,13 @@ void GroupArrivedAtSector( UINT8 ubGroupID, BOOLEAN fCheckForBattle, BOOLEAN fNe
 		if( fCheckForBattle && !CheckConditionsForBattle( pGroup ) && !gfWaitingForInput )
 		{
 			GROUP *next;
-			HandleNonCombatGroupArrival( pGroup, TRUE, fNeverLeft );
+			if ( HandleNonCombatGroupArrival( pGroup, TRUE, fNeverLeft ) )
+			{
+				// Strategic AI processing can return an enemy group to the pool.
+				// Do not inspect the caller's pointer after ownership was consumed.
+				pGroup = NULL;
+				fGroupDestroyed = TRUE;
+			}
 
 			if( gubNumGroupsArrivedSimultaneously )
 			{
@@ -2392,7 +2398,8 @@ void GroupArrivedAtSector( UINT8 ubGroupID, BOOLEAN fCheckForBattle, BOOLEAN fNe
 
 
 
-void HandleNonCombatGroupArrival( GROUP *pGroup, BOOLEAN fMainGroup, BOOLEAN fNeverLeft )
+// Returns TRUE when arrival processing consumes the group.
+BOOLEAN HandleNonCombatGroupArrival( GROUP *pGroup, BOOLEAN fMainGroup, BOOLEAN fNeverLeft )
 {
 	// if any mercs are actually in the group
 	
@@ -2401,7 +2408,7 @@ void HandleNonCombatGroupArrival( GROUP *pGroup, BOOLEAN fMainGroup, BOOLEAN fNe
 #else
 	if( StrategicAILookForAdjacentGroups( pGroup ) )
 	{ //The routine actually just deleted the enemy group (player's don't get deleted), so we are done!
-		return;
+		return TRUE;
 	}
 #endif
 
@@ -2453,11 +2460,13 @@ void HandleNonCombatGroupArrival( GROUP *pGroup, BOOLEAN fMainGroup, BOOLEAN fNe
 		else
 		{
 			RemovePGroup( pGroup );
+			return TRUE;
 		}
 	}
-	
+
 	//Clear the non-persistant flags.
 	pGroup->uiFlags &= ~GROUPFLAGS_TODELETE;
+	return FALSE;
 }
 
 

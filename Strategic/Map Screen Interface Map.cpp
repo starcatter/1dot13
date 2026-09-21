@@ -3007,7 +3007,11 @@ void AnimateRoute( PathStPtr pPath )
 
 BOOLEAN TraceCharAnimatedRoute( PathStPtr pPath, BOOLEAN fCheckFlag, BOOLEAN fForceUpDate )
 {
-	static PathStPtr pCurrentNode=NULL;
+	// Keep an offset rather than a pointer into the caller-owned path. Strategic
+	// transitions can free an entire route between map frames (for example when
+	// entering a battle sector), so a persistent node pointer becomes dangling.
+	static UINT32 uiCurrentNodeOffset = 0;
+	static RUNTIME_PAYLOAD uiAnimatedPathIdentity = 0;
 	static BOOLEAN fPauseFlag=TRUE;
 
 	HVOBJECT hMapHandle;
@@ -3020,7 +3024,7 @@ BOOLEAN TraceCharAnimatedRoute( PathStPtr pPath, BOOLEAN fCheckFlag, BOOLEAN fFo
 	UINT32 uiArrowNumToDraw;
 	UINT16 usArrowWidth;
 	UINT16 usArrowHeight;
-	PathStPtr pTempNode=NULL;
+	PathStPtr pCurrentNode=NULL;
 	PathStPtr pNode=NULL;
 	PathStPtr pPastNode=NULL;
 	PathStPtr pNextNode=NULL;
@@ -3031,24 +3035,42 @@ BOOLEAN TraceCharAnimatedRoute( PathStPtr pPath, BOOLEAN fCheckFlag, BOOLEAN fFo
 		return FALSE;
 	}
 
-	// if any nodes have been deleted, reset current node to beginning of the list
+	// if any nodes have been deleted, restart at the beginning of the list
 	if( fDeletedNode )
 	{
 		fDeletedNode = FALSE;
-		pCurrentNode = NULL;
+		uiCurrentNodeOffset = 0;
 	}
 
 	// Valid path?
 	if ( pPath == NULL )
 	{
+		uiCurrentNodeOffset = 0;
+		uiAnimatedPathIdentity = 0;
 		return FALSE;
 	}
-	else
+
+	// Resolve the animated node from the live list on every call. If this is a
+	// different path, restart safely instead of retaining animation state from a
+	// route that may already have been destroyed. Store only its numeric identity
+	// between calls; unlike a PathStPtr, that value is never dereferenced.
+	const RUNTIME_PAYLOAD uiPathIdentity =
+		reinterpret_cast<RUNTIME_PAYLOAD>( pPath );
+	if ( uiAnimatedPathIdentity != uiPathIdentity )
 	{
-		if(pCurrentNode == NULL)
-		{
-			pCurrentNode = pPath;
-		}
+		uiCurrentNodeOffset = 0;
+		uiAnimatedPathIdentity = uiPathIdentity;
+	}
+	pCurrentNode = pPath;
+	for ( UINT32 uiNode = 0;
+		uiNode < uiCurrentNodeOffset && pCurrentNode != NULL; ++uiNode )
+	{
+		pCurrentNode = pCurrentNode->pNext;
+	}
+	if ( pCurrentNode == NULL )
+	{
+		uiCurrentNodeOffset = 0;
+		pCurrentNode = pPath;
 	}
 
 	// Check Timer
@@ -3084,10 +3106,12 @@ BOOLEAN TraceCharAnimatedRoute( PathStPtr pPath, BOOLEAN fCheckFlag, BOOLEAN fFo
 			// sufficient time has passed, update base time
 			giAnimateRouteBaseTime=GetJA2Clock();
 			pCurrentNode = pCurrentNode->pNext;
+			++uiCurrentNodeOffset;
 
 			if (pCurrentNode == NULL)
 			{
 				fPauseFlag = TRUE;
+				uiCurrentNodeOffset = 0;
 				return FALSE;
 			}
 
@@ -3097,40 +3121,6 @@ BOOLEAN TraceCharAnimatedRoute( PathStPtr pPath, BOOLEAN fCheckFlag, BOOLEAN fFo
 				// Then return true to signal that we're ready to draw the next arrow.
 				return TRUE;
 			}
-		}
-	}
-
-	// check to see if Current node has not been deleted
-
-	// Clone the first node in the path
-	pTempNode = pPath;
-
-	// Scan through this cloned path
-	while(pTempNode)
-	{
-		// Have we found our node?
-		if(pTempNode==pCurrentNode)
-		{
-			//Good, it hasn't been deleted
-			break;
-		}
-		else
-		{
-			// Continue scanning
-			pTempNode=pTempNode->pNext;
-		}
-	}
-
-	// if deleted, restart at beginning
-	if(pTempNode==NULL)
-	{
-		pCurrentNode = pPath; // First node in the path
-
-		// No path?
-		if(!pCurrentNode)
-		{
-			// FALSE!
-			return FALSE;
 		}
 	}
 

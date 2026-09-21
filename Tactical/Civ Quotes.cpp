@@ -1095,10 +1095,7 @@ BOOLEAN LoadCivQuotesFromLoadGameFile( HWFILE hFile )
 void PossiblyStartEnemyTaunt( SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SoldierID uiTargetID )
 {
 	SOLDIERTYPE *pTarget = NULL;
-	if( uiTargetID != NOBODY )
-	{
-		pTarget = MercPtrs[uiTargetID];
-	}
+	GetSoldier( &pTarget, uiTargetID );
 	if (is_networked)	// No taunts in multiplayer
 		return;
 
@@ -1107,8 +1104,11 @@ void PossiblyStartEnemyTaunt( SOLDIERTYPE *pCiv, TAUNTTYPE iTauntType, SoldierID
 	{
 		return;
 	}
-	// uh, just in case
-	if( pCiv == NULL )
+	// Dialogue completion can be delayed until after the attacker was removed.
+	// A removed soldier still has an address in MercPtrs, but initialize() resets
+	// its embedded ID to NOBODY. Reject stale slots before using the ID as an
+	// array index or passing the soldier into the taunt implementation.
+	if( pCiv == NULL || !pCiv->bActive || pCiv->ubID >= NOBODY || MercPtrs[pCiv->ubID] != pCiv )
 	{
 		return;
 	}

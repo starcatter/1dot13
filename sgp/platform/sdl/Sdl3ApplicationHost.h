@@ -51,6 +51,8 @@ private:
 	Sdl3EventSink& eventSink_;
 	SDL_Window* window_ = nullptr;
 	SDL_WindowID windowId_ = 0;
+	SDL_Event deferredEvent_{};
+	bool hasDeferredEvent_ = false;
 	bool ownsVideoSubsystem_ = false;
 };
 

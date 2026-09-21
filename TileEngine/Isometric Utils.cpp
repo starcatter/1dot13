@@ -681,9 +681,9 @@ BOOLEAN GetMouseMapPos( INT32	*psMapPos )
 	{
 		 ( *psMapPos ) = sSameCursorPos;
 
-		if ( sSameCursorPos == 0 )
+		if ( sSameCursorPos <= 0 || sSameCursorPos >= WORLD_MAX )
 		{
-				return( FALSE );
+			return( FALSE );
 		}
 		return( TRUE );
 	}
@@ -694,9 +694,15 @@ BOOLEAN GetMouseMapPos( INT32	*psMapPos )
 
 	if ( GetMouseXY( &sWorldX, &sWorldY ) )
 	{
-			*psMapPos = MAPROWCOLTOPOS( sWorldY, sWorldX );
-			sSameCursorPos = (*psMapPos);
-			return( TRUE );
+		*psMapPos = MAPROWCOLTOPOS( sWorldY, sWorldX );
+		sSameCursorPos = (*psMapPos);
+		if ( sSameCursorPos <= 0 || sSameCursorPos >= WORLD_MAX )
+		{
+			*psMapPos = 0;
+			sSameCursorPos = 0;
+			return( FALSE );
+		}
+		return( TRUE );
 	}
 	else
 	{

@@ -15,10 +15,10 @@ class RecordingEventSink final : public Platform::Sdl3EventSink
 public:
 	void dispatch(const SDL_Event& event) override
 	{
-		events.push_back(event.type);
+		events.push_back(event);
 	}
 
-	std::vector<Uint32> events;
+	std::vector<SDL_Event> events;
 };
 
 void drainEvents()
@@ -64,16 +64,56 @@ int main()
 	const Platform::HostPumpResult dispatched = host->waitAndDispatchOne(100);
 	assert(dispatched.status == Platform::HostPumpStatus::eventDispatched);
 	assert(sink.events.size() == 1);
-	assert(sink.events[0] == SDL_EVENT_USER);
+	assert(sink.events[0].type == SDL_EVENT_USER);
+
+	const SDL_WindowID windowId = SDL_GetWindowID(host->window());
+	for (float x = 1.0f; x <= 3.0f; x += 1.0f)
+	{
+		SDL_Event motion{};
+		motion.type = SDL_EVENT_MOUSE_MOTION;
+		motion.motion.windowID = windowId;
+		motion.motion.which = 1;
+		motion.motion.x = x;
+		assert(SDL_PushEvent(&motion));
+	}
+	const Platform::HostPumpResult coalesced = host->waitAndDispatchOne(100);
+	assert(coalesced.status == Platform::HostPumpStatus::eventDispatched);
+	assert(sink.events.size() == 2);
+	assert(sink.events.back().type == SDL_EVENT_MOUSE_MOTION);
+	assert(sink.events.back().motion.x == 3.0f);
+	assert(host->waitAndDispatchOne(0).status ==
+		Platform::HostPumpStatus::deadlineReached);
+
+	SDL_Event motionBeforeUser{};
+	motionBeforeUser.type = SDL_EVENT_MOUSE_MOTION;
+	motionBeforeUser.motion.windowID = windowId;
+	motionBeforeUser.motion.which = 1;
+	motionBeforeUser.motion.x = 4.0f;
+	assert(SDL_PushEvent(&motionBeforeUser));
+	assert(SDL_PushEvent(&userEvent));
+	SDL_Event motionAfterUser = motionBeforeUser;
+	motionAfterUser.motion.x = 5.0f;
+	assert(SDL_PushEvent(&motionAfterUser));
+	assert(host->waitAndDispatchOne(100).status ==
+		Platform::HostPumpStatus::eventDispatched);
+	assert(sink.events.back().type == SDL_EVENT_MOUSE_MOTION);
+	assert(sink.events.back().motion.x == 4.0f);
+	assert(host->waitAndDispatchOne(100).status ==
+		Platform::HostPumpStatus::eventDispatched);
+	assert(sink.events.back().type == SDL_EVENT_USER);
+	assert(host->waitAndDispatchOne(100).status ==
+		Platform::HostPumpStatus::eventDispatched);
+	assert(sink.events.back().type == SDL_EVENT_MOUSE_MOTION);
+	assert(sink.events.back().motion.x == 5.0f);
 
 	SDL_Event focusGained{};
 	focusGained.type = SDL_EVENT_WINDOW_FOCUS_GAINED;
-	focusGained.window.windowID = SDL_GetWindowID(host->window());
+	focusGained.window.windowID = windowId;
 	assert(SDL_PushEvent(&focusGained));
 	const Platform::HostPumpResult focused = host->waitAndDispatchOne(100);
 	assert(focused.status == Platform::HostPumpStatus::eventDispatched);
 	assert(!SDL_CursorVisible());
-	assert(sink.events.back() == SDL_EVENT_WINDOW_FOCUS_GAINED);
+	assert(sink.events.back().type == SDL_EVENT_WINDOW_FOCUS_GAINED);
 
 	SDL_Event focusLost{};
 	focusLost.type = SDL_EVENT_WINDOW_FOCUS_LOST;
@@ -82,14 +122,14 @@ int main()
 	const Platform::HostPumpResult unfocused = host->waitAndDispatchOne(100);
 	assert(unfocused.status == Platform::HostPumpStatus::eventDispatched);
 	assert(SDL_CursorVisible());
-	assert(sink.events.back() == SDL_EVENT_WINDOW_FOCUS_LOST);
+	assert(sink.events.back().type == SDL_EVENT_WINDOW_FOCUS_LOST);
 
 	SDL_Event quitEvent{};
 	quitEvent.type = SDL_EVENT_QUIT;
 	assert(SDL_PushEvent(&quitEvent));
 	const Platform::HostPumpResult quit = host->waitAndDispatchOne(100);
 	assert(quit.status == Platform::HostPumpStatus::quitRequested);
-	assert(sink.events.size() == 3);
+	assert(sink.events.size() == 7);
 
 	SDL_Event closeEvent{};
 	closeEvent.type = SDL_EVENT_WINDOW_CLOSE_REQUESTED;

@@ -98,6 +98,13 @@ include_directories(
   "${CMAKE_SOURCE_DIR}/i18n/include"
 )
 
+option(JA2_BUILD_BLITTER_BENCHMARKS "Build only the 32-bit Windows blitter comparison harness" OFF)
+if(JA2_BUILD_BLITTER_BENCHMARKS)
+  enable_testing()
+  add_subdirectory(tests/blitters)
+  return()
+endif()
+
 if(JA2_PLATFORM_BACKEND STREQUAL "LINUX")
   include(cmake/NativeSharedCore.cmake)
   include(cmake/NativeGame.cmake)

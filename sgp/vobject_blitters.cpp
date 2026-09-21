@@ -2501,6 +2501,7 @@ BlitNTL8:
 BlitNTL6:
 		test	edi, 2
 		jnz		BlitNTL5
+		jmp		BlitNTL9		// Preserve the foreground Z for obscured checker pixels.
 
 BlitNTL7:
 
@@ -9787,6 +9788,7 @@ BOOLEAN Blt16BPPBufferPixelateRectWithColor(UINT16 *pBuffer, UINT32 uiDestPitchB
 
 
 BlitNewLine:
+		mov		ebx, edx					// Select column zero of the current pattern row.
 		mov		ecx, width
 
 BlitLine:
@@ -11621,13 +11623,15 @@ UINT16		*startoffset;
 	// clip edges of rect if hanging off screen
 
 	x1real=__max(0, x1);
-	x2real=__min(639, x2);
+	x2real = __min((INT32)SCREEN_WIDTH, x2);
 	y1real=__max(0, y1);
-	y2real=__min(479, y2);
+	y2real=__min((INT32)SCREEN_HEIGHT, y2);
+	if (x1real >= x2real || y1real >= y2real)
+		return(FALSE);
 
 	startoffset=pBuffer+(y1real*uiDestPitchBYTES/2)+x1real;
-	lines=y2real-y1real+1;
-	linelength=x2real-x1real+1;
+	lines = y2real-y1real;
+	linelength = x2real-x1real;
 	lineskip=uiDestPitchBYTES-(linelength*2);
 
 	__asm {
@@ -13131,8 +13135,9 @@ BlitNTL4:
 
 BlitNTL6:
 
-		//Donot write to z-buffer
-		mov		[ebx], ax // Original comment says to not write to zBuffer. This writes gibberish there so is most likely wrong.
+		// AL currently contains the source palette index; reload the requested depth.
+		mov		ax, usZValue // Restore the depth value.
+		mov		[ebx], ax // Claim the destination pixel.
 
 		xor		ah, ah
 		mov		al, [esi] // Load byte from source into AL

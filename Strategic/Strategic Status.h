@@ -150,7 +150,8 @@ BOOLEAN LoadStrategicStatusFromSaveGameFile( HWFILE hFile );
 
 UINT8 CalcDeathRate(void);
 
-void ModifyPlayerReputation(INT8 bRepChange);
+void ModifyPlayerReputation(ReputationEventNames eRepEvent, UINT8 ubMultiplier = 1);
+void ModifyPlayerReputationByValue(INT16 sRepChange);
 
 BOOLEAN MercThinksDeathRateTooHigh( UINT8 ubProfileID );
 BOOLEAN MercThinksBadReputationTooHigh( UINT8 ubProfileID );

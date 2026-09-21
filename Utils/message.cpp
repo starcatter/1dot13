@@ -242,7 +242,11 @@ BOOLEAN CreateStringVideoOverlay( ScrollStringStPtr pStringSt, UINT16 usX, UINT1
 	VideoOverlayDesc.ubFontFore	= (unsigned char)pStringSt->usColor;
 	VideoOverlayDesc.sX					= VideoOverlayDesc.sLeft;
 	VideoOverlayDesc.sY					= VideoOverlayDesc.sTop;
-	swprintf( VideoOverlayDesc.pzText, pStringSt->pString16 );
+	// pString16 is already formatted display text. Treating it as another
+	// printf format corrupts literal percent signs and can consume arguments
+	// that do not exist. Copy it as text and respect the overlay buffer.
+	wcsncpy( VideoOverlayDesc.pzText, pStringSt->pString16, 199 );
+	VideoOverlayDesc.pzText[ 199 ] = 0;
 	VideoOverlayDesc.BltCallback = BlitString;
 	pStringSt->iVideoOverlay =	RegisterVideoOverlay( ( VOVERLAY_DIRTYBYTEXT ), &VideoOverlayDesc );
 

@@ -66,7 +66,7 @@ BOOLEAN blitZStrip(UINT16* buffer, UINT32 pitchBytes, UINT16* zBuffer,
 		policy.pixelation = Pixelation::WhenObscured;
 		policy.updateZWhenObscured = true;
 		policy.drawShadowWhenObscured = true;
-		policy.suppressEqualObscuredShadow = false;
+		policy.suppressEqualShadow = false;
 	}
 	return ja2::blitter::blitEtrle(buffer, pitchBytes, object, x, y, index, policy);
 }

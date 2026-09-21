@@ -9,6 +9,8 @@ namespace Platform
 namespace
 {
 
+constexpr std::size_t maximumCoalescedMouseMotions = 4096;
+
 void setSdlError(std::string& error, const char* operation)
 {
 	error = operation;
@@ -98,8 +100,13 @@ HostPumpResult Sdl3ApplicationHost::waitAndDispatchOne(
 {
 	SDL_ClearError();
 	SDL_Event event{};
-	bool eventAvailable = false;
-	if (timeoutMilliseconds == 0)
+	bool eventAvailable = hasDeferredEvent_;
+	if (hasDeferredEvent_)
+	{
+		event = deferredEvent_;
+		hasDeferredEvent_ = false;
+	}
+	else if (timeoutMilliseconds == 0)
 	{
 		eventAvailable = SDL_PollEvent(&event);
 	}
@@ -116,6 +123,36 @@ HostPumpResult Sdl3ApplicationHost::waitAndDispatchOne(
 		return SDL_GetError()[0] == '\0'
 			? HostPumpResult{HostPumpStatus::deadlineReached, 0}
 			: HostPumpResult{HostPumpStatus::failed, 0};
+	}
+
+	// SDL retains every mouse-motion event, unlike the effectively coalesced
+	// WM_MOUSEMOVE stream used by the old host.  Replaying those events one per
+	// game-loop iteration creates an arbitrarily long input delay whenever a
+	// frame is expensive (weather effects exposed this dramatically).  Collapse
+	// each contiguous run to its newest absolute position while preserving the
+	// ordering of buttons, keys, focus, and quit events.
+	if (event.type == SDL_EVENT_MOUSE_MOTION)
+	{
+		for (std::size_t count = 1;
+			count < maximumCoalescedMouseMotions; ++count)
+		{
+			SDL_Event next{};
+			if (!SDL_PollEvent(&next))
+			{
+				break;
+			}
+			if (next.type == SDL_EVENT_MOUSE_MOTION &&
+				next.motion.windowID == event.motion.windowID &&
+				next.motion.which == event.motion.which)
+			{
+				event = next;
+				continue;
+			}
+
+			deferredEvent_ = next;
+			hasDeferredEvent_ = true;
+			break;
+		}
 	}
 
 	if (event.type == SDL_EVENT_QUIT ||

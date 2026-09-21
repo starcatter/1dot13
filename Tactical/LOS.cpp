@@ -7510,6 +7510,10 @@ void MoveBullet( INT32 iBullet )
 									{
 										// hit someone!
 										fStopped = BulletHitMerc( pBullet, pStructure, fIntended );
+										// Processing the hit can change the soldier's animation surface,
+										// which removes and recreates its world structure. Never use the
+										// collision pointer again after handing it to BulletHitMerc().
+										pStructure = NULL;
 										if (fStopped)
 										{
 											// remove bullet function now called from within BulletHitMerc, so just quit
@@ -7621,9 +7625,14 @@ void MoveBullet( INT32 iBullet )
 													LocateBullet( pBullet->iBullet );
 													gpLocalStructure[ iStructureLoop ] = NULL;
 												}
+												}
+												// WindowHit swaps the window structure in place, deleting the
+												// object referenced by both the local collision cache and this
+												// loop variable. The cache entries were cleared above; do not
+												// carry the same dangling pointer into the riot-shield check.
+												pStructure = NULL;
+												// but the bullet keeps on going!!!
 											}
-											// but the bullet keeps on going!!!
-										}
 
 									}
 								}
