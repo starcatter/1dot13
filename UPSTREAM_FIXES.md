@@ -615,6 +615,40 @@ Upstream PR checklist:
 - Verify repeated same-frame calls return failure from the cached invalid
   position as well as from the initial conversion.
 
+## Terrain cursor compares the height of an off-map selected soldier
+
+Status: fixed locally on 2026-09-22; confirmed by AddressSanitizer when
+quick-loading during the selected merc's death. This is a pre-existing 1.13 UI
+bounds bug, independent of the native port.
+
+At the end of save loading, `LoadSavedGame` releases any tactical UI lock left
+by the restored state. `UIHandleLUIEndLock` immediately refreshes the terrain
+cursor. During an interrupted death transition, the active selected-soldier
+record can still be temporarily off-map with `sGridNo == NOWHERE`, even though
+`GetSoldier` accepts it as active. `UIHandleMOnTerrain` compared its tile height
+with the mouse tile without validating the soldier grid, reading
+`gpWorldLevelData[-1]`. With the current `MAP_ELEMENT` layout, the `sHeight`
+field lands exactly eight bytes before the world allocation, matching the ASan
+report.
+
+The local fix treats an off-map selected soldier as unavailable for terrain
+cursor calculation: it clears the path preview, displays the invalid-action
+cursor for that transition, and returns before any pathing or world lookup can
+consume the sentinel. The following normal UI update can resume once selection
+and placement state agree.
+
+Upstream PR checklist:
+
+- Extract the guard in `Tactical/Handle UI.cpp` as a focused bounds fix.
+- Quick-load while the selected merc's death animation and tactical UI lock are
+  both active.
+- Verify the loaded world becomes interactive on the next valid cursor update
+  and no path preview from the discarded world survives.
+- Also test selected mercs entering vehicles, changing sectors, retreating, and
+  being removed from the tactical world.
+- Run under AddressSanitizer and verify neither side of the terrain-height
+  comparison can index outside `gpWorldLevelData`.
+
 ## Shattered windows leave a dangling bullet-collision pointer
 
 Status: fixed locally on 2026-09-21; confirmed by AddressSanitizer during a
@@ -640,3 +674,131 @@ Upstream PR checklist:
   window and that riot-shield interception remains unchanged.
 - Repeat under AddressSanitizer and verify the pre-swap window structure is not
   accessed after `BulletHitWindow` returns.
+
+## Tactical AI building comparison accepts the off-map sentinel
+
+Status: fixed locally on 2026-09-22; confirmed by AddressSanitizer after an
+autofire burst hit an enemy. This is a pre-existing 1.13 bounds bug,
+independent of the native port.
+
+`ClosestKnownOpponent` can observe a personal or public opponent-knowledge flag
+whose remembered grid has already been cleared to `NOWHERE`. It passed that
+sentinel to `SameBuilding` while comparing different elevation levels.
+`SameBuilding` indexed `gubBuildingInfo` without validating either grid, so
+`NOWHERE == -1` read one byte before the world-sized allocation. If execution
+continued, the same invalid grid would also enter the range calculation.
+
+The local fix skips invalid remembered and currently-seen opponent grids before
+building or range calculations. `SameBuilding` now also rejects invalid grids
+and an unavailable building table at its API boundary, protecting all callers.
+
+Upstream PR checklist:
+
+- Extract the `TacticalAI/AIUtils.cpp` and `TileEngine/Buildings.cpp` guards as
+  a focused bounds fix.
+- Clear a known opponent's remembered location while its knowledge flag is
+  still active, then let a friend in trouble evaluate nearby opponents.
+- Repeat across ground/roof levels and verify valid same-building filtering is
+  unchanged.
+- Run the scenario under AddressSanitizer and verify that neither building nor
+  range calculations receive `NOWHERE`.
+
+## Autoresolve destroys C++ soldiers with the C allocator
+
+Status: fixed locally on 2026-09-22; confirmed by AddressSanitizer while
+leaving autoresolve. This is a pre-existing 1.13 ownership bug, independent of
+the native port.
+
+Autoresolve dynamically constructs its temporary `SOLDIERTYPE` instances with
+`new SOLDIERTYPE(...)`, but `TacticalRemoveSoldierPointer` released them with
+`MemFree`. This allocator mismatch dates to the 2008 New Inventory Project
+conversion and also bypasses destruction of the soldier's `Inventory` and
+other non-POD members. It remained mostly invisible under the Windows CRT but
+is undefined behaviour and is rejected immediately by AddressSanitizer.
+
+The local fix pairs these allocations with `delete`. Reserved soldiers are
+copies of live tactical soldiers, so their borrowed modular-AI plan pointer is
+explicitly cleared before the temporary clone can be destroyed.
+
+Upstream PR checklist:
+
+- Extract the `Tactical/Soldier Create.cpp` allocator-pairing fix independently
+  of the native host.
+- Enter autoresolve from an already-loaded tactical sector so enemy or militia
+  soldiers are reserved and copied, then complete and leave the battle.
+- Repeat with persistent and non-persistent prebattle interfaces, retreats,
+  militia, and generated reinforcements.
+- Run under AddressSanitizer and verify both allocator pairing and destruction
+  of copied inventory state without deleting a live soldier's AI plan.
+
+## New-CTH weapon tooltip initialization reads the old-CTH-only entry
+
+Status: fixed locally on 2026-09-22; confirmed by AddressSanitizer when changing
+item-description tabs in strategic inventory. This is a pre-existing 1.13 UI
+bounds bug introduced by the 2011 development-trunk merge, independent of the
+native port.
+
+The merge added an old-CTH autofire-penalty row at weapon-tooltip index 22 and
+expanded the tooltip-region loop from 22 to 23 entries. All eight new-CTH
+translation tables correctly remained 22 entries because that property does
+not exist in new CTH. Nevertheless, the region initializer eagerly formatted
+all 23 entries before disabling unused regions, so new CTH read one pointer
+past `szUDBGenWeaponsStatsTooltipText` whenever a weapon's general-description
+tab was initialized.
+
+The local fix creates 22 regions for new CTH and 23 for old CTH, preserving the
+old-CTH autofire tooltip without inventing a meaningless new-CTH translation.
+The native multi-language binding now has compile-time checks that all runtime
+language variants retain the required 22 new-CTH titles.
+
+Upstream PR checklist:
+
+- Extract the mode-specific loop bound in `Tactical/Interface Enhanced.cpp`.
+- With new CTH enabled, open weapon descriptions and repeatedly switch among
+  description, general, secondary-general, and advanced tabs in both tactical
+  and strategic inventory.
+- Repeat with old CTH and verify the autofire-penalty row at index 22 still has
+  working fast-help text.
+- Exercise all translations and run both modes under AddressSanitizer.
+- If the portable runtime-language binding is not part of the target branch,
+  omit its `i18n/LanguageStrings.cpp` assertions from that focused PR.
+
+## Strategic movement erases an unrelated active encounter
+
+Status: fixed locally on 2026-09-22; the affected quicksave was inspected and
+recovered under GDB. This is a pre-existing 1.13 state-management bug,
+independent of the native port. Interactive playtesting of the repaired
+pre-battle/autoresolve path remains pending.
+
+`CheckConditionsForBattle` reset the singleton enemy encounter code whenever
+any strategic movement event was processed. If the player opened the map during
+a loaded tactical battle—for example after ordering other squads to flee—an
+unrelated group movement could erase the encounter which the non-persistent
+pre-battle interface needed to represent the still-running battle.
+
+Recovery also failed for mobile enemy groups. Their in-battle counters live on
+`ENEMYGROUP`, while `CalculateNonPersistantPBIInfo` only checked stationary
+`SectorInfo` counters. The reported save consequently contained Syf and four
+live tactical enemies plus two correctly populated mobile enemy groups, but no
+encounter code or battle locator. Clicking the sector then opened ordinary
+travel UI instead of pre-battle/autoresolve.
+
+The local fix preserves the encounter code while an enemy-occupied tactical
+world is loaded. Map-screen entry revalidates non-persistent battle state and,
+when repairing an already-corrupt save, derives a generic enemy encounter from
+the loaded tactical enemies. It does not invent troops or alter group data.
+
+Upstream PR checklist:
+
+- Extract the changes in `Strategic/Strategic Movement.cpp`,
+  `Strategic/PreBattle Interface.cpp`, and `Strategic/mapscreen.cpp` as a focused
+  state-lifetime fix.
+- Enter tactical combat with a mobile enemy group, order another squad to flee,
+  and allow strategic group movement events to run before opening the map.
+- Verify the red battle locator remains active and clicking it opens the
+  pre-battle interface with autoresolve available.
+- Load a save made after the old code cleared the encounter and verify map entry
+  reconstructs the locator from the loaded tactical battle.
+- Also test stationary garrisons, invasions, ambushes, creatures, underground
+  battles, and peaceful loaded sectors to ensure their encounter type is not
+  overwritten by the mobile-group recovery fallback.

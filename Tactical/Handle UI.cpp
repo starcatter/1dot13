@@ -1665,6 +1665,16 @@ UINT32 UIHandleMOnTerrain( UI_EVENT *pUIEvent )
 				gfUIShowExitExitGrid = TRUE;
 			}
 
+			// Save loading can finish a stale UI lock while the selected soldier is
+			// temporarily off-map (notably when quick-loading during their death).
+			// Do not use the NOWHERE sentinel as an index into the new world.
+			if ( TileIsOutOfBounds( pSoldier->sGridNo ) )
+			{
+				ErasePath( TRUE );
+				guiNewUICursor = FLOATING_X_UICURSOR;
+				return( GAME_SCREEN );
+			}
+
 			// ATE: Draw invalidc cursor if heights different
 			if ( gpWorldLevelData[ usMapPos ].sHeight != gpWorldLevelData[ pSoldier->sGridNo ].sHeight )
 			{

@@ -47,6 +47,17 @@ namespace lang_zh {
 
 namespace lang_default = lang_en;
 
+// InternalInitEDBTooltipRegion indexes these NCTH titles from 0 through 21.
+// Keep every runtime-selectable translation structurally compatible.
+static_assert(std::extent_v<decltype(lang_en::szUDBGenWeaponsStatsTooltipText)> == 22);
+static_assert(std::extent_v<decltype(lang_de::szUDBGenWeaponsStatsTooltipText)> == 22);
+static_assert(std::extent_v<decltype(lang_ru::szUDBGenWeaponsStatsTooltipText)> == 22);
+static_assert(std::extent_v<decltype(lang_nl::szUDBGenWeaponsStatsTooltipText)> == 22);
+static_assert(std::extent_v<decltype(lang_pl::szUDBGenWeaponsStatsTooltipText)> == 22);
+static_assert(std::extent_v<decltype(lang_fr::szUDBGenWeaponsStatsTooltipText)> == 22);
+static_assert(std::extent_v<decltype(lang_it::szUDBGenWeaponsStatsTooltipText)> == 22);
+static_assert(std::extent_v<decltype(lang_zh::szUDBGenWeaponsStatsTooltipText)> == 22);
+
 // definitions (default language)
 #define X(NAME)                                                                \
   std::decay_t<decltype(lang_default::NAME)> NAME = lang_default::NAME;

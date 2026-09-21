@@ -99,6 +99,11 @@ BOOLEAN InBuilding( INT32 sGridNo )
 
 BOOLEAN SameBuilding( INT32 sGridNo1, INT32 sGridNo2 )
 {
+	if ( gubBuildingInfo == NULL || TileIsOutOfBounds( sGridNo1 ) || TileIsOutOfBounds( sGridNo2 ) )
+	{
+		return( FALSE );
+	}
+
 	if ( gubBuildingInfo[ sGridNo1 ] == NO_BUILDING )
 	{
 		return( FALSE );

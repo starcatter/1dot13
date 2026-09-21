@@ -39,6 +39,7 @@
 	#include "history.h"
 	#include "Cheats.h"
 	#include "Tactical Save.h"
+	#include "Map Information.h"
 	#include "message.h"
 	#include "CampaignStats.h"				// added by Flugente
 	#include "MilitiaSquads.h"				// added by Flugente
@@ -1357,7 +1358,7 @@ void RenderPBHeader( INT32 *piX, INT32 *piWidth)
 	width = StringPixLength( str, FONT10ARIALBOLD );
 	x = 130 - width / 2;
 	mprintf( x + xOffset, 4 + yOffset, str );
-	InvalidateRegion( 0, 0, 231 + xOffset, 12 + yOffset );
+	InvalidateRegion( xOffset, yOffset, 231 + xOffset, 12 + yOffset );
 	*piX = x;
 	*piWidth = width;
 }
@@ -1683,7 +1684,12 @@ void RenderPreBattleInterface()
 		RenderPBHeader( &x, &width ); //the text is important enough to blink.
 	}
 
-	InvalidateRegion( 0, 0, PREBATTLE_INTERFACE_WIDTH, iPrebattleInterfaceHeight );
+	// The panel is centered/scaled away from the origin at higher resolutions.
+	// Invalidating the legacy unshifted rectangle leaves the freshly rendered
+	// panel in guiSAVEBUFFER but outside the region copied for presentation.
+	InvalidateRegion( xOffset, yOffset,
+		xOffset + PREBATTLE_INTERFACE_WIDTH,
+		yOffset + iPrebattleInterfaceHeight );
 	if( gfEnterAutoResolveMode )
 	{
 		gfEnterAutoResolveMode = FALSE;
@@ -2097,7 +2103,7 @@ void ActivateAutomaticAutoResolveStart()
 void CalculateNonPersistantPBIInfo()
 {
 	//We need to set up the non-persistant PBI
-	if( !gfBlitBattleSectorLocator ||
+	if( !gfBlitBattleSectorLocator || GetEnemyEncounterCode() == NO_ENCOUNTER_CODE ||
 			gubPBSectorX != gWorldSectorX || gubPBSectorY != gWorldSectorY || gubPBSectorZ != gbWorldSectorZ )
 	{ //Either the locator isn't on or the locator info is in a different sector
 
@@ -2148,6 +2154,14 @@ void CalculateNonPersistantPBIInfo()
 			{
 				SetExplicitEnemyEncounterCode( ENTERING_ENEMY_SECTOR_CODE );
 				SetEnemyEncounterCode( ENTERING_ENEMY_SECTOR_CODE );
+			}
+			else if( gfWorldLoaded && gTacticalStatus.fEnemyInSector && NumEnemyInSector() )
+			{
+				// Mobile enemy groups keep their in-battle counts on the group,
+				// not in SECTORINFO. Recover an ongoing loaded battle if an
+				// unrelated strategic movement event cleared the encounter code.
+				SetExplicitEnemyEncounterCode( ENEMY_ENCOUNTER_CODE );
+				SetEnemyEncounterCode( ENEMY_ENCOUNTER_CODE );
 			}
 		}
 

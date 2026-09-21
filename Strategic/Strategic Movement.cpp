@@ -1208,7 +1208,11 @@ BOOLEAN CheckConditionsForBattle( GROUP *pGroup )
 		}
 	}
 
-	if( !DidGameJustStart() )
+	// The encounter code describes the one active battle. Strategic movement
+	// events elsewhere on the map must not erase it while tactical combat is
+	// still loaded; the non-persistent PBI needs it when the player opens the
+	// map screen to finish that battle in autoresolve.
+	if( !DidGameJustStart() && !( gfWorldLoaded && gTacticalStatus.fEnemyInSector ) )
 	{
 		SetEnemyEncounterCode( NO_ENCOUNTER_CODE );
 	}

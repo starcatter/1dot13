@@ -100,13 +100,28 @@ Status: fixed under ASan; awaiting reproduction playtest.
 
 ## P0: invisible pre-battle/auto-resolve interface
 
+Status: fixed; live battle-locator playtest passed on 2026-09-22. The crash
+after the subsequent autoresolve was a separate allocator mismatch in temporary
+soldier teardown and has also been fixed.
+
 ### Reproduction
 
 1. On the map screen, click the battle-sector locator.
 2. The pre-battle panel and auto-resolve button do not appear.
 3. Subsequent clicks may do nothing and map-screen exits may remain disabled.
 
-### Investigation notes
+### Root cause and fix
+
+- The panel renders into `guiSAVEBUFFER` at the resolution-dependent
+  `xOffset`/`yOffset`, but `RenderPreBattleInterface()` invalidated the legacy
+  unshifted rectangle at `(0, 0)`.
+- Full map redraws made persistent enemy-arrival prompts appear normally. A
+  panel opened by clicking an active battle locator depended on its own dirty
+  rectangle, so the SDL presenter copied only a small, unrelated portion of
+  the frame.
+- The panel and blinking header now invalidate their actual offset bounds.
+
+### Additional lifecycle risks
 
 - `InitPreBattleInterface()` hides all three buttons and marks the pre-battle
   interface active before the transition has rendered and exposed the panel.
@@ -120,14 +135,36 @@ Status: fixed under ASan; awaiting reproduction playtest.
   interface can deadlock an in-progress dialogue and inherit its input/pause
   lock.  The two reported symptoms may consequently be one ordering bug even
   though each subsystem also has an independent incomplete-state hazard.
-- An interrupted/failed first render therefore leaves a valid-looking active
-  flag around an invisible and non-interactive interface.  This matches the
-  observed symptom, but the exact failed transition still needs a trace from a
-  reproduction.
+- An interrupted/failed first render can still leave a valid-looking active
+  flag around an invisible and non-interactive interface. This was not the
+  cause of the reported locator-click regression, but remains worth hardening.
 
-### Work
+### Separate active-battle state-loss bug
 
-- Trace init, transition, first render, action, and teardown with:
+Status: fixed and verified against the affected quicksave under GDB; awaiting
+an interactive playtest of the recovered pre-battle/autoresolve path.
+
+- Strategic movement processing unconditionally cleared the singleton enemy
+  encounter code. A different squad fleeing or another group arriving while a
+  tactical battle remained loaded could therefore erase the active battle's
+  map-screen state.
+- Non-persistent PBI reconstruction only examined stationary `SectorInfo`
+  in-battle counters. Mobile enemy groups store those counters on `ENEMYGROUP`,
+  so it could not recover the encounter even though live tactical enemies and
+  their strategic groups remained valid.
+- Strategic movement now preserves an encounter while a hostile tactical world
+  is loaded. Map-screen entry also revalidates the locator and recovers a
+  generic mobile-group encounter from the loaded tactical state, allowing old
+  saves made after the corruption to repair themselves.
+- In the reported quicksave, GDB observed Syf and four live enemies in I6, two
+  mobile enemy groups with four troops marked in battle, but encounter and
+  locator globals both at zero. Reconstruction restored both globals and the
+  correct I6 locator without modifying the underlying battle.
+
+### Remaining work
+
+- Trace any remaining init, transition, first render, action, and teardown
+  failure with:
   `gfPreBattleInterfaceActive`, `gfRenderPBInterface`,
   `gfPBButtonsHidden`, `gfIgnoreAllInput`, `fDisableDueToBattleRoster`,
   `fDisableMapInterfaceDueToBattle`, `gfExtraBuffer`, current screen, and

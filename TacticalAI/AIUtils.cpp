@@ -1455,6 +1455,13 @@ INT32 ClosestKnownOpponent(SOLDIERTYPE *pSoldier, INT32 * psGridNo, INT8 * pbLev
 			bLevel = gbPublicLastKnownOppLevel[pSoldier->bTeam][pOpponent->ubID];
 		}
 
+		// Knowledge flags can briefly outlive their remembered location after a
+		// target is hit, moved, or removed.  NOWHERE is not a usable opponent.
+		if ( TileIsOutOfBounds( sGridNo ) )
+		{
+			continue;
+		}
+
 		// if we are standing at that gridno(!, obviously our info is old...)
 		if (sGridNo == pSoldier->sGridNo)
 		{
@@ -1556,6 +1563,11 @@ INT32 ClosestSeenOpponent(SOLDIERTYPE *pSoldier, INT32 * psGridNo, INT8 * pbLeve
 		sGridNo = pOpp->sGridNo;
 		bLevel = pOpp->pathing.bLevel;
 
+		if ( TileIsOutOfBounds( sGridNo ) )
+		{
+			continue;
+		}
+
 		// if we are standing at that gridno(!, obviously our info is old...)
 		if (sGridNo == pSoldier->sGridNo)
 		{
@@ -1651,6 +1663,11 @@ INT32 ClosestSeenOpponentWithRoof(SOLDIERTYPE *pSoldier, INT32 * psGridNo, INT8 
 		// since we're dealing with seen people, use exact gridnos
 		sGridNo = pOpp->sGridNo;
 		bLevel = pOpp->pathing.bLevel;
+
+		if ( TileIsOutOfBounds( sGridNo ) )
+		{
+			continue;
+		}
 
 		// if we are standing at that gridno(!, obviously our info is old...)
 		if (sGridNo == pSoldier->sGridNo)

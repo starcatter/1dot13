@@ -1484,7 +1484,10 @@ void InternalInitEDBTooltipRegion( OBJECTTYPE * gpItemDescObject, UINT32 guiCurr
 			}
 
 			///////////////// BURST/AUTOFIRE DATA - ICONS
-			for (cnt = 19; cnt < 23; cnt++)
+			// Old CTH has one additional line for its autofire penalty. The NCTH
+			// tooltip-title tables intentionally end at index 21 in every language.
+			const INT32 iLastWeaponTooltip = UsingNewCTHSystem() ? 22 : 23;
+			for (cnt = 19; cnt < iLastWeaponTooltip; cnt++)
 			{
 				MSYS_DefineRegion( &gUDBFasthelpRegions[ iRegionsCreated ],
 					(INT16)(gItemDescGenRegions[cnt][0].sLeft),
