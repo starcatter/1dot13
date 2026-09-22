@@ -4764,6 +4764,14 @@ UINT32 MapScreenHandle(void)
 	{
 		gfFirstMapscreenFrame = TRUE;
 
+		// Revalidate the non-persistent battle locator from the loaded tactical
+		// world. This also repairs saves made after an unrelated strategic group
+		// movement cleared the global encounter code during combat.
+		if( gfWorldLoaded && gTacticalStatus.fEnemyInSector )
+		{
+			CalculateNonPersistantPBIInfo();
+		}
+
 		InitPreviousPaths();
 
 		// if arrival sector is invalid, reset to A9

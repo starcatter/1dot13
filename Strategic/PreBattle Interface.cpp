@@ -39,6 +39,7 @@
 	#include "history.h"
 	#include "Cheats.h"
 	#include "Tactical Save.h"
+	#include "Map Information.h"
 	#include "message.h"
 	#include "CampaignStats.h"				// added by Flugente
 	#include "MilitiaSquads.h"				// added by Flugente
@@ -2091,7 +2092,7 @@ void ActivateAutomaticAutoResolveStart()
 void CalculateNonPersistantPBIInfo()
 {
 	//We need to set up the non-persistant PBI
-	if( !gfBlitBattleSectorLocator ||
+	if( !gfBlitBattleSectorLocator || GetEnemyEncounterCode() == NO_ENCOUNTER_CODE ||
 			gubPBSectorX != gWorldSectorX || gubPBSectorY != gWorldSectorY || gubPBSectorZ != gbWorldSectorZ )
 	{ //Either the locator isn't on or the locator info is in a different sector
 
@@ -2122,6 +2123,14 @@ void CalculateNonPersistantPBIInfo()
 			{
 				SetExplicitEnemyEncounterCode( ENTERING_ENEMY_SECTOR_CODE );
 				SetEnemyEncounterCode( ENTERING_ENEMY_SECTOR_CODE );
+			}
+			else if( gfWorldLoaded && gTacticalStatus.fEnemyInSector && NumEnemyInSector() )
+			{
+				// Mobile enemy groups keep their in-battle counts on the group,
+				// not in SECTORINFO. Recover an ongoing loaded battle if an
+				// unrelated strategic movement event cleared the encounter code.
+				SetExplicitEnemyEncounterCode( ENEMY_ENCOUNTER_CODE );
+				SetEnemyEncounterCode( ENEMY_ENCOUNTER_CODE );
 			}
 		}
 		else
