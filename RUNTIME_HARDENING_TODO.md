@@ -141,8 +141,9 @@ soldier teardown and has also been fixed.
 
 ### Separate active-battle state-loss bug
 
-Status: fixed and verified against the affected quicksave under GDB; awaiting
-an interactive playtest of the recovered pre-battle/autoresolve path.
+Status: fixed and verified against the affected quicksave under GDB. The
+recovered pre-battle/autoresolve path also passed interactive playtesting on
+2026-09-22.
 
 - Strategic movement processing unconditionally cleared the singleton enemy
   encounter code. A different squad fleeing or another group arriving while a
