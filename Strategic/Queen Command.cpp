@@ -1,6 +1,7 @@
 //Queen Command.c
 
-	#include "Queen Command.h"
+#include "Queen Command.h"
+#include "StrategicBattleDiagnostics.h"
 	#include <cstddef>
 	#include <cstring>
 	#include "Overhead Types.h"
@@ -545,6 +546,15 @@ void EndTacticalBattleForEnemy()
 	{
 		if ( pGroup->usGroupTeam == ENEMY_TEAM && !pGroup->fVehicle && pGroup->ubSectorX == gWorldSectorX && pGroup->ubSectorY == gWorldSectorY )
 		{
+			ja2::strategic::diagnostics::log(
+				"battle cleanup minute=%u group=%u sector=%c%d between=%u clearing_in_battle=%u arrival=%u",
+				GetWorldTotalMin(), pGroup->ubGroupID,
+				'A' + pGroup->ubSectorY - 1, pGroup->ubSectorX,
+				pGroup->fBetweenSectors,
+				pGroup->pEnemyGroup->ubAdminsInBattle + pGroup->pEnemyGroup->ubTroopsInBattle +
+				pGroup->pEnemyGroup->ubElitesInBattle + pGroup->pEnemyGroup->ubRobotsInBattle +
+				pGroup->pEnemyGroup->ubTanksInBattle + pGroup->pEnemyGroup->ubJeepsInBattle,
+				pGroup->uiArrivalTime );
 			pGroup->pEnemyGroup->ubTroopsInBattle = 0;
 			pGroup->pEnemyGroup->ubElitesInBattle = 0;
 			pGroup->pEnemyGroup->ubRobotsInBattle = 0;
@@ -973,6 +983,16 @@ BOOLEAN PrepareEnemyForSectorBattle()
 				if (isTransportGroup)
 					AddToTransportGroupMap(pGroup->ubGroupID, SOLDIER_CLASS_JEEP, ubNumJeeps);
 			}
+			ja2::strategic::diagnostics::log(
+				"deployed minute=%u group=%u sector=%c%d next=%c%d between=%u arrival=%u traverse=%u in_battle=%u size=%u",
+				GetWorldTotalMin(), pGroup->ubGroupID,
+				'A' + pGroup->ubSectorY - 1, pGroup->ubSectorX,
+				pGroup->ubNextY ? 'A' + pGroup->ubNextY - 1 : '-', pGroup->ubNextX,
+				pGroup->fBetweenSectors, pGroup->uiArrivalTime, pGroup->uiTraverseTime,
+				pGroup->pEnemyGroup->ubAdminsInBattle + pGroup->pEnemyGroup->ubTroopsInBattle +
+				pGroup->pEnemyGroup->ubElitesInBattle + pGroup->pEnemyGroup->ubRobotsInBattle +
+				pGroup->pEnemyGroup->ubTanksInBattle + pGroup->pEnemyGroup->ubJeepsInBattle,
+				pGroup->ubGroupSize );
 			//NOTE:
 			//no provisions for profile troop leader or retreat groups yet.
 		}

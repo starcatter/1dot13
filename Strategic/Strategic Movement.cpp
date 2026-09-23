@@ -49,6 +49,8 @@
 	#include "MilitiaIndividual.h"	// added by Flugente
 	#include "Rebel Command.h"
 	#include "Strategic Transport Groups.h"
+	#include "EnemyGroupBattleState.h"
+	#include "StrategicBattleDiagnostics.h"
 
 #include "MilitiaSquads.h"
 
@@ -1431,6 +1433,39 @@ void TriggerPrebattleInterface( UINT8 ubResult )
 	gpInitPrebattleGroup = NULL;
 }
 
+static ja2::strategic::EnemyGroupBattleCounts GetEnemyGroupBattleCounts( const GROUP* pGroup )
+{
+	// GROUP overlays pEnemyGroup and pPlayerList. A non-null union member is
+	// therefore not enough to prove that this is an ENEMYGROUP allocation.
+	if( !pGroup || pGroup->usGroupTeam != ENEMY_TEAM || !pGroup->pEnemyGroup )
+		return {};
+
+	const ENEMYGROUP& enemy = *pGroup->pEnemyGroup;
+	return {
+		enemy.ubAdminsInBattle,
+		enemy.ubTroopsInBattle,
+		enemy.ubElitesInBattle,
+		enemy.ubRobotsInBattle,
+		enemy.ubTanksInBattle,
+		enemy.ubJeepsInBattle
+	};
+}
+
+static bool HasMatchingTacticalEnemy( const GROUP* pGroup )
+{
+	for( SoldierID id = gTacticalStatus.Team[ENEMY_TEAM].bFirstID;
+		id <= gTacticalStatus.Team[ENEMY_TEAM].bLastID; ++id )
+	{
+		const SOLDIERTYPE* soldier = id;
+		if( soldier->bActive && soldier->bInSector && soldier->stats.bLife &&
+			soldier->ubGroupID == pGroup->ubGroupID )
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 
 void DeployGroupToSector( GROUP *pGroup )
 {
@@ -1820,9 +1855,53 @@ void GroupArrivedAtSector( UINT8 ubGroupID, BOOLEAN fCheckForBattle, BOOLEAN fNe
 		return;
 	}
 
+	if( pGroup->usGroupTeam == ENEMY_TEAM )
+	{
+		const auto counts = GetEnemyGroupBattleCounts( pGroup );
+		ja2::strategic::diagnostics::log(
+			"arrival event minute=%u group=%u source=%c%d destination=%c%d between=%u "
+			"arrival=%u traverse=%u in_battle=%u world=%c%d-%d loaded=%u enemies_present=%u",
+			GetWorldTotalMin(), pGroup->ubGroupID,
+			'A' + pGroup->ubSectorY - 1, pGroup->ubSectorX,
+			pGroup->ubNextY ? 'A' + pGroup->ubNextY - 1 : '-', pGroup->ubNextX,
+			pGroup->fBetweenSectors, pGroup->uiArrivalTime, pGroup->uiTraverseTime,
+			counts.admins + counts.troops + counts.elites + counts.robots + counts.tanks + counts.jeeps,
+			'A' + gWorldSectorY - 1, gWorldSectorX, gbWorldSectorZ,
+			gfWorldLoaded, gTacticalStatus.fEnemyInSector );
+	}
+
 	// group arrival already processed?
 	if ( !pGroup->fBetweenSectors && pGroup->ubNextX == 0 && pGroup->ubNextY == 0 )
 	{
+		return;
+	}
+
+	// A mobile enemy can still be selected for tactical deployment while it is
+	// waiting on an arrival event. Once members of that group are fighting in
+	// the loaded source sector, the strategic event must not move the group out
+	// from under its tactical soldiers. Keep postponing the arrival until the
+	// battle ends and EndTacticalBattleForEnemy clears the in-battle counters.
+	if( ja2::strategic::shouldHoldArrivalForLoadedBattle(
+		pGroup->usGroupTeam == ENEMY_TEAM,
+		pGroup->fBetweenSectors,
+		gfWorldLoaded,
+		gTacticalStatus.fEnemyInSector,
+		HasMatchingTacticalEnemy( pGroup ),
+		pGroup->ubSectorX,
+		pGroup->ubSectorY,
+		pGroup->ubSectorZ,
+		gWorldSectorX,
+		gWorldSectorY,
+		gbWorldSectorZ,
+		GetEnemyGroupBattleCounts( pGroup ) ) )
+	{
+		SetGroupArrivalTime( pGroup, GetWorldTotalMin() + 1 );
+		if( !AddStrategicEvent( EVENT_GROUP_ARRIVAL, pGroup->uiArrivalTime, pGroup->ubGroupID ) )
+			AssertMsg( 0, "Failed to postpone movement of an enemy group engaged in tactical battle." );
+		ja2::strategic::diagnostics::log(
+			"held arrival minute=%u group=%u sector=%c%d rescheduled=%u",
+			GetWorldTotalMin(), pGroup->ubGroupID,
+			'A' + pGroup->ubSectorY - 1, pGroup->ubSectorX, pGroup->uiArrivalTime );
 		return;
 	}
 
@@ -5698,6 +5777,67 @@ void SetGroupArrivalTime( GROUP *pGroup, UINT32 uiArrivalTime )
 	}
 
 	pGroup->uiArrivalTime = uiArrivalTime;
+}
+
+void RepairLoadedEnemyBattleGroupMovement()
+{
+	if( !gfWorldLoaded || !gTacticalStatus.fEnemyInSector ||
+		gWorldSectorX < MINIMUM_VALID_X_COORDINATE || gWorldSectorX > MAXIMUM_VALID_X_COORDINATE ||
+		gWorldSectorY < MINIMUM_VALID_Y_COORDINATE || gWorldSectorY > MAXIMUM_VALID_Y_COORDINATE )
+	{
+		return;
+	}
+
+	for( GROUP* pGroup = gpGroupList; pGroup; pGroup = pGroup->next )
+	{
+		const bool hasMatchingTacticalSoldier =
+			pGroup->usGroupTeam == ENEMY_TEAM && HasMatchingTacticalEnemy( pGroup );
+		if( !ja2::strategic::shouldRepairAdvancedLoadedBattleGroup(
+			pGroup->usGroupTeam == ENEMY_TEAM,
+			pGroup->fBetweenSectors,
+			gTacticalStatus.fEnemyInSector,
+			hasMatchingTacticalSoldier,
+			pGroup->ubSectorX,
+			pGroup->ubSectorY,
+			pGroup->ubSectorZ,
+			pGroup->ubPrevX,
+			pGroup->ubPrevY,
+			gWorldSectorX,
+			gWorldSectorY,
+			gbWorldSectorZ,
+			GetEnemyGroupBattleCounts( pGroup ) ) )
+		{
+			continue;
+		}
+
+		const UINT8 advancedX = pGroup->ubSectorX;
+		const UINT8 advancedY = pGroup->ubSectorY;
+		DeleteStrategicEvent( EVENT_GROUP_ARRIVAL, pGroup->ubGroupID );
+		pGroup->ubSectorX = pGroup->ubPrevX = (UINT8)gWorldSectorX;
+		pGroup->ubSectorY = pGroup->ubPrevY = (UINT8)gWorldSectorY;
+		pGroup->ubNextX = 0;
+		pGroup->ubNextY = 0;
+		pGroup->fBetweenSectors = FALSE;
+		pGroup->uiTraverseTime = 0;
+		SetGroupArrivalTime( pGroup, 0 );
+
+		// Rebuild the next leg from the preserved patrol route. If the battle is
+		// still active when it comes due, GroupArrivedAtSector will hold it.
+		CalculateNextMoveIntention( pGroup );
+		ja2::strategic::diagnostics::log(
+			"repaired loaded split group=%u battle=%c%d advanced=%c%d next=%c%d between=%u arrival=%u",
+			pGroup->ubGroupID,
+			'A' + gWorldSectorY - 1, gWorldSectorX,
+			'A' + advancedY - 1, advancedX,
+			pGroup->ubNextY ? 'A' + pGroup->ubNextY - 1 : '-', pGroup->ubNextX,
+			pGroup->fBetweenSectors, pGroup->uiArrivalTime );
+		DebugMsg( TOPIC_JA2, DBG_LEVEL_3,
+			String( "Restored enemy group %d from %c%d to active tactical battle %c%d (advanced destination was %c%d)",
+				pGroup->ubGroupID,
+				'A' + gWorldSectorY - 1, gWorldSectorX,
+				'A' + gWorldSectorY - 1, gWorldSectorX,
+				'A' + advancedY - 1, advancedX ) );
+	}
 }
 
 

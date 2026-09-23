@@ -45,6 +45,7 @@
 	#include "MilitiaSquads.h"				// added by Flugente
 	#include "SkillCheck.h"					// added by Flugente
 	#include "Strategic Transport Groups.h"
+	#include "EnemyGroupBattleState.h"
 	#include "platform/Clock.h"
 	
 #ifdef JA2UB
@@ -2155,13 +2156,35 @@ void CalculateNonPersistantPBIInfo()
 				SetExplicitEnemyEncounterCode( ENTERING_ENEMY_SECTOR_CODE );
 				SetEnemyEncounterCode( ENTERING_ENEMY_SECTOR_CODE );
 			}
-			else if( gfWorldLoaded && gTacticalStatus.fEnemyInSector && NumEnemyInSector() )
+			else if( gfWorldLoaded && gTacticalStatus.fEnemyInSector )
 			{
-				// Mobile enemy groups keep their in-battle counts on the group,
-				// not in SECTORINFO. Recover an ongoing loaded battle if an
-				// unrelated strategic movement event cleared the encounter code.
-				SetExplicitEnemyEncounterCode( ENEMY_ENCOUNTER_CODE );
-				SetEnemyEncounterCode( ENEMY_ENCOUNTER_CODE );
+				// Mobile forces keep their in-battle counters on GROUP rather
+				// than SECTORINFO. This is the mobile counterpart of the branch
+				// above: the player entered their sector, so preserve the normal
+				// hidden-count/no-autoresolve encounter rules.
+				for( GROUP* pGroup = gpGroupList; pGroup; pGroup = pGroup->next )
+				{
+					if( pGroup->usGroupTeam != ENEMY_TEAM || pGroup->ubSectorZ != gbWorldSectorZ ||
+						pGroup->ubSectorX != gWorldSectorX || pGroup->ubSectorY != gWorldSectorY ||
+						!pGroup->pEnemyGroup )
+					{
+						continue;
+					}
+
+					const ENEMYGROUP& enemy = *pGroup->pEnemyGroup;
+					if( ja2::strategic::hasMembersInBattle( {
+						enemy.ubAdminsInBattle,
+						enemy.ubTroopsInBattle,
+						enemy.ubElitesInBattle,
+						enemy.ubRobotsInBattle,
+						enemy.ubTanksInBattle,
+						enemy.ubJeepsInBattle } ) )
+					{
+						SetExplicitEnemyEncounterCode( ENTERING_ENEMY_SECTOR_CODE );
+						SetEnemyEncounterCode( ENTERING_ENEMY_SECTOR_CODE );
+						break;
+					}
+				}
 			}
 		}
 

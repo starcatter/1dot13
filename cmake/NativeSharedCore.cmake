@@ -114,6 +114,15 @@ target_compile_options(ja2_random_scaling_tests PRIVATE
 add_test(NAME ja2_random_scaling_tests
   COMMAND ja2_random_scaling_tests)
 
+add_executable(ja2_enemy_group_battle_state_tests
+  tests/native/enemy_group_battle_state_tests.cpp)
+target_include_directories(ja2_enemy_group_battle_state_tests PRIVATE
+  "${CMAKE_SOURCE_DIR}/Strategic")
+target_compile_options(ja2_enemy_group_battle_state_tests PRIVATE
+  -Wall -Wextra -Wpedantic -Werror)
+add_test(NAME ja2_enemy_group_battle_state_tests
+  COMMAND ja2_enemy_group_battle_state_tests)
+
 add_executable(ja2_shared_core_smoke tests/native/shared_core_smoke.cpp)
 target_link_libraries(ja2_shared_core_smoke PRIVATE ja2_shared_core)
 target_compile_options(ja2_shared_core_smoke PRIVATE -Wall -Wextra -Wpedantic -Werror)

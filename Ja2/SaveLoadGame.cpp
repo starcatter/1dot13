@@ -6810,6 +6810,11 @@ BOOLEAN LoadSavedGame( int ubSavedGameID )
 	//Update the mercs in the sector with the new soldier info
 	UpdateMercsInSector( gWorldSectorX, gWorldSectorY, gbWorldSectorZ );
 
+	// Older builds allowed an enemy movement event to advance a mobile group
+	// while that group's soldiers were still fighting in the loaded source
+	// sector. Rejoin that very specific split state before normal play resumes.
+	RepairLoadedEnemyBattleGroupMovement();
+
 	//ReconnectSchedules();
 	PostSchedules();
 

@@ -220,6 +220,11 @@ void GroupArrivedAtSector( UINT8 ubGroupID, BOOLEAN fCheckForBattle, BOOLEAN fNe
 void InitiateGroupMovementToNextSector( GROUP *pGroup );
 void CalculateNextMoveIntention( GROUP *pGroup );
 
+// Keeps the strategic representation of mobile enemies synchronized with an
+// active tactical battle, including recovery of saves made after an old group
+// arrival event advanced the strategic group out of the loaded sector.
+void RepairLoadedEnemyBattleGroupMovement();
+
 
 // set current sector of the group..used for player controlled mercs
 void SetGroupSectorValue( INT16 sSectorX, INT16 sSectorY, INT16 sSectorZ, UINT8 ubGroupID );

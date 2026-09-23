@@ -139,28 +139,53 @@ soldier teardown and has also been fixed.
   flag around an invisible and non-interactive interface. This was not the
   cause of the reported locator-click regression, but remains worth hardening.
 
-### Separate active-battle state-loss bug
+### Separate mobile-group battle/movement bug
 
-Status: fixed and verified against the affected quicksave under GDB. The
-recovered pre-battle/autoresolve path also passed interactive playtesting on
-2026-09-22.
+Status: fixed and deterministically verified on 2026-09-22/23. This is a
+pre-existing base-1.13 bug. The consistency fix is complete; coherent tactical
+withdrawal for an unalerted patrol is follow-up gameplay work.
 
-- Strategic movement processing unconditionally cleared the singleton enemy
-  encounter code. A different squad fleeing or another group arriving while a
-  tactical battle remained loaded could therefore erase the active battle's
-  map-screen state.
-- Non-persistent PBI reconstruction only examined stationary `SectorInfo`
-  in-battle counters. Mobile enemy groups store those counters on `ENEMYGROUP`,
-  so it could not recover the encounter even though live tactical enemies and
-  their strategic groups remained valid.
-- Strategic movement now preserves an encounter while a hostile tactical world
-  is loaded. Map-screen entry also revalidates the locator and recovers a
-  generic mobile-group encounter from the loaded tactical state, allowing old
-  saves made after the corruption to repair themselves.
-- In the reported quicksave, GDB observed Syf and four live enemies in I6, two
-  mobile enemy groups with four troops marked in battle, but encounter and
-  locator globals both at zero. Reconstruction restored both globals and the
-  correct I6 locator without modifying the underlying battle.
+- A between-sector enemy group remains associated with its source sector and
+  can be deployed into tactical combat there. Its already-scheduled strategic
+  arrival event was left armed, however, and could move the group onward while
+  its tactical soldiers and `*InBattle` counters remained in the source map.
+- Captured group 91 reached C5 at 03:31, slept there as intended by the normal
+  nighttime-rest rule, and had a C5-to-C6 arrival scheduled for 06:09. Entering
+  combat at 06:05 reproduced the four-minute race.
+- With `JA2_STRATEGIC_BATTLE_DIAGNOSTICS=1`, the fixed build observed all nine
+  soldiers deployed in C5 at 06:08, received the live C6 arrival at 06:09, and
+  explicitly held/rescheduled it because those same group IDs were fighting in
+  the loaded tactical map. This proves the fix, rather than a reload merely
+  hiding corrupt movement state.
+- Movement now remains held while matching group soldiers are fighting and
+  resumes after battle cleanup. A narrowly matched load repair rejoins saves
+  already split by the old bug. Mobile PBI reconstruction uses
+  `ENTERING_ENEMY_SECTOR_CODE`, preserving hidden enemy counts and disabling
+  autoresolve where the ordinary player-entered-hostile-sector rules require
+  it.
+
+#### Follow-up: alert-aware tactical patrol withdrawal
+
+- The consistency fix deliberately keeps every engaged group in the sector.
+  That is coherent once the enemy team has been alerted, but not when an
+  unaware patrol's strategic departure time arrives before it has discovered
+  the player.
+- If the enemy team is still unalerted when its movement event matures, the
+  group's tactical soldiers should receive a coordinated withdrawal order and
+  leave through the map edge corresponding to their strategic travel direction
+  (for example, C5-to-C6 exits east). Only after the correct members have left
+  should the strategic group complete the leg.
+- If the team has been alerted, retain the current behavior: the group stays to
+  fight until the player leaves or all group members are killed.
+- Research must identify the authoritative team-alert state, map-edge and
+  insertion-grid selection rules, multi-level/blocked-edge behavior, AI orders
+  for coherent group withdrawal, interruption if alert occurs mid-withdrawal,
+  and the point at which tactical removal may safely acknowledge the strategic
+  arrival. Do not implement this as immediate soldier deletion or teleporting.
+- Add deterministic cases for unalerted departure in all four cardinal
+  directions, alert before departure, alert during withdrawal, blocked/invalid
+  edge tiles, partial casualties, player retreat, save/load mid-withdrawal, and
+  battle/PBI state after the last withdrawing soldier exits.
 
 ### Remaining work
 
